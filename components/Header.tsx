@@ -14,8 +14,8 @@ const links: {
   label: string;
 }[] = [
   {
-    href: "/#pricing",
-    label: "Pricing",
+    href: "/#quiz",
+    label: "Find a Book in 2 minutes!",
   },
   {
     href: "/#testimonials",
