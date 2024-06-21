@@ -8,7 +8,6 @@ import BookAvatar from "./BookAvatar";
 export interface FormData {
   genre: string;
   format: string;
-  is_free: boolean;
   min_page_count: number;
   max_page_count?: number;
   author: string;
@@ -33,6 +32,7 @@ const fieldsList: QuizQuestion[] = [
     label: "Genre",
     inputType: "select",
     options: [
+      { label: "Any", value: "any" },
       { label: "Fiction", value: "fiction" },
       { label: "Non-Fiction", value: "non-fiction" },
       { label: "Mystery", value: "mystery" },
@@ -49,11 +49,6 @@ const fieldsList: QuizQuestion[] = [
       { label: "E-Book", value: "ebook" },
       { label: "Audio", value: "audio" },
     ],
-  },
-  {
-    name: "is_free",
-    label: "Free",
-    inputType: "checkbox",
   },
   {
     name: "min_page_count",
@@ -112,7 +107,7 @@ const fieldsList: QuizQuestion[] = [
       { label: "Chichewa, Chewa, Nyanja", value: "ny" },
       { label: "Chinese", value: "zh" },
       {
-        label: "Church Slavonic, Old Slavonic, Old Church Slavonic",
+        label: "Church Slavonic",
         value: "cu",
       },
       { label: "Chuvash", value: "cv" },
@@ -156,7 +151,7 @@ const fieldsList: QuizQuestion[] = [
       { label: "Igbo", value: "ig" },
       { label: "Indonesian", value: "id" },
       {
-        label: "Interlingua (International Auxiliary Language Association)",
+        label: "Interlingua",
         value: "ia",
       },
       { label: "Interlingue, Occidental", value: "ie" },
@@ -180,7 +175,7 @@ const fieldsList: QuizQuestion[] = [
       { label: "Kurdish", value: "ku" },
       { label: "Kuanyama, Kwanyama", value: "kj" },
       { label: "Latin", value: "la" },
-      { label: "Luxembourgish, Letzeburgesch", value: "lb" },
+      { label: "Luxembourgish", value: "lb" },
       { label: "Macedonian", value: "mk" },
       { label: "Malagasy", value: "mg" },
       { label: "Malay", value: "ms" },
@@ -204,8 +199,7 @@ const fieldsList: QuizQuestion[] = [
       { label: "Occitan", value: "oc" },
       { label: "Ojibwa", value: "oj" },
       {
-        label:
-          "Church Slavic, Old Slavonic, Church Slavonic, Old Bulgarian, Old Church Slavonic",
+        label: "Church Slavic",
         value: "cu",
       },
       { label: "Oriya", value: "or" },
@@ -219,7 +213,7 @@ const fieldsList: QuizQuestion[] = [
       { label: "Pushto, Pashto", value: "ps" },
       { label: "Quechua", value: "qu" },
       { label: "Romansh", value: "rm" },
-      { label: "Romanian, Moldavian, Moldovan", value: "ro" },
+      { label: "Romanian", value: "ro" },
       { label: "Rundi", value: "rn" },
       { label: "Russian", value: "ru" },
       { label: "Samoan", value: "sm" },
@@ -277,16 +271,17 @@ const fieldsList: QuizQuestion[] = [
 
 // Define the schema for validation
 const schema = z.object({
-  genre: z.string().nonempty("Genre is required").default("romance"),
+  genre: z.string().nonempty("Genre is required").default("any"),
   format: z.string().nonempty("Format is required").default("physical"),
-  is_free: z.boolean().default(false),
   min_page_count: z
     .number()
     .min(1, "Minimum page count must be at least 1")
+    .default(1)
     .optional(),
   max_page_count: z
     .number()
     .min(1, "Maximum page count must be at least 1")
+    .default(9999999)
     .optional(),
   author: z.string().optional(),
   language: z.string().nonempty("Language is required").default("en"),
@@ -299,7 +294,6 @@ const BookFinder = () => {
   const [formData, setFormData] = useState<FormData>({
     genre: schema.shape.genre._def.defaultValue(),
     format: schema.shape.format._def.defaultValue(),
-    is_free: schema.shape.is_free._def.defaultValue(),
     min_page_count: undefined,
     max_page_count: undefined,
     author: "",
@@ -317,8 +311,8 @@ const BookFinder = () => {
 
       // Submit form data to the backend
       const response = await axios.post("/api/bf", formData);
-      for (let i = 0; i < response.data.length; i++) {
-        bookSuggestions.push(response.data[i]);
+      for (let i = 0; i < response.data.items.length; i++) {
+        bookSuggestions.push(response.data.items[i]);
       }
       setBooksLoaded(true);
       setShowDialog(true);
@@ -339,7 +333,10 @@ const BookFinder = () => {
   };
 
   return (
-    <section className="max-w-7xl mx-auto bg-base-100 items-center justify-center gap-16 lg:gap-20 px-8 py-2 lg:py-20 text-black">
+    <section
+      id="quiz"
+      className="max-w-7xl mx-auto bg-base-100 items-center justify-center gap-16 lg:gap-20 px-8 py-2 lg:py-20 text-black"
+    >
       <h2 className="font-extrabold inline-block mb-6 text-4xl lg:text-6xl tracking-tight m-auto text-center">
         Find a book to read in 1 minute!
       </h2>
@@ -371,9 +368,18 @@ const BookFinder = () => {
                     className="border-black border-2 rounded-lg w-max m-auto input input-bordered"
                     type={field.dataType}
                     name={field.name}
-                    value={formData[field.name] as string | number}
+                    value={
+                      field.dataType == "number"
+                        ? (formData[field.name] as number)
+                        : (formData[field.name] as string)
+                    }
                     onChange={(e) =>
-                      handleInputChange(field.name, e.target.value)
+                      handleInputChange(
+                        field.name,
+                        field.dataType == "number"
+                          ? e.target.valueAsNumber
+                          : e.target.value
+                      )
                     }
                   />
                 ) : field.inputType === "checkbox" ? (
@@ -398,9 +404,8 @@ const BookFinder = () => {
       </form>
 
       <dialog className="modal" open={showDialog}>
-        <div className="modal-box">
+        <div className="modal-box w-11/12 max-w-5xl">
           <form method="dialog">
-            {/* if there is a button in form, it will close the modal */}
             <button
               className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
               onClick={() => {
@@ -410,15 +415,33 @@ const BookFinder = () => {
               ✕
             </button>
           </form>
-          <h3 className="font-bold text-lg">
+          <h3 className="font-bold text-lg pb-5">
             Here are some books we found for you...
           </h3>
-          {/* bookSuggestions.map((x) => (
-                   <div>
-                     <BookAvatar vol={x} />
-                   </div>
-                 ));  */}
-          {booksLoaded ? console.log("res ") : null}
+          {booksLoaded ? (
+            bookSuggestions.length != 0 ? (
+              <div className="grid grid-cols-3 gap-5">
+                {bookSuggestions.map((x, index) => {
+                  if (index > 2)
+                    return (
+                      <div>
+                        <BookAvatar vol={x} isBlurred={true} />
+                      </div>
+                    );
+                  else
+                    return (
+                      <div>
+                        <BookAvatar vol={x} isBlurred={false} />
+                      </div>
+                    );
+                })}
+              </div>
+            ) : (
+              <div className="text-center">
+                <h2 className="font-bold text-lg pb-5">No Results</h2>
+              </div>
+            )
+          ) : null}
         </div>
       </dialog>
     </section>

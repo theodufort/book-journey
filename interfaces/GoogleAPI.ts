@@ -11,8 +11,10 @@ interface VolumeInfo {
     text: boolean;
     image: boolean;
   };
+  description: string;
   pageCount?: number;
   printType?: string;
+  mainCategory: string;
   categories?: string[];
   maturityRating?: string;
   allowAnonLogging?: boolean;
