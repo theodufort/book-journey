@@ -1,0 +1,359 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import HeaderDashboard from "@/components/DashboardHeader";
+import { useBookDetails } from "@/hooks/useBookDetails";
+import { useRouter } from "next/navigation";
+import {
+  User,
+  createClientComponentClient,
+} from "@supabase/auth-helpers-nextjs";
+import CongratulationsModal from "@/components/CongratulationsModal";
+
+interface ReadingListItem {
+  id: string;
+  book_isbn: string;
+  status: string;
+}
+
+const supabase = createClientComponentClient();
+
+export default function ReadingList() {
+  const [readingList, setReadingList] = useState<ReadingListItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
+  const [expandedSections, setExpandedSections] = useState({
+    "To Read": true,
+    Reading: true,
+    Finished: true,
+  });
+
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const {
+          data: { user },
+          error,
+        } = await supabase.auth.getUser();
+        if (error) {
+          console.error("Error fetching user:", error);
+          router.push("/login");
+          return;
+        }
+        setUser(user);
+        if (user) {
+          fetchReadingList(user.id);
+        } else {
+          console.log("No user found");
+          router.push("/login");
+        }
+      } catch (error) {
+        console.error("Unexpected error:", error);
+        router.push("/login");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getUser();
+  }, [router]);
+
+  async function fetchReadingList(userId: string) {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("reading_list")
+        .select("id, book_isbn, status")
+        .eq("user_id", userId);
+
+      if (error) {
+        console.error("Error fetching reading list:", error);
+      } else {
+        setReadingList(data || []);
+      }
+    } catch (error) {
+      console.error("Unexpected error fetching reading list:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const toReadBooks = readingList.filter((item) => item.status === "To Read");
+  const readingBooks = readingList.filter((item) => item.status === "Reading");
+  const finishedBooks = readingList.filter(
+    (item) => item.status === "Finished"
+  );
+
+  const toggleSection = (section: string) => {
+    setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
+  };
+
+  return (
+    <main className="min-h-screen p-8 pb-24">
+      <section className="max-w-6xl mx-auto space-y-8">
+        <HeaderDashboard />
+
+        <h1 className="text-3xl md:text-4xl font-extrabold">My Reading List</h1>
+
+        {loading ? (
+          <div className="text-center">
+            <span className="loading loading-spinner loading-lg"></span>
+          </div>
+        ) : readingList.length === 0 ? (
+          <div className="text-center p-8 bg-base-200 rounded-box">
+            <h2 className="text-2xl font-bold mb-4">
+              Your reading list is empty
+            </h2>
+            <p className="mb-4">
+              Start adding books to your reading list to keep track of what you
+              want to read!
+            </p>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                router.push("/dashboard/recommendations");
+              }}
+            >
+              Find Books to Read
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-8">
+            <CollapsibleSection
+              title={`To Read (${toReadBooks.length})`}
+              isExpanded={expandedSections["To Read"]}
+              onToggle={() => toggleSection("To Read")}
+              books={toReadBooks}
+              onUpdate={() => user && fetchReadingList(user.id)}
+            />
+            <CollapsibleSection
+              title={`Currently Reading (${readingBooks.length})`}
+              isExpanded={expandedSections["Reading"]}
+              onToggle={() => toggleSection("Reading")}
+              books={readingBooks}
+              onUpdate={() => user && fetchReadingList(user.id)}
+            />
+            <CollapsibleSection
+              title={`Finished (${finishedBooks.length})`}
+              isExpanded={expandedSections["Finished"]}
+              onToggle={() => toggleSection("Finished")}
+              books={finishedBooks}
+              onUpdate={() => user && fetchReadingList(user.id)}
+            />
+          </div>
+        )}
+      </section>
+    </main>
+  );
+}
+
+function CollapsibleSection({
+  title,
+  isExpanded,
+  onToggle,
+  books,
+  onUpdate,
+}: {
+  title: string;
+  isExpanded: boolean;
+  onToggle: () => void;
+  books: ReadingListItem[];
+  onUpdate: () => void;
+}) {
+  if (books.length === 0) return null;
+
+  return (
+    <div className="collapse collapse-arrow bg-base-200">
+      <input type="checkbox" checked={isExpanded} onChange={onToggle} />
+      <div className="collapse-title text-xl font-medium">{title}</div>
+      <div className="collapse-content">
+        <div className="space-y-4">
+          {books.map((item) => (
+            <BookListItem key={item.id} item={item} onUpdate={onUpdate} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BookListItem({
+  item,
+  onUpdate,
+}: {
+  item: ReadingListItem;
+  onUpdate: () => void;
+}) {
+  const { book, loading, error } = useBookDetails(item.book_isbn);
+  const [showModal, setShowModal] = useState(false);
+  const [messageType, setMessageType] = useState("begin");
+  const [newStatus, setNewStatus] = useState(item.status);
+  const [pendingUpdate, setPendingUpdate] = useState(false);
+  const [rating, setRating] = useState(0);
+
+  useEffect(() => {
+    // Fetch the current rating when the component mounts
+    fetchRating();
+  }, [item.id]);
+
+  async function fetchRating() {
+    const { data, error } = await supabase
+      .from("reading_list")
+      .select("rating")
+      .eq("id", item.id)
+      .single();
+
+    if (error) {
+      console.error("Error fetching rating:", error);
+    } else if (data) {
+      setRating(data.rating || 0);
+    }
+  }
+
+  if (loading)
+    return (
+      <div className="text-center">
+        <span className="loading loading-spinner loading-md"></span>
+      </div>
+    );
+  if (error)
+    return (
+      <div className="text-center text-error">Error loading book details</div>
+    );
+  if (!book) return null;
+
+  async function updateBookStatus(ns: string) {
+    setNewStatus(ns);
+    if (item.status === "To Read" && ns === "Reading") {
+      setMessageType("begin");
+      setShowModal(true);
+      setPendingUpdate(true);
+    } else if (item.status === "Reading" && ns === "Finished") {
+      setMessageType("end");
+      setShowModal(true);
+      setPendingUpdate(true);
+    } else {
+      await performUpdate(ns);
+    }
+  }
+
+  async function performUpdate(status: string = newStatus) {
+    const { error } = await supabase
+      .from("reading_list")
+      .update({ status, rating })
+      .eq("id", item.id);
+
+    if (error) {
+      console.error("Error updating book status:", error);
+    } else {
+      onUpdate();
+    }
+  }
+
+  async function updateRating(newRating: number) {
+    setRating(newRating);
+    const { error } = await supabase
+      .from("reading_list")
+      .update({ rating: newRating })
+      .eq("id", item.id);
+
+    if (error) {
+      console.error("Error updating rating:", error);
+    } else {
+      onUpdate();
+    }
+  }
+
+  async function removeBook() {
+    const { error } = await supabase
+      .from("reading_list")
+      .delete()
+      .eq("id", item.id);
+
+    if (error) console.error("Error removing book:", error);
+    else onUpdate();
+  }
+
+  function handleModalClose() {
+    setShowModal(false);
+    if (pendingUpdate) {
+      performUpdate();
+      setPendingUpdate(false);
+    }
+  }
+
+  return (
+    <>
+      <div className="card lg:card-side bg-base-100 shadow-xl">
+        <figure className="p-4">
+          <img
+            src={book.imageLinks?.thumbnail}
+            alt={book.title}
+            className="rounded-lg"
+          />
+        </figure>
+        <div className="card-body">
+          <h2 className="card-title">{book.title}</h2>
+          <p>
+            <b>Author:</b> {book.authors}
+          </p>
+          <p>
+            <b>Description:</b> {book.description?.substring(0, 200)}...
+          </p>
+          <div className="card-actions justify-end my-auto inline-block">
+            <div>
+              <label>
+                <b>Status:</b>{" "}
+              </label>
+              <select
+                value={item.status}
+                onChange={(e) => updateBookStatus(e.target.value)}
+                className="select select-bordered w-auto max-w-xs"
+              >
+                <option value="To Read">To Read</option>
+                <option value="Reading">Reading</option>
+                <option value="Finished">Finished</option>
+              </select>
+            </div>
+            {item.status === "Finished" && (
+              <div className="rating rating-md rating-half inline-block my-2">
+                <label>
+                  <b>Your Rating:</b>{" "}
+                </label>
+                <input
+                  type="radio"
+                  name={`rating-${item.id}`}
+                  className="rating-hidden"
+                  checked={rating === 0}
+                  onChange={() => updateRating(0)}
+                />
+                {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((star) => (
+                  <input
+                    key={star}
+                    type="radio"
+                    name={`rating-${item.id}`}
+                    className={`mask mask-star-2 ${
+                      star % 1 === 0 ? "mask-half-2" : "mask-half-1"
+                    } bg-orange-400`}
+                    checked={rating === star}
+                    onChange={() => updateRating(star)}
+                  />
+                ))}
+              </div>
+            )}
+            <button className="btn btn-primary float-end" onClick={removeBook}>
+              Remove
+            </button>
+          </div>
+        </div>
+      </div>
+      <CongratulationsModal
+        isOpen={showModal}
+        onClose={handleModalClose}
+        messageType={messageType}
+        bookTitle={book.title}
+      />
+    </>
+  );
+}

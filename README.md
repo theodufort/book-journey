@@ -18,3 +18,5 @@
 ## Important Links
 
 - Tasks (Notion): https://fair-fairy-5cf.notion.site/MyBookQuest-3e9dbc6810a84f0981baf4ce6430d9bb?pvs=4
+- ShipFast Docs: https://shipfa.st/docs
+- DaisyUI Docs: https://daisyui.com/components/

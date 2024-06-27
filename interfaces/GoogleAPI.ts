@@ -16,6 +16,7 @@ interface VolumeInfo {
   printType?: string;
   mainCategory: string;
   categories?: string[];
+  averageRating?: string;
   maturityRating?: string;
   allowAnonLogging?: boolean;
   contentVersion?: string;
