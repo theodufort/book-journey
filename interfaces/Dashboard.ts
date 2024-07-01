@@ -8,3 +8,8 @@ export interface Row {
   generalRating: Number;
   status: string;
 }
+export interface ReadingListItem {
+  id: string;
+  book_isbn: string;
+  status: string;
+}

@@ -1,40 +1,68 @@
 "use client";
 import { useEffect, useState } from "react";
-import { supabase } from "@/libs/supabaseClient";
 import HeaderDashboard from "@/components/DashboardHeader";
+import PointsSection from "@/components/PointsSection";
+import { User } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+const supabase = createClientComponentClient();
 
 export default function Dashboard() {
   const [currentlyReading, setCurrentlyReading] = useState([]);
   const [stats, setStats] = useState(null);
-
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
   useEffect(() => {
-    fetchDashboardData();
+    const getUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+      setLoading(false);
+    };
+
+    getUser();
   }, []);
 
-  async function fetchDashboardData() {
-    const user = await supabase.auth.getUser();
-    if (user.data.user) {
-      const { data: readingList, error: readingListError } = await supabase
-        .from("reading_list")
-        .select("*, books(*)")
-        .eq("user_id", user.data.user.id)
-        .eq("status", "Reading")
-        .limit(5);
-
-      if (readingListError)
-        console.error("Error fetching reading list:", readingListError);
-      else setCurrentlyReading(readingList);
-
-      const { data: readingStats, error: statsError } = await supabase
-        .from("reading_stats")
-        .select("*")
-        .eq("user_id", user.data.user.id)
-        .single();
-
-      if (statsError)
-        console.error("Error fetching reading stats:", statsError);
-      else setStats(readingStats);
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/signin");
+    } else if (user) {
+      fetchDashboardData();
     }
+  }, [loading, user, router]);
+
+  async function fetchDashboardData() {
+    if (!user) return;
+
+    const { data: readingList, error: readingListError } = await supabase
+      .from("reading_list")
+      .select("*, books(*)")
+      .eq("user_id", user.id)
+      .eq("status", "Reading")
+      .limit(5);
+
+    if (readingListError)
+      console.error("Error fetching reading list:", readingListError);
+    else setCurrentlyReading(readingList);
+
+    const { data: readingStats, error: statsError } = await supabase
+      .from("reading_stats")
+      .select("*")
+      .eq("user_id", user.id)
+      .single();
+
+    if (statsError) console.error("Error fetching reading stats:", statsError);
+    else setStats(readingStats);
+  }
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    return null;
   }
 
   return (
@@ -67,6 +95,7 @@ export default function Dashboard() {
             </div>
           ))}
         </div>
+        <PointsSection user={user} />
       </section>
     </main>
   );

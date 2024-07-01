@@ -9,6 +9,7 @@ const nextConfig = {
       "images.unsplash.com",
       "logos-world.net",
       "example.com",
+      "books.google.com",
     ],
   },
 };

@@ -15,6 +15,9 @@ const HeaderDashboard = () => {
             <Link href="/dashboard/reading-list">Reading List</Link>
           </li>
           <li>
+            <Link href="/dashboard/reading-list/add">Add to List</Link>
+          </li>
+          <li>
             <Link href="/dashboard/recommendations">
               Reading Recommendations
             </Link>
