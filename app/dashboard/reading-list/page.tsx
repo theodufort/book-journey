@@ -9,8 +9,7 @@ import {
 } from "@supabase/auth-helpers-nextjs";
 import { ReadingListItem } from "@/interfaces/Dashboard";
 import CollapsibleSection from "@/components/CollapsibleSection";
-
-const supabase = createClientComponentClient();
+import { getUser, supabase } from "@/libs/auth";
 
 export default function ReadingList() {
   const [readingList, setReadingList] = useState<ReadingListItem[]>([]);
@@ -22,35 +21,23 @@ export default function ReadingList() {
     Reading: true,
     Finished: true,
   });
-
   useEffect(() => {
-    const getUser = async () => {
+    const fetchUser = async () => {
       try {
-        const {
-          data: { user },
-          error,
-        } = await supabase.auth.getUser();
-        if (error) {
-          console.error("Error fetching user:", error);
-          router.push("/signin");
-          return;
-        }
-        setUser(user);
-        if (user) {
-          fetchReadingList(user.id);
+        const authUser = await getUser();
+        setUser(authUser);
+        if (authUser) {
+          fetchReadingList(authUser.id);
         } else {
           console.log("No user found");
           router.push("/signin");
         }
-      } catch (error) {
-        console.error("Unexpected error:", error);
-        router.push("/signin");
-      } finally {
-        setLoading(false);
+      } catch (e) {
+        console.error(e);
       }
     };
 
-    getUser();
+    fetchUser();
   }, [router]);
 
   async function fetchReadingList(userId: string) {

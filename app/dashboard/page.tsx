@@ -4,38 +4,33 @@ import HeaderDashboard from "@/components/DashboardHeader";
 import PointsSection from "@/components/PointsSection";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-const supabase = createClientComponentClient();
+import { getUser, supabase } from "@/libs/auth";
+import { useSession } from "next-auth/react";
 
 export default function Dashboard() {
   const [currentlyReading, setCurrentlyReading] = useState([]);
   const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
+  const { data: session } = useSession();
+  console.log(session);
   const router = useRouter();
   useEffect(() => {
-    const getUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-      setLoading(false);
-    };
-
-    getUser();
-  }, []);
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push("/signin");
-    } else if (user) {
-      fetchDashboardData();
-    }
-  }, [loading, user, router]);
+    (async function () {
+      try {
+        setUser(await getUser());
+        if (user) {
+          fetchDashboardData();
+        } else {
+          console.log("No user found");
+          router.push("/signin");
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  }, [router]);
 
   async function fetchDashboardData() {
-    if (!user) return;
-
     const { data: readingList, error: readingListError } = await supabase
       .from("reading_list")
       .select("*, books(*)")
@@ -55,10 +50,6 @@ export default function Dashboard() {
 
     if (statsError) console.error("Error fetching reading stats:", statsError);
     else setStats(readingStats);
-  }
-
-  if (loading) {
-    return <div>Loading...</div>;
   }
 
   if (!user) {
@@ -95,7 +86,7 @@ export default function Dashboard() {
             </div>
           ))}
         </div>
-        <PointsSection user={user} />
+        <PointsSection userId={user.id} />
       </section>
     </main>
   );

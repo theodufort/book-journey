@@ -1,27 +1,42 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/libs/supabaseClient";
 import HeaderDashboard from "@/components/DashboardHeader";
+import { User } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
+import { getUser, supabase } from "@/libs/auth";
 
 export default function Profile() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [user, setUser] = useState<User | null>(null);
   const [preferredCategories, setPreferredCategories] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
-    fetchProfile();
-  }, []);
+    (async function () {
+      try {
+        setUser(await getUser(router));
+        if (user) {
+          fetchProfile();
+        } else {
+          console.log("No user found");
+          router.push("/signin");
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  }, [router]);
 
   async function fetchProfile() {
-    const user = await supabase.auth.getUser();
-    if (user.data.user) {
-      setEmail(user.data.user.email);
+    if (user) {
+      setEmail(user.email);
 
       const { data: profile, error: profileError } = await supabase
         .from("users")
         .select("name")
-        .eq("id", user.data.user.id)
+        .eq("id", user.id)
         .single();
 
       if (profileError) console.error("Error fetching profile:", profileError);
@@ -30,7 +45,7 @@ export default function Profile() {
       const { data: preferences, error: preferencesError } = await supabase
         .from("user_preferences")
         .select("preferred_categories")
-        .eq("user_id", user.data.user.id)
+        .eq("user_id", user.id)
         .single();
 
       if (preferencesError)
@@ -40,12 +55,11 @@ export default function Profile() {
   }
 
   async function updateProfile() {
-    const user = await supabase.auth.getUser();
-    if (user.data.user) {
+    if (user) {
       const { error: preferencesError } = await supabase
         .from("user_preferences")
         .upsert({
-          user_id: user.data.user.id,
+          user_id: user.id,
           preferred_categories: preferredCategories,
         });
 

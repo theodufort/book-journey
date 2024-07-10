@@ -1,9 +1,15 @@
 // components/PointsSection.tsx
 import { useEffect, useState } from "react";
-import { supabase } from "@/libs/supabaseClient";
-import { User } from "@supabase/supabase-js";
-
-const PointsSection = (user: any) => {
+import { User, createClient } from "@supabase/supabase-js";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  {
+    db: { schema: "next_auth" },
+  }
+);
+const PointsSection = (userId: string) => {
   const [points, setPoints] = useState(0);
   const [transactions, setTransactions] = useState([]);
 
@@ -13,12 +19,12 @@ const PointsSection = (user: any) => {
   }, []);
 
   async function fetchPoints() {
-    if (user) {
+    if (userId) {
       const { data, error } = await supabase
         .from("user_points")
         .select("points_earned, points_redeemed")
-        .eq("user_id", user.user.id)
-        .single();
+        .eq("user_id", userId)
+        .maybeSingle();
       console.log(data);
       console.log(error);
       if (error) {
@@ -30,14 +36,14 @@ const PointsSection = (user: any) => {
   }
 
   async function fetchTransactions() {
-    if (user) {
+    if (userId) {
       const { data, error } = await supabase
         .from("point_transactions")
         .select("points, type, description, created_at")
-        .eq("user_id", user.user.id)
+        .eq("user_id", userId)
         .order("created_at", { ascending: false })
         .limit(10);
-      console.log(user.user.id);
+      console.log(userId);
       if (error) {
         console.error("Error fetching transactions:", error);
       } else {

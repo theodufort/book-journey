@@ -3,56 +3,28 @@
 import Link from "next/link";
 import { useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Provider } from "@supabase/supabase-js";
+import { Provider, createClient } from "@supabase/supabase-js";
 import toast from "react-hot-toast";
 import config from "@/config";
-
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 // This a login/singup page for Supabase Auth.
 // Successfull login redirects to /api/auth/callback where the Code Exchange is processed (see app/api/auth/callback/route.js).
 export default function Login() {
-  const supabase = createClientComponentClient();
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { db: { schema: "next_auth" } }
+  );
   const [email, setEmail] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
-
-  const handleSignup = async (
-    e: any,
-    options: {
-      type: string;
-      provider?: Provider;
-    }
-  ) => {
-    e?.preventDefault();
-
-    setIsLoading(true);
-
-    try {
-      const { type, provider } = options;
-      const redirectURL = window.location.origin + "/api/auth/callback";
-
-      if (type === "oauth") {
-        await supabase.auth.signInWithOAuth({
-          provider,
-          options: {
-            redirectTo: redirectURL,
-          },
-        });
-      } else if (type === "magic_link") {
-        await supabase.auth.signInWithOtp({
-          email,
-          options: {
-            emailRedirectTo: redirectURL,
-          },
-        });
-
-        toast.success("Check your emails!");
-
-        setIsDisabled(true);
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
+  const router = useRouter();
+  const handleClick = () => {
+    if (status === "authenticated") {
+      router.push(config.auth.callbackUrl);
+    } else {
+      signIn(null, { callbackUrl: config.auth.callbackUrl });
     }
   };
 
@@ -82,9 +54,7 @@ export default function Login() {
       <div className="space-y-8 max-w-xl mx-auto">
         <button
           className="btn btn-block"
-          onClick={(e) =>
-            handleSignup(e, { type: "oauth", provider: "google" })
-          }
+          onClick={handleClick}
           disabled={isLoading}
         >
           {isLoading ? (
@@ -120,10 +90,7 @@ export default function Login() {
           OR
         </div>
 
-        <form
-          className="form-control w-full space-y-4"
-          onSubmit={(e) => handleSignup(e, { type: "magic_link" })}
-        >
+        <form className="form-control w-full space-y-4" onSubmit={handleClick}>
           <input
             required
             type="email"

@@ -1,9 +1,15 @@
 import { useBookDetails } from "@/hooks/useBookDetails";
-import { supabase } from "@/libs/supabaseClient";
 import { useState, useEffect } from "react";
 import CongratulationsModal from "./CongratulationsModal";
 import { ReadingListItem } from "@/interfaces/Dashboard";
 import { User } from "@supabase/supabase-js";
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  {
+    db: { schema: "next_auth" },
+  }
+);
 
 export default function BookListItem({
   item,
@@ -20,6 +26,7 @@ export default function BookListItem({
   const [newStatus, setNewStatus] = useState(item.status);
   const [pendingUpdate, setPendingUpdate] = useState(false);
   const [rating, setRating] = useState(0);
+
   async function awardPoints(points: number, description: string) {
     const { data, error } = await supabase.from("point_transactions").insert({
       user_id: user.id,
@@ -90,6 +97,7 @@ export default function BookListItem({
       .from("reading_list")
       .update({ status, rating })
       .eq("id", item.id);
+    console.log("94: " + error);
     if (status === "Finished") {
       awardPoints(100, `Finished reading ${book.title}`);
     }
