@@ -3,13 +3,7 @@ import { useState, useEffect } from "react";
 import CongratulationsModal from "./CongratulationsModal";
 import { ReadingListItem } from "@/interfaces/Dashboard";
 import { User } from "@supabase/supabase-js";
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  {
-    db: { schema: "next_auth" },
-  }
-);
+import { supabase } from "@/libs/auth";
 
 export default function BookListItem({
   item,

@@ -1,18 +1,13 @@
 // components/PointsSection.tsx
 import { useEffect, useState } from "react";
 import { User, createClient } from "@supabase/supabase-js";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  {
-    db: { schema: "next_auth" },
-  }
-);
-const PointsSection = (userId: string) => {
+import { supabase } from "@/libs/auth";
+interface props {
+  userId: string;
+}
+const PointsSection = ({ userId }: props) => {
   const [points, setPoints] = useState(0);
   const [transactions, setTransactions] = useState([]);
-
   useEffect(() => {
     fetchPoints();
     fetchTransactions();
@@ -29,6 +24,8 @@ const PointsSection = (userId: string) => {
       console.log(error);
       if (error) {
         console.error("Error fetching points:", error);
+      } else if (!data) {
+        setPoints(0);
       } else {
         setPoints(data.points_earned - data.points_redeemed);
       }

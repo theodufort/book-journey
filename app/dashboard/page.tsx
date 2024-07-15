@@ -1,34 +1,27 @@
 "use client";
+export const dynamic = "force-dynamic";
 import { useEffect, useState } from "react";
 import HeaderDashboard from "@/components/DashboardHeader";
 import PointsSection from "@/components/PointsSection";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { getUser, supabase } from "@/libs/auth";
-import { useSession } from "next-auth/react";
 
 export default function Dashboard() {
   const [currentlyReading, setCurrentlyReading] = useState([]);
   const [stats, setStats] = useState(null);
   const [user, setUser] = useState<User | null>(null);
-  const { data: session } = useSession();
-  console.log(session);
   const router = useRouter();
   useEffect(() => {
-    (async function () {
-      try {
-        setUser(await getUser());
-        if (user) {
-          fetchDashboardData();
-        } else {
-          console.log("No user found");
-          router.push("/signin");
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    })();
-  }, [router]);
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
+
+      setUser(data.user);
+    };
+
+    getUser();
+    if (user) fetchDashboardData();
+  }, [supabase]);
 
   async function fetchDashboardData() {
     const { data: readingList, error: readingListError } = await supabase
