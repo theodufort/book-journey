@@ -5,9 +5,10 @@ import HeaderDashboard from "@/components/DashboardHeader";
 import PointsSection from "@/components/PointsSection";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
-import { getUser, supabase } from "@/libs/auth";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export default function Dashboard() {
+  const supabase = createClientComponentClient();
   const [currentlyReading, setCurrentlyReading] = useState([]);
   const [stats, setStats] = useState(null);
   const [user, setUser] = useState<User | null>(null);
@@ -15,7 +16,6 @@ export default function Dashboard() {
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
-
       setUser(data.user);
     };
 
@@ -43,10 +43,6 @@ export default function Dashboard() {
 
     if (statsError) console.error("Error fetching reading stats:", statsError);
     else setStats(readingStats);
-  }
-
-  if (!user) {
-    return null;
   }
 
   return (

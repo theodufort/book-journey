@@ -1,33 +1,28 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
 import HeaderDashboard from "@/components/DashboardHeader";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
-import { getUser, supabase } from "@/libs/auth";
-
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 export default function Profile() {
+  const supabase = createClientComponentClient();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [user, setUser] = useState<User | null>(null);
   const [preferredCategories, setPreferredCategories] = useState([]);
   const router = useRouter();
-
   useEffect(() => {
-    (async function () {
-      try {
-        setUser(await getUser(router));
-        if (user) {
-          fetchProfile();
-        } else {
-          console.log("No user found");
-          router.push("/signin");
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    })();
-  }, [router]);
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
+
+      setUser(data.user);
+    };
+
+    getUser();
+    if (user) fetchProfile();
+  }, [supabase]);
 
   async function fetchProfile() {
     if (user) {

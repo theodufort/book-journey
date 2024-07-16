@@ -3,24 +3,30 @@ import { useState, useEffect } from "react";
 import CongratulationsModal from "./CongratulationsModal";
 import { ReadingListItem } from "@/interfaces/Dashboard";
 import { User } from "@supabase/supabase-js";
-import { supabase } from "@/libs/auth";
-
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 export default function BookListItem({
   item,
-  user,
   onUpdate,
 }: {
   item: ReadingListItem;
-  user: User;
   onUpdate: () => void;
 }) {
+  const supabase = createClientComponentClient();
   const { book, loading, error } = useBookDetails(item.book_isbn);
   const [showModal, setShowModal] = useState(false);
   const [messageType, setMessageType] = useState("begin");
   const [newStatus, setNewStatus] = useState(item.status);
   const [pendingUpdate, setPendingUpdate] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const [rating, setRating] = useState(0);
+  useEffect(() => {
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
 
+      setUser(data.user);
+    };
+    getUser();
+  }, [supabase]);
   async function awardPoints(points: number, description: string) {
     const { data, error } = await supabase.from("point_transactions").insert({
       user_id: user.id,

@@ -1,17 +1,14 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import HeaderDashboard from "@/components/DashboardHeader";
 import { useRouter } from "next/navigation";
-import {
-  User,
-  createClientComponentClient,
-} from "@supabase/auth-helpers-nextjs";
+import { User } from "@supabase/supabase-js";
 import { ReadingListItem } from "@/interfaces/Dashboard";
 import CollapsibleSection from "@/components/CollapsibleSection";
-import { getUser, supabase } from "@/libs/auth";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export default function ReadingList() {
+  const supabase = createClientComponentClient();
   const [readingList, setReadingList] = useState<ReadingListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -21,26 +18,22 @@ export default function ReadingList() {
     Reading: true,
     Finished: true,
   });
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const authUser = await getUser();
-        setUser(authUser);
-        if (authUser) {
-          fetchReadingList(authUser.id);
-        } else {
-          console.log("No user found");
-          router.push("/signin");
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    };
 
-    fetchUser();
-  }, [router]);
+  useEffect(() => {
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
+
+      setUser(data.user);
+    };
+    getUser();
+
+    if (user) {
+      fetchReadingList(user.id);
+    } else console.log("not defined");
+  }, [supabase]);
 
   async function fetchReadingList(userId: string) {
+    console.log(userId);
     setLoading(true);
     try {
       const { data, error } = await supabase
@@ -107,7 +100,7 @@ export default function ReadingList() {
               onToggle={() => toggleSection("To Read")}
               books={toReadBooks}
               user={user}
-              onUpdate={() => user && fetchReadingList(user.id)}
+              onUpdate={() => fetchReadingList(user.id)}
             />
             <CollapsibleSection
               title={`Currently Reading (${readingBooks.length})`}
@@ -115,7 +108,7 @@ export default function ReadingList() {
               onToggle={() => toggleSection("Reading")}
               books={readingBooks}
               user={user}
-              onUpdate={() => user && fetchReadingList(user.id)}
+              onUpdate={() => fetchReadingList(user.id)}
             />
             <CollapsibleSection
               title={`Finished (${finishedBooks.length})`}
@@ -123,7 +116,7 @@ export default function ReadingList() {
               onToggle={() => toggleSection("Finished")}
               books={finishedBooks}
               user={user}
-              onUpdate={() => user && fetchReadingList(user.id)}
+              onUpdate={() => fetchReadingList(user.id)}
             />
           </div>
         )}

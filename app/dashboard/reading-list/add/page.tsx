@@ -1,12 +1,11 @@
 // app/dashboard/add-book.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import HeaderDashboard from "@/components/DashboardHeader";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-
-const supabase = createClientComponentClient();
 
 interface BookSearchResult {
   id: string;
@@ -26,12 +25,22 @@ interface BookSearchResult {
 }
 
 export default function AddBook() {
+  const supabase = createClientComponentClient();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<BookSearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
+  useEffect(() => {
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
 
+      setUser(data.user);
+    };
+
+    getUser();
+  }, [supabase]);
   const searchBooks = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -55,14 +64,6 @@ export default function AddBook() {
   };
 
   const addToReadingList = async (book: BookSearchResult, status: string) => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) {
-      setError("You must be logged in to add books to your reading list");
-      return;
-    }
-
     const isbn = book.volumeInfo.industryIdentifiers?.find(
       (id) => id.type === "ISBN_13"
     )?.identifier;

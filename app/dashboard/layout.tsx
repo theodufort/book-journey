@@ -20,8 +20,6 @@ export default async function LayoutPrivate({
     data: { session },
     error,
   } = await supabase.auth.getSession();
-  console.log(session);
-  console.log(error);
   if (!session) {
     redirect(config.auth.loginUrl);
   }

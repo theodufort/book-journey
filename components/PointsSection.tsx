@@ -1,11 +1,12 @@
 // components/PointsSection.tsx
 import { useEffect, useState } from "react";
 import { User, createClient } from "@supabase/supabase-js";
-import { supabase } from "@/libs/auth";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 interface props {
   userId: string;
 }
 const PointsSection = ({ userId }: props) => {
+  const supabase = createClientComponentClient();
   const [points, setPoints] = useState(0);
   const [transactions, setTransactions] = useState([]);
   useEffect(() => {

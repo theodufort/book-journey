@@ -7,14 +7,12 @@ export default function CollapsibleSection({
   isExpanded,
   onToggle,
   books,
-  user,
   onUpdate,
 }: {
   title: string;
   isExpanded: boolean;
   onToggle: () => void;
   books: ReadingListItem[];
-  user: User;
   onUpdate: () => void;
 }) {
   if (books.length === 0) return null;
@@ -26,12 +24,7 @@ export default function CollapsibleSection({
       <div className="collapse-content">
         <div className="space-y-4">
           {books.map((item) => (
-            <BookListItem
-              key={item.id}
-              item={item}
-              user={user}
-              onUpdate={onUpdate}
-            />
+            <BookListItem key={item.id} item={item} onUpdate={onUpdate} />
           ))}
         </div>
       </div>

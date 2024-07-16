@@ -4,27 +4,22 @@ import { useEffect, useState } from "react";
 import HeaderDashboard from "@/components/DashboardHeader";
 import { User } from "@supabase/supabase-js";
 import router from "next/router";
-import { getUser, supabase } from "@/libs/auth";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export default function Recommendations() {
+  const supabase = createClientComponentClient();
   const [recommendations, setRecommendations] = useState([]);
   const [user, setUser] = useState<User | null>(null);
-  getUser();
   useEffect(() => {
-    (async function () {
-      try {
-        setUser(await getUser());
-        if (user) {
-          fetchRecommendations();
-        } else {
-          console.log("No user found");
-          router.push("/signin");
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    })();
-  }, [router]);
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
+
+      setUser(data.user);
+    };
+
+    getUser();
+    if (user) fetchRecommendations();
+  }, [supabase]);
 
   async function fetchRecommendations() {
     if (user) {
