@@ -54,17 +54,21 @@ export default function ReadingList() {
         console.error("Error fetching reading list:", readingListError);
         setReadingList([]);
       } else {
-        // Fetch book details from Google Books API
+        // Fetch book details from our API route
         const bookDetails = await Promise.all(
           readingListData.map(async (item) => {
-            const response = await fetch(
-              `https://www.googleapis.com/books/v1/volumes/${item.book_id}`
-            );
+            const response = await fetch(`/api/books/${item.book_id}`);
+            if (!response.ok) {
+              console.error(`Failed to fetch book details for ${item.book_id}`);
+              return null;
+            }
             const bookData = await response.json();
             return { ...bookData, status: item.status };
           })
         );
-        setReadingList(bookDetails);
+        // Filter out any null results from failed fetches
+        const validBookDetails = bookDetails.filter(book => book !== null);
+        setReadingList(validBookDetails);
       }
 
       // Fetch reading stats separately
