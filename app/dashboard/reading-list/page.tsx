@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import HeaderDashboard from "@/components/DashboardHeader";
 import { useRouter } from "next/navigation";
 import { User } from "@supabase/supabase-js";
-import { ReadingListItem } from "@/interfaces/Dashboard";
+import { Volume } from "@/interfaces/GoogleAPI";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import PointsSection from "@/components/PointsSection";
@@ -11,7 +11,7 @@ import RecentActivitySection from "@/components/RecentActivitySection";
 
 export default function ReadingList() {
   const supabase = createClientComponentClient();
-  const [readingList, setReadingList] = useState<ReadingListItem[]>([]);
+  const [readingList, setReadingList] = useState<Volume[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -42,12 +42,8 @@ export default function ReadingList() {
         .from("reading_list")
         .select(`
           id, 
-          book_isbn, 
-          status,
-          books (
-            title,
-            author
-          )
+          book_id, 
+          status
         `)
         .eq("user_id", userId);
 
@@ -55,7 +51,15 @@ export default function ReadingList() {
         console.error("Error fetching reading list:", readingListError);
         setReadingList([]);
       } else {
-        setReadingList(readingListData || []);
+        // Fetch book details from Google Books API
+        const bookDetails = await Promise.all(
+          readingListData.map(async (item) => {
+            const response = await fetch(`https://www.googleapis.com/books/v1/volumes/${item.book_id}`);
+            const bookData = await response.json();
+            return { ...bookData, status: item.status };
+          })
+        );
+        setReadingList(bookDetails);
       }
 
       // Fetch reading stats separately
@@ -83,10 +87,10 @@ export default function ReadingList() {
     }
   }
 
-  const toReadBooks = readingList.filter((item) => item.status === "To Read");
-  const readingBooks = readingList.filter((item) => item.status === "Reading");
+  const toReadBooks = readingList.filter((item: any) => item.status === "To Read");
+  const readingBooks = readingList.filter((item: any) => item.status === "Reading");
   const finishedBooks = readingList.filter(
-    (item) => item.status === "Finished"
+    (item: any) => item.status === "Finished"
   );
 
   const toggleSection = (section: string) => {
