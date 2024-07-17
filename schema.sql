@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS user_points;
 DROP TABLE IF EXISTS reading_stats;
 DROP TABLE IF EXISTS user_preferences;
 DROP TABLE IF EXISTS reading_list;
+DROP TABLE IF EXISTS books;
 
 -- Drop existing functions and triggers
 DROP TRIGGER IF EXISTS update_user_points ON point_transactions;
