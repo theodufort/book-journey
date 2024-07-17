@@ -125,3 +125,17 @@ FOR EACH ROW EXECUTE FUNCTION update_modified_column();
 CREATE TRIGGER update_user_points_modtime
 BEFORE UPDATE ON user_points
 FOR EACH ROW EXECUTE FUNCTION update_modified_column();
+
+-- User Activity table
+CREATE TABLE user_activity (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    activity_type TEXT NOT NULL,
+    details JSONB,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Trigger to update 'user_activity' table
+CREATE TRIGGER update_user_activity_modtime
+BEFORE UPDATE ON user_activity
+FOR EACH ROW EXECUTE FUNCTION update_modified_column();
