@@ -151,6 +151,33 @@ export default function BookListItem({
     }
   }
 
+  const renderRatingInput = () => (
+    <div className="rating rating-md rating-half inline-block my-2">
+      <label>
+        <b>Your Rating:</b>{" "}
+      </label>
+      <input
+        type="radio"
+        name={`rating-${item.id}`}
+        className="rating-hidden"
+        checked={rating === 0}
+        onChange={() => updateRating(0)}
+      />
+      {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((star) => (
+        <input
+          key={star}
+          type="radio"
+          name={`rating-${item.id}`}
+          className={`mask mask-star-2 ${
+            star % 1 === 0 ? "mask-half-2" : "mask-half-1"
+          } bg-orange-400`}
+          checked={rating === star}
+          onChange={() => updateRating(star)}
+        />
+      ))}
+    </div>
+  );
+
   return (
     <>
       <div className="card lg:card-side bg-base-100 shadow-xl">
@@ -184,32 +211,7 @@ export default function BookListItem({
                 <option value="Finished">Finished</option>
               </select>
             </div>
-            {item.status === "Finished" && (
-              <div className="rating rating-md rating-half inline-block my-2">
-                <label>
-                  <b>Your Rating:</b>{" "}
-                </label>
-                <input
-                  type="radio"
-                  name={`rating-${item.id}`}
-                  className="rating-hidden"
-                  checked={rating === 0}
-                  onChange={() => updateRating(0)}
-                />
-                {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((star) => (
-                  <input
-                    key={star}
-                    type="radio"
-                    name={`rating-${item.id}`}
-                    className={`mask mask-star-2 ${
-                      star % 1 === 0 ? "mask-half-2" : "mask-half-1"
-                    } bg-orange-400`}
-                    checked={rating === star}
-                    onChange={() => updateRating(star)}
-                  />
-                ))}
-              </div>
-            )}
+            {item.status === "Finished" && renderRatingInput()}
             <button className="btn btn-primary float-end" onClick={removeBook}>
               Remove
             </button>
