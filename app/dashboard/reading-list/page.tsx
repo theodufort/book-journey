@@ -8,9 +8,10 @@ import CollapsibleSection from "@/components/CollapsibleSection";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import PointsSection from "@/components/PointsSection";
 import RecentActivitySection from "@/components/RecentActivitySection";
+import { Database } from "@/types/supabase";
 
 export default function ReadingList() {
-  const supabase = createClientComponentClient();
+  const supabase = createClientComponentClient<Database>();
   const [readingList, setReadingList] = useState<Volume[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -156,6 +157,7 @@ export default function ReadingList() {
                 onToggle={() => toggleSection("To Read")}
                 books={toReadBooks}
                 onUpdate={() => fetchReadingList(user.id)}
+                loading={loading}
               />
               <CollapsibleSection
                 title={`Currently Reading (${readingBooks.length})`}
@@ -163,6 +165,7 @@ export default function ReadingList() {
                 onToggle={() => toggleSection("Reading")}
                 books={readingBooks}
                 onUpdate={() => fetchReadingList(user.id)}
+                loading={loading}
               />
               <CollapsibleSection
                 title={`Finished (${finishedBooks.length})`}
@@ -170,6 +173,7 @@ export default function ReadingList() {
                 onToggle={() => toggleSection("Finished")}
                 books={finishedBooks}
                 onUpdate={() => fetchReadingList(user.id)}
+                loading={loading}
               />
             </>
           )}
