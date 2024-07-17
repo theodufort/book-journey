@@ -22,14 +22,14 @@ export default function ReadingList() {
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
-
-      setUser(data.user);
+      if (data.user) {
+        setUser(data.user);
+        fetchReadingList(data.user.id);
+      } else {
+        console.log("User not authenticated");
+      }
     };
     getUser();
-
-    if (user) {
-      fetchReadingList(user.id);
-    } else console.log("not defined");
   }, [supabase]);
 
   async function fetchReadingList(userId: string) {
