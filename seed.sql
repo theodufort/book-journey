@@ -4,9 +4,9 @@ INSERT INTO auth.users (id, email) VALUES
 
 -- Insert sample reading list entries
 INSERT INTO reading_list (user_id, book_id, status, rating, review) VALUES
-('550e8400-e29b-41d4-a716-446655440000', '1234567890', 'Finished', 4.5, 'Great book!'),
-('550e8400-e29b-41d4-a716-446655440000', '0987654321', 'Reading', NULL, NULL),
-('550e8400-e29b-41d4-a716-446655440000', '1122334455', 'To Read', NULL, NULL);
+('550e8400-e29b-41d4-a716-446655440000', '9780061120084', 'Finished', 4.5, 'Great book!'),
+('550e8400-e29b-41d4-a716-446655440000', '9781451673319', 'Reading', NULL, NULL),
+('550e8400-e29b-41d4-a716-446655440000', '9780316769174', 'To Read', NULL, NULL);
 
 -- Insert sample user preferences
 INSERT INTO user_preferences (user_id, preferred_categories) VALUES
@@ -27,6 +27,6 @@ INSERT INTO point_transactions (user_id, points, type, description) VALUES
 
 -- Insert sample user activity
 INSERT INTO user_activity (user_id, activity_type, details) VALUES
-('550e8400-e29b-41d4-a716-446655440000', 'book_started', '{"book_id": "0987654321", "title": "Sample Book 1"}'),
-('550e8400-e29b-41d4-a716-446655440000', 'book_finished', '{"book_id": "1234567890", "title": "Sample Book 2"}'),
+('550e8400-e29b-41d4-a716-446655440000', 'book_started', '{"book_id": "9781451673319", "title": "Fahrenheit 451"}'),
+('550e8400-e29b-41d4-a716-446655440000', 'book_finished', '{"book_id": "9780061120084", "title": "To Kill a Mockingbird"}'),
 ('550e8400-e29b-41d4-a716-446655440000', 'points_earned', '{"amount": 100, "reason": "Finished reading a book"}');
