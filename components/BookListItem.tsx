@@ -220,7 +220,7 @@ export default function BookListItem({
         isOpen={showModal}
         onClose={handleModalClose}
         messageType={messageType}
-        bookTitle={book.title}
+        bookTitle={book?.title || 'Untitled'}
       />
     </>
   );
