@@ -197,6 +197,9 @@ export default function BookListItem({
             <b>Author:</b> {book.authors || "Unknown"}
           </p>
           <p>
+            <b>Page Count:</b> {book.pageCount || "Unknown"}
+          </p>
+          <p>
             <b>Description:</b>{" "}
             {book.description
               ? `${book.description.substring(0, 200)}...`

@@ -4,7 +4,7 @@ import HeaderDashboard from "@/components/DashboardHeader";
 import { User } from "@supabase/supabase-js";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
-import { UserPoints, Reward } from '@/interfaces/Dashboard';
+import { UserPoints, Reward } from "@/interfaces/Dashboard";
 
 export default function ReadingRewards() {
   const supabase = createClientComponentClient();
@@ -51,14 +51,18 @@ export default function ReadingRewards() {
   async function fetchRewards() {
     // In a real application, you would fetch this from an API or database
     setRewards([
-      { id: 1, name: "Free eBook", description: "Get a free eBook of your choice", cost: 500 },
-      { id: 2, name: "Audiobook Credit", description: "Get one free audiobook credit", cost: 1000 },
-      { id: 3, name: "Exclusive Author Q&A", description: "Access to an exclusive author Q&A session", cost: 1500 },
-      { id: 4, name: "Book Club Membership", description: "One month free membership to an online book club", cost: 750 },
-      { id: 5, name: "Personalized Reading List", description: "Get a curated reading list based on your preferences", cost: 300 },
-      { id: 6, name: "Virtual Bookstore Tour", description: "Guided virtual tour of a famous bookstore", cost: 400 },
-      { id: 7, name: "Reading Journal", description: "Receive a beautiful physical reading journal", cost: 600 },
-      { id: 8, name: "Author-Signed Book", description: "Get a book signed by your favorite author", cost: 2000 },
+      {
+        id: 1,
+        name: "Free eBook",
+        description: "Get a free eBook of your choice",
+        cost: 500,
+      },
+      {
+        id: 2,
+        name: "Audiobook Credit",
+        description: "Get one free audiobook credit",
+        cost: 1000,
+      },
     ]);
   }
 
@@ -69,10 +73,13 @@ export default function ReadingRewards() {
     }
 
     try {
-      const { error } = await supabase.from("user_points").update({
-        points: userPoints.points - reward.cost,
-        points_redeemed: userPoints.points_redeemed + reward.cost,
-      }).eq("user_id", user.id);
+      const { error } = await supabase
+        .from("user_points")
+        .update({
+          points: userPoints.points - reward.cost,
+          points_redeemed: userPoints.points_redeemed + reward.cost,
+        })
+        .eq("user_id", user.id);
 
       if (error) throw error;
 
@@ -130,8 +137,8 @@ export default function ReadingRewards() {
                 <h2 className="card-title">{reward.name}</h2>
                 <p>{reward.description}</p>
                 <div className="card-actions justify-end">
-                  <button 
-                    className="btn btn-primary" 
+                  <button
+                    className="btn btn-primary"
                     onClick={() => redeemReward(reward)}
                     disabled={!userPoints || userPoints.points < reward.cost}
                   >
