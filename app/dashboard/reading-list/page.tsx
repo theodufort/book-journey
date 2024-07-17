@@ -6,6 +6,8 @@ import { User } from "@supabase/supabase-js";
 import { ReadingListItem } from "@/interfaces/Dashboard";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import PointsSection from "@/components/PointsSection";
+import RecentActivitySection from "@/components/RecentActivitySection";
 
 export default function ReadingList() {
   const supabase = createClientComponentClient();
@@ -102,47 +104,55 @@ export default function ReadingList() {
           <div className="text-center">
             <span className="loading loading-spinner loading-lg"></span>
           </div>
-        ) : readingList.length === 0 ? (
-          <div className="text-center p-8 bg-base-200 rounded-box">
-            <h2 className="text-2xl font-bold mb-4">
-              Your reading list is empty
-            </h2>
-            <p className="mb-4">
-              Start adding books to your reading list to keep track of what you
-              want to read!
-            </p>
-            <button
-              className="btn btn-primary"
-              onClick={() => {
-                router.push("/dashboard/recommendations");
-              }}
-            >
-              Find Books to Read
-            </button>
-          </div>
         ) : (
           <div className="space-y-8">
-            <CollapsibleSection
-              title={`To Read (${toReadBooks.length})`}
-              isExpanded={expandedSections["To Read"]}
-              onToggle={() => toggleSection("To Read")}
-              books={toReadBooks}
-              onUpdate={() => fetchReadingList(user.id)}
-            />
-            <CollapsibleSection
-              title={`Currently Reading (${readingBooks.length})`}
-              isExpanded={expandedSections["Reading"]}
-              onToggle={() => toggleSection("Reading")}
-              books={readingBooks}
-              onUpdate={() => fetchReadingList(user.id)}
-            />
-            <CollapsibleSection
-              title={`Finished (${finishedBooks.length})`}
-              isExpanded={expandedSections["Finished"]}
-              onToggle={() => toggleSection("Finished")}
-              books={finishedBooks}
-              onUpdate={() => fetchReadingList(user.id)}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <PointsSection userId={user?.id} />
+              <RecentActivitySection userId={user?.id} />
+            </div>
+            {readingList.length === 0 ? (
+              <div className="text-center p-8 bg-base-200 rounded-box">
+                <h2 className="text-2xl font-bold mb-4">
+                  Your reading list is empty
+                </h2>
+                <p className="mb-4">
+                  Start adding books to your reading list to keep track of what you
+                  want to read!
+                </p>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => {
+                    router.push("/dashboard/recommendations");
+                  }}
+                >
+                  Find Books to Read
+                </button>
+              </div>
+            ) : (
+              <>
+                <CollapsibleSection
+                  title={`To Read (${toReadBooks.length})`}
+                  isExpanded={expandedSections["To Read"]}
+                  onToggle={() => toggleSection("To Read")}
+                  books={toReadBooks}
+                  onUpdate={() => fetchReadingList(user.id)}
+                />
+                <CollapsibleSection
+                  title={`Currently Reading (${readingBooks.length})`}
+                  isExpanded={expandedSections["Reading"]}
+                  onToggle={() => toggleSection("Reading")}
+                  books={readingBooks}
+                  onUpdate={() => fetchReadingList(user.id)}
+                />
+                <CollapsibleSection
+                  title={`Finished (${finishedBooks.length})`}
+                  isExpanded={expandedSections["Finished"]}
+                  onToggle={() => toggleSection("Finished")}
+                  books={finishedBooks}
+                  onUpdate={() => fetchReadingList(user.id)}
+                />
+              </>
+            )}
           </div>
         )}
       </section>
