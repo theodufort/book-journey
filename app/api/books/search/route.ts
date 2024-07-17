@@ -16,14 +16,18 @@ export async function GET(request: NextRequest) {
     const response = await fetch(
       `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
         query
-      )}&maxResults=40` // Increased max results to ensure we get enough books with ISBNs
+      )}&maxResults=40&key=${process.env.GOOGLE_BOOKS_API_KEY}`
     );
 
     if (!response.ok) {
-      throw new Error("Failed to fetch books from Google Books API");
+      throw new Error(`Google Books API responded with status ${response.status}`);
     }
 
     const data = await response.json();
+
+    if (!data.items) {
+      return NextResponse.json({ items: [] });
+    }
 
     // Filter books to only include those with ISBN identifiers
     const filteredItems = data.items.filter((item: any) =>
@@ -34,8 +38,8 @@ export async function GET(request: NextRequest) {
 
     // Return the filtered data
     return NextResponse.json({
-      ...data,
       items: filteredItems,
+      totalItems: filteredItems.length,
     });
   } catch (error) {
     console.error("Error fetching books:", error);
