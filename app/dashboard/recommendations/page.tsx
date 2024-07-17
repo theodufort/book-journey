@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 import HeaderDashboard from "@/components/DashboardHeader";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Volume } from "@/interfaces/GoogleAPI";
 
 export default function Recommendations() {
-  const [recommendations, setRecommendations] = useState([]);
+  const [recommendations, setRecommendations] = useState<Volume[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const supabase = createClientComponentClient();
 
   useEffect(() => {
@@ -35,19 +36,19 @@ export default function Recommendations() {
       setRecommendations(data.recommendations);
       console.log('Recommendations fetched:', data.recommendations.length);
     } catch (err) {
-      setError(err.message);
+      setError(err instanceof Error ? err.message : String(err));
       console.error("Error fetching recommendations:", err);
     } finally {
       setIsLoading(false);
     }
   }
 
-  async function addToReadingList(bookId) {
+  async function addToReadingList(book: Volume) {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       const { error } = await supabase.from("reading_list").insert({
         user_id: user.id,
-        book_id: bookId,
+        book_id: book.id,
         status: "To Read",
       });
 
@@ -80,13 +81,13 @@ export default function Recommendations() {
                 {recommendations.map((book) => (
                   <div key={book.id} className="card bg-base-100 shadow-xl">
                     <div className="card-body">
-                      <h2 className="card-title">{book.title}</h2>
-                      <p>{book.author}</p>
-                      <p>{book.genre}</p>
+                      <h2 className="card-title">{book.volumeInfo.title}</h2>
+                      <p>{book.volumeInfo.authors?.join(', ')}</p>
+                      <p>{book.volumeInfo.categories?.join(', ')}</p>
                       <div className="card-actions justify-end">
                         <button
                           className="btn btn-primary"
-                          onClick={() => addToReadingList(book.id)}
+                          onClick={() => addToReadingList(book)}
                         >
                           Add to Reading List
                         </button>
