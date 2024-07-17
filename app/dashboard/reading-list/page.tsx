@@ -45,8 +45,7 @@ export default function ReadingList() {
         .from("reading_list")
         .select(
           `
-          id, 
-          book_id, 
+          book_id::text, 
           status
         `
         )
