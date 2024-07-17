@@ -12,7 +12,7 @@ export default function BookListItem({
   onUpdate: () => void;
 }) {
   const supabase = createClientComponentClient();
-  const { book, loading, error } = useBookDetails(item.book_isbn);
+  const { book, loading, error } = useBookDetails(item.book_id);
   const [showModal, setShowModal] = useState(false);
   const [messageType, setMessageType] = useState("begin");
   const [newStatus, setNewStatus] = useState(item.status);
@@ -59,7 +59,7 @@ export default function BookListItem({
       .from("reading_list")
       .select("rating")
       .eq("user_id", user.id)
-      .eq("book_isbn", item.book_isbn)
+      .eq("book_id", item.book_id)
       .maybeSingle();
 
     if (error) {
