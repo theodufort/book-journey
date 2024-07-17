@@ -23,6 +23,28 @@ export default function ReadingList() {
     Finished: true,
   });
 
+  async function updateBookProgress(bookId: string, progress: number) {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from("reading_list")
+        .update({ progress })
+        .eq("user_id", user.id)
+        .eq("book_id", bookId);
+
+      if (error) throw error;
+
+      setReadingList(prevList =>
+        prevList.map(book =>
+          book.id === bookId ? { ...book, progress } : book
+        )
+      );
+    } catch (error) {
+      console.error("Error updating book progress:", error);
+    }
+  }
+
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
@@ -46,7 +68,8 @@ export default function ReadingList() {
         .select(
           `
           book_id::text, 
-          status
+          status,
+          progress
         `
         )
         .eq("user_id", userId);
@@ -70,6 +93,7 @@ export default function ReadingList() {
                 ...bookData,
                 book_id: item.book_id,
                 status: item.status,
+                progress: item.progress,
               };
             } catch (error) {
               console.error(error);
@@ -188,6 +212,23 @@ export default function ReadingList() {
                     onToggle={() => toggleSection("Reading")}
                     books={readingBooks}
                     onUpdate={() => fetchReadingList(user.id)}
+                    renderBook={(book) => (
+                      <div key={book.id} className="mb-4">
+                        <h3 className="font-bold">{book.volumeInfo.title}</h3>
+                        <p>{book.volumeInfo.authors?.join(', ')}</p>
+                        <div className="mt-2">
+                          <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            value={book.progress || 0}
+                            onChange={(e) => updateBookProgress(book.id, parseInt(e.target.value))}
+                            className="range range-xs"
+                          />
+                          <div className="text-center">{book.progress || 0}% complete</div>
+                        </div>
+                      </div>
+                    )}
                   />
                   <CollapsibleSection
                     title={`Finished (${finishedBooks.length})`}
