@@ -70,7 +70,7 @@ export default function AddBook() {
 
     const { error } = await supabase.from("reading_list").insert({
       user_id: user.id,
-      book_isbn: isbn,
+      book_id: isbn,
       status: status,
     });
 

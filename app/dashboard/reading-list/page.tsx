@@ -61,10 +61,16 @@ export default function ReadingList() {
             try {
               const response = await fetch(`/api/books/${item.book_id}`);
               if (!response.ok) {
-                throw new Error(`Failed to fetch book details for ${item.book_id}`);
+                throw new Error(
+                  `Failed to fetch book details for ${item.book_id}`
+                );
               }
               const bookData = await response.json();
-              return { ...bookData, book_id: item.book_id, status: item.status };
+              return {
+                ...bookData,
+                book_id: item.book_id,
+                status: item.status,
+              };
             } catch (error) {
               console.error(error);
               return null;
@@ -72,7 +78,7 @@ export default function ReadingList() {
           })
         );
         // Filter out any null results from failed fetches
-        const validBookDetails = bookDetails.filter(book => book !== null);
+        const validBookDetails = bookDetails.filter((book) => book !== null);
         setReadingList(validBookDetails);
       }
 
@@ -133,7 +139,7 @@ export default function ReadingList() {
         <div className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <PointsSection />
-            <RecentActivitySection userId={user?.id} />
+            <RecentActivitySection />
           </div>
           {readingList.length === 0 ? (
             <div className="text-center p-8 bg-base-200 rounded-box">

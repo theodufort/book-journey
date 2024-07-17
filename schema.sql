@@ -1,6 +1,7 @@
 -- Drop existing tables if they exist
 DROP TABLE IF EXISTS point_transactions;
 DROP TABLE IF EXISTS user_points;
+DROP TABLE IF EXISTS user_activity;
 DROP TABLE IF EXISTS reading_stats;
 DROP TABLE IF EXISTS user_preferences;
 DROP TABLE IF EXISTS reading_list;

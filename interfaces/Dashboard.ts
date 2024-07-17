@@ -10,6 +10,6 @@ export interface Row {
 }
 export interface ReadingListItem {
   id: string;
-  book_isbn: string;
+  book_id: string;
   status: string;
 }

@@ -1,24 +1,29 @@
 // components/PointsSection.tsx
-
+import { User } from "@supabase/supabase-js";
 import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
-interface PointsSectionProps {
-  userId: string;
-}
-
-const PointsSection: React.FC<PointsSectionProps> = ({ userId }) => {
+const PointsSection = () => {
   const [points, setPoints] = useState<number | null>(null);
   const supabase = createClientComponentClient();
+  const [user, setUser] = useState<User | null>(null);
+  useEffect(() => {
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUser(data.user);
+    };
+
+    getUser();
+  }, [supabase]);
 
   useEffect(() => {
     const fetchPoints = async () => {
-      if (!userId) return;
+      if (!user) return;
 
       const { data, error } = await supabase
         .from("user_points")
         .select("points")
-        .eq("user_id", userId)
+        .eq("user_id", user.id)
         .single();
 
       if (error) {
@@ -29,7 +34,7 @@ const PointsSection: React.FC<PointsSectionProps> = ({ userId }) => {
     };
 
     fetchPoints();
-  }, [userId, supabase]);
+  }, [user, supabase]);
 
   return (
     <div className="bg-base-200 p-6 rounded-box shadow-lg">
@@ -42,7 +47,9 @@ const PointsSection: React.FC<PointsSectionProps> = ({ userId }) => {
       ) : points === 0 ? (
         <div>
           <p className="text-4xl font-bold text-primary">0</p>
-          <p className="mt-2 text-sm text-gray-500">Start earning points by completing activities!</p>
+          <p className="mt-2 text-sm text-gray-500">
+            Start earning points by completing activities!
+          </p>
         </div>
       ) : (
         <p className="text-4xl font-bold text-primary">{points}</p>

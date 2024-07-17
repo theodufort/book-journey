@@ -194,7 +194,7 @@ export default function BookListItem({
         <div className="card-body">
           <h2 className="card-title">{book.title || "Untitled"}</h2>
           <p>
-            <b>Author:</b> {book.authors[0] || "Unknown"}
+            <b>Author:</b> {book.authors || "Unknown"}
           </p>
           <p>
             <b>Description:</b>{" "}
