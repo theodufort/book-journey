@@ -4,6 +4,7 @@ import HeaderDashboard from "@/components/DashboardHeader";
 import { useRouter } from "next/navigation";
 import { User } from "@supabase/supabase-js";
 import { Volume } from "@/interfaces/GoogleAPI";
+import { ReadingListItem } from "@/interfaces/ReadingList";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import PointsSection from "@/components/PointsSection";
@@ -12,7 +13,7 @@ import { Database } from "@/types/supabase";
 
 export default function ReadingList() {
   const supabase = createClientComponentClient<Database>();
-  const [readingList, setReadingList] = useState<Volume[]>([]);
+  const [readingList, setReadingList] = useState<ReadingListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -64,7 +65,7 @@ export default function ReadingList() {
                 throw new Error(`Failed to fetch book details for ${item.book_id}`);
               }
               const bookData = await response.json();
-              return { ...bookData, status: item.status };
+              return { ...bookData, book_id: item.book_id, status: item.status };
             } catch (error) {
               console.error(error);
               return null;
