@@ -1,0 +1,2 @@
+-- SQL statement to allow them to view their own records only on user_id = auth.uid()" ON users FOR SELECT;
+(SELECT id FROM users WHERE id = auth.uid());
