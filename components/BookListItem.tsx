@@ -28,6 +28,10 @@ export default function BookListItem({
     getUser();
   }, [supabase]);
   async function awardPoints(points: number, description: string) {
+    if (!user) {
+      console.error("User not authenticated");
+      return;
+    }
     const { data, error } = await supabase.from("point_transactions").insert({
       user_id: user.id,
       points,
@@ -40,11 +44,17 @@ export default function BookListItem({
     }
   }
   useEffect(() => {
-    // Fetch the current rating when the component mounts
-    fetchRating();
-  }, [item.id]);
+    // Fetch the current rating when the component mounts and user is available
+    if (user) {
+      fetchRating();
+    }
+  }, [item.id, user]);
 
   async function fetchRating() {
+    if (!user) {
+      console.error("User not authenticated");
+      return;
+    }
     const { data, error } = await supabase
       .from("reading_list")
       .select("rating")
