@@ -10,6 +10,7 @@ export default function Profile() {
   const supabase = createClientComponentClient();
   const [user, setUser] = useState<User | null>(null);
   const [preferredCategories, setPreferredCategories] = useState<string[]>([]);
+  const [isUpdated, setIsUpdated] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -44,15 +45,22 @@ export default function Profile() {
   }
 
   async function updateProfile() {
+    if (!user) return;
+
+    setIsUpdated(false);
     const { error: preferencesError } = await supabase
       .from("user_preferences")
-      .update({
+      .upsert({
+        user_id: user.id,
         preferred_categories: preferredCategories,
-      })
-      .eq("user_id", user.id);
+      });
 
-    if (preferencesError)
+    if (preferencesError) {
       console.error("Error updating preferences:", preferencesError);
+    } else {
+      setIsUpdated(true);
+      setTimeout(() => setIsUpdated(false), 3000); // Reset the update status after 3 seconds
+    }
   }
 
   return (
@@ -92,6 +100,7 @@ export default function Profile() {
             </div>
           </div>
           <button type="submit" className="btn btn-primary">Save Profile</button>
+          {isUpdated && <p className="text-green-500 mt-2">Profile updated successfully!</p>}
         </form>
       </section>
     </main>
