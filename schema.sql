@@ -133,7 +133,8 @@ CREATE TABLE user_activity (
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
     activity_type TEXT NOT NULL,
     details JSONB,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Trigger to update 'user_activity' table
