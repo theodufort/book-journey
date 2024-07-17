@@ -36,7 +36,7 @@ export default function ReadingList() {
     console.log(userId);
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      const { data: readingListData, error: readingListError } = await supabase
         .from("reading_list")
         .select(`
           id, 
@@ -49,18 +49,33 @@ export default function ReadingList() {
         `)
         .eq("user_id", userId);
 
-      if (error) {
-        if (error.code === 'PGRST116') {
-          // No rows returned, set an empty array
-          setReadingList([]);
+      if (readingListError) {
+        console.error("Error fetching reading list:", readingListError);
+        setReadingList([]);
+      } else {
+        setReadingList(readingListData || []);
+      }
+
+      // Fetch reading stats separately
+      const { data: statsData, error: statsError } = await supabase
+        .from('reading_stats')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (statsError) {
+        if (statsError.code === 'PGRST116') {
+          console.log("No reading stats found for the user");
+          // Handle the case where no stats exist (e.g., create default stats)
         } else {
-          console.error("Error fetching reading list:", error);
+          console.error("Error fetching reading stats:", statsError);
         }
       } else {
-        setReadingList(data || []);
+        console.log("Reading stats:", statsData);
+        // Handle the stats data as needed
       }
     } catch (error) {
-      console.error("Unexpected error fetching reading list:", error);
+      console.error("Unexpected error:", error);
     } finally {
       setLoading(false);
     }
