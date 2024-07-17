@@ -4,18 +4,7 @@ import HeaderDashboard from "@/components/DashboardHeader";
 import { User } from "@supabase/supabase-js";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
-interface UserPoints {
-  points: number;
-  points_earned: number;
-  points_redeemed: number;
-}
-
-interface Reward {
-  id: number;
-  name: string;
-  description: string;
-  cost: number;
-}
+import { UserPoints, Reward } from '@/interfaces/Dashboard';
 
 export default function ReadingRewards() {
   const supabase = createClientComponentClient();

@@ -7,22 +7,7 @@ import { useRouter } from "next/navigation";
 import HeaderDashboard from "@/components/DashboardHeader";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
-interface BookSearchResult {
-  id: string;
-  volumeInfo: {
-    title: string;
-    authors?: string[];
-    publishedDate?: string;
-    description?: string;
-    imageLinks?: {
-      thumbnail: string;
-    };
-    industryIdentifiers?: {
-      type: string;
-      identifier: string;
-    }[];
-  };
-}
+import { BookSearchResult } from '@/interfaces/BookSearch';
 
 export default function AddBook() {
   const supabase = createClientComponentClient();

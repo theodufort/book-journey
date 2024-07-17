@@ -13,3 +13,16 @@ export interface ReadingListItem {
   book_id: string;
   status: string;
 }
+
+export interface UserPoints {
+  points: number;
+  points_earned: number;
+  points_redeemed: number;
+}
+
+export interface Reward {
+  id: number;
+  name: string;
+  description: string;
+  cost: number;
+}
