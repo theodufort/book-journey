@@ -106,7 +106,8 @@ export default function BookListItem({
     const { error } = await supabase
       .from("reading_list")
       .update({ status, rating })
-      .eq("id", item.id);
+      .eq("book_id", item.book_id)
+      .eq("user_id", user?.id);
     console.log("94: " + error);
     if (status === "Finished") {
       awardPoints(100, `Finished reading ${book.title}`);
@@ -124,7 +125,8 @@ export default function BookListItem({
     const { error } = await supabase
       .from("reading_list")
       .update({ rating: newRating })
-      .eq("id", item.id);
+      .eq("book_id", item.book_id)
+      .eq("user_id", user?.id);
     console.log(error);
     if (error) {
       console.error("Error updating rating:", error);
@@ -137,7 +139,8 @@ export default function BookListItem({
     const { error } = await supabase
       .from("reading_list")
       .delete()
-      .eq("id", item.id);
+      .eq("book_id", item.book_id)
+      .eq("user_id", user?.id);
 
     if (error) console.error("Error removing book:", error);
     else onUpdate();
