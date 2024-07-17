@@ -134,7 +134,15 @@ export default function ReadingList() {
       <section className="max-w-6xl mx-auto space-y-8">
         <HeaderDashboard />
 
-        <h1 className="text-3xl md:text-4xl font-extrabold">My Reading List</h1>
+        <h1 className="text-3xl md:text-4xl font-extrabold">
+          My Reading List
+          <button
+            className="btn btn-primary float-end"
+            onClick={() => router.push("/dashboard/reading-list/add")}
+          >
+            Add to Reading List
+          </button>
+        </h1>
 
         <div className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
