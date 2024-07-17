@@ -30,7 +30,7 @@ CREATE TABLE reading_list (
     review TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(user_id, book_isbn)
+    UNIQUE(user_id, book_id)
 );
 
 -- User Preferences table
