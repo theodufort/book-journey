@@ -13,6 +13,7 @@ DROP TRIGGER IF EXISTS update_reading_list_modtime ON reading_list;
 DROP TRIGGER IF EXISTS update_user_preferences_modtime ON user_preferences;
 DROP TRIGGER IF EXISTS update_reading_stats_modtime ON reading_stats;
 DROP TRIGGER IF EXISTS update_user_points_modtime ON user_points;
+DROP TRIGGER IF EXISTS update_user_activity_modtime ON user_activity;
 DROP FUNCTION IF EXISTS update_modified_column();
 
 -- Enable UUID extension
