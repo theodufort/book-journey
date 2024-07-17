@@ -156,18 +156,18 @@ export default function BookListItem({
       <div className="card lg:card-side bg-base-100 shadow-xl">
         <figure className="p-4">
           <img
-            src={book.imageLinks?.thumbnail}
-            alt={book.title}
+            src={book.imageLinks?.thumbnail || '/placeholder-book-cover.jpg'}
+            alt={book.title || 'Book cover'}
             className="rounded-lg"
           />
         </figure>
         <div className="card-body">
-          <h2 className="card-title">{book.title}</h2>
+          <h2 className="card-title">{book.title || 'Untitled'}</h2>
           <p>
-            <b>Author:</b> {book.authors}
+            <b>Author:</b> {book.authors?.join(', ') || 'Unknown'}
           </p>
           <p>
-            <b>Description:</b> {book.description?.substring(0, 200)}...
+            <b>Description:</b> {book.description ? `${book.description.substring(0, 200)}...` : 'No description available'}
           </p>
           <div className="card-actions justify-end my-auto inline-block">
             <div>
