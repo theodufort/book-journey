@@ -17,29 +17,44 @@ export async function GET() {
     .select('books(genre)')
     .eq('user_id', user.id);
 
-  if (historyError) {
-    return NextResponse.json({ error: 'Error fetching reading history' }, { status: 500 });
-  }
+  let recommendations;
 
-  // Count genres
-  const genreCounts = readingHistory.reduce((acc, item) => {
-    const genre = item.books.genre;
-    acc[genre] = (acc[genre] || 0) + 1;
-    return acc;
-  }, {});
+  if (historyError || !readingHistory || readingHistory.length === 0) {
+    // If there's an error or no reading history, fetch random books
+    const { data: randomBooks, error: randomBooksError } = await supabase
+      .from('books')
+      .select('*')
+      .order('RANDOM()')
+      .limit(10);
 
-  // Find the most read genre
-  const favoriteGenre = Object.keys(genreCounts).reduce((a, b) => genreCounts[a] > genreCounts[b] ? a : b);
+    if (randomBooksError) {
+      return NextResponse.json({ error: 'Error fetching recommendations' }, { status: 500 });
+    }
 
-  // Fetch recommendations based on favorite genre
-  const { data: recommendations, error: recommendationsError } = await supabase
-    .from('books')
-    .select('*')
-    .eq('genre', favoriteGenre)
-    .limit(10);
+    recommendations = randomBooks;
+  } else {
+    // Count genres
+    const genreCounts = readingHistory.reduce((acc, item) => {
+      const genre = item.books.genre;
+      acc[genre] = (acc[genre] || 0) + 1;
+      return acc;
+    }, {});
 
-  if (recommendationsError) {
-    return NextResponse.json({ error: 'Error fetching recommendations' }, { status: 500 });
+    // Find the most read genre
+    const favoriteGenre = Object.keys(genreCounts).reduce((a, b) => genreCounts[a] > genreCounts[b] ? a : b);
+
+    // Fetch recommendations based on favorite genre
+    const { data: genreRecommendations, error: recommendationsError } = await supabase
+      .from('books')
+      .select('*')
+      .eq('genre', favoriteGenre)
+      .limit(10);
+
+    if (recommendationsError) {
+      return NextResponse.json({ error: 'Error fetching recommendations' }, { status: 500 });
+    }
+
+    recommendations = genreRecommendations;
   }
 
   return NextResponse.json({ recommendations });

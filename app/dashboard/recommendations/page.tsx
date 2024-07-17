@@ -22,9 +22,13 @@ export default function Recommendations() {
         throw new Error('Failed to fetch recommendations');
       }
       const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error);
+      }
       setRecommendations(data.recommendations);
     } catch (err) {
       setError(err.message);
+      console.error("Error fetching recommendations:", err);
     } finally {
       setIsLoading(false);
     }
