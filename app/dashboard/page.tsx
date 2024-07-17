@@ -16,6 +16,7 @@ export default function Dashboard() {
     reading_time_minutes: number;
   } | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -30,10 +31,13 @@ export default function Dashboard() {
   useEffect(() => {
     if (user) {
       fetchDashboardData();
+    } else {
+      setLoading(false);
     }
   }, [user]);
 
   async function fetchDashboardData() {
+    setLoading(true);
     try {
       const [readingListResponse, statsResponse] = await Promise.all([
         supabase
@@ -76,6 +80,21 @@ export default function Dashboard() {
     } catch (error) {
       console.error("Unexpected error fetching dashboard data:", error);
     }
+  }
+
+    } catch (error) {
+      console.error("Unexpected error fetching dashboard data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (loading) {
+    return (
+      <main className="min-h-screen p-8 pb-24 flex items-center justify-center">
+        <span className="loading loading-spinner loading-lg"></span>
+      </main>
+    );
   }
 
   return (

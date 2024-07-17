@@ -26,9 +26,10 @@ export default function ReadingList() {
       const { data } = await supabase.auth.getUser();
       if (data.user) {
         setUser(data.user);
-        fetchReadingList(data.user.id);
+        await fetchReadingList(data.user.id);
       } else {
         console.log("User not authenticated");
+        setLoading(false);
       }
     };
     getUser();
@@ -97,6 +98,14 @@ export default function ReadingList() {
     setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
   };
 
+  if (loading) {
+    return (
+      <main className="min-h-screen p-8 pb-24 flex items-center justify-center">
+        <span className="loading loading-spinner loading-lg"></span>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen p-8 pb-24">
       <section className="max-w-6xl mx-auto space-y-8">
@@ -104,16 +113,11 @@ export default function ReadingList() {
 
         <h1 className="text-3xl md:text-4xl font-extrabold">My Reading List</h1>
 
-        {loading ? (
-          <div className="text-center">
-            <span className="loading loading-spinner loading-lg"></span>
+        <div className="space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <PointsSection userId={user?.id} />
+            <RecentActivitySection userId={user?.id} />
           </div>
-        ) : (
-          <div className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <PointsSection userId={user?.id} />
-              <RecentActivitySection userId={user?.id} />
-            </div>
             {readingList.length === 0 ? (
               <div className="text-center p-8 bg-base-200 rounded-box">
                 <h2 className="text-2xl font-bold mb-4">
