@@ -58,13 +58,17 @@ export default function ReadingList() {
         // Fetch book details from our API route
         const bookDetails = await Promise.all(
           readingListData.map(async (item) => {
-            const response = await fetch(`/api/books/${item.book_id}`);
-            if (!response.ok) {
-              console.error(`Failed to fetch book details for ${item.book_id}`);
+            try {
+              const response = await fetch(`/api/books/${item.book_id}`);
+              if (!response.ok) {
+                throw new Error(`Failed to fetch book details for ${item.book_id}`);
+              }
+              const bookData = await response.json();
+              return { ...bookData, status: item.status };
+            } catch (error) {
+              console.error(error);
               return null;
             }
-            const bookData = await response.json();
-            return { ...bookData, status: item.status };
           })
         );
         // Filter out any null results from failed fetches
@@ -151,30 +155,35 @@ export default function ReadingList() {
             </div>
           ) : (
             <>
-              <CollapsibleSection
-                title={`To Read (${toReadBooks.length})`}
-                isExpanded={expandedSections["To Read"]}
-                onToggle={() => toggleSection("To Read")}
-                books={toReadBooks}
-                onUpdate={() => fetchReadingList(user.id)}
-                loading={loading}
-              />
-              <CollapsibleSection
-                title={`Currently Reading (${readingBooks.length})`}
-                isExpanded={expandedSections["Reading"]}
-                onToggle={() => toggleSection("Reading")}
-                books={readingBooks}
-                onUpdate={() => fetchReadingList(user.id)}
-                loading={loading}
-              />
-              <CollapsibleSection
-                title={`Finished (${finishedBooks.length})`}
-                isExpanded={expandedSections["Finished"]}
-                onToggle={() => toggleSection("Finished")}
-                books={finishedBooks}
-                onUpdate={() => fetchReadingList(user.id)}
-                loading={loading}
-              />
+              {loading ? (
+                <div className="flex justify-center items-center">
+                  <span className="loading loading-spinner loading-lg"></span>
+                </div>
+              ) : (
+                <>
+                  <CollapsibleSection
+                    title={`To Read (${toReadBooks.length})`}
+                    isExpanded={expandedSections["To Read"]}
+                    onToggle={() => toggleSection("To Read")}
+                    books={toReadBooks}
+                    onUpdate={() => fetchReadingList(user.id)}
+                  />
+                  <CollapsibleSection
+                    title={`Currently Reading (${readingBooks.length})`}
+                    isExpanded={expandedSections["Reading"]}
+                    onToggle={() => toggleSection("Reading")}
+                    books={readingBooks}
+                    onUpdate={() => fetchReadingList(user.id)}
+                  />
+                  <CollapsibleSection
+                    title={`Finished (${finishedBooks.length})`}
+                    isExpanded={expandedSections["Finished"]}
+                    onToggle={() => toggleSection("Finished")}
+                    books={finishedBooks}
+                    onUpdate={() => fetchReadingList(user.id)}
+                  />
+                </>
+              )}
             </>
           )}
         </div>
