@@ -54,6 +54,11 @@ export default function ReadingRewards() {
       { id: 1, name: "Free eBook", description: "Get a free eBook of your choice", cost: 500 },
       { id: 2, name: "Audiobook Credit", description: "Get one free audiobook credit", cost: 1000 },
       { id: 3, name: "Exclusive Author Q&A", description: "Access to an exclusive author Q&A session", cost: 1500 },
+      { id: 4, name: "Book Club Membership", description: "One month free membership to an online book club", cost: 750 },
+      { id: 5, name: "Personalized Reading List", description: "Get a curated reading list based on your preferences", cost: 300 },
+      { id: 6, name: "Virtual Bookstore Tour", description: "Guided virtual tour of a famous bookstore", cost: 400 },
+      { id: 7, name: "Reading Journal", description: "Receive a beautiful physical reading journal", cost: 600 },
+      { id: 8, name: "Author-Signed Book", description: "Get a book signed by your favorite author", cost: 2000 },
     ]);
   }
 
