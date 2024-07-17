@@ -59,6 +59,7 @@ CREATE TABLE reading_stats (
 CREATE TABLE user_points (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    points INTEGER DEFAULT 0,
     points_earned INTEGER DEFAULT 0,
     points_redeemed INTEGER DEFAULT 0,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -88,15 +89,17 @@ CREATE OR REPLACE FUNCTION update_user_points()
 RETURNS TRIGGER AS $$
 BEGIN
     IF NEW.type = 'earned' THEN
-        INSERT INTO user_points (user_id, points_earned)
-        VALUES (NEW.user_id, NEW.points)
+        INSERT INTO user_points (user_id, points, points_earned)
+        VALUES (NEW.user_id, NEW.points, NEW.points)
         ON CONFLICT (user_id) DO UPDATE
-        SET points_earned = user_points.points_earned + NEW.points;
+        SET points = user_points.points + NEW.points,
+            points_earned = user_points.points_earned + NEW.points;
     ELSIF NEW.type = 'redeemed' THEN
-        INSERT INTO user_points (user_id, points_redeemed)
-        VALUES (NEW.user_id, NEW.points)
+        INSERT INTO user_points (user_id, points, points_redeemed)
+        VALUES (NEW.user_id, -NEW.points, NEW.points)
         ON CONFLICT (user_id) DO UPDATE
-        SET points_redeemed = user_points.points_redeemed + NEW.points;
+        SET points = user_points.points - NEW.points,
+            points_redeemed = user_points.points_redeemed + NEW.points;
     END IF;
     RETURN NEW;
 END;
