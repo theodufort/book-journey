@@ -24,22 +24,11 @@ export async function GET() {
       return NextResponse.json({ error: 'Error fetching reading history' }, { status: 500 });
     }
 
-    let recommendations;
+    let searchQuery;
 
     if (!readingHistory || readingHistory.length === 0) {
-      console.log('No reading history found, fetching random books');
-      const { data: randomBooks, error: randomBooksError } = await supabase
-        .from('books')
-        .select('*')
-        .order('RANDOM()')
-        .limit(10);
-
-      if (randomBooksError) {
-        console.error('Error fetching random books:', randomBooksError);
-        return NextResponse.json({ error: 'Error fetching recommendations' }, { status: 500 });
-      }
-
-      recommendations = randomBooks;
+      console.log('No reading history found, using general search query');
+      searchQuery = 'bestseller';
     } else {
       // Count genres
       const genreCounts = readingHistory.reduce((acc, item) => {
@@ -54,24 +43,36 @@ export async function GET() {
       const favoriteGenre = Object.keys(genreCounts).reduce((a, b) => genreCounts[a] > genreCounts[b] ? a : b);
 
       console.log('Favorite genre:', favoriteGenre);
-
-      // Fetch recommendations based on favorite genre
-      const { data: genreRecommendations, error: recommendationsError } = await supabase
-        .from('books')
-        .select('*')
-        .eq('genre', favoriteGenre)
-        .limit(10);
-
-      if (recommendationsError) {
-        console.error('Error fetching genre recommendations:', recommendationsError);
-        return NextResponse.json({ error: 'Error fetching recommendations' }, { status: 500 });
-      }
-
-      recommendations = genreRecommendations;
+      searchQuery = `${favoriteGenre} books`;
     }
 
-    console.log('Recommendations fetched:', recommendations?.length);
-    return NextResponse.json({ recommendations });
+    // Use the books search API to get recommendations
+    const searchResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/books/search?q=${encodeURIComponent(searchQuery)}`);
+    
+    if (!searchResponse.ok) {
+      throw new Error('Failed to fetch book recommendations');
+    }
+
+    const searchData = await searchResponse.json();
+
+    // Process the search results to get book details
+    const recommendations = await Promise.all(
+      searchData.items.slice(0, 10).map(async (item) => {
+        const isbn = item.volumeInfo.industryIdentifiers?.find(id => id.type.includes('ISBN_'))?.identifier;
+        if (!isbn) return null;
+
+        const bookResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/books/${isbn}`);
+        if (!bookResponse.ok) return null;
+
+        return bookResponse.json();
+      })
+    );
+
+    // Filter out any null results
+    const filteredRecommendations = recommendations.filter(book => book !== null);
+
+    console.log('Recommendations fetched:', filteredRecommendations.length);
+    return NextResponse.json({ recommendations: filteredRecommendations });
   } catch (error) {
     console.error('Unexpected error:', error);
     return NextResponse.json({ error: 'An unexpected error occurred' }, { status: 500 });
