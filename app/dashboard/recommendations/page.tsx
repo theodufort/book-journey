@@ -47,9 +47,6 @@ export default function Recommendations() {
     }
   }
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-
   return (
     <main className="min-h-screen p-8 pb-24">
       <section className="max-w-6xl mx-auto space-y-8">
@@ -59,25 +56,36 @@ export default function Recommendations() {
           Book Recommendations
         </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {recommendations.map((book) => (
-            <div key={book.id} className="card bg-base-100 shadow-xl">
-              <div className="card-body">
-                <h2 className="card-title">{book.title}</h2>
-                <p>{book.author}</p>
-                <p>{book.genre}</p>
-                <div className="card-actions justify-end">
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => addToReadingList(book.id)}
-                  >
-                    Add to Reading List
-                  </button>
-                </div>
+        {isLoading && <div className="text-center">Loading...</div>}
+        {error && <div className="text-center text-red-500">Error: {error}</div>}
+
+        {!isLoading && !error && (
+          <>
+            {recommendations.length === 0 ? (
+              <p className="text-center">No recommendations available at the moment.</p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {recommendations.map((book) => (
+                  <div key={book.id} className="card bg-base-100 shadow-xl">
+                    <div className="card-body">
+                      <h2 className="card-title">{book.title}</h2>
+                      <p>{book.author}</p>
+                      <p>{book.genre}</p>
+                      <div className="card-actions justify-end">
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => addToReadingList(book.id)}
+                        >
+                          Add to Reading List
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
-          ))}
-        </div>
+            )}
+          </>
+        )}
       </section>
     </main>
   );
