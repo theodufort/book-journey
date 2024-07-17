@@ -18,14 +18,22 @@ export default function Recommendations() {
     setIsLoading(true);
     try {
       const response = await fetch('/api/recommendations');
-      if (!response.ok) {
-        throw new Error('Failed to fetch recommendations');
-      }
       const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}, message: ${data.error || 'Unknown error'}`);
+      }
+      
       if (data.error) {
         throw new Error(data.error);
       }
+      
+      if (!data.recommendations || !Array.isArray(data.recommendations)) {
+        throw new Error('Invalid recommendations data received');
+      }
+      
       setRecommendations(data.recommendations);
+      console.log('Recommendations fetched:', data.recommendations.length);
     } catch (err) {
       setError(err.message);
       console.error("Error fetching recommendations:", err);
