@@ -1,8 +1,23 @@
+-- Drop existing tables if they exist
+DROP TABLE IF EXISTS point_transactions;
+DROP TABLE IF EXISTS user_points;
+DROP TABLE IF EXISTS reading_stats;
+DROP TABLE IF EXISTS user_preferences;
+DROP TABLE IF EXISTS reading_list;
+
+-- Drop existing functions and triggers
+DROP TRIGGER IF EXISTS update_user_points ON point_transactions;
+DROP FUNCTION IF EXISTS update_user_points();
+DROP TRIGGER IF EXISTS update_reading_list_modtime ON reading_list;
+DROP TRIGGER IF EXISTS update_user_preferences_modtime ON user_preferences;
+DROP TRIGGER IF EXISTS update_reading_stats_modtime ON reading_stats;
+DROP TRIGGER IF EXISTS update_user_points_modtime ON user_points;
+DROP FUNCTION IF EXISTS update_modified_column();
+
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Users table (auth.users) is created automatically by Supabase Auth
-
 
 -- Reading List table
 CREATE TABLE reading_list (
