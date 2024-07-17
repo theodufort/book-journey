@@ -1,52 +1,55 @@
 // components/PointsSection.tsx
 import { useEffect, useState } from "react";
-import { User, createClient } from "@supabase/supabase-js";
+import { User } from "@supabase/supabase-js";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-interface props {
-  userId: string;
-}
-const PointsSection = ({ userId }: props) => {
+
+const PointsSection = () => {
   const supabase = createClientComponentClient();
   const [points, setPoints] = useState(0);
   const [transactions, setTransactions] = useState([]);
+  const [user, setUser] = useState<User | null>(null);
+
   useEffect(() => {
-    fetchPoints();
-    fetchTransactions();
-  }, []);
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUser(data.user);
+    };
+
+    getUser();
+    if (user) {
+      fetchPoints();
+      fetchTransactions();
+    }
+  }, [supabase]);
 
   async function fetchPoints() {
-    if (userId) {
-      const { data, error } = await supabase
-        .from("user_points")
-        .select("points_earned, points_redeemed")
-        .eq("user_id", userId)
-        .maybeSingle();
-      console.log(data);
-      console.log(error);
-      if (error) {
-        console.error("Error fetching points:", error);
-      } else if (!data) {
-        setPoints(0);
-      } else {
-        setPoints(data.points_earned - data.points_redeemed);
-      }
+    const { data, error } = await supabase
+      .from("user_points")
+      .select("points_earned, points_redeemed")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    console.log(data);
+    console.log(error);
+    if (error) {
+      console.error("Error fetching points:", error);
+    } else if (!data) {
+      setPoints(0);
+    } else {
+      setPoints(data.points_earned - data.points_redeemed);
     }
   }
 
   async function fetchTransactions() {
-    if (userId) {
-      const { data, error } = await supabase
-        .from("point_transactions")
-        .select("points, type, description, created_at")
-        .eq("user_id", userId)
-        .order("created_at", { ascending: false })
-        .limit(10);
-      console.log(userId);
-      if (error) {
-        console.error("Error fetching transactions:", error);
-      } else {
-        setTransactions(data);
-      }
+    const { data, error } = await supabase
+      .from("point_transactions")
+      .select("points, type, description, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(10);
+    if (error) {
+      console.error("Error fetching transactions:", error);
+    } else {
+      setTransactions(data);
     }
   }
 
