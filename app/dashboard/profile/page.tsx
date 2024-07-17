@@ -25,44 +25,39 @@ export default function Profile() {
   }, [supabase]);
 
   async function fetchProfile() {
-    if (user) {
-      setEmail(user.email);
+    console.log("Entered fetchProfile");
+    setEmail(user.email);
 
-      const { data: profile, error: profileError } = await supabase
-        .from("users")
-        .select("name")
-        .eq("id", user.id)
-        .single();
+    const { data: profile, error: profileError } = await supabase
+      .from("users")
+      .select("name")
+      .eq("id", user.id)
+      .single();
 
-      if (profileError) console.error("Error fetching profile:", profileError);
-      else setName(profile.name);
+    if (profileError) console.error("Error fetching profile:", profileError);
+    else setName(profile.name);
 
-      const { data: preferences, error: preferencesError } = await supabase
-        .from("user_preferences")
-        .select("preferred_categories")
-        .eq("user_id", user.id)
-        .single();
+    const { data: preferences, error: preferencesError } = await supabase
+      .from("user_preferences")
+      .select("preferred_categories")
+      .eq("user_id", user.id)
+      .single();
 
-      if (preferencesError)
-        console.error("Error fetching preferences:", preferencesError);
-      else setPreferredCategories(preferences.preferred_categories);
-    }
+    if (preferencesError)
+      console.error("Error fetching preferences:", preferencesError);
+    else setPreferredCategories(preferences.preferred_categories);
   }
 
   async function updateProfile() {
-    if (user) {
-      const { error: preferencesError } = await supabase
-        .from("user_preferences")
-        .upsert({
-          user_id: user.id,
-          preferred_categories: preferredCategories,
-        });
+    const { error: preferencesError } = await supabase
+      .from("user_preferences")
+      .update({
+        preferred_categories: preferredCategories,
+      })
+      .eq("user_id", user.id);
 
-      if (preferencesError)
-        console.error("Error updating preferences:", preferencesError);
-
-      alert("Profile updated successfully!");
-    }
+    if (preferencesError)
+      console.error("Error updating preferences:", preferencesError);
   }
 
   return (
