@@ -65,18 +65,14 @@ export default function Dashboard() {
 
       if (statsResponse.error) {
         console.error("Error fetching reading stats:", statsResponse.error);
-        setStats({
-          books_read: 0,
-          pages_read: 0,
-          reading_time_minutes: 0
-        });
-      } else {
-        setStats(statsResponse.data || {
-          books_read: 0,
-          pages_read: 0,
-          reading_time_minutes: 0
-        });
       }
+      
+      // Always set default stats, whether there's an error or no data
+      setStats({
+        books_read: statsResponse.data?.books_read || 0,
+        pages_read: statsResponse.data?.pages_read || 0,
+        reading_time_minutes: statsResponse.data?.reading_time_minutes || 0
+      });
     } catch (error) {
       console.error("Unexpected error fetching dashboard data:", error);
     }
@@ -124,11 +120,11 @@ export default function Dashboard() {
         <div className="card bg-base-200 shadow-xl">
           <div className="card-body">
             <h2 className="card-title text-xl md:text-2xl font-bold">Currently Reading</h2>
-            {currentlyReading.length > 0 ? (
+            {currentlyReading && currentlyReading.length > 0 ? (
               <ul className="list-disc list-inside space-y-2">
                 {currentlyReading.map((item) => (
                   <li key={item.id} className="text-lg">
-                    {item.books.title} by {item.books.author}
+                    {item.books?.title || 'Unknown Title'} by {item.books?.author || 'Unknown Author'}
                   </li>
                 ))}
               </ul>
