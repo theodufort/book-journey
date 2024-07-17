@@ -38,7 +38,15 @@ export default function Dashboard() {
       const [readingListResponse, statsResponse] = await Promise.all([
         supabase
           .from("reading_list")
-          .select("*, books(*)")
+          .select(`
+            id,
+            book_isbn,
+            status,
+            books (
+              title,
+              author
+            )
+          `)
           .eq("user_id", user.id)
           .eq("status", "Reading")
           .limit(5),

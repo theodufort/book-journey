@@ -3,11 +3,20 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Users table (auth.users) is created automatically by Supabase Auth
 
+-- Books table
+CREATE TABLE books (
+    isbn TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    author TEXT NOT NULL,
+    description TEXT,
+    cover_image_url TEXT
+);
+
 -- Reading List table
 CREATE TABLE reading_list (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-    book_isbn TEXT NOT NULL,
+    book_isbn TEXT REFERENCES books(isbn) ON DELETE CASCADE,
     status TEXT NOT NULL CHECK (status IN ('To Read', 'Reading', 'Finished')),
     rating FLOAT,
     review TEXT,

@@ -38,7 +38,15 @@ export default function ReadingList() {
     try {
       const { data, error } = await supabase
         .from("reading_list")
-        .select("id, book_isbn, status")
+        .select(`
+          id, 
+          book_isbn, 
+          status,
+          books (
+            title,
+            author
+          )
+        `)
         .eq("user_id", userId);
 
       if (error) {

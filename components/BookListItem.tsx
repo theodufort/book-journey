@@ -69,8 +69,8 @@ export default function BookListItem({
       } else {
         console.error("Error fetching rating:", error);
       }
-    } else if (data) {
-      setRating(data.rating || 0);
+    } else {
+      setRating(data?.rating || 0);
     }
   }
 
