@@ -75,7 +75,7 @@ export default function Dashboard() {
             </div>
           ))}
         </div>
-        <PointsSection userId={user.id} />
+        <PointsSection />
       </section>
     </main>
   );
