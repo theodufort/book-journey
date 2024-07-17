@@ -2,38 +2,36 @@
 
 import { useEffect, useState } from "react";
 import HeaderDashboard from "@/components/DashboardHeader";
-import { User } from "@supabase/supabase-js";
-import router from "next/router";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export default function Recommendations() {
-  const supabase = createClientComponentClient();
   const [recommendations, setRecommendations] = useState([]);
-  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const supabase = createClientComponentClient();
+
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-
-      setUser(data.user);
-    };
-
-    getUser();
-    if (user) fetchRecommendations();
-  }, [supabase]);
+    fetchRecommendations();
+  }, []);
 
   async function fetchRecommendations() {
-    if (user) {
-      const { data, error } = await supabase
-        .from("recommendations")
-        .select("*, books(*)")
-        .eq("user_id", user.id);
-
-      if (error) console.error("Error fetching recommendations:", error);
-      else setRecommendations(data);
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/recommendations');
+      if (!response.ok) {
+        throw new Error('Failed to fetch recommendations');
+      }
+      const data = await response.json();
+      setRecommendations(data.recommendations);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
     }
   }
 
   async function addToReadingList(bookId) {
+    const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       const { error } = await supabase.from("reading_list").insert({
         user_id: user.id,
@@ -49,6 +47,9 @@ export default function Recommendations() {
     }
   }
 
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   return (
     <main className="min-h-screen p-8 pb-24">
       <section className="max-w-6xl mx-auto space-y-8">
@@ -59,17 +60,16 @@ export default function Recommendations() {
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {recommendations.map((recommendation) => (
-            <div key={recommendation.id} className="card bg-base-100 shadow-xl">
+          {recommendations.map((book) => (
+            <div key={book.id} className="card bg-base-100 shadow-xl">
               <div className="card-body">
-                <h2 className="card-title">{recommendation.books.title}</h2>
-                <p>{recommendation.books.author}</p>
-                <p>{recommendation.books.category}</p>
-                <p>Reason: {recommendation.reason}</p>
+                <h2 className="card-title">{book.title}</h2>
+                <p>{book.author}</p>
+                <p>{book.genre}</p>
                 <div className="card-actions justify-end">
                   <button
                     className="btn btn-primary"
-                    onClick={() => addToReadingList(recommendation.book_id)}
+                    onClick={() => addToReadingList(book.id)}
                   >
                     Add to Reading List
                   </button>
