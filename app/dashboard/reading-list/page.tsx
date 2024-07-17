@@ -50,7 +50,12 @@ export default function ReadingList() {
         .eq("user_id", userId);
 
       if (error) {
-        console.error("Error fetching reading list:", error);
+        if (error.code === 'PGRST116') {
+          // No rows returned, set an empty array
+          setReadingList([]);
+        } else {
+          console.error("Error fetching reading list:", error);
+        }
       } else {
         setReadingList(data || []);
       }
