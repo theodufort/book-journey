@@ -99,7 +99,6 @@ export default function ReadingList() {
               isExpanded={expandedSections["To Read"]}
               onToggle={() => toggleSection("To Read")}
               books={toReadBooks}
-              user={user}
               onUpdate={() => fetchReadingList(user.id)}
             />
             <CollapsibleSection
@@ -107,7 +106,6 @@ export default function ReadingList() {
               isExpanded={expandedSections["Reading"]}
               onToggle={() => toggleSection("Reading")}
               books={readingBooks}
-              user={user}
               onUpdate={() => fetchReadingList(user.id)}
             />
             <CollapsibleSection
@@ -115,7 +113,6 @@ export default function ReadingList() {
               isExpanded={expandedSections["Finished"]}
               onToggle={() => toggleSection("Finished")}
               books={finishedBooks}
-              user={user}
               onUpdate={() => fetchReadingList(user.id)}
             />
           </div>
