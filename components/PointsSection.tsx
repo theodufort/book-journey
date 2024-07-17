@@ -34,10 +34,18 @@ const PointsSection: React.FC<PointsSectionProps> = ({ userId }) => {
   return (
     <div className="bg-base-200 p-6 rounded-box shadow-lg">
       <h2 className="text-2xl font-bold mb-4">My Points</h2>
-      {points !== null ? (
-        <p className="text-4xl font-bold text-primary">{points}</p>
+      {points === null ? (
+        <div className="flex items-center space-x-2">
+          <span className="loading loading-spinner loading-md"></span>
+          <p>Loading points...</p>
+        </div>
+      ) : points === 0 ? (
+        <div>
+          <p className="text-4xl font-bold text-primary">0</p>
+          <p className="mt-2 text-sm text-gray-500">Start earning points by completing activities!</p>
+        </div>
       ) : (
-        <p>Loading points...</p>
+        <p className="text-4xl font-bold text-primary">{points}</p>
       )}
     </div>
   );
