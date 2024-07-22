@@ -19,6 +19,11 @@ interface ChatUser {
   lastMessage: string;
 }
 
+interface Friend {
+  id: string;
+  name: string;
+}
+
 export default function Messages() {
   const supabase = createClientComponentClient();
   const [user, setUser] = useState<User | null>(null);
@@ -27,6 +32,8 @@ export default function Messages() {
   const [receiver, setReceiver] = useState("");
   const [chatUsers, setChatUsers] = useState<ChatUser[]>([]);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  const [showFriendList, setShowFriendList] = useState(false);
+  const [friends, setFriends] = useState<Friend[]>([]);
 
   useEffect(() => {
     const getUser = async () => {
@@ -54,7 +61,27 @@ export default function Messages() {
         }
       };
 
+      const fetchFriends = async () => {
+        const { data, error } = await supabase
+          .from("friends")
+          .select("friend_id, profiles(id, username)")
+          .eq("user_id", user.id)
+          .eq("status", "accepted");
+
+        if (error) {
+          console.error("Error fetching friends:", error);
+        } else {
+          setFriends(
+            data.map((friend) => ({
+              id: friend.friend_id,
+              name: friend.profiles.username,
+            }))
+          );
+        }
+      };
+
       fetchMessages();
+      fetchFriends();
 
       const messagesSubscription = supabase
         .channel("messages")
@@ -132,12 +159,31 @@ export default function Messages() {
               <h2 className="text-xl font-bold">Chats</h2>
               <button 
                 className="btn btn-circle btn-sm"
-                onClick={() => {/* Add logic to start a new conversation */}}
+                onClick={() => setShowFriendList(true)}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-5 h-5">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
               </button>
+              {showFriendList && (
+                <div className="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                  <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                    {friends.map((friend) => (
+                      <button
+                        key={friend.id}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full text-left"
+                        role="menuitem"
+                        onClick={() => {
+                          setSelectedUser(friend.id);
+                          setShowFriendList(false);
+                        }}
+                      >
+                        {friend.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
             <ul>
               {chatUsers.map((chatUser) => (
