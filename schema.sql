@@ -3,7 +3,7 @@ CREATE SCHEMA IF NOT EXISTS auth;
 CREATE SCHEMA IF NOT EXISTS public;
 
 -- Users table in the 'auth' schema
-CREATE TABLE auth.users (
+CREATE TABLE IF NOT EXISTS auth.users (
     id UUID PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -81,3 +81,5 @@ CREATE TABLE public.user_activity (
 CREATE TRIGGER update_user_activity_modtime
 BEFORE UPDATE ON user_activity
 FOR EACH ROW EXECUTE FUNCTION update_modified_column();
+
+

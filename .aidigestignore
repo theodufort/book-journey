@@ -1,0 +1,6 @@
+./node_modules
+./components
+./docs
+./.next
+./.aider*
+./package*

@@ -9,23 +9,11 @@ MyBookQuest uses Supabase as its database. This document outlines the main table
 This table is managed by Supabase Auth and stores user authentication information.
 
 **Columns**:
+
 - `id`: UUID (Primary Key)
 - `email`: VARCHAR(255)
 - `created_at`: TIMESTAMP
 - `updated_at`: TIMESTAMP
-
-## Profiles Table
-
-**Table Name**: `public.profiles`
-
-This table stores additional user information and is linked to the `auth.users` table.
-
-**Columns**:
-- `id`: UUID (Primary Key, Foreign Key referencing `auth.users.id`)
-- `customer_id`: VARCHAR (Stripe customer ID)
-- `price_id`: VARCHAR (Stripe price ID)
-- `has_access`: BOOLEAN
-- `email`: VARCHAR(255)
 
 ## Reading List Table
 
@@ -34,6 +22,7 @@ This table stores additional user information and is linked to the `auth.users` 
 This table stores the user's reading list entries.
 
 **Columns**:
+
 - `id`: SERIAL (Primary Key)
 - `user_id`: UUID (Foreign Key referencing `auth.users.id`)
 - `book_id`: VARCHAR(20) (ISBN or other book identifier)
@@ -51,6 +40,7 @@ This table stores the user's reading list entries.
 This table stores user preferences, including preferred book categories.
 
 **Columns**:
+
 - `user_id`: UUID (Primary Key, Foreign Key referencing `auth.users.id`)
 - `preferred_categories`: TEXT[]
 
@@ -61,6 +51,7 @@ This table stores user preferences, including preferred book categories.
 This table stores aggregated reading statistics for each user.
 
 **Columns**:
+
 - `user_id`: UUID (Primary Key, Foreign Key referencing `auth.users.id`)
 - `books_read`: INTEGER
 - `pages_read`: INTEGER
@@ -73,6 +64,7 @@ This table stores aggregated reading statistics for each user.
 This table tracks the points earned and redeemed by users.
 
 **Columns**:
+
 - `user_id`: UUID (Primary Key, Foreign Key referencing `auth.users.id`)
 - `points`: INTEGER
 - `points_earned`: INTEGER
@@ -85,6 +77,7 @@ This table tracks the points earned and redeemed by users.
 This table logs individual point transactions.
 
 **Columns**:
+
 - `id`: SERIAL (Primary Key)
 - `user_id`: UUID (Foreign Key referencing `auth.users.id`)
 - `points`: INTEGER
@@ -99,6 +92,7 @@ This table logs individual point transactions.
 This table logs user activities.
 
 **Columns**:
+
 - `id`: SERIAL (Primary Key)
 - `user_id`: UUID (Foreign Key referencing `auth.users.id`)
 - `activity_type`: VARCHAR(50) (CHECK constraint: 'book_started', 'book_finished', 'points_earned')
