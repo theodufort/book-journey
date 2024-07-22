@@ -128,7 +128,17 @@ export default function Messages() {
         <div className="flex bg-base-200 rounded-lg">
           {/* Sidebar */}
           <div className="w-1/4 border-r border-base-300 p-4">
-            <h2 className="text-xl font-bold mb-4">Chats</h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Chats</h2>
+              <button 
+                className="btn btn-circle btn-sm"
+                onClick={() => {/* Add logic to start a new conversation */}}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-5 h-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
+            </div>
             <ul>
               {chatUsers.map((chatUser) => (
                 <li
