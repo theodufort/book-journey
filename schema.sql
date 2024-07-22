@@ -25,7 +25,20 @@ CREATE TABLE public.reading_list (
 -- User preferences table in the 'public' schema
 CREATE TABLE public.user_preferences (
     user_id UUID PRIMARY KEY REFERENCES auth.users(id),
-    preferred_categories TEXT[] -- Array of categories
+    preferred_categories TEXT[], -- Array of categories
+    username VARCHAR(50) UNIQUE,
+    bio TEXT,
+    profile_picture_url TEXT
+);
+
+-- Friends table in the 'public' schema
+CREATE TABLE public.friends (
+    id SERIAL PRIMARY KEY,
+    user_id UUID REFERENCES auth.users(id),
+    friend_id UUID REFERENCES auth.users(id),
+    status VARCHAR(20) CHECK (status IN ('pending', 'accepted', 'rejected')),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, friend_id)
 );
 
 -- Reading stats table in the 'public' schema

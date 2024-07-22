@@ -6,10 +6,15 @@ import HeaderDashboard from "@/components/DashboardHeader";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+
 export default function Profile() {
   const supabase = createClientComponentClient();
   const [user, setUser] = useState<User | null>(null);
   const [preferredCategories, setPreferredCategories] = useState<string[]>([]);
+  const [username, setUsername] = useState("");
+  const [bio, setBio] = useState("");
+  const [profilePictureUrl, setProfilePictureUrl] = useState("");
+  const [friends, setFriends] = useState([]);
   const [isUpdated, setIsUpdated] = useState(false);
   const router = useRouter();
 
@@ -25,6 +30,7 @@ export default function Profile() {
   useEffect(() => {
     if (user) {
       fetchProfile();
+      fetchFriends();
     }
   }, [user]);
 
@@ -33,7 +39,7 @@ export default function Profile() {
 
     const { data: preferences, error: preferencesError } = await supabase
       .from("user_preferences")
-      .select("preferred_categories")
+      .select("preferred_categories, username, bio, profile_picture_url")
       .eq("user_id", user.id)
       .single();
 
@@ -41,6 +47,25 @@ export default function Profile() {
       console.error("Error fetching preferences:", preferencesError);
     } else {
       setPreferredCategories(preferences?.preferred_categories || []);
+      setUsername(preferences?.username || "");
+      setBio(preferences?.bio || "");
+      setProfilePictureUrl(preferences?.profile_picture_url || "");
+    }
+  }
+
+  async function fetchFriends() {
+    if (!user) return;
+
+    const { data: friendsData, error: friendsError } = await supabase
+      .from("friends")
+      .select("friend_id")
+      .eq("user_id", user.id)
+      .eq("status", "accepted");
+
+    if (friendsError) {
+      console.error("Error fetching friends:", friendsError);
+    } else {
+      setFriends(friendsData || []);
     }
   }
 
@@ -53,13 +78,16 @@ export default function Profile() {
       .upsert({
         user_id: user.id,
         preferred_categories: preferredCategories,
+        username,
+        bio,
+        profile_picture_url: profilePictureUrl,
       });
 
     if (preferencesError) {
       console.error("Error updating preferences:", preferencesError);
     } else {
       setIsUpdated(true);
-      setTimeout(() => setIsUpdated(false), 3000); // Reset the update status after 3 seconds
+      setTimeout(() => setIsUpdated(false), 3000);
     }
   }
 
@@ -71,6 +99,41 @@ export default function Profile() {
         <h1 className="text-3xl md:text-4xl font-extrabold">My Profile</h1>
 
         <form onSubmit={(e) => { e.preventDefault(); updateProfile(); }} className="space-y-6">
+          <div>
+            <label className="label">
+              <span className="label-text">Username</span>
+            </label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="input input-bordered w-full"
+            />
+          </div>
+
+          <div>
+            <label className="label">
+              <span className="label-text">Bio</span>
+            </label>
+            <textarea
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              className="textarea textarea-bordered w-full"
+            ></textarea>
+          </div>
+
+          <div>
+            <label className="label">
+              <span className="label-text">Profile Picture URL</span>
+            </label>
+            <input
+              type="text"
+              value={profilePictureUrl}
+              onChange={(e) => setProfilePictureUrl(e.target.value)}
+              className="input input-bordered w-full"
+            />
+          </div>
+
           <div>
             <span className="label-text">Preferred Book Categories (Choose up to 3)</span>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
@@ -102,6 +165,19 @@ export default function Profile() {
           <button type="submit" className="btn btn-primary">Save Profile</button>
           {isUpdated && <p className="text-green-500 mt-2">Profile updated successfully!</p>}
         </form>
+
+        <div>
+          <h2 className="text-2xl font-bold mb-4">My Friends</h2>
+          {friends.length > 0 ? (
+            <ul>
+              {friends.map((friend) => (
+                <li key={friend.friend_id}>{friend.friend_id}</li>
+              ))}
+            </ul>
+          ) : (
+            <p>You haven't added any friends yet.</p>
+          )}
+        </div>
       </section>
     </main>
   );
