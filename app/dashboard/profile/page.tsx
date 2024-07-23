@@ -16,6 +16,7 @@ export default function Profile() {
   const [bio, setBio] = useState("");
   const [profilePictureUrl, setProfilePictureUrl] = useState("");
   const [friends, setFriends] = useState([]);
+  const [friendRequests, setFriendRequests] = useState([]);
   const [isUpdated, setIsUpdated] = useState(false);
   const router = useRouter();
 
@@ -32,8 +33,45 @@ export default function Profile() {
     if (user) {
       fetchProfile();
       fetchFriends();
+      fetchFriendRequests();
     }
   }, [user]);
+
+  async function fetchFriendRequests() {
+    if (!user) return;
+
+    const { data: requests, error } = await supabase
+      .from("friends")
+      .select("*")
+      .eq("friend_id", user.id)
+      .eq("status", "pending");
+
+    if (error) {
+      console.error("Error fetching friend requests:", error);
+    } else {
+      setFriendRequests(requests || []);
+    }
+  }
+
+  async function handleFriendRequest(requestId: string, action: 'accept' | 'refuse') {
+    if (!user) return;
+
+    const newStatus = action === 'accept' ? 'accepted' : 'refused';
+
+    const { error } = await supabase
+      .from("friends")
+      .update({ status: newStatus })
+      .eq("id", requestId);
+
+    if (error) {
+      console.error("Error updating friend request:", error);
+    } else {
+      fetchFriendRequests();
+      if (action === 'accept') {
+        fetchFriends();
+      }
+    }
+  }
 
   async function fetchProfile() {
     if (!user) return;
@@ -161,6 +199,32 @@ export default function Profile() {
           </div>
         ) : null}
         <AddFriend user={user} onFriendAdded={fetchFriends} />
+        <div>
+          <h2 className="text-2xl font-bold mb-4">Friend Requests</h2>
+          {friendRequests.length > 0 ? (
+            <ul>
+              {friendRequests.map((request) => (
+                <li key={request.id} className="mb-2 flex items-center">
+                  <span>{request.sender_id}</span>
+                  <button
+                    onClick={() => handleFriendRequest(request.id, 'accept')}
+                    className="btn btn-sm btn-primary ml-2"
+                  >
+                    Accept
+                  </button>
+                  <button
+                    onClick={() => handleFriendRequest(request.id, 'refuse')}
+                    className="btn btn-sm btn-error ml-2"
+                  >
+                    Refuse
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No pending friend requests.</p>
+          )}
+        </div>
         <div>
           <h2 className="text-2xl font-bold mb-4">My Friends</h2>
           {friends.length > 0 ? (
