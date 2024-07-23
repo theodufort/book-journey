@@ -9,7 +9,7 @@ interface ActivityItem {
 
 const RecentActivitySection = () => {
   const [activities, setActivities] = useState<ActivityItem[]>([]);
-  const supabase = createClientComponentClient();
+  const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
   useEffect(() => {
     const getUser = async () => {

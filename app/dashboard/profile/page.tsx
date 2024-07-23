@@ -7,9 +7,10 @@ import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import AddFriend from "@/components/AddFriend";
+import { Database } from "@/types/supabase";
 
 export default function Profile() {
-  const supabase = createClientComponentClient();
+  const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
   const [preferredCategories, setPreferredCategories] = useState<string[]>([]);
   const [username, setUsername] = useState("");
@@ -53,10 +54,13 @@ export default function Profile() {
     }
   }
 
-  async function handleFriendRequest(requestId: string, action: 'accept' | 'refuse') {
+  async function handleFriendRequest(
+    requestId: string,
+    action: "accept" | "refuse"
+  ) {
     if (!user) return;
 
-    const newStatus = action === 'accept' ? 'accepted' : 'refused';
+    const newStatus = action === "accept" ? "accepted" : "rejected";
 
     const { error } = await supabase
       .from("friends")
@@ -67,7 +71,7 @@ export default function Profile() {
       console.error("Error updating friend request:", error);
     } else {
       fetchFriendRequests();
-      if (action === 'accept') {
+      if (action === "accept") {
         fetchFriends();
       }
     }
@@ -97,13 +101,20 @@ export default function Profile() {
 
     const { data: friendsData, error: friendsError } = await supabase
       .from("friends")
-      .select("friend_id")
-      .eq("user_id", user.id)
+      .select("user_id, friend_id")
+      .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`)
       .eq("status", "accepted");
 
     if (friendsError) {
       console.error("Error fetching friends:", friendsError);
     } else {
+      if (friendsData?.length != 0) {
+        friendsData.forEach((friend, i) => {
+          if (friend?.friend_id === user?.id) {
+            friendsData[i].friend_id = friend.user_id;
+          }
+        });
+      }
       setFriends(friendsData || []);
     }
   }
@@ -205,15 +216,29 @@ export default function Profile() {
             <ul>
               {friendRequests.map((request) => (
                 <li key={request.id} className="mb-2 flex items-center">
-                  <span>{request.sender_id}</span>
+                  {user?.user_metadata?.avatar_url ? (
+                    <img
+                      src={user?.user_metadata?.avatar_url}
+                      alt={"Profile picture"}
+                      className="rounded-full shrink-0"
+                      referrerPolicy="no-referrer"
+                      width={48}
+                      height={48}
+                    />
+                  ) : (
+                    <span className="w-8 h-8 bg-base-100 flex justify-center items-center rounded-full shrink-0 capitalize ">
+                      {user?.email?.charAt(0)}
+                    </span>
+                  )}
+                  <span className="ml-2">{request.user_id}</span>
                   <button
-                    onClick={() => handleFriendRequest(request.id, 'accept')}
+                    onClick={() => handleFriendRequest(request.id, "accept")}
                     className="btn btn-sm btn-primary ml-2"
                   >
                     Accept
                   </button>
                   <button
-                    onClick={() => handleFriendRequest(request.id, 'refuse')}
+                    onClick={() => handleFriendRequest(request.id, "refuse")}
                     className="btn btn-sm btn-error ml-2"
                   >
                     Refuse

@@ -7,7 +7,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { UserPoints, Reward } from "@/interfaces/Dashboard";
 
 export default function ReadingRewards() {
-  const supabase = createClientComponentClient();
+  const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
   const [userPoints, setUserPoints] = useState<UserPoints | null>(null);
   const [loading, setLoading] = useState(true);

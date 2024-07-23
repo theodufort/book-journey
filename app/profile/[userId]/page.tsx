@@ -4,8 +4,13 @@ import { useEffect, useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import HeaderDashboard from "@/components/DashboardHeader";
+import { Database } from "@/types/supabase";
 
-export default function UserProfile({ params }: { params: { userId: string } }) {
+export default function UserProfile({
+  params,
+}: {
+  params: { userId: string };
+}) {
   const [profile, setProfile] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const supabase = createClientComponentClient<Database>();
@@ -13,13 +18,14 @@ export default function UserProfile({ params }: { params: { userId: string } }) 
   useEffect(() => {
     async function fetchProfile() {
       const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', params.userId)
+        .schema("auth")
+        .from("users")
+        .select("*")
+        .eq("id", params.userId)
         .single();
 
       if (error) {
-        console.error('Error fetching profile:', error);
+        console.error("Error fetching profile:", error);
       } else {
         setProfile(data);
       }

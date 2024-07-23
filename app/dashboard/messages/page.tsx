@@ -28,7 +28,7 @@ type FriendData = {
   friend_id: string;
 };
 export default function Messages() {
-  const supabase = createClientComponentClient();
+  const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");

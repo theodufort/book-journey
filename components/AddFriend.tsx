@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 
@@ -8,10 +8,10 @@ interface AddFriendProps {
 }
 
 export default function AddFriend({ user, onFriendAdded }: AddFriendProps) {
-  const [friendId, setFriendId] = useState('');
+  const [friendId, setFriendId] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const supabase = createClientComponentClient();
+  const supabase = createClientComponentClient<Database>();
 
   const handleAddFriend = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,19 +22,17 @@ export default function AddFriend({ user, onFriendAdded }: AddFriendProps) {
 
     try {
       const { data, error } = await supabase
-        .from('friends')
-        .insert([
-          { user_id: user.id, friend_id: friendId, status: 'pending' }
-        ]);
+        .from("friends")
+        .insert([{ user_id: user.id, friend_id: friendId, status: "pending" }]);
 
       if (error) throw error;
 
-      setSuccess('Friend request sent successfully!');
-      setFriendId('');
+      setSuccess("Friend request sent successfully!");
+      setFriendId("");
       onFriendAdded();
     } catch (error) {
-      setError('Failed to add friend. Please try again.');
-      console.error('Error adding friend:', error);
+      setError("Failed to add friend. Please enter a valid id.");
+      console.error("Error adding friend:", error);
     }
   };
 

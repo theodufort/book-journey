@@ -5,7 +5,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 const PointsSection = () => {
   const [points, setPoints] = useState<number | null>(null);
-  const supabase = createClientComponentClient();
+  const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
   useEffect(() => {
     const getUser = async () => {

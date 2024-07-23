@@ -7,10 +7,10 @@ import { useRouter } from "next/navigation";
 import HeaderDashboard from "@/components/DashboardHeader";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
-import { BookSearchResult } from '@/interfaces/BookSearch';
+import { BookSearchResult } from "@/interfaces/BookSearch";
 
 export default function AddBook() {
-  const supabase = createClientComponentClient();
+  const supabase = createClientComponentClient<Database>();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<BookSearchResult[]>([]);
   const [loading, setLoading] = useState(false);

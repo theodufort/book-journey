@@ -11,7 +11,7 @@ export default function BookListItem({
   item: ReadingListItem;
   onUpdate: () => void;
 }) {
-  const supabase = createClientComponentClient();
+  const supabase = createClientComponentClient<Database>();
   const { book, loading, error } = useBookDetails(item.book_id);
   const [showModal, setShowModal] = useState(false);
   const [messageType, setMessageType] = useState("begin");

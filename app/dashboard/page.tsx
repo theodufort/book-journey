@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export default function Dashboard() {
-  const supabase = createClientComponentClient();
+  const supabase = createClientComponentClient<Database>();
   const [currentlyReading, setCurrentlyReading] = useState([]);
   const [stats, setStats] = useState<{
     books_read: number;

@@ -7,14 +7,17 @@ MyBookQuest integrates with several third-party services to provide its function
 The Google Books API is used to search for books and retrieve book details.
 
 **Integration Points**:
+
 - Book search functionality
 - Fetching book details
 
 **Key Files**:
+
 - `app/api/books/search/route.ts`
 - `app/api/books/[id]/route.ts`
 
 **Usage Example**:
+
 ```typescript
 const response = await fetch(
   `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
@@ -31,17 +34,20 @@ The Google Books API key is stored in the environment variable `GOOGLE_BOOKS_API
 Stripe is used for handling payments and subscriptions.
 
 **Integration Points**:
+
 - Creating checkout sessions
 - Managing customer portals
 - Handling webhook events
 
 **Key Files**:
+
 - `app/api/stripe/create-checkout/route.ts`
 - `app/api/stripe/create-portal/route.ts`
 - `app/api/webhook/stripe/route.ts`
 - `libs/stripe.ts`
 
 **Usage Example**:
+
 ```typescript
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2023-08-16",
@@ -63,6 +69,7 @@ const session = await stripe.checkout.sessions.create({
 
 **Configuration**:
 Stripe configuration is stored in environment variables:
+
 - `STRIPE_SECRET_KEY`
 - `STRIPE_WEBHOOK_SECRET`
 
@@ -71,14 +78,17 @@ Stripe configuration is stored in environment variables:
 Mailgun is used for sending transactional emails.
 
 **Integration Points**:
+
 - Sending confirmation emails
 - Handling email forwarding
 
 **Key Files**:
+
 - `libs/mailgun.ts`
 - `app/api/webhook/mailgun/route.ts`
 
 **Usage Example**:
+
 ```typescript
 const mg = mailgun.client({
   username: "api",
@@ -94,6 +104,7 @@ await mg.messages.create(
 
 **Configuration**:
 Mailgun configuration is stored in environment variables and the `config.js` file:
+
 - `MAILGUN_API_KEY`
 - `config.mailgun.subdomain`
 - `config.mailgun.fromNoReply`
@@ -104,16 +115,19 @@ Mailgun configuration is stored in environment variables and the `config.js` fil
 Supabase is used as the main backend service, providing authentication and database services.
 
 **Integration Points**:
+
 - User authentication
 - Database operations
 
 **Key Files**:
+
 - `app/api/auth/callback/route.ts`
 - Various API routes and components that interact with the database
 
 **Usage Example**:
+
 ```typescript
-const supabase = createClientComponentClient();
+const supabase = createClientComponentClient<Database>();
 
 const { data, error } = await supabase
   .from("reading_list")
@@ -123,6 +137,7 @@ const { data, error } = await supabase
 
 **Configuration**:
 Supabase configuration is stored in environment variables:
+
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
@@ -132,11 +147,13 @@ Supabase configuration is stored in environment variables:
 While not a third-party service in the traditional sense, Next.js is the core framework used for building the application.
 
 **Integration Points**:
+
 - Routing
 - Server-side rendering
 - API routes
 
 **Key Files**:
+
 - `next.config.js`
 - Various pages and components throughout the application
 

@@ -16,7 +16,7 @@ const ButtonSignin = ({
   text?: string;
   extraStyle?: string;
 }) => {
-  const supabase = createClientComponentClient();
+  const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {}, [supabase]);
