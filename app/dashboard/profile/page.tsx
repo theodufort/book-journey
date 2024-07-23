@@ -6,6 +6,7 @@ import HeaderDashboard from "@/components/DashboardHeader";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import AddFriend from "@/components/AddFriend";
 
 export default function Profile() {
   const supabase = createClientComponentClient();
@@ -159,6 +160,7 @@ export default function Profile() {
             <p>Your user ID: {user.id}</p>
           </div>
         ) : null}
+        <AddFriend user={user} onFriendAdded={fetchFriends} />
         <div>
           <h2 className="text-2xl font-bold mb-4">My Friends</h2>
           {friends.length > 0 ? (
