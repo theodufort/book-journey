@@ -8,7 +8,14 @@ import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import AddFriend from "@/components/AddFriend";
 import { Database } from "@/types/supabase";
+type Friend = {
+  id: string;
+  name: string;
+};
 
+type FriendData = {
+  friend_id: string;
+};
 export default function Profile() {
   const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);

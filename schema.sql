@@ -82,4 +82,37 @@ CREATE TRIGGER update_user_activity_modtime
 BEFORE UPDATE ON user_activity
 FOR EACH ROW EXECUTE FUNCTION update_modified_column();
 
+CREATE OR REPLACE FUNCTION public.get_user_metadata(user_id UUID)
+RETURNS JSON
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, auth
+AS $$
+DECLARE
+    user_meta JSON;
+BEGIN
+    SELECT json_build_object(
+        'id', u.id,
+        'email', u.email,
+        'phone', u.phone,
+        'role', u.role,
+        'last_sign_in_at', u.last_sign_in_at,
+        'created_at', u.created_at,
+        'updated_at', u.updated_at,
+        'confirmed_at', u.confirmed_at,
+        'is_super_admin', u.is_super_admin,
+        'is_sso_user', u.is_sso_user,
+        'is_anonymous', u.is_anonymous,
+        'raw_app_meta_data', u.raw_app_meta_data,
+        'raw_user_meta_data', u.raw_user_meta_data
+    ) INTO user_meta
+    FROM auth.users u
+    WHERE u.id = user_id;
 
+    IF user_meta IS NULL THEN
+        RETURN json_build_object('error', 'User not found');
+    END IF;
+
+    RETURN user_meta;
+END;
+$$;

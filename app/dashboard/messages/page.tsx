@@ -85,18 +85,22 @@ export default function Messages() {
         // Fetch user details for each friend
         const friends = await Promise.all(
           friendsData.map(async (x: FriendData) => {
-            const { data: userData, error: userError } = await supabase
-              .from("users")
-              .select("id, raw_user_meta_data->>name")
-              .eq("id", x.friend_id)
-              .single();
-
+            const { data: userData, error: userError } = await supabase.rpc(
+              "get_user_metadata",
+              {
+                user_id: x.friend_id,
+              }
+            );
+            const cleanedUserData: Friend = {
+              id: x.friend_id,
+              name: userData.raw_app_meta_data.name,
+            };
             if (userError) {
               console.error(userError);
               return null;
             }
 
-            return userData as Friend; // Ensure proper typing here
+            return cleanedUserData; // Ensure proper typing here
           })
         );
 
