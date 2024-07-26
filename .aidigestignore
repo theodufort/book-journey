@@ -4,3 +4,4 @@
 ./.next
 ./.aider*
 ./package*
+./app/*.{png,css,ico}
