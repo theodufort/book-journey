@@ -67,6 +67,15 @@ CREATE TABLE public.point_transactions (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Messages table in the 'public' schema
+CREATE TABLE public.messages (
+    id SERIAL PRIMARY KEY,
+    sender_id UUID REFERENCES auth.users(id),
+    receiver_id UUID REFERENCES auth.users(id),
+    content TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 -- User activity table in the 'public' schema
 CREATE TABLE public.user_activity (
     id SERIAL PRIMARY KEY,
