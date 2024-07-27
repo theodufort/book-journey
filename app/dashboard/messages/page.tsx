@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import HeaderDashboard from "@/components/DashboardHeader";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
+import { Database } from "@/types/supabase";
 
 interface Message {
   id: string;
@@ -93,7 +94,7 @@ export default function Messages() {
             );
             const cleanedUserData: Friend = {
               id: x.friend_id,
-              name: userData.raw_app_meta_data.name,
+              name: userData.raw_user_meta_data.name,
             };
             if (userError) {
               console.error(userError);
@@ -103,7 +104,7 @@ export default function Messages() {
             return cleanedUserData; // Ensure proper typing here
           })
         );
-
+        console.log(friends);
         // Filter out any null values in case of errors
         const validFriends = friends.filter((f): f is Friend => f !== null);
 

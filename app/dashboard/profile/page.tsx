@@ -11,6 +11,7 @@ import { Database } from "@/types/supabase";
 type Friend = {
   id: string;
   name: string;
+  img: string;
 };
 
 type FriendData = {
@@ -116,13 +117,33 @@ export default function Profile() {
       console.error("Error fetching friends:", friendsError);
     } else {
       if (friendsData?.length != 0) {
-        friendsData.forEach((friend, i) => {
-          if (friend?.friend_id === user?.id) {
-            friendsData[i].friend_id = friend.user_id;
-          }
-        });
+        const friendsCleaned = await Promise.all(
+          friendsData.map(async (friend, i) => {
+            if (friend?.friend_id === user?.id) {
+              friendsData[i].friend_id = friend.user_id;
+            }
+            const { data: userData, error: userError } = await supabase.rpc(
+              "get_user_metadata",
+              {
+                user_id: friend.friend_id,
+              }
+            );
+            const cleanedUserData: Friend = {
+              id: friend.friend_id,
+              name: userData.raw_user_meta_data.name,
+              img: userData.raw_user_meta_data.avatar_url,
+            };
+            if (userError) {
+              console.error(userError);
+              return null;
+            }
+
+            return cleanedUserData;
+          })
+        );
+        console.log(friendsCleaned);
+        setFriends(friendsCleaned || []);
       }
-      setFriends(friendsData || []);
     }
   }
 
@@ -262,7 +283,10 @@ export default function Profile() {
           {friends.length > 0 ? (
             <ul>
               {friends.map((friend) => (
-                <li key={friend.friend_id}>{friend.friend_id}</li>
+                <li key={friend.friend_id}>
+                  <img height={30} width={30} src={friend.img}></img>
+                  {friend.name}
+                </li>
               ))}
             </ul>
           ) : (

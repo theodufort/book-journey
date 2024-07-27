@@ -734,6 +734,45 @@ export type Database = {
           },
         ]
       }
+      messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: number
+          receiver_id: string | null
+          sender_id: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: number
+          receiver_id?: string | null
+          sender_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: number
+          receiver_id?: string | null
+          sender_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_receiver_id_fkey"
+            columns: ["receiver_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       point_transactions: {
         Row: {
           created_at: string | null
@@ -940,7 +979,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_metadata: {
+        Args: {
+          user_id: string
+        }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never

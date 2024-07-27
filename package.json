@@ -7,7 +7,8 @@
     "build": "next build",
     "postbuild": "next-sitemap",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "types":"npx supabase gen types --lang=typescript --project-id 'uawexgauucicbdxpbrkv' --schema public,auth > types/supabase.ts"
   },
   "dependencies": {
     "@auth/supabase-adapter": "^1.4.1",
