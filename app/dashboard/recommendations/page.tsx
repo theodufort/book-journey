@@ -4,10 +4,13 @@ import { useEffect, useState } from "react";
 import HeaderDashboard from "@/components/DashboardHeader";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Volume } from "@/interfaces/GoogleAPI";
+import { Database } from "@/types/supabase";
+import BookAvatar from "@/components/BookAvatar";
 
 export default function Recommendations() {
-  const [recommendations, setRecommendations] = useState<Volume[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [booksLoaded, setBooksLoaded] = useState(false);
+  const [bookSuggestions, setBookSuggestions] = useState([]);
   const [error, setError] = useState<string | null>(null);
   const supabase = createClientComponentClient<Database>();
 
@@ -33,9 +36,11 @@ export default function Recommendations() {
         throw new Error(data.error);
       }
 
-      if (!data.recommendations || !Array.isArray(data.recommendations)) {
+      if (!data || data.length == 0) {
         throw new Error("Invalid recommendations data received");
       }
+      setBookSuggestions(data);
+      setBooksLoaded(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
       console.error("Error fetching recommendations:", err);
@@ -79,27 +84,15 @@ export default function Recommendations() {
 
         {!isLoading && !error && (
           <>
-            {recommendations.length === 0 ? (
+            {bookSuggestions.length === 0 ? (
               <p className="text-center">
                 No recommendations available at the moment.
               </p>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {recommendations.map((book) => (
-                  <div key={book.id} className="card bg-base-100 shadow-xl">
-                    <div className="card-body">
-                      <h2 className="card-title">{book.volumeInfo.title}</h2>
-                      <p>{book.volumeInfo.authors?.join(", ")}</p>
-                      <p>{book.volumeInfo.categories?.join(", ")}</p>
-                      <div className="card-actions justify-end">
-                        <button
-                          className="btn btn-primary"
-                          onClick={() => addToReadingList(book)}
-                        >
-                          Add to Reading List
-                        </button>
-                      </div>
-                    </div>
+              <div className="grid grid-cols-3 gap-5">
+                {bookSuggestions.map((x, index) => (
+                  <div>
+                    <BookAvatar vol={x} isBlurred={false} />
                   </div>
                 ))}
               </div>
