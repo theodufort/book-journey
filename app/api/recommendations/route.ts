@@ -1,117 +1,77 @@
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { Book, Preferences } from "./interface";
+
 const supabase = createRouteHandlerClient({ cookies });
-// Global constants for attribute weights
-const AUTHOR_WEIGHT = 1;
-const MAIN_CATEGORY_WEIGHT = 3;
-const SUBCATEGORY_WEIGHT = 2;
 
-function getUserPreferencesBasedonBooks(booksRead: Book[]): Preferences {
-  const preferences: Preferences = {
-    Author: {},
-    "Main Category": {},
-    Subcategory: {},
-  };
-  let totalRatings = 0;
-
-  for (const book of booksRead) {
-    const rating = parseFloat(book["Personal Rating"] || "0");
-    totalRatings += rating;
-    preferences.Author[book.Author] =
-      (preferences.Author[book.Author] || 0) + rating;
-    preferences["Main Category"][book["Main Category"]] =
-      (preferences["Main Category"][book["Main Category"]] || 0) + rating;
-    preferences.Subcategory[book.Subcategory] =
-      (preferences.Subcategory[book.Subcategory] || 0) + rating;
-  }
-
-  // Normalize preferences
-  for (const category in preferences) {
-    for (const key in preferences[category as keyof Preferences]) {
-      preferences[category as keyof Preferences][key] /= totalRatings;
-    }
-  }
-
-  return preferences;
-}
-
-function calculateBookScore(book: Book, preferences: Preferences): number {
-  let score = 0;
-  score += (preferences.Author[book.Author] || 0) * AUTHOR_WEIGHT;
-  score +=
-    (preferences["Main Category"][book["Main Category"]] || 0) *
-    MAIN_CATEGORY_WEIGHT;
-  score +=
-    (preferences.Subcategory[book.Subcategory] || 0) * SUBCATEGORY_WEIGHT;
-  return score;
-}
-
-function recommendBooks(
-  booksRead: Book[],
-  numRecommendations: number = 10
-): Book[] {
-  // Get user preferences
-  const preferences = getUserPreferencesBasedonBooks(booksRead);
-
-  // Calculate scores for unread books
-  const unreadBooks = allBooks.filter(
-    (book) =>
-      !booksRead.some(
-        (readBook) => readBook["Book Title"] === book["Book Title"]
-      )
-  );
-  const scoredBooks = unreadBooks.map((book) => ({
-    book,
-    score: calculateBookScore(book, preferences),
-  }));
-
-  // Sort books by score in descending order
-  scoredBooks.sort((a, b) => b.score - a.score);
-
-  // Return top N recommendations
-  return scoredBooks.slice(0, numRecommendations).map((item) => item.book);
-}
-
-async function getRecommendations() {
+async function getReadBooks(userId: string) {
   const { data, error } = await supabase
     .from("reading_list")
-    .select("*")
-    .eq("status", "Finished")
-    .maybeSingle();
+    .select("book_id, status")
+    .eq("user_id", userId)
+    .eq("status", "Finished");
 
-  const booksRead = data;
-  const searchResponse = await fetch(
-    `/api/books/search?q=${}`
-  );
-  const searchData = await searchResponse.json();
-  const recommendations = recommendBooks(booksRead, 5);
+  if (error) {
+    console.error("Error fetching read books:", error);
+    return [];
+  }
 
-  return recommendations.map((book, index) => ({
-    id: index + 1,
-    title: book["Book Title"],
-    author: book.Author,
-    mainCategory: book["Main Category"],
-    subcategory: book.Subcategory,
-  }));
+  return data || [];
 }
+
+async function getBookDetails(bookId: string) {
+  const response = await fetch(`/api/books/${bookId}`);
+  if (!response.ok) {
+    console.error(`Error fetching book details for ${bookId}`);
+    return null;
+  }
+  return await response.json();
+}
+
+async function getRecommendations(userId: string) {
+  const readBooks = await getReadBooks(userId);
+  const bookDetails = await Promise.all(
+    readBooks.map((book) => getBookDetails(book.book_id))
+  );
+
+  const genres = new Set<string>();
+  const categories = new Set<string>();
+
+  bookDetails.forEach((book) => {
+    if (book) {
+      if (book.genre) genres.add(book.genre);
+      if (book.category) categories.add(book.category);
+    }
+  });
+
+  const searchQuery = [...genres, ...categories].join(" OR ");
+  const searchResponse = await fetch(`/api/books/search?q=${searchQuery}&limit=10`);
+  
+  if (!searchResponse.ok) {
+    console.error("Error fetching recommendations");
+    return [];
+  }
+
+  const searchData = await searchResponse.json();
+  
+  // Filter out books that the user has already read
+  const readBookIds = new Set(readBooks.map(book => book.book_id));
+  const recommendations = searchData.filter((book: any) => !readBookIds.has(book.id));
+
+  return recommendations.slice(0, 5);  // Return top 5 recommendations
+}
+
 export async function GET() {
   try {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
       console.error("User not authenticated");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const userId = user.id;
-    // Fetch user's reading history
-    const { data: readingHistory, error: historyError } = await supabase
-      .from("reading_list")
-      .select("books(genre)")
-      .eq("user_id", user.id);
+
+    const recommendations = await getRecommendations(user.id);
+    return NextResponse.json(recommendations);
   } catch (error) {
     console.error("Unexpected error:", error);
     return NextResponse.json(
