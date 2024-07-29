@@ -4,6 +4,9 @@ import { NextResponse } from "next/server";
 
 const supabase = createRouteHandlerClient({ cookies });
 
+const GOOGLE_BOOKS_API_BASE = "https://www.googleapis.com/books/v1";
+const GOOGLE_BOOKS_API_KEY = "YOUR_GOOGLE_BOOKS_API_KEY"; // Replace with your actual API key
+
 async function getReadBooks(userId: string) {
   const { data, error } = await supabase
     .from("reading_list")
@@ -20,12 +23,19 @@ async function getReadBooks(userId: string) {
 }
 
 async function getBookDetails(bookId: string) {
-  const response = await fetch(`/api/books/${bookId}`);
+  const response = await fetch(`${GOOGLE_BOOKS_API_BASE}/volumes/${bookId}?key=${GOOGLE_BOOKS_API_KEY}`);
   if (!response.ok) {
     console.error(`Error fetching book details for ${bookId}`);
     return null;
   }
-  return await response.json();
+  const data = await response.json();
+  return {
+    id: data.id,
+    title: data.volumeInfo.title,
+    authors: data.volumeInfo.authors,
+    categories: data.volumeInfo.categories,
+    description: data.volumeInfo.description,
+  };
 }
 
 async function getRecommendations(userId: string) {
@@ -34,18 +44,18 @@ async function getRecommendations(userId: string) {
     readBooks.map((book) => getBookDetails(book.book_id))
   );
 
-  const genres = new Set<string>();
   const categories = new Set<string>();
 
   bookDetails.forEach((book) => {
-    if (book) {
-      if (book.genre) genres.add(book.genre);
-      if (book.category) categories.add(book.category);
+    if (book && book.categories) {
+      book.categories.forEach((category: string) => categories.add(category));
     }
   });
 
-  const searchQuery = [...genres, ...categories].join(" OR ");
-  const searchResponse = await fetch(`/api/books/search?q=${searchQuery}&limit=10`);
+  const searchQuery = Array.from(categories).join("+subject:");
+  const searchResponse = await fetch(
+    `${GOOGLE_BOOKS_API_BASE}/volumes?q=subject:${searchQuery}&maxResults=40&key=${GOOGLE_BOOKS_API_KEY}`
+  );
   
   if (!searchResponse.ok) {
     console.error("Error fetching recommendations");
@@ -56,7 +66,14 @@ async function getRecommendations(userId: string) {
   
   // Filter out books that the user has already read
   const readBookIds = new Set(readBooks.map(book => book.book_id));
-  const recommendations = searchData.filter((book: any) => !readBookIds.has(book.id));
+  const recommendations = searchData.items
+    .filter((book: any) => !readBookIds.has(book.id))
+    .map((book: any) => ({
+      id: book.id,
+      title: book.volumeInfo.title,
+      authors: book.volumeInfo.authors,
+      description: book.volumeInfo.description,
+    }));
 
   return recommendations.slice(0, 5);  // Return top 5 recommendations
 }
