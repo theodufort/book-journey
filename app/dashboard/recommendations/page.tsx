@@ -36,20 +36,6 @@ export default function Recommendations() {
       if (!data.recommendations || !Array.isArray(data.recommendations)) {
         throw new Error("Invalid recommendations data received");
       }
-
-      // Fetch book details using the search API
-      const bookDetails = await Promise.all(
-        data.recommendations.map(async (recommendation) => {
-          const searchResponse = await fetch(
-            `/api/books/search?q=${encodeURIComponent(recommendation.title)}`
-          );
-          const searchData = await searchResponse.json();
-          return searchData.items[0]; // Assuming the first result is the most relevant
-        })
-      );
-
-      setRecommendations(bookDetails);
-      console.log("Recommendations fetched:", bookDetails.length);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
       console.error("Error fetching recommendations:", err);
