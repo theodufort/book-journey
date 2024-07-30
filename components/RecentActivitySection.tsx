@@ -4,7 +4,7 @@ import { User } from "@supabase/supabase-js";
 interface ActivityItem {
   id: number;
   activity_type: string;
-  timestamp: string;
+  created_at: string;
 }
 
 const RecentActivitySection = () => {
@@ -27,7 +27,7 @@ const RecentActivitySection = () => {
         .from("user_activity")
         .select("*")
         .eq("user_id", user.id)
-        .order("timestamp", { ascending: false })
+        .order("created_at", { ascending: false })
         .limit(5);
 
       if (error) {
@@ -49,7 +49,7 @@ const RecentActivitySection = () => {
             <li key={activity.id} className="flex justify-between items-center">
               <span>{activity.activity_type}</span>
               <span className="text-sm text-gray-500">
-                {new Date(activity.timestamp).toLocaleDateString()}
+                {new Date(activity.created_at).toLocaleDateString()}
               </span>
             </li>
           ))}
