@@ -139,6 +139,26 @@ BEGIN
 END;
 $$;
 
+-- Function to check if a book exists and return its data
+CREATE OR REPLACE FUNCTION public.check_book_exists(p_isbn_13 TEXT)
+RETURNS JSONB
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_result JSONB;
+BEGIN
+    SELECT data INTO v_result
+    FROM public.books
+    WHERE isbn_13 = p_isbn_13;
+
+    IF v_result IS NULL THEN
+        RETURN '[]'::JSONB;
+    ELSE
+        RETURN v_result;
+    END IF;
+END;
+$$;
+
 create table
   public.books (
     isbn_13 text not null,
