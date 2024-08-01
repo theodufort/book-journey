@@ -6,10 +6,12 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
 import { Volume } from "@/interfaces/GoogleAPI";
 export default function BookListItem({
+  status,
   item,
   onUpdate,
 }: {
   item: Volume;
+  status: string;
   onUpdate: () => void;
 }) {
   const supabase = createClientComponentClient<Database>();
@@ -19,7 +21,7 @@ export default function BookListItem({
   );
   const [showModal, setShowModal] = useState(false);
   const [messageType, setMessageType] = useState("begin");
-  const [newStatus, setNewStatus] = useState(item.status);
+  const [newStatus, setNewStatus] = useState(status);
   const [pendingUpdate, setPendingUpdate] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [rating, setRating] = useState(0);
@@ -96,12 +98,12 @@ export default function BookListItem({
 
   async function updateBookStatus(ns: string, book_page_count: number) {
     setNewStatus(ns);
-    if (item.status === "To Read" && ns === "Reading") {
+    if (status === "To Read" && ns === "Reading") {
       setMessageType("begin");
       setShowModal(true);
       setPendingUpdate(true);
     } else if (
-      (item.status === "Reading" || item.status === "To Read") &&
+      (status === "Reading" || status === "To Read") &&
       ns === "Finished"
     ) {
       setMessageType("end");
@@ -134,7 +136,11 @@ export default function BookListItem({
     const { error } = await supabase
       .from("reading_list")
       .update({ status, rating })
-      .eq("book_id", item.book_id)
+      .eq(
+        "book_id",
+        item.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
+          ?.identifier
+      )
       .eq("user_id", user?.id);
     if (status === "Finished") {
       awardPoints(100, `Finished reading ${book.title}`);
@@ -152,7 +158,11 @@ export default function BookListItem({
     const { error } = await supabase
       .from("reading_list")
       .update({ rating: newRating })
-      .eq("book_id", item.book_id)
+      .eq(
+        "book_id",
+        item.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
+          ?.identifier
+      )
       .eq("user_id", user?.id);
     console.log(error);
     if (error) {
@@ -166,7 +176,11 @@ export default function BookListItem({
     const { error } = await supabase
       .from("reading_list")
       .delete()
-      .eq("book_id", item.book_id)
+      .eq(
+        "book_id",
+        item.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
+          ?.identifier
+      )
       .eq("user_id", user?.id);
 
     if (error) console.error("Error removing book:", error);
@@ -238,7 +252,7 @@ export default function BookListItem({
                 <b>Status:</b>{" "}
               </label>
               <select
-                value={item.status}
+                value={status}
                 onChange={(e) =>
                   updateBookStatus(e.target.value, book.pageCount)
                 }
@@ -249,7 +263,7 @@ export default function BookListItem({
                 <option value="Finished">Finished</option>
               </select>
             </div>
-            {item.status === "Finished" && renderRatingInput()}
+            {status === "Finished" && renderRatingInput()}
             <button className="btn btn-primary float-end" onClick={removeBook}>
               Remove
             </button>
