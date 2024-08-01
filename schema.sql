@@ -44,7 +44,6 @@ CREATE TABLE public.friends (
 -- Reading stats table in the 'public' schema
 CREATE TABLE public.reading_stats (
     user_id UUID PRIMARY KEY REFERENCES auth.users(id),
-    books_read INT,
     pages_read INT,
     reading_time_minutes INT
 );
@@ -67,14 +66,7 @@ CREATE TABLE public.point_transactions (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Messages table in the 'public' schema
-CREATE TABLE public.messages (
-    id SERIAL PRIMARY KEY,
-    sender_id UUID REFERENCES auth.users(id),
-    receiver_id UUID REFERENCES auth.users(id),
-    content TEXT NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
+
 
 -- User activity table in the 'public' schema
 CREATE TABLE public.user_activity (
