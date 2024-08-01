@@ -17,12 +17,9 @@ export default function UserProfile({
 
   useEffect(() => {
     async function fetchProfile() {
-      const { data, error } = await supabase
-        .schema("auth")
-        .from("users")
-        .select("*")
-        .eq("id", params.userId)
-        .single();
+      const { data, error } = await supabase.rpc("get_user_metadata", {
+        user_id: params.userId,
+      });
 
       if (error) {
         console.error("Error fetching profile:", error);
@@ -46,7 +43,6 @@ export default function UserProfile({
   return (
     <main className="min-h-screen p-8 pb-24">
       <section className="max-w-6xl mx-auto space-y-8">
-        <HeaderDashboard />
         <h1 className="text-3xl md:text-4xl font-extrabold">User Profile</h1>
         <div>
           <p>User ID: {profile.id}</p>
