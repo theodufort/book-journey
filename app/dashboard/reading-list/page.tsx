@@ -54,14 +54,12 @@ export default function ReadingList() {
         await fetchReadingList(data.user.id);
       } else {
         console.log("User not authenticated");
-        setLoading(false);
       }
     };
     getUser();
   }, [supabase]);
 
   async function fetchReadingList(userId: string) {
-    console.log(userId);
     setLoading(true);
     try {
       const { data: booksData, error: booksError } = await supabase
@@ -82,9 +80,7 @@ export default function ReadingList() {
         const bookDetails = await Promise.all(
           booksData.map(async (item) => {
             const cache = await checkBookExists(item.book_id);
-            console.log(cache);
-            if (cache) {
-              console.log("fetch");
+            if (cache == null) {
               try {
                 const response = await fetch(`/api/books/${item.book_id}`);
                 if (!response.ok) {
@@ -98,7 +94,7 @@ export default function ReadingList() {
                   data: bookData as unknown as Json,
                 });
                 return {
-                  ...bookData,
+                  data: bookData,
                   book_id: item.book_id,
                   status: item.status,
                 };
@@ -108,16 +104,18 @@ export default function ReadingList() {
               }
             } else {
               return {
-                ...cache,
+                data: cache,
                 book_id: item.book_id,
                 status: item.status,
               };
             }
           })
         );
+        console.log(bookDetails);
         // Filter out any null results from failed fetches
-        const validBookDetails = bookDetails.filter((book) => book !== null);
+        const validBookDetails = bookDetails.filter((book) => book != null);
         setReadingList(validBookDetails);
+        setLoading(false);
       }
 
       // Fetch reading stats separately
@@ -214,6 +212,7 @@ export default function ReadingList() {
               ) : (
                 <>
                   <CollapsibleSection
+                    status="To Read"
                     title={`To Read (${toReadBooks.length})`}
                     isExpanded={expandedSections["To Read"]}
                     onToggle={() => toggleSection("To Read")}
@@ -221,6 +220,7 @@ export default function ReadingList() {
                     onUpdate={() => fetchReadingList(user.id)}
                   />
                   <CollapsibleSection
+                    status="Reading"
                     title={`Currently Reading (${readingBooks.length})`}
                     isExpanded={expandedSections["Reading"]}
                     onToggle={() => toggleSection("Reading")}
@@ -228,6 +228,7 @@ export default function ReadingList() {
                     onUpdate={() => fetchReadingList(user.id)}
                   />
                   <CollapsibleSection
+                    status="Finished"
                     title={`Finished (${finishedBooks.length})`}
                     isExpanded={expandedSections["Finished"]}
                     onToggle={() => toggleSection("Finished")}
