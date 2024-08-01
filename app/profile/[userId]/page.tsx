@@ -3,8 +3,22 @@
 import { useEffect, useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
-import HeaderDashboard from "@/components/DashboardHeader";
 import { Database } from "@/types/supabase";
+import Image from "next/image";
+
+interface Book {
+  id: string;
+  title: string;
+  author: string;
+  cover_image: string;
+}
+
+interface Review {
+  id: string;
+  book_title: string;
+  rating: number;
+  comment: string;
+}
 
 export default function UserProfile({
   params,
@@ -12,42 +26,177 @@ export default function UserProfile({
   params: { userId: string };
 }) {
   const [profile, setProfile] = useState<User | null>(null);
+  const [readBooks, setReadBooks] = useState<Book[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const supabase = createClientComponentClient<Database>();
 
   useEffect(() => {
-    async function fetchProfile() {
-      const { data, error } = await supabase.rpc("get_user_metadata", {
+    async function fetchProfileData() {
+      const { data: userData, error: userError } = await supabase.rpc("get_user_metadata", {
         user_id: params.userId,
       });
 
-      if (error) {
-        console.error("Error fetching profile:", error);
+      if (userError) {
+        console.error("Error fetching profile:", userError);
       } else {
-        setProfile(data);
+        setProfile(userData);
       }
+
+      const { data: booksData, error: booksError } = await supabase
+        .from("reading_list")
+        .select(`
+          book_id,
+          books:book_id (
+            title,
+            author,
+            cover_image
+          )
+        `)
+        .eq("user_id", params.userId)
+        .eq("status", "Finished");
+
+      if (booksError) {
+        console.error("Error fetching read books:", booksError);
+      } else {
+        setReadBooks(booksData.map(item => ({
+          id: item.book_id,
+          ...item.books
+        })));
+      }
+
+      const { data: reviewsData, error: reviewsError } = await supabase
+        .from("book_reviews")
+        .select("id, book_id, rating, comment, books:book_id(title)")
+        .eq("user_id", params.userId);
+
+      if (reviewsError) {
+        console.error("Error fetching reviews:", reviewsError);
+      } else {
+        setReviews(reviewsData.map(review => ({
+          id: review.id,
+          book_title: review.books.title,
+          rating: review.rating,
+          comment: review.comment
+        })));
+      }
+
       setLoading(false);
     }
 
-    fetchProfile();
+    fetchProfileData();
   }, [params.userId, supabase]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="loading loading-spinner loading-lg"></div>
+      </div>
+    );
   }
 
   if (!profile) {
-    return <div>User not found</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <h1 className="text-2xl font-bold">User not found</h1>
+      </div>
+    );
   }
 
   return (
-    <main className="min-h-screen p-8 pb-24">
-      <section className="max-w-6xl mx-auto space-y-8">
-        <h1 className="text-3xl md:text-4xl font-extrabold">User Profile</h1>
-        <div>
-          <p>User ID: {profile.id}</p>
-          <p>Email: {profile.email}</p>
-          {/* Add more profile information as needed */}
+    <main className="min-h-screen p-8 pb-24 bg-base-200">
+      <section className="max-w-6xl mx-auto space-y-12">
+        <div className="bg-base-100 rounded-box p-8 shadow-xl">
+          <div className="flex items-center space-x-8">
+            <div className="avatar">
+              <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                <Image
+                  src={profile.user_metadata?.avatar_url || "/default-avatar.png"}
+                  alt={profile.user_metadata?.full_name || "User"}
+                  width={96}
+                  height={96}
+                />
+              </div>
+            </div>
+            <div>
+              <h1 className="text-3xl md:text-4xl font-extrabold">{profile.user_metadata?.full_name || "Anonymous Reader"}</h1>
+              <p className="text-xl text-base-content/70">@{profile.user_metadata?.username || profile.id}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-base-100 rounded-box p-8 shadow-xl">
+          <h2 className="text-2xl font-bold mb-4">Reading Journey</h2>
+          <div className="stats stats-vertical lg:stats-horizontal shadow">
+            <div className="stat">
+              <div className="stat-title">Books Read</div>
+              <div className="stat-value">{readBooks.length}</div>
+            </div>
+            <div className="stat">
+              <div className="stat-title">Reviews Written</div>
+              <div className="stat-value">{reviews.length}</div>
+            </div>
+            <div className="stat">
+              <div className="stat-title">Avg Rating</div>
+              <div className="stat-value">
+                {reviews.length > 0
+                  ? (reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(1)
+                  : "N/A"}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-base-100 rounded-box p-8 shadow-xl">
+          <h2 className="text-2xl font-bold mb-4">Read Books</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {readBooks.map((book) => (
+              <div key={book.id} className="card bg-base-200 shadow-sm">
+                <figure className="px-4 pt-4">
+                  <Image
+                    src={book.cover_image || "/default-book-cover.png"}
+                    alt={book.title}
+                    width={120}
+                    height={180}
+                    className="rounded-lg"
+                  />
+                </figure>
+                <div className="card-body items-center text-center p-4">
+                  <h3 className="card-title text-sm">{book.title}</h3>
+                  <p className="text-xs">{book.author}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-base-100 rounded-box p-8 shadow-xl">
+          <h2 className="text-2xl font-bold mb-4">Book Reviews</h2>
+          <div className="space-y-4">
+            {reviews.map((review) => (
+              <div key={review.id} className="card bg-base-200 shadow-sm">
+                <div className="card-body">
+                  <h3 className="card-title">{review.book_title}</h3>
+                  <div className="flex items-center">
+                    <div className="rating rating-sm">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <input
+                          key={star}
+                          type="radio"
+                          name={`rating-${review.id}`}
+                          className="mask mask-star-2 bg-orange-400"
+                          checked={review.rating === star}
+                          readOnly
+                        />
+                      ))}
+                    </div>
+                    <span className="ml-2 text-sm">{review.rating}/5</span>
+                  </div>
+                  <p className="text-sm">{review.comment}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     </main>
