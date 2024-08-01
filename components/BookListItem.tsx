@@ -102,14 +102,21 @@ export default function BookListItem({
     }
   }
   async function calculateUserStats(book_page_count: number) {
-    const { data, error } = await supabase
-      .from("reading_stats")
-      .upsert({
-        books_read: "increment + 1",
-        pages_read: "increment + 1",
-        reading_time_minutes: "increment + 1",
-      })
-      .eq("user_id", user.id);
+    if (!user) {
+      console.error("User not authenticated");
+      return;
+    }
+
+    const { data, error } = await supabase.rpc('update_reading_stats', {
+      p_user_id: user.id,
+      p_books_read: 1,
+      p_pages_read: book_page_count,
+      p_reading_time_minutes: Math.round(book_page_count / 2) // Assuming 2 pages per minute on average
+    });
+
+    if (error) {
+      console.error("Error updating reading stats:", error);
+    }
   }
   async function performUpdate(
     status: string = newStatus,
