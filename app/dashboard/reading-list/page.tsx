@@ -144,13 +144,13 @@ export default function ReadingList() {
   }
 
   const toReadBooks = readingList.filter(
-    (item: any) => item.status === "To Read"
+    (item) => item.status === "To Read"
   );
   const readingBooks = readingList.filter(
-    (item: any) => item.status === "Reading"
+    (item) => item.status === "Reading"
   );
   const finishedBooks = readingList.filter(
-    (item: any) => item.status === "Finished"
+    (item) => item.status === "Finished"
   );
 
   const toggleSection = (section: string) => {
@@ -216,7 +216,7 @@ export default function ReadingList() {
                     title={`To Read (${toReadBooks.length})`}
                     isExpanded={expandedSections["To Read"]}
                     onToggle={() => toggleSection("To Read")}
-                    books={toReadBooks}
+                    books={toReadBooks.map(item => item.data)}
                     onUpdate={() => fetchReadingList(user.id)}
                   />
                   <CollapsibleSection
@@ -224,7 +224,7 @@ export default function ReadingList() {
                     title={`Currently Reading (${readingBooks.length})`}
                     isExpanded={expandedSections["Reading"]}
                     onToggle={() => toggleSection("Reading")}
-                    books={readingBooks}
+                    books={readingBooks.map(item => item.data)}
                     onUpdate={() => fetchReadingList(user.id)}
                   />
                   <CollapsibleSection
@@ -232,7 +232,7 @@ export default function ReadingList() {
                     title={`Finished (${finishedBooks.length})`}
                     isExpanded={expandedSections["Finished"]}
                     onToggle={() => toggleSection("Finished")}
-                    books={finishedBooks}
+                    books={finishedBooks.map(item => item.data)}
                     onUpdate={() => fetchReadingList(user.id)}
                   />
                 </>
