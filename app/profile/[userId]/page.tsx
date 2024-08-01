@@ -6,29 +6,13 @@ import { User } from "@supabase/supabase-js";
 import { Database } from "@/types/supabase";
 import Image from "next/image";
 
-interface Book {
-  id: string;
-  title: string;
-  author: string;
-  cover_image: string;
-}
-
-interface ReadBook {
-  id: string;
-  title: string;
-  author: string;
-  cover_image: string;
-  rating: number;
-}
-
 export default function UserProfile({
   params,
 }: {
   params: { userId: string };
 }) {
   const [profile, setProfile] = useState(null);
-  const [readBooks, setReadBooks] = useState<Book[]>([]);
-  const [readBooks, setReadBooks] = useState<ReadBook[]>([]);
+  const [readBooks, setReadBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const supabase = createClientComponentClient<Database>();
 
@@ -49,7 +33,7 @@ export default function UserProfile({
       try {
         const { data: booksData, error: booksError } = await supabase
           .from("reading_list")
-          .select("id,book_id,status")
+          .select("id,book_id,status,rating")
           .eq("user_id", params.userId)
           .eq("status", "Reading")
           .limit(5);
@@ -83,28 +67,6 @@ export default function UserProfile({
           const validBookDetails = bookDetails.filter((book) => book !== null);
           setReadBooks(validBookDetails);
         }
-
-        const { data: readBooksData, error: readBooksError } = await supabase
-          .from("reading_list")
-          .select("id, book_id, rating, books:book_id(title, author, cover_image)")
-          .eq("user_id", params.userId)
-          .eq("status", "Finished");
-
-        if (readBooksError) {
-          console.error("Error fetching read books:", readBooksError);
-        } else {
-          setReadBooks(
-            readBooksData.map((book) => ({
-              id: book.id,
-              title: book.books.title,
-              author: book.books.author,
-              cover_image: book.books.cover_image,
-              rating: book.rating || 0,
-            }))
-          );
-        }
-
-        setLoading(false);
       } catch (error) {
         console.error("Unexpected error fetching dashboard data:", error);
       } finally {
@@ -167,24 +129,13 @@ export default function UserProfile({
               <div className="stat-title">Books Read</div>
               <div className="stat-value">{readBooks.length}</div>
             </div>
-            <div className="stat">
-              <div className="stat-title">Reviews Written</div>
-              <div className="stat-value">{reviews.length}</div>
-            </div>
+
             <div className="stat">
               <div className="stat-title">Avg Rating</div>
-              <div className="stat-value">
-                {reviews.length > 0
-                  ? (
-                      reviews.reduce((sum, review) => sum + review.rating, 0) /
-                      reviews.length
-                    ).toFixed(1)
-                  : "N/A"}
-              </div>
+              <div className="stat-value">{readBooks.map((x) => x.rating)}</div>
             </div>
           </div>
         </div>
-
         <div className="bg-base-100 rounded-box p-8 shadow-xl">
           <h2 className="text-2xl font-bold mb-4">Read Books</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -200,27 +151,6 @@ export default function UserProfile({
                   />
                 </figure>
                 <div className="card-body items-center text-center p-4">
-                  <h3 className="card-title text-sm">{book.title}</h3>
-                  <p className="text-xs">{book.author}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="bg-base-100 rounded-box p-8 shadow-xl">
-          <h2 className="text-2xl font-bold mb-4">Read Books</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {readBooks.map((book) => (
-              <div key={book.id} className="card bg-base-200 shadow-sm">
-                <figure className="px-4 pt-4">
-                  <img
-                    src={book.cover_image || "/default-book-cover.png"}
-                    alt={book.title}
-                    className="rounded-lg w-32 h-48 object-cover"
-                  />
-                </figure>
-                <div className="card-body items-center text-center">
                   <h3 className="card-title text-sm">{book.title}</h3>
                   <p className="text-xs">{book.author}</p>
                   <div className="rating rating-sm">
