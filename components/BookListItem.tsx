@@ -15,10 +15,9 @@ export default function BookListItem({
   onUpdate: () => void;
 }) {
   const supabase = createClientComponentClient<Database>();
-  const { book, loading, error } = useBookDetails(
-    item.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
-      ?.identifier
-  );
+  const book = item.volumeInfo;
+  const loading = false;
+  const error = null;
   const [showModal, setShowModal] = useState(false);
   const [messageType, setMessageType] = useState("begin");
   const [newStatus, setNewStatus] = useState(status);
@@ -235,7 +234,7 @@ export default function BookListItem({
         <div className="card-body">
           <h2 className="card-title">{book.title || "Untitled"}</h2>
           <p>
-            <b>Author:</b> {book.authors || "Unknown"}
+            <b>Author:</b> {book.authors?.join(", ") || "Unknown"}
           </p>
           <p>
             <b>Page Count:</b> {book.pageCount || "Unknown"}
