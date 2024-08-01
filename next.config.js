@@ -10,6 +10,7 @@ const nextConfig = {
       "logos-world.net",
       "example.com",
       "books.google.com",
+      "googleusercontent.com",
     ],
   },
 };

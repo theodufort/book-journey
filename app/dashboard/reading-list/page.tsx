@@ -9,7 +9,8 @@ import CollapsibleSection from "@/components/CollapsibleSection";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import PointsSection from "@/components/PointsSection";
 import RecentActivitySection from "@/components/RecentActivitySection";
-import { Database } from "@/types/supabase";
+import { Database, Json } from "@/types/supabase";
+import { checkBookExists } from "@/libs/supabase-helpers";
 
 export default function ReadingList() {
   const supabase = createClientComponentClient<Database>();
@@ -23,21 +24,21 @@ export default function ReadingList() {
     Finished: true,
   });
 
-  async function updateBookProgress(bookId: string, progress: number) {
+  async function updateBookProgress(bookId: string, status: string) {
     if (!user) return;
 
     try {
       const { error } = await supabase
         .from("reading_list")
-        .update({ progress })
+        .update({ status })
         .eq("user_id", user.id)
         .eq("book_id", bookId);
 
       if (error) throw error;
 
-      setReadingList(prevList =>
-        prevList.map(book =>
-          book.id === bookId ? { ...book, progress } : book
+      setReadingList((prevList) =>
+        prevList.map((book) =>
+          book.id === bookId ? { ...book, status } : book
         )
       );
     } catch (error) {
@@ -63,41 +64,54 @@ export default function ReadingList() {
     console.log(userId);
     setLoading(true);
     try {
-      const { data: readingListData, error: readingListError } = await supabase
+      const { data: booksData, error: booksError } = await supabase
         .from("reading_list")
         .select(
           `
           book_id::text, 
-          status,
-          progress
+          status
         `
         )
         .eq("user_id", userId);
 
-      if (readingListError) {
-        console.error("Error fetching reading list:", readingListError);
+      if (booksError) {
+        console.error("Error fetching reading list:", booksError);
         setReadingList([]);
       } else {
         // Fetch book details from our API route
         const bookDetails = await Promise.all(
-          readingListData.map(async (item) => {
-            try {
-              const response = await fetch(`/api/books/${item.book_id}`);
-              if (!response.ok) {
-                throw new Error(
-                  `Failed to fetch book details for ${item.book_id}`
-                );
+          booksData.map(async (item) => {
+            const cache = await checkBookExists(item.book_id);
+            console.log(cache);
+            if (cache) {
+              console.log("fetch");
+              try {
+                const response = await fetch(`/api/books/${item.book_id}`);
+                if (!response.ok) {
+                  throw new Error(
+                    `Failed to fetch book details for ${item.book_id}`
+                  );
+                }
+                const bookData: Volume = await response.json();
+                const { data, error } = await supabase.from("books").insert({
+                  isbn_13: item.book_id,
+                  data: bookData as unknown as Json,
+                });
+                return {
+                  ...bookData,
+                  book_id: item.book_id,
+                  status: item.status,
+                };
+              } catch (error) {
+                console.error(error);
+                return null;
               }
-              const bookData = await response.json();
+            } else {
               return {
-                ...bookData,
+                ...cache,
                 book_id: item.book_id,
                 status: item.status,
-                progress: item.progress,
               };
-            } catch (error) {
-              console.error(error);
-              return null;
             }
           })
         );
@@ -212,23 +226,6 @@ export default function ReadingList() {
                     onToggle={() => toggleSection("Reading")}
                     books={readingBooks}
                     onUpdate={() => fetchReadingList(user.id)}
-                    renderBook={(book) => (
-                      <div key={book.id} className="mb-4">
-                        <h3 className="font-bold">{book.volumeInfo.title}</h3>
-                        <p>{book.volumeInfo.authors?.join(', ')}</p>
-                        <div className="mt-2">
-                          <input
-                            type="range"
-                            min="0"
-                            max="100"
-                            value={book.progress || 0}
-                            onChange={(e) => updateBookProgress(book.id, parseInt(e.target.value))}
-                            className="range range-xs"
-                          />
-                          <div className="text-center">{book.progress || 0}% complete</div>
-                        </div>
-                      </div>
-                    )}
                   />
                   <CollapsibleSection
                     title={`Finished (${finishedBooks.length})`}

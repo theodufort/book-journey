@@ -13,8 +13,8 @@ INSERT INTO user_preferences (user_id, preferred_categories) VALUES
 ('fcdee905-d3ae-425b-ad34-d6a776a64813', ARRAY['Fiction', 'Science Fiction', 'Mystery']);
 
 -- Insert sample reading stats
-INSERT INTO reading_stats (user_id, books_read, pages_read, reading_time_minutes) VALUES
-('fcdee905-d3ae-425b-ad34-d6a776a64813', 10, 2500, 3000);
+INSERT INTO reading_stats (user_id,  pages_read, reading_time_minutes) VALUES
+('fcdee905-d3ae-425b-ad34-d6a776a64813',  2500, 3000);
 
 -- Insert sample user points
 INSERT INTO user_points (user_id, points, points_earned, points_redeemed) VALUES

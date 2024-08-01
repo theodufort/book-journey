@@ -15,6 +15,11 @@
   - pass: %\Zqh"kj(L7#];Ay[H
   - backup code: ywsn-zpoo-nmsv-gcee-dgmw
 
+## To implement
+
+- Profile page (public)
+  - Same stats as dashboard page
+
 ## Important Links
 
 - Tasks (Notion): https://fair-fairy-5cf.notion.site/MyBookQuest-3e9dbc6810a84f0981baf4ce6430d9bb?pvs=4

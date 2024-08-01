@@ -16,11 +16,13 @@ export async function GET(request: NextRequest) {
     const response = await fetch(
       `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
         query
-      )}&maxResults=40&key=${process.env.GOOGLE_BOOKS_API_KEY}`
+      )}&maxResults=40&key=${process.env.GOOGLE_API_KEY}&langRestrict=en`
     );
 
     if (!response.ok) {
-      throw new Error(`Google Books API responded with status ${response.status}`);
+      throw new Error(
+        `Google Books API responded with status ${response.status}`
+      );
     }
 
     const data = await response.json();
@@ -30,10 +32,11 @@ export async function GET(request: NextRequest) {
     }
 
     // Filter books to only include those with ISBN identifiers
-    const filteredItems = data.items.filter((item: any) =>
-      item.volumeInfo.industryIdentifiers?.some((identifier: any) =>
-        identifier.type.includes("ISBN_")
-      )
+    const filteredItems = data.items.filter(
+      (item: any) =>
+        item.volumeInfo.industryIdentifiers?.some((identifier: any) =>
+          identifier.type.includes("ISBN_")
+        ) && item.volumeInfo.authors
     );
 
     // Return the filtered data

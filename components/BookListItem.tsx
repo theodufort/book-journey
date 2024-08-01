@@ -1,19 +1,22 @@
 import { useBookDetails } from "@/hooks/useBookDetails";
 import { useState, useEffect } from "react";
 import CongratulationsModal from "./CongratulationsModal";
-import { ReadingListItem } from "@/interfaces/Dashboard";
 import { User } from "@supabase/supabase-js";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
+import { Volume } from "@/interfaces/GoogleAPI";
 export default function BookListItem({
   item,
   onUpdate,
 }: {
-  item: ReadingListItem;
+  item: Volume;
   onUpdate: () => void;
 }) {
   const supabase = createClientComponentClient<Database>();
-  const { book, loading, error } = useBookDetails(item.book_id);
+  const { book, loading, error } = useBookDetails(
+    item.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
+      ?.identifier
+  );
   const [showModal, setShowModal] = useState(false);
   const [messageType, setMessageType] = useState("begin");
   const [newStatus, setNewStatus] = useState(item.status);
@@ -60,7 +63,11 @@ export default function BookListItem({
       .from("reading_list")
       .select("rating")
       .eq("user_id", user.id)
-      .eq("book_id", item.book_id)
+      .eq(
+        "book_id",
+        item.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
+          ?.identifier
+      )
       .maybeSingle();
 
     if (error) {
@@ -93,25 +100,26 @@ export default function BookListItem({
       setMessageType("begin");
       setShowModal(true);
       setPendingUpdate(true);
-    } else if (item.status === "Reading" && ns === "Finished") {
+    } else if (
+      (item.status === "Reading" || item.status === "To Read") &&
+      ns === "Finished"
+    ) {
       setMessageType("end");
       setShowModal(true);
       setPendingUpdate(true);
+      //Add number of pages and time spent
+      calculateUserStats(book_page_count);
     } else {
       await performUpdate(ns, book_page_count);
     }
   }
   async function calculateUserStats(book_page_count: number) {
-    if (!user) {
-      console.error("User not authenticated");
-      return;
-    }
-
-    const { data, error } = await supabase.rpc('update_reading_stats', {
+    const { data, error } = await supabase.rpc("update_reading_stats", {
       p_user_id: user.id,
       p_books_read: 1,
       p_pages_read: book_page_count,
-      p_reading_time_minutes: Math.round(book_page_count / 2) // Assuming 2 pages per minute on average
+      p_reading_time_minutes:
+        book_page_count / Math.round(Number(process.env.AVERAGE_READ_SPEED)), // Assuming 2 pages per minute on average
     });
 
     if (error) {
@@ -130,9 +138,6 @@ export default function BookListItem({
       .eq("user_id", user?.id);
     if (status === "Finished") {
       awardPoints(100, `Finished reading ${book.title}`);
-
-      //Add number of pages and time spent
-      calculateUserStats(book_page_count);
     }
 
     if (error) {

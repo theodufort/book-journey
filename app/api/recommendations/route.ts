@@ -29,7 +29,7 @@ async function getReadBooks(
 }
 
 async function getBookDetails(bookId: string) {
-  const url = `https://www.googleapis.com/books/v1/volumes?q=isbn:${bookId}`;
+  const url = `https://www.googleapis.com/books/v1/volumes?q=isbn:${bookId}&langRestrict=en&key=${process.env.GOOGLE_API_KEY}`;
   const response = await fetch(url);
   if (!response.ok) {
     console.error(`Error fetching book details for ${bookId}`);
@@ -64,7 +64,7 @@ async function getRecommendations(
   });
 
   const searchQuery = Array.from(categories).join("+subject:");
-  const url = `https://www.googleapis.com/books/v1/volumes?q=subject:${searchQuery}&maxResults=40`;
+  const url = `https://www.googleapis.com/books/v1/volumes?q=subject:${searchQuery}&maxResults=40&langRestrict=en&key=${process.env.GOOGLE_API_KEY}`;
   const searchResponse = await fetch(url);
 
   if (!searchResponse.ok) {
@@ -81,7 +81,7 @@ async function getRecommendations(
       !readBookIds.has(
         book.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
           ?.identifier
-      )
+      ) && book.volumeInfo.authors
   );
   // .map((book: Volume) => ({
   //   id: book.volumeInfo.industryIdentifiers?.find(

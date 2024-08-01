@@ -1,6 +1,6 @@
-import { ReadingListItem } from "@/interfaces/Dashboard";
 import { User } from "@supabase/supabase-js";
 import BookListItem from "./BookListItem";
+import { BookVolumes, Volume } from "@/interfaces/GoogleAPI";
 
 export default function CollapsibleSection({
   title,
@@ -12,7 +12,7 @@ export default function CollapsibleSection({
   title: string;
   isExpanded: boolean;
   onToggle: () => void;
-  books: ReadingListItem[];
+  books: Volume[];
   onUpdate: () => void;
 }) {
   if (books.length === 0) return null;
@@ -23,8 +23,16 @@ export default function CollapsibleSection({
       <div className="collapse-title text-xl font-medium">{title}</div>
       <div className="collapse-content">
         <div className="space-y-4">
-          {books.map((item) => (
-            <BookListItem key={item.id} item={item} onUpdate={onUpdate} />
+          {books.map((item: Volume) => (
+            <BookListItem
+              key={
+                item.volumeInfo.industryIdentifiers?.find(
+                  (id) => id.type === "ISBN_13"
+                )?.identifier
+              }
+              item={item}
+              onUpdate={onUpdate}
+            />
           ))}
         </div>
       </div>

@@ -16,11 +16,11 @@ async function searchVolumes(
     console.log(
       `https://www.googleapis.com/books/v1/volumes?${
         searchQuery != "" ? "q=" + searchQuery + "&" : ""
-      }maxResults=40&langRestrict=${lang}`
+      }maxResults=40&langRestrict=${lang}&key=${process.env.GOOGLE_API_KEY}`
     );
     const url = `https://www.googleapis.com/books/v1/volumes?${
       searchQuery != "" ? "q=" + searchQuery + "&" : ""
-    }maxResults=40&langRestrict=${lang}`;
+    }maxResults=40&langRestrict=${lang}&key=${process.env.GOOGLE_API_KEY}`;
     const response = await axios.get(url);
     // Process the response
     if (response.status === 200) {

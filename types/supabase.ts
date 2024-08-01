@@ -695,6 +695,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      books: {
+        Row: {
+          added_at: string
+          data: Json
+          isbn_13: string
+        }
+        Insert: {
+          added_at?: string
+          data: Json
+          isbn_13: string
+        }
+        Update: {
+          added_at?: string
+          data?: Json
+          isbn_13?: string
+        }
+        Relationships: []
+      }
       friends: {
         Row: {
           created_at: string | null
@@ -979,11 +997,26 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_book_exists: {
+        Args: {
+          p_isbn_13: string
+        }
+        Returns: Json
+      }
       get_user_metadata: {
         Args: {
           user_id: string
         }
         Returns: Json
+      }
+      update_reading_stats: {
+        Args: {
+          p_user_id: string
+          p_books_read: number
+          p_pages_read: number
+          p_reading_time_minutes: number
+        }
+        Returns: undefined
       }
     }
     Enums: {

@@ -6,6 +6,7 @@ import PointsSection from "@/components/PointsSection";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Database } from "@/types/supabase";
 
 export default function Dashboard() {
   const supabase = createClientComponentClient<Database>();
@@ -39,29 +40,41 @@ export default function Dashboard() {
   async function fetchDashboardData() {
     setLoading(true);
     try {
-      const [readingListResponse, statsResponse] = await Promise.all([
-        supabase
-          .from("reading_list")
-          .select(
-            `
-            id,
-            book_id,
-            status,
-            books (
-              title,
-              author
-            )
-          `
-          )
-          .eq("user_id", user.id)
-          .eq("status", "Reading")
-          .limit(5),
-        supabase
-          .from("reading_stats")
-          .select("*")
-          .eq("user_id", user.id)
-          .single(),
-      ]);
+      const { data: readingListResponse } = await supabase
+        .from("reading_list")
+        .select("id,book_id,status")
+        .eq("user_id", user.id)
+        .eq("status", "Reading")
+        .limit(5);
+
+      // Fetch book details from our API route
+      const bookDetails = await Promise.all(
+        readingListResponse.map(async (item) => {
+          try {
+            const response = await fetch(`/api/books/${item.book_id}`);
+            if (!response.ok) {
+              throw new Error(
+                `Failed to fetch book details for ${item.book_id}`
+              );
+            }
+            const bookData = await response.json();
+            return {
+              ...bookData,
+              book_id: item.book_id,
+              status: item.status,
+            };
+          } catch (error) {
+            console.error(error);
+            return null;
+          }
+        })
+      );
+
+      const statsResponse = await supabase
+        .from("reading_stats")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
 
       if (readingListResponse.error) {
         console.error(
@@ -69,16 +82,22 @@ export default function Dashboard() {
           readingListResponse.error
         );
       } else {
-        setCurrentlyReading(readingListResponse.data || []);
+        // Filter out any null results from failed fetches
+        const validBookDetails = bookDetails.filter((book) => book !== null);
+        setCurrentlyReading(validBookDetails);
       }
 
       if (statsResponse.error) {
         console.error("Error fetching reading stats:", statsResponse.error);
       }
 
+      const { count, error } = await supabase
+        .from("reading_list")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "Finished");
       // Always set default stats, whether there's an error or no data
       setStats({
-        books_read: statsResponse.data?.books_read || 0,
+        books_read: count || 0,
         pages_read: statsResponse.data?.pages_read || 0,
         reading_time_minutes: statsResponse.data?.reading_time_minutes || 0,
       });
@@ -187,8 +206,8 @@ export default function Dashboard() {
               <ul className="list-disc list-inside space-y-2">
                 {currentlyReading.map((item) => (
                   <li key={item.id} className="text-lg">
-                    {item.books?.title || "Unknown Title"} by{" "}
-                    {item.books?.author || "Unknown Author"}
+                    {item.title || "Unknown Title"} by{" "}
+                    {item.author || "Unknown Author"}
                   </li>
                 ))}
               </ul>

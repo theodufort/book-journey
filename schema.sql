@@ -139,6 +139,15 @@ BEGIN
 END;
 $$;
 
+create table
+  public.books (
+    isbn_13 text not null,
+    data jsonb not null,
+    added_at timestamp with time zone not null default now(),
+    constraint books_pkey primary key (isbn_13),
+    constraint books_isbn_13_key unique (isbn_13)
+  ) tablespace pg_default;
+
 -- Function to check if a book exists and return its data
 CREATE OR REPLACE FUNCTION public.check_book_exists(p_isbn_13 TEXT)
 RETURNS JSONB
@@ -158,12 +167,3 @@ BEGIN
     END IF;
 END;
 $$;
-
-create table
-  public.books (
-    isbn_13 text not null,
-    data jsonb not null,
-    added_at timestamp with time zone not null default now(),
-    constraint books_pkey primary key (isbn_13),
-    constraint books_isbn_13_key unique (isbn_13)
-  ) tablespace pg_default;

@@ -25,9 +25,6 @@ const HeaderDashboard = () => {
           <li>
             <Link href="/dashboard/profile">Profile</Link>
           </li>
-          <li>
-            <Link href="/dashboard/messages">Messages</Link>
-          </li>
         </ul>
       </div>
       <div>

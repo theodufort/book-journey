@@ -280,15 +280,25 @@ export default function Profile() {
         </div>
         <div>
           <h2 className="text-2xl font-bold mb-4">My Friends</h2>
+
           {friends.length > 0 ? (
-            <ul>
+            <div className="grid-cols-4 col-span-4">
               {friends.map((friend) => (
-                <li key={friend.friend_id}>
-                  <img height={30} width={30} src={friend.img}></img>
-                  {friend.name}
-                </li>
+                <div
+                  className="grid grid-cols-2 grid-rows-1 w-1/5"
+                  key={friend.friend_id}
+                >
+                  <img
+                    height={40}
+                    width={40}
+                    src={friend.img}
+                    className="rounded-full shrink-0"
+                    referrerPolicy="no-referrer"
+                  ></img>
+                  <p>{friend.name}</p>
+                </div>
               ))}
-            </ul>
+            </div>
           ) : (
             <p>You haven't added any friends yet.</p>
           )}
