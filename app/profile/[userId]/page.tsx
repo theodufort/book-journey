@@ -132,7 +132,14 @@ export default function UserProfile({
 
             <div className="stat">
               <div className="stat-title">Avg Rating</div>
-              <div className="stat-value">{readBooks.map((x) => x.rating)}</div>
+              <div className="stat-value">
+                {readBooks.length > 0
+                  ? (
+                      readBooks.reduce((sum, book) => sum + book.rating, 0) /
+                      readBooks.length
+                    ).toFixed(1)
+                  : "N/A"}
+              </div>
             </div>
           </div>
         </div>
