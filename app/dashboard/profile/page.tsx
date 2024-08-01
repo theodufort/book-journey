@@ -24,7 +24,7 @@ export default function Profile() {
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
   const [profilePictureUrl, setProfilePictureUrl] = useState("");
-  const [friends, setFriends] = useState([]);
+  const [friends, setFriends] = useState<Friend[]>([]);
   const [friendRequests, setFriendRequests] = useState([]);
   const [isUpdated, setIsUpdated] = useState(false);
   const router = useRouter();
@@ -176,61 +176,19 @@ export default function Profile() {
 
         <h1 className="text-3xl md:text-4xl font-extrabold">My Profile</h1>
 
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            updateProfile();
-          }}
-          className="space-y-6"
-        >
-          <div>
-            <span className="label-text">
-              Preferred Book Categories (Choose up to 3)
-            </span>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
-              {[
-                "Fiction",
-                "Non-fiction",
-                "Mystery",
-                "Science Fiction",
-                "Fantasy",
-                "Romance",
-                "Thriller",
-                "Biography",
-                "History",
-                "Self-help",
-              ].map((category) => (
-                <label
-                  key={category}
-                  className="label cursor-pointer justify-start gap-2"
-                >
-                  <input
-                    type="checkbox"
-                    className="checkbox"
-                    checked={preferredCategories.includes(category)}
-                    onChange={() => {
-                      setPreferredCategories((prev) => {
-                        if (prev.includes(category)) {
-                          return prev.filter((c) => c !== category);
-                        } else if (prev.length < 3) {
-                          return [...prev, category];
-                        }
-                        return prev;
-                      });
-                    }}
-                  />
-                  <span className="label-text">{category}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-          <button type="submit" className="btn btn-primary">
-            Save Profile
-          </button>
-          {isUpdated && (
-            <p className="text-green-500 mt-2">Profile updated successfully!</p>
-          )}
-        </form>
+        <ProfileInfo
+          user={user}
+          preferredCategories={preferredCategories}
+          setPreferredCategories={setPreferredCategories}
+          username={username}
+          setUsername={setUsername}
+          bio={bio}
+          setBio={setBio}
+          profilePictureUrl={profilePictureUrl}
+          setProfilePictureUrl={setProfilePictureUrl}
+          updateProfile={updateProfile}
+          isUpdated={isUpdated}
+        />
         {user ? (
           <div>
             <h2 className="text-2xl font-bold mb-4">Share Your User ID</h2>
