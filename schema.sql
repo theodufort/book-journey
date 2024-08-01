@@ -117,3 +117,24 @@ BEGIN
     RETURN user_meta;
 END;
 $$;
+
+-- Function to update reading stats
+CREATE OR REPLACE FUNCTION public.update_reading_stats(
+    p_user_id UUID,
+    p_books_read INT,
+    p_pages_read INT,
+    p_reading_time_minutes INT
+)
+RETURNS VOID
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO public.reading_stats (user_id, books_read, pages_read, reading_time_minutes)
+    VALUES (p_user_id, p_books_read, p_pages_read, p_reading_time_minutes)
+    ON CONFLICT (user_id)
+    DO UPDATE SET
+        books_read = public.reading_stats.books_read + p_books_read,
+        pages_read = public.reading_stats.pages_read + p_pages_read,
+        reading_time_minutes = public.reading_stats.reading_time_minutes + p_reading_time_minutes;
+END;
+$$;
