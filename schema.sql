@@ -123,7 +123,7 @@ CREATE OR REPLACE FUNCTION public.update_reading_stats(
     p_user_id UUID,
     p_books_read INT,
     p_pages_read INT,
-    p_reading_time_minutes INT
+    p_reading_time_minutes INT DEFAULT 0
 )
 RETURNS VOID
 LANGUAGE plpgsql
@@ -138,3 +138,12 @@ BEGIN
         reading_time_minutes = public.reading_stats.reading_time_minutes + p_reading_time_minutes;
 END;
 $$;
+
+create table
+  public.books (
+    isbn_13 text not null,
+    data jsonb not null,
+    added_at timestamp with time zone not null default now(),
+    constraint books_pkey primary key (isbn_13),
+    constraint books_isbn_13_key unique (isbn_13)
+  ) tablespace pg_default;
