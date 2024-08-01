@@ -4,6 +4,7 @@ import CongratulationsModal from "./CongratulationsModal";
 import { ReadingListItem } from "@/interfaces/Dashboard";
 import { User } from "@supabase/supabase-js";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Database } from "@/types/supabase";
 export default function BookListItem({
   item,
   onUpdate,
@@ -86,7 +87,7 @@ export default function BookListItem({
     );
   if (!book) return null;
 
-  async function updateBookStatus(ns: string) {
+  async function updateBookStatus(ns: string, book_page_count: number) {
     setNewStatus(ns);
     if (item.status === "To Read" && ns === "Reading") {
       setMessageType("begin");
@@ -97,20 +98,34 @@ export default function BookListItem({
       setShowModal(true);
       setPendingUpdate(true);
     } else {
-      await performUpdate(ns);
+      await performUpdate(ns, book_page_count);
     }
   }
-
-  async function performUpdate(status: string = newStatus) {
+  async function calculateUserStats(book_page_count: number) {
+    const { data, error } = await supabase
+      .from("reading_stats")
+      .upsert({
+        books_read: "increment + 1",
+        pages_read: "increment + 1",
+        reading_time_minutes: "increment + 1",
+      })
+      .eq("user_id", user.id);
+  }
+  async function performUpdate(
+    status: string = newStatus,
+    book_page_count: number
+  ) {
     console.log(status);
     const { error } = await supabase
       .from("reading_list")
       .update({ status, rating })
       .eq("book_id", item.book_id)
       .eq("user_id", user?.id);
-    console.log("94: " + error);
     if (status === "Finished") {
       awardPoints(100, `Finished reading ${book.title}`);
+
+      //Add number of pages and time spent
+      calculateUserStats(book_page_count);
     }
 
     if (error) {
@@ -212,7 +227,9 @@ export default function BookListItem({
               </label>
               <select
                 value={item.status}
-                onChange={(e) => updateBookStatus(e.target.value)}
+                onChange={(e) =>
+                  updateBookStatus(e.target.value, book.pageCount)
+                }
                 className="select select-bordered w-auto max-w-xs"
               >
                 <option value="To Read">To Read</option>
