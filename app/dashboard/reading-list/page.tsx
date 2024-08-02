@@ -55,7 +55,7 @@ export default function ReadingList() {
           .insert({
             user_id: user.id,
             activity_type: activityType,
-            details: JSON.stringify({ book_id: bookId }),
+            details: { book_id: bookId },
             created_at: new Date().toISOString(),
           });
 
@@ -66,21 +66,25 @@ export default function ReadingList() {
       if (status === "Finished" && existingBook?.status !== "Finished") {
         const pointsToAward = 10; // Adjust this value as needed
 
-        const { data: userData, error: userError } = await supabase
-          .from("auth")
-          .select("users (points)")
-          .eq("id", user.id)
+        // Update user_points
+        const { data: userPoints, error: userPointsError } = await supabase
+          .from("user_points")
+          .select("points, points_earned")
+          .eq("user_id", user.id)
           .single();
 
-        if (userError) throw userError;
+        if (userPointsError) throw userPointsError;
 
-        const currentPoints = userData?.users?.points || 0;
-        const newPoints = currentPoints + pointsToAward;
+        const newPoints = (userPoints?.points || 0) + pointsToAward;
+        const newPointsEarned = (userPoints?.points_earned || 0) + pointsToAward;
 
         const { error: updatePointsError } = await supabase
-          .from("auth.users")
-          .update({ points: newPoints })
-          .eq("id", user.id);
+          .from("user_points")
+          .upsert({
+            user_id: user.id,
+            points: newPoints,
+            points_earned: newPointsEarned,
+          });
 
         if (updatePointsError) throw updatePointsError;
 
@@ -95,6 +99,18 @@ export default function ReadingList() {
           });
 
         if (transactionError) throw transactionError;
+
+        // Add points_earned activity
+        const { error: pointsActivityError } = await supabase
+          .from("user_activity")
+          .insert({
+            user_id: user.id,
+            activity_type: "points_earned",
+            details: { points: pointsToAward, reason: "Finished reading a book" },
+            created_at: new Date().toISOString(),
+          });
+
+        if (pointsActivityError) throw pointsActivityError;
       }
 
       setReadingList((prevList) =>
