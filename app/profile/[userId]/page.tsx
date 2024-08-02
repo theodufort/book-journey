@@ -37,75 +37,51 @@ export default function UserProfile({
         const { data: booksData, error: booksError } = await supabase
           .from("reading_list")
           .select("id,book_id,status,rating")
-          .eq("user_id", params.userId)
-          .limit(5);
+          .eq("user_id", params.userId);
+
+        if (booksError) {
+          console.error("Error fetching books:", booksError);
+          return;
+        }
 
         // Fetch book details from our API route
         const bookDetails = await Promise.all(
           booksData.map(async (item) => {
-            const cache = await checkBookExists(item.book_id);
-            if (cache == null) {
-              try {
-                const response = await fetch(`/api/books/${item.book_id}`);
-                if (!response.ok) {
-                  throw new Error(
-                    `Failed to fetch book details for ${item.book_id}`
-                  );
-                }
-                const bookData: Volume = await response.json();
-                const { data, error } = await supabase.from("books").insert({
-                  isbn_13: item.book_id,
-                  data: bookData as unknown as Json,
-                });
-                return {
-                  data: bookData,
-                  book_id: item.book_id,
-                  status: item.status,
-                };
-              } catch (error) {
-                console.error(error);
-                return null;
+            try {
+              const response = await fetch(`/api/books/${item.book_id}`);
+              if (!response.ok) {
+                throw new Error(
+                  `Failed to fetch book details for ${item.book_id}`
+                );
               }
-            } else {
+              const bookData: Volume = await response.json();
               return {
-                data: cache,
+                data: bookData,
                 book_id: item.book_id,
                 status: item.status,
+                rating: item.rating,
               };
+            } catch (error) {
+              console.error(error);
+              return null;
             }
           })
         );
-        if (booksError) {
-          console.error("Error fetching read books:", booksError);
-        } else {
-          // Filter out any null results from failed
-          const validBookDetails = bookDetails.filter((book) => book !== null);
-          setReadBooks(
-            validBookDetails
-              .filter((book) => book.status === "Finished")
-              .map((book) => ({
-                ...book,
-                rating:
-                  booksData.find((b) => b.book_id === book.book_id)?.rating ||
-                  0,
-              }))
-          );
-          setReadingBooks(
-            validBookDetails.filter((book) => book.status == "Reading")
-          );
-          setToReadBooks(
-            validBookDetails.filter((book) => book.status == "To Read")
-          );
-        }
+
+        // Filter out any null results from failed fetches
+        const validBookDetails = bookDetails.filter((book) => book !== null);
+        setReadBooks(validBookDetails.filter((book) => book.status === "Finished"));
+        setReadingBooks(validBookDetails.filter((book) => book.status === "Reading"));
+        setToReadBooks(validBookDetails.filter((book) => book.status === "To Read"));
       } catch (error) {
-        console.error("Unexpected error fetching dashboard data:", error);
+        console.error("Unexpected error fetching profile data:", error);
       } finally {
         setLoading(false);
       }
     }
 
     fetchProfileData();
-  }, [params.userId]);
+  }, [params.userId, supabase]);
 
   if (loading) {
     return (
@@ -178,20 +154,16 @@ export default function UserProfile({
             <div className="w-4/5 flex">
               {readingBooks.length > 0 ? (
                 <div
-                  key={
-                    readingBooks[0].volumeInfo.industryIdentifiers?.find(
-                      (it) => it.type === "ISBN_13"
-                    )?.identifier
-                  }
+                  key={readingBooks[0].book_id}
                   className="card bg-base-200 shadow-sm"
                 >
                   <figure className="px-4 pt-4">
                     <Image
                       src={
-                        readingBooks[0].volumeInfo.imageLinks?.thumbnail ||
+                        readingBooks[0].data.volumeInfo.imageLinks?.thumbnail ||
                         "/default-book-cover.png"
                       }
-                      alt={readingBooks[0].volumeInfo.title}
+                      alt={readingBooks[0].data.volumeInfo.title}
                       width={120}
                       height={180}
                       className="rounded-lg"
@@ -199,10 +171,10 @@ export default function UserProfile({
                   </figure>
                   <div className="card-body items-center text-center p-4">
                     <h3 className="card-title text-sm">
-                      {readingBooks[0].volumeInfo.title}
+                      {readingBooks[0].data.volumeInfo.title}
                     </h3>
                     <p className="text-xs">
-                      {readingBooks[0].volumeInfo.authors[0]}
+                      {readingBooks[0].data.volumeInfo.authors?.[0]}
                     </p>
                   </div>
                 </div>
@@ -241,7 +213,7 @@ export default function UserProfile({
                       <input
                         key={star}
                         type="radio"
-                        name={`rating-${book.id}`}
+                        name={`rating-${book.book_id}`}
                         className={`mask mask-star-2 ${
                           star % 1 === 0 ? "mask-half-2" : "mask-half-1"
                         } bg-orange-400`}
@@ -279,7 +251,6 @@ export default function UserProfile({
                     {book.data.volumeInfo.title}
                   </h3>
                   <p className="text-xs">{book.data.volumeInfo.authors?.[0]}</p>
-                  {/* Remove rating for to-read books */}
                 </div>
               </div>
             ))}
