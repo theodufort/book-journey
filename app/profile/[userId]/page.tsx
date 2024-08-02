@@ -214,12 +214,12 @@ export default function UserProfile({
                     {book.data.volumeInfo.title}
                   </h3>
                   <p className="text-xs">{book.data.volumeInfo.authors?.[0]}</p>
-                  <div className="rating rating-sm">
+                  <div className="rating rating-md">
                     {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((star) => (
                       <input
                         key={star}
                         type="radio"
-                        name={`rating-${book.bookId}`}
+                        name={`rating-${book.book_id}`}
                         className={`mask mask-star-2 ${
                           star % 1 === 0 ? "mask-half-2" : "mask-half-1"
                         } bg-orange-400`}
