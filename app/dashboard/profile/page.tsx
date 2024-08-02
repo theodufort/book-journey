@@ -176,19 +176,6 @@ export default function Profile() {
 
         <h1 className="text-3xl md:text-4xl font-extrabold">My Profile</h1>
 
-        <ProfileInfo
-          user={user}
-          preferredCategories={preferredCategories}
-          setPreferredCategories={setPreferredCategories}
-          username={username}
-          setUsername={setUsername}
-          bio={bio}
-          setBio={setBio}
-          profilePictureUrl={profilePictureUrl}
-          setProfilePictureUrl={setProfilePictureUrl}
-          updateProfile={updateProfile}
-          isUpdated={isUpdated}
-        />
         {user ? (
           <div>
             <h2 className="text-2xl font-bold mb-4">Share Your User ID</h2>
