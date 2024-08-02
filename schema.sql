@@ -68,20 +68,34 @@ CREATE TABLE public.point_transactions (
 
 
 
--- User activity table in the 'public' schema
-CREATE TABLE public.user_activity (
-    id SERIAL PRIMARY KEY,
-    user_id UUID REFERENCES auth.users(id),
-    activity_type VARCHAR(50) CHECK (activity_type IN ('book_started', 'book_finished', 'points_earned')),
-    details JSONB, -- Storing detailed information as JSONB for flexibility
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
+create table
+  public.user_activity (
+    id serial not null,
+    user_id uuid null,
+    activity_type character varying(50) null,
+    details jsonb null,
+    created_at timestamp with time zone null default current_timestamp,
+    updated_at timestamp with time zone null default current_timestamp,
+    constraint user_activity_pkey primary key (id),
+    constraint user_activity_user_id_fkey foreign key (user_id) references auth.users (id),
+    constraint user_activity_activity_type_check check (
+      (
+        (activity_type)::text = any (
+          array[
+            ('book_added'::character varying)::text,
+            ('book_started'::character varying)::text,
+            ('book_finished'::character varying)::text,
+            ('points_earned'::character varying)::text
+          ]
+        )
+      )
+    )
+  ) tablespace pg_default;
 
--- Trigger to update 'user_activity' table
-CREATE TRIGGER update_user_activity_modtime
-BEFORE UPDATE ON user_activity
-FOR EACH ROW EXECUTE FUNCTION update_modified_column();
+create trigger update_user_activity_modtime before
+update on user_activity for each row
+execute function update_modified_column ();
+
 
 CREATE OR REPLACE FUNCTION public.get_user_metadata(user_id UUID)
 RETURNS JSON
