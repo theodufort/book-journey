@@ -81,7 +81,12 @@ export default function UserProfile({
           // Filter out any null results from failed
           const validBookDetails = bookDetails.filter((book) => book !== null);
           setReadBooks(
-            validBookDetails.filter((book) => book.status == "Finished")
+            validBookDetails
+              .filter((book) => book.status === "Finished")
+              .map((book) => ({
+                ...book,
+                rating: booksData.find((b) => b.book_id === book.book_id)?.rating || 0
+              }))
           );
           setReadingBooks(
             validBookDetails.filter((book) => book.status == "Reading")
@@ -159,9 +164,9 @@ export default function UserProfile({
                 <div className="stat-value">
                   {readBooks.length > 0
                     ? (
-                        readBooks.reduce((sum, book) => sum + book.rating, 0) /
-                        readBooks.length
-                      ).toFixed(1)
+                        readBooks.reduce((sum, book) => sum + (book.rating || 0), 0) /
+                        readBooks.filter(book => book.rating > 0).length
+                      ).toFixed(1) || "N/A"
                     : "N/A"}
                 </div>
               </div>
