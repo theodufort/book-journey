@@ -277,24 +277,24 @@ export default function ReadingList() {
                     title={`To Read (${toReadBooks.length})`}
                     isExpanded={expandedSections["To Read"]}
                     onToggle={() => toggleSection("To Read")}
-                    books={toReadBooks.map((item) => item.data)}
-                    onUpdate={() => fetchReadingList(user.id)}
+                    books={toReadBooks}
+                    onUpdate={(bookId, newStatus) => updateBookProgress(bookId, newStatus)}
                   />
                   <CollapsibleSection
                     status="Reading"
                     title={`Currently Reading (${readingBooks.length})`}
                     isExpanded={expandedSections["Reading"]}
                     onToggle={() => toggleSection("Reading")}
-                    books={readingBooks.map((item) => item.data)}
-                    onUpdate={() => fetchReadingList(user.id)}
+                    books={readingBooks}
+                    onUpdate={(bookId, newStatus) => updateBookProgress(bookId, newStatus)}
                   />
                   <CollapsibleSection
                     status="Finished"
                     title={`Finished (${finishedBooks.length})`}
                     isExpanded={expandedSections["Finished"]}
                     onToggle={() => toggleSection("Finished")}
-                    books={finishedBooks.map((item) => item.data)}
-                    onUpdate={() => fetchReadingList(user.id)}
+                    books={finishedBooks}
+                    onUpdate={(bookId, newStatus) => updateBookProgress(bookId, newStatus)}
                   />
                 </>
               )}
