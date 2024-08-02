@@ -40,7 +40,11 @@ export async function GET(
       `https://www.googleapis.com/books/v1/volumes?q=isbn:${id}&langRestrict=en&key=${process.env.GOOGLE_API_KEY}`
     );
 
-    if (response.status !== 200 || !response.data.items || response.data.items.length === 0) {
+    if (
+      response.status !== 200 ||
+      !response.data.items ||
+      response.data.items.length === 0
+    ) {
       throw new Error("Failed to fetch book details");
     }
 
@@ -49,7 +53,7 @@ export async function GET(
     // Cache the book data
     const { error: insertError } = await supabase
       .from("books")
-      .insert({ isbn_13: id, data: bookData });
+      .insert({ isbn_13: id, data: bookData as any });
 
     if (insertError) {
       console.error("Error caching book data:", insertError);
@@ -58,6 +62,9 @@ export async function GET(
     return NextResponse.json(bookData);
   } catch (error) {
     console.error("Error fetching book details:", error);
-    return NextResponse.json({ error: "Failed to fetch book details" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch book details" },
+      { status: 500 }
+    );
   }
 }
