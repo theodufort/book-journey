@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { Database } from "@/types/supabase";
@@ -14,7 +14,7 @@ export default function AddFriend({ user, onFriendAdded }: AddFriendProps) {
   const [success, setSuccess] = useState<string | null>(null);
   const supabase = createClientComponentClient<Database>();
 
-  const handleAddFriend = async (e: React.FormEvent) => {
+  const handleAddFriend = async (e: FormEvent) => {
     e.preventDefault();
     if (!user) return;
 

@@ -1,7 +1,7 @@
 // app/dashboard/add-book.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import HeaderDashboard from "@/components/DashboardHeader";
@@ -27,7 +27,7 @@ export default function AddBook() {
 
     getUser();
   }, [supabase]);
-  const searchBooks = async (e: React.FormEvent) => {
+  const searchBooks = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
