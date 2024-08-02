@@ -387,7 +387,7 @@ const BookFinder = () => {
                     type="checkbox"
                     className="m-auto checkbox"
                     name={field.name}
-                    checked={formData[field.name] as boolean}
+                    checked={formData[field.name] as any}
                     onChange={(e) =>
                       handleInputChange(field.name, e.target.checked)
                     }
