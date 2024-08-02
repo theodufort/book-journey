@@ -123,12 +123,10 @@ export default function Profile() {
             if (friend?.friend_id === user?.id) {
               friendsData[i].friend_id = friend.user_id;
             }
-            const { data: userData, error: userError } = await supabase.rpc(
-              "get_user_metadata",
-              {
+            const { data: userData, error: userError }: any =
+              await supabase.rpc("get_user_metadata", {
                 user_id: friend.friend_id,
-              }
-            );
+              });
             const cleanedUserData: Friend = {
               id: friend.friend_id,
               name: userData.raw_user_meta_data.name,
