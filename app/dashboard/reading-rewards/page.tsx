@@ -5,6 +5,7 @@ import { User } from "@supabase/supabase-js";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 import { UserPoints, Reward } from "@/interfaces/Dashboard";
+import { Database } from "@/types/supabase";
 
 export default function ReadingRewards() {
   const supabase = createClientComponentClient<Database>();

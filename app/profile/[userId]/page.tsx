@@ -195,9 +195,9 @@ export default function UserProfile({
             Read Books ({readBooks.length})
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {readBooks.map((book) => (
+            {readBooks.map((book, index) => (
               <div
-                key={book.book_id}
+                key={`read-book-${book.book_id}-${index}`}
                 className="card bg-base-200 shadow-sm h-96"
               >
                 <figure className="px-4 pt-4">
@@ -242,8 +242,8 @@ export default function UserProfile({
             Books to Read ({toReadBooks.length})
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {toReadBooks.map((book) => (
-              <div key={book.book_id} className="card bg-base-200 shadow-sm">
+            {toReadBooks.map((book, index) => (
+              <div key={`to-read-book-${book.book_id}-${index}`} className="card bg-base-200 shadow-sm">
                 <figure className="px-4 pt-4">
                   <Image
                     src={
