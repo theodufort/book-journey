@@ -228,10 +228,10 @@ export default function Profile() {
 
           {friends.length > 0 ? (
             <div className="grid-cols-4 col-span-4">
-              {friends.map((friend) => (
+              {friends.map((friend, index) => (
                 <div
                   className="grid grid-cols-2 grid-rows-1 w-1/5"
-                  key={friend.id}
+                  key={`friend-${friend.id}-${index}`}
                 >
                   <img
                     height={40}

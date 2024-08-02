@@ -91,9 +91,9 @@ export default function AddBook() {
         {error && <p className="text-error">{error}</p>}
 
         <div className="space-y-4">
-          {searchResults.map((book) => (
+          {searchResults.map((book, index) => (
             <div
-              key={book.id}
+              key={`search-result-${book.id}-${index}`}
               className="card lg:card-side bg-base-100 shadow-xl"
             >
               <figure className="p-4">

@@ -91,7 +91,7 @@ export default function Recommendations() {
             ) : (
               <div className="grid grid-cols-3 gap-5">
                 {bookSuggestions.map((x, index) => (
-                  <div>
+                  <div key={`book-suggestion-${x.id}-${index}`}>
                     <BookAvatar vol={x} isBlurred={false} allowAdd={true} />
                   </div>
                 ))}
