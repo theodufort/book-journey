@@ -220,42 +220,43 @@ export default function UserProfile({
             Read Books ({readBooks.length})
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {readBooks.map((book) => {
-              return (
-                <div key={book.id} className="card bg-base-200 shadow-sm">
-                  <figure className="px-4 pt-4">
-                    <Image
-                      src={
-                        book.data.volumeInfo.imageLinks?.thumbnail ||
-                        "/default-book-cover.png"
-                      }
-                      alt={book.data.volumeInfo.title}
-                      width={120}
-                      height={180}
-                      className="rounded-lg"
-                    />
-                  </figure>
-                  <div className="card-body items-center text-center p-4">
-                    <h3 className="card-title text-sm">
-                      {book.data.volumeInfo.title}
-                    </h3>
-                    <p className="text-xs">{book.data.volumeInfo.authors[0]}</p>
-                    <div className="rating rating-sm">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <input
-                          key={star}
-                          type="radio"
-                          name={`rating-${book.id}`}
-                          className="mask mask-star-2 bg-orange-400"
-                          checked={book.rating === star}
-                          readOnly
-                        />
-                      ))}
-                    </div>
+            {readBooks.map((book) => (
+              <div
+                key={book.book_id}
+                className="card bg-base-200 shadow-sm"
+              >
+                <figure className="px-4 pt-4">
+                  <Image
+                    src={
+                      book.data.volumeInfo.imageLinks?.thumbnail ||
+                      "/default-book-cover.png"
+                    }
+                    alt={book.data.volumeInfo.title}
+                    width={120}
+                    height={180}
+                    className="rounded-lg"
+                  />
+                </figure>
+                <div className="card-body items-center text-center p-4">
+                  <h3 className="card-title text-sm">
+                    {book.data.volumeInfo.title}
+                  </h3>
+                  <p className="text-xs">{book.data.volumeInfo.authors?.[0]}</p>
+                  <div className="rating rating-sm">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <input
+                        key={star}
+                        type="radio"
+                        name={`rating-${book.book_id}`}
+                        className="mask mask-star-2 bg-orange-400"
+                        checked={book.rating === star}
+                        readOnly
+                      />
+                    ))}
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         </div>
         <div className="bg-base-100 rounded-box p-8 shadow-xl">
@@ -263,49 +264,32 @@ export default function UserProfile({
             Books to Read ({toReadBooks.length})
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {toReadBooks.map((book) => {
-              return (
-                <div
-                  key={
-                    book.data.volumeInfo.industryIdentifiers?.find(
-                      (it) => it.type === "ISBN_13"
-                    )?.identifier
-                  }
-                  className="card bg-base-200 shadow-sm"
-                >
-                  <figure className="px-4 pt-4">
-                    <Image
-                      src={
-                        book.data.volumeInfo.imageLinks?.thumbnail ||
-                        "/default-book-cover.png"
-                      }
-                      alt={book.data.volumeInfo.title}
-                      width={120}
-                      height={180}
-                      className="rounded-lg"
-                    />
-                  </figure>
-                  <div className="card-body items-center text-center p-4">
-                    <h3 className="card-title text-sm">
-                      {book.data.volumeInfo.title}
-                    </h3>
-                    <p className="text-xs">{book.data.volumeInfo.authors[0]}</p>
-                    <div className="rating rating-sm">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <input
-                          key={star}
-                          type="radio"
-                          name={`rating-${book.id}`}
-                          className="mask mask-star-2 bg-orange-400"
-                          checked={book.rating === star}
-                          readOnly
-                        />
-                      ))}
-                    </div>
-                  </div>
+            {toReadBooks.map((book) => (
+              <div
+                key={book.book_id}
+                className="card bg-base-200 shadow-sm"
+              >
+                <figure className="px-4 pt-4">
+                  <Image
+                    src={
+                      book.data.volumeInfo.imageLinks?.thumbnail ||
+                      "/default-book-cover.png"
+                    }
+                    alt={book.data.volumeInfo.title}
+                    width={120}
+                    height={180}
+                    className="rounded-lg"
+                  />
+                </figure>
+                <div className="card-body items-center text-center p-4">
+                  <h3 className="card-title text-sm">
+                    {book.data.volumeInfo.title}
+                  </h3>
+                  <p className="text-xs">{book.data.volumeInfo.authors?.[0]}</p>
+                  {/* Remove rating for to-read books */}
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         </div>
       </section>
