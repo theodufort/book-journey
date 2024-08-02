@@ -214,7 +214,7 @@ export default function UserProfile({
                     {book.data.volumeInfo.title}
                   </h3>
                   <p className="text-xs">{book.data.volumeInfo.authors?.[0]}</p>
-                  <div className="rating rating-md">
+                  <div className="rating rating-md py-2">
                     {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((star) => (
                       <input
                         key={star}
@@ -223,6 +223,7 @@ export default function UserProfile({
                         className={`mask mask-star-2 ${
                           star % 1 === 0 ? "mask-half-2" : "mask-half-1"
                         } bg-orange-400`}
+                        style={{ marginTop: '0', marginBottom: '0' }}
                         checked={book.rating === star}
                         readOnly
                       />
