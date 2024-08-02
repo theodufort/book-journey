@@ -8,7 +8,7 @@ import { createClient } from "@supabase/supabase-js";
 export async function checkBookExists(isbn13: string) {
   const supabase = createClientComponentClient<Database>();
   try {
-    const { data, error } = await supabase.rpc("check_book_exists", {
+    const { data, error }: any = await supabase.rpc("check_book_exists", {
       p_isbn_13: isbn13,
     });
 
