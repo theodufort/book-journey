@@ -206,7 +206,7 @@ export default function ReadingList() {
         );
         // Filter out any null results from failed fetches
         const validBookDetails = bookDetails.filter((book) => book != null);
-        setReadingList(validBookDetails);
+        setReadingList(validBookDetails as any);
         setLoading(false);
       }
 
@@ -238,8 +238,11 @@ export default function ReadingList() {
     (item) => item.status === "Finished"
   );
 
-  const toggleSection = (section: string) => {
-    setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
+  const toggleSection = (section: any) => {
+    setExpandedSections((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
   };
 
   if (loading) {

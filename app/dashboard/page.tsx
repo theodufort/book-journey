@@ -78,16 +78,9 @@ export default function Dashboard() {
         .eq("user_id", user.id)
         .single();
 
-      if (readingListResponse.error) {
-        console.error(
-          "Error fetching reading list:",
-          readingListResponse.error
-        );
-      } else {
-        // Filter out any null results from failed fetches
-        const validBookDetails = bookDetails.filter((book) => book !== null);
-        setCurrentlyReading(validBookDetails);
-      }
+      // Filter out any null results from failed fetches
+      const validBookDetails = bookDetails.filter((book) => book !== null);
+      setCurrentlyReading(validBookDetails);
 
       if (statsResponse.error) {
         console.error("Error fetching reading stats:", statsResponse.error);
