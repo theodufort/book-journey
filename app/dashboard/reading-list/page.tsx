@@ -49,20 +49,32 @@ export default function ReadingList() {
       // Add activity record
       if (existingBook?.status !== status) {
         let activityType;
-        if (status === "Reading") {
+        let details: { book_id: string; title?: string; new_status: string };
+
+        if (existingBook?.status === "To Read" && status === "Reading") {
           activityType = "book_started";
         } else if (status === "Finished") {
           activityType = "book_finished";
         } else {
-          activityType = "book_added";
+          activityType = "book_status_changed";
         }
+
+        // Fetch book details to get the title
+        const bookDetails = readingList.find(book => book.book_id === bookId);
+        const bookTitle = bookDetails?.data.volumeInfo.title || "Unknown Title";
+
+        details = {
+          book_id: bookId,
+          title: bookTitle,
+          new_status: status
+        };
 
         const { error: activityError } = await supabase
           .from("user_activity")
           .insert({
             user_id: user.id,
             activity_type: activityType,
-            details: { book_id: bookId, new_status: status },
+            details: details,
             created_at: new Date().toISOString(),
           });
 
