@@ -224,7 +224,6 @@ export default function ReadingList() {
         } else {
           console.error("Error fetching reading stats:", statsError);
         }
-      } else {
       }
     } catch (error) {
       console.error("Unexpected error:", error);

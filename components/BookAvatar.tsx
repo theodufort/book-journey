@@ -144,7 +144,7 @@ const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
             <ul>
               <li>{vol.volumeInfo.mainCategory}</li>
               {vol.volumeInfo.categories != null
-                ? vol.volumeInfo.categories.map((x) => <li>{x}</li>)
+                ? vol.volumeInfo.categories.map((x, i) => <li key={i}>{x}</li>)
                 : null}
             </ul>
           </h5>
