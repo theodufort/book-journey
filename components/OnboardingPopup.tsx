@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
+import CategorySelection from './CategorySelection';
 
 interface OnboardingPopupProps {
   isOpen: boolean;
   onClose: () => void;
+  userId: string;
 }
 
-const OnboardingPopup: React.FC<OnboardingPopupProps> = ({ isOpen, onClose }) => {
+const OnboardingPopup: React.FC<OnboardingPopupProps> = ({ isOpen, onClose, userId }) => {
   const [step, setStep] = useState(1);
 
   const steps = [
     {
       title: "Choose Your Preferred Categories",
       content: "Select the book categories you're most interested in.",
-      // Add category selection UI here
+      component: <CategorySelection userId={userId} />
     },
     {
       title: "Add Your Books",
@@ -49,8 +51,7 @@ const OnboardingPopup: React.FC<OnboardingPopupProps> = ({ isOpen, onClose }) =>
         <h3 className="font-bold text-lg">{steps[step - 1].title}</h3>
         <p className="py-4">{steps[step - 1].content}</p>
         
-        {/* Step content goes here */}
-        {/* You can add specific UI elements for each step */}
+        {steps[step - 1].component}
 
         <div className="modal-action">
           {step > 1 && (
