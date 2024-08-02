@@ -70,9 +70,15 @@ export default function UserProfile({
 
         // Filter out any null results from failed fetches
         const validBookDetails = bookDetails.filter((book) => book !== null);
-        setReadBooks(validBookDetails.filter((book) => book.status === "Finished"));
-        setReadingBooks(validBookDetails.filter((book) => book.status === "Reading"));
-        setToReadBooks(validBookDetails.filter((book) => book.status === "To Read"));
+        setReadBooks(
+          validBookDetails.filter((book) => book.status === "Finished")
+        );
+        setReadingBooks(
+          validBookDetails.filter((book) => book.status === "Reading")
+        );
+        setToReadBooks(
+          validBookDetails.filter((book) => book.status === "To Read")
+        );
       } catch (error) {
         console.error("Unexpected error fetching profile data:", error);
       } finally {
@@ -203,12 +209,12 @@ export default function UserProfile({
                     className="rounded-lg"
                   />
                 </figure>
-                <div className="card-body items-center text-center p-4">
+                <div className="card-body items-center text-center">
                   <h3 className="card-title text-sm">
                     {book.data.volumeInfo.title}
                   </h3>
                   <p className="text-xs">{book.data.volumeInfo.authors?.[0]}</p>
-                  <div className="rating rating-sm p-4">
+                  <div className="rating rating-sm">
                     {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((star) => (
                       <input
                         key={star}
