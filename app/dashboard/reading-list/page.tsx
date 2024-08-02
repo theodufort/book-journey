@@ -278,7 +278,7 @@ export default function ReadingList() {
                     isExpanded={expandedSections["To Read"]}
                     onToggle={() => toggleSection("To Read")}
                     books={toReadBooks}
-                    onUpdate={(bookId, newStatus) => updateBookProgress(bookId, newStatus)}
+                    onUpdate={updateBookProgress}
                   />
                   <CollapsibleSection
                     status="Reading"
@@ -286,7 +286,7 @@ export default function ReadingList() {
                     isExpanded={expandedSections["Reading"]}
                     onToggle={() => toggleSection("Reading")}
                     books={readingBooks}
-                    onUpdate={(bookId, newStatus) => updateBookProgress(bookId, newStatus)}
+                    onUpdate={updateBookProgress}
                   />
                   <CollapsibleSection
                     status="Finished"
@@ -294,7 +294,7 @@ export default function ReadingList() {
                     isExpanded={expandedSections["Finished"]}
                     onToggle={() => toggleSection("Finished")}
                     books={finishedBooks}
-                    onUpdate={(bookId, newStatus) => updateBookProgress(bookId, newStatus)}
+                    onUpdate={updateBookProgress}
                   />
                 </>
               )}

@@ -1,6 +1,7 @@
 import { User } from "@supabase/supabase-js";
 import BookListItem from "./BookListItem";
-import { BookVolumes, Volume } from "@/interfaces/GoogleAPI";
+import { Volume } from "@/interfaces/GoogleAPI";
+import { ReadingListItem } from "@/interfaces/ReadingList";
 
 export default function CollapsibleSection({
   status,
@@ -14,8 +15,8 @@ export default function CollapsibleSection({
   title: string;
   isExpanded: boolean;
   onToggle: () => void;
-  books: Volume[];
-  onUpdate: () => void;
+  books: ReadingListItem[];
+  onUpdate: (bookId: string, newStatus: string) => void;
 }) {
   if (books.length === 0) return null;
 
@@ -28,13 +29,13 @@ export default function CollapsibleSection({
           {books.map((item) => (
             <BookListItem
               key={
-                item.volumeInfo.industryIdentifiers?.find(
+                item.data.volumeInfo.industryIdentifiers?.find(
                   (id) => id.type === "ISBN_13"
-                )?.identifier || item.id || Math.random().toString()
+                )?.identifier || item.data.id || Math.random().toString()
               }
               status={status}
-              item={item}
-              onUpdate={onUpdate}
+              item={item.data}
+              onUpdate={(newStatus) => onUpdate(item.book_id, newStatus)}
             />
           ))}
         </div>
