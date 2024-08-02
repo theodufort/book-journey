@@ -239,7 +239,7 @@ export default function ReadingList() {
   );
 
   const toggleSection = (section: any) => {
-    setExpandedSections((prev) => ({
+    setExpandedSections((prev: any) => ({
       ...prev,
       [section]: !prev[section],
     }));
