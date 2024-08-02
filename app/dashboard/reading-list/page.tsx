@@ -76,7 +76,8 @@ export default function ReadingList() {
         if (userPointsError) throw userPointsError;
 
         const newPoints = (userPoints?.points || 0) + pointsToAward;
-        const newPointsEarned = (userPoints?.points_earned || 0) + pointsToAward;
+        const newPointsEarned =
+          (userPoints?.points_earned || 0) + pointsToAward;
 
         const { error: updatePointsError } = await supabase
           .from("user_points")
@@ -106,7 +107,10 @@ export default function ReadingList() {
           .insert({
             user_id: user.id,
             activity_type: "points_earned",
-            details: { points: pointsToAward, reason: "Finished reading a book" },
+            details: {
+              points: pointsToAward,
+              reason: "Finished reading a book",
+            },
             created_at: new Date().toISOString(),
           });
 
