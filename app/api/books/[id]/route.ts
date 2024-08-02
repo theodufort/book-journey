@@ -1,6 +1,9 @@
 import { BookVolumes, Volume } from "@/interfaces/GoogleAPI";
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import { Database } from "@/types/supabase";
 
 export async function GET(
   request: NextRequest,
@@ -12,16 +15,49 @@ export async function GET(
     return NextResponse.json({ error: "Invalid book ID" }, { status: 400 });
   }
 
-  const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
+  const supabase = createRouteHandlerClient<Database>({ cookies });
 
-  const response = await axios.get<BookVolumes>(
-    `https://www.googleapis.com/books/v1/volumes?q=isbn:${id}&langRestrict=en&key=${process.env.GOOGLE_API_KEY}`
-  );
-  if (response.status != 200) {
-    throw new Error("Failed to fetch book details");
+  // Check if the book exists in the cache
+  const { data: cachedBook, error: cacheError } = await supabase
+    .from("books")
+    .select("data")
+    .eq("isbn_13", id)
+    .single();
+
+  if (cacheError && cacheError.code !== "PGRST116") {
+    console.error("Error checking cache:", cacheError);
   }
 
-  const data = await response.data.items[0];
+  if (cachedBook) {
+    return NextResponse.json(cachedBook.data);
+  }
 
-  return NextResponse.json(data);
+  // If not in cache, fetch from Google Books API
+  const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
+
+  try {
+    const response = await axios.get<BookVolumes>(
+      `https://www.googleapis.com/books/v1/volumes?q=isbn:${id}&langRestrict=en&key=${process.env.GOOGLE_API_KEY}`
+    );
+
+    if (response.status !== 200 || !response.data.items || response.data.items.length === 0) {
+      throw new Error("Failed to fetch book details");
+    }
+
+    const bookData = response.data.items[0];
+
+    // Cache the book data
+    const { error: insertError } = await supabase
+      .from("books")
+      .insert({ isbn_13: id, data: bookData });
+
+    if (insertError) {
+      console.error("Error caching book data:", insertError);
+    }
+
+    return NextResponse.json(bookData);
+  } catch (error) {
+    console.error("Error fetching book details:", error);
+    return NextResponse.json({ error: "Failed to fetch book details" }, { status: 500 });
+  }
 }

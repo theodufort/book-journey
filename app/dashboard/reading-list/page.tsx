@@ -99,35 +99,22 @@ export default function ReadingList() {
         // Fetch book details from our API route
         const bookDetails = await Promise.all(
           booksData.map(async (item) => {
-            const cache = await checkBookExists(item.book_id);
-            if (cache == null) {
-              try {
-                const response = await fetch(`/api/books/${item.book_id}`);
-                if (!response.ok) {
-                  throw new Error(
-                    `Failed to fetch book details for ${item.book_id}`
-                  );
-                }
-                const bookData: Volume = await response.json();
-                const { data, error } = await supabase.from("books").insert({
-                  isbn_13: item.book_id,
-                  data: bookData as unknown as Json,
-                });
-                return {
-                  data: bookData,
-                  book_id: item.book_id,
-                  status: item.status,
-                };
-              } catch (error) {
-                console.error(error);
-                return null;
+            try {
+              const response = await fetch(`/api/books/${item.book_id}`);
+              if (!response.ok) {
+                throw new Error(
+                  `Failed to fetch book details for ${item.book_id}`
+                );
               }
-            } else {
+              const bookData: Volume = await response.json();
               return {
-                data: cache,
+                data: bookData,
                 book_id: item.book_id,
                 status: item.status,
               };
+            } catch (error) {
+              console.error(error);
+              return null;
             }
           })
         );
