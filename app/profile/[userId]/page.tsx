@@ -44,9 +44,7 @@ export default function UserProfile({
         const bookDetails = await Promise.all(
           booksData.map(async (item) => {
             const cache = await checkBookExists(item.book_id);
-            console.log(cache);
-            if (cache) {
-              console.log("fetch");
+            if (cache == null) {
               try {
                 const response = await fetch(`/api/books/${item.book_id}`);
                 if (!response.ok) {
@@ -60,7 +58,7 @@ export default function UserProfile({
                   data: bookData as unknown as Json,
                 });
                 return {
-                  ...bookData,
+                  data: bookData,
                   book_id: item.book_id,
                   status: item.status,
                 };
@@ -70,7 +68,7 @@ export default function UserProfile({
               }
             } else {
               return {
-                ...cache,
+                data: cache,
                 book_id: item.book_id,
                 status: item.status,
               };
@@ -80,16 +78,16 @@ export default function UserProfile({
         if (booksError) {
           console.error("Error fetching read books:", booksError);
         } else {
-          // Filter out any null results from failed fetches
+          // Filter out any null results from failed
           const validBookDetails = bookDetails.filter((book) => book !== null);
           setReadBooks(
-            validBookDetails.filter((book) => (book.status = "Finished"))
+            validBookDetails.filter((book) => book.status == "Finished")
           );
           setReadingBooks(
-            validBookDetails.filter((book) => (book.status = "Reading"))
+            validBookDetails.filter((book) => book.status == "Reading")
           );
           setToReadBooks(
-            validBookDetails.filter((book) => (book.status = "To Read"))
+            validBookDetails.filter((book) => book.status == "To Read")
           );
         }
       } catch (error) {
@@ -100,7 +98,7 @@ export default function UserProfile({
     }
 
     fetchProfileData();
-  }, [params.userId, supabase]);
+  }, [params.userId]);
 
   if (loading) {
     return (
@@ -149,91 +147,165 @@ export default function UserProfile({
 
         <div className="bg-base-100 rounded-box p-8 shadow-xl">
           <h2 className="text-2xl font-bold mb-4">Reading Journey</h2>
-          <div className="stats stats-vertical lg:stats-horizontal shadow">
-            <div className="stat">
-              <div className="stat-title">Books Read</div>
-              <div className="stat-value">{readBooks.length}</div>
-            </div>
+          <div className="grid grid-cols-2 grid-rows-1">
+            <div className="stats stats-vertical lg:stats-horizontal shadow w-3/5">
+              <div className="stat">
+                <div className="stat-title">Books Read</div>
+                <div className="stat-value">{readBooks.length}</div>
+              </div>
 
-            <div className="stat">
-              <div className="stat-title">Avg Rating</div>
-              <div className="stat-value">
-                {readBooks.length > 0
-                  ? (
-                      readBooks.reduce((sum, book) => sum + book.rating, 0) /
-                      readBooks.length
-                    ).toFixed(1)
-                  : "N/A"}
+              <div className="stat">
+                <div className="stat-title">Avg Rating</div>
+                <div className="stat-value">
+                  {readBooks.length > 0
+                    ? (
+                        readBooks.reduce((sum, book) => sum + book.rating, 0) /
+                        readBooks.length
+                      ).toFixed(1)
+                    : "N/A"}
+                </div>
               </div>
+            </div>
+            <div className="w-4/5 flex">
+              {readingBooks.length > 0 ? (
+                <div
+                  key={
+                    readingBooks[0].volumeInfo.industryIdentifiers?.find(
+                      (it) => it.type === "ISBN_13"
+                    )?.identifier
+                  }
+                  className="card bg-base-200 shadow-sm"
+                >
+                  <figure className="px-4 pt-4">
+                    <Image
+                      src={
+                        readingBooks[0].volumeInfo.imageLinks?.thumbnail ||
+                        "/default-book-cover.png"
+                      }
+                      alt={readingBooks[0].volumeInfo.title}
+                      width={120}
+                      height={180}
+                      className="rounded-lg"
+                    />
+                  </figure>
+                  <div className="card-body items-center text-center p-4">
+                    <h3 className="card-title text-sm">
+                      {readingBooks[0].volumeInfo.title}
+                    </h3>
+                    <p className="text-xs">
+                      {readingBooks[0].volumeInfo.authors[0]}
+                    </p>
+                    <div className="rating rating-sm">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <input
+                          key={star}
+                          type="radio"
+                          name={`rating-${readingBooks[0].id}`}
+                          className="mask mask-star-2 bg-orange-400"
+                          checked={readingBooks[0].rating === star}
+                          readOnly
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <h4>Not currently reading any book</h4>
+              )}
             </div>
           </div>
         </div>
         <div className="bg-base-100 rounded-box p-8 shadow-xl">
-          <h2 className="text-2xl font-bold mb-4">Read Books</h2>
+          <h2 className="text-2xl font-bold mb-4">
+            Read Books ({readBooks.length})
+          </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {readBooks.map((book) => (
-              <div key={book.id} className="card bg-base-200 shadow-sm">
-                <figure className="px-4 pt-4">
-                  <Image
-                    src={book.cover_image || "/default-book-cover.png"}
-                    alt={book.title}
-                    width={120}
-                    height={180}
-                    className="rounded-lg"
-                  />
-                </figure>
-                <div className="card-body items-center text-center p-4">
-                  <h3 className="card-title text-sm">{book.title}</h3>
-                  <p className="text-xs">{book.author}</p>
-                  <div className="rating rating-sm">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <input
-                        key={star}
-                        type="radio"
-                        name={`rating-${book.id}`}
-                        className="mask mask-star-2 bg-orange-400"
-                        checked={book.rating === star}
-                        readOnly
-                      />
-                    ))}
+            {readBooks.map((book) => {
+              return (
+                <div key={book.id} className="card bg-base-200 shadow-sm">
+                  <figure className="px-4 pt-4">
+                    <Image
+                      src={
+                        book.data.volumeInfo.imageLinks?.thumbnail ||
+                        "/default-book-cover.png"
+                      }
+                      alt={book.data.volumeInfo.title}
+                      width={120}
+                      height={180}
+                      className="rounded-lg"
+                    />
+                  </figure>
+                  <div className="card-body items-center text-center p-4">
+                    <h3 className="card-title text-sm">
+                      {book.data.volumeInfo.title}
+                    </h3>
+                    <p className="text-xs">{book.data.volumeInfo.authors[0]}</p>
+                    <div className="rating rating-sm">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <input
+                          key={star}
+                          type="radio"
+                          name={`rating-${book.id}`}
+                          className="mask mask-star-2 bg-orange-400"
+                          checked={book.rating === star}
+                          readOnly
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
         <div className="bg-base-100 rounded-box p-8 shadow-xl">
-          <h2 className="text-2xl font-bold mb-4">Books to Read</h2>
+          <h2 className="text-2xl font-bold mb-4">
+            Books to Read ({toReadBooks.length})
+          </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {toReadBooks.map((book) => (
-              <div key={book.id} className="card bg-base-200 shadow-sm">
-                <figure className="px-4 pt-4">
-                  <Image
-                    src={book.cover_image || "/default-book-cover.png"}
-                    alt={book.title}
-                    width={120}
-                    height={180}
-                    className="rounded-lg"
-                  />
-                </figure>
-                <div className="card-body items-center text-center p-4">
-                  <h3 className="card-title text-sm">{book.title}</h3>
-                  <p className="text-xs">{book.author}</p>
-                  <div className="rating rating-sm">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <input
-                        key={star}
-                        type="radio"
-                        name={`rating-${book.id}`}
-                        className="mask mask-star-2 bg-orange-400"
-                        checked={book.rating === star}
-                        readOnly
-                      />
-                    ))}
+            {toReadBooks.map((book) => {
+              return (
+                <div
+                  key={
+                    book.data.volumeInfo.industryIdentifiers?.find(
+                      (it) => it.type === "ISBN_13"
+                    )?.identifier
+                  }
+                  className="card bg-base-200 shadow-sm"
+                >
+                  <figure className="px-4 pt-4">
+                    <Image
+                      src={
+                        book.data.volumeInfo.imageLinks?.thumbnail ||
+                        "/default-book-cover.png"
+                      }
+                      alt={book.data.volumeInfo.title}
+                      width={120}
+                      height={180}
+                      className="rounded-lg"
+                    />
+                  </figure>
+                  <div className="card-body items-center text-center p-4">
+                    <h3 className="card-title text-sm">
+                      {book.data.volumeInfo.title}
+                    </h3>
+                    <p className="text-xs">{book.data.volumeInfo.authors[0]}</p>
+                    <div className="rating rating-sm">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <input
+                          key={star}
+                          type="radio"
+                          name={`rating-${book.id}`}
+                          className="mask mask-star-2 bg-orange-400"
+                          checked={book.rating === star}
+                          readOnly
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
