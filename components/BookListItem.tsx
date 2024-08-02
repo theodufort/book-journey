@@ -17,7 +17,7 @@ export default function BookListItem({
   const supabase = createClientComponentClient<Database>();
   const book = item.volumeInfo;
   const loading = false;
-  const error = null;
+  const error: any = null;
   const [showModal, setShowModal] = useState(false);
   const [messageType, setMessageType] = useState("begin");
   const [newStatus, setNewStatus] = useState(status);
@@ -189,7 +189,6 @@ export default function BookListItem({
   function handleModalClose() {
     setShowModal(false);
     if (pendingUpdate) {
-      performUpdate();
       setPendingUpdate(false);
     }
   }
