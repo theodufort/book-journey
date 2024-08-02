@@ -30,7 +30,7 @@ export default function CollapsibleSection({
               key={
                 item.volumeInfo.industryIdentifiers?.find(
                   (id) => id.type === "ISBN_13"
-                )?.identifier
+                )?.identifier || item.id || Math.random().toString()
               }
               status={status}
               item={item}
