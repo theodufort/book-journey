@@ -16,7 +16,7 @@ export default function CollapsibleSection({
   isExpanded: boolean;
   onToggle: () => void;
   books: ReadingListItem[];
-  onUpdate: (bookId: string, newStatus: string) => void;
+  onUpdate: (bookId: string, newStatus: string) => Promise<void>;
 }) {
   if (books.length === 0) return null;
 

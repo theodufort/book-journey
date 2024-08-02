@@ -24,7 +24,7 @@ export default function ReadingList() {
     Finished: true,
   });
 
-  async function updateBookProgress(bookId: string, status: string) {
+  async function updateBookProgress(bookId: string, status: string, callback: () => void) {
     if (!user) return;
 
     try {
@@ -117,11 +117,13 @@ export default function ReadingList() {
         if (pointsActivityError) throw pointsActivityError;
       }
 
-      setReadingList((prevList) =>
-        prevList.map((book) =>
+      setReadingList((prevList) => {
+        const updatedList = prevList.map((book) =>
           book.book_id === bookId ? { ...book, status } : book
-        )
-      );
+        );
+        callback(); // Call the callback function after updating the list
+        return updatedList;
+      });
     } catch (error) {
       console.error("Error updating book progress:", error);
     }
@@ -278,7 +280,7 @@ export default function ReadingList() {
                     isExpanded={expandedSections["To Read"]}
                     onToggle={() => toggleSection("To Read")}
                     books={toReadBooks}
-                    onUpdate={updateBookProgress}
+                    onUpdate={(bookId, newStatus) => updateBookProgress(bookId, newStatus, () => setReadingList([...readingList]))}
                   />
                   <CollapsibleSection
                     status="Reading"
@@ -286,7 +288,7 @@ export default function ReadingList() {
                     isExpanded={expandedSections["Reading"]}
                     onToggle={() => toggleSection("Reading")}
                     books={readingBooks}
-                    onUpdate={updateBookProgress}
+                    onUpdate={(bookId, newStatus) => updateBookProgress(bookId, newStatus, () => setReadingList([...readingList]))}
                   />
                   <CollapsibleSection
                     status="Finished"
@@ -294,7 +296,7 @@ export default function ReadingList() {
                     isExpanded={expandedSections["Finished"]}
                     onToggle={() => toggleSection("Finished")}
                     books={finishedBooks}
-                    onUpdate={updateBookProgress}
+                    onUpdate={(bookId, newStatus) => updateBookProgress(bookId, newStatus, () => setReadingList([...readingList]))}
                   />
                 </>
               )}
