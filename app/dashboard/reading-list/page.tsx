@@ -54,7 +54,7 @@ export default function ReadingList() {
         } else if (status === "Finished") {
           activityType = "book_finished";
         } else {
-          activityType = "book_status_changed";
+          activityType = "book_added";
         }
 
         const { error: activityError } = await supabase
