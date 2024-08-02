@@ -8,6 +8,7 @@ import HeaderDashboard from "@/components/DashboardHeader";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 import { BookSearchResult } from "@/interfaces/BookSearch";
+import { Database } from "@/types/supabase";
 
 export default function AddBook() {
   const supabase = createClientComponentClient<Database>();

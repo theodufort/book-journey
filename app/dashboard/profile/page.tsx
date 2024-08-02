@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import AddFriend from "@/components/AddFriend";
 import { Database } from "@/types/supabase";
+import CategorySelection from "@/components/CategorySelection";
 type Friend = {
   id: string;
   name: string;
@@ -141,7 +142,6 @@ export default function Profile() {
             return cleanedUserData;
           })
         );
-        console.log(friendsCleaned);
         setFriends(friendsCleaned || []);
       }
     }
@@ -175,7 +175,7 @@ export default function Profile() {
         <HeaderDashboard />
 
         <h1 className="text-3xl md:text-4xl font-extrabold">My Profile</h1>
-
+        {user ? <CategorySelection userId={user.id} /> : null}
         {user ? (
           <div>
             <h2 className="text-2xl font-bold mb-4">Share Your User ID</h2>

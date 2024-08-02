@@ -25,6 +25,8 @@ export default function ReadingList() {
   });
 
   async function updateBookProgress(bookId: string, status: string) {
+    //Currently needs fixing as always creating user_activity of type book_added
+    return;
     if (!user) return;
 
     try {
@@ -56,17 +58,17 @@ export default function ReadingList() {
         } else if (status === "Finished") {
           activityType = "book_finished";
         } else {
-          activityType = "book_status_changed";
+          activityType = "book_added";
         }
 
         // Fetch book details to get the title
-        const bookDetails = readingList.find(book => book.book_id === bookId);
+        const bookDetails = readingList.find((book) => book.book_id === bookId);
         const bookTitle = bookDetails?.data.volumeInfo.title || "Unknown Title";
 
         details = {
           book_id: bookId,
           title: bookTitle,
-          new_status: status
+          new_status: status,
         };
 
         const { error: activityError } = await supabase

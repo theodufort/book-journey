@@ -7,6 +7,7 @@ import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
+import OnboardingPopup from "@/components/OnboardingPopup";
 
 export default function Dashboard() {
   const supabase = createClientComponentClient<Database>();
@@ -18,6 +19,7 @@ export default function Dashboard() {
   } | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showOnboard, setShowUnboard] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -120,7 +122,15 @@ export default function Dashboard() {
     <main className="min-h-screen p-8 pb-24">
       <section className="max-w-6xl mx-auto space-y-8">
         <HeaderDashboard />
-
+        {user && showOnboard ? (
+          <OnboardingPopup
+            isOpen={true}
+            onClose={function (): void {
+              setShowUnboard(false);
+            }}
+            userId={user.id}
+          />
+        ) : null}
         <h1 className="text-3xl md:text-4xl font-extrabold">My Dashboard</h1>
 
         {/* Reading Stats */}

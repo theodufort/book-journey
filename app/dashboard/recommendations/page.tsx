@@ -92,7 +92,7 @@ export default function Recommendations() {
               <div className="grid grid-cols-3 gap-5">
                 {bookSuggestions.map((x, index) => (
                   <div>
-                    <BookAvatar vol={x} isBlurred={false} />
+                    <BookAvatar vol={x} isBlurred={false} allowAdd={true} />
                   </div>
                 ))}
               </div>

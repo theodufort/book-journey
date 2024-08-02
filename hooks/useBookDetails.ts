@@ -1,26 +1,10 @@
 // hooks/useBookDetails.ts
 
 import { useState, useEffect } from "react";
-import apiClient from "@/libs/api";
 import axios from "axios";
 
-interface BookDetails {
-  id: string;
-  title: string;
-  authors: string[];
-  description: string;
-  categories: string[];
-  imageLinks: {
-    thumbnail: string;
-    smallThumbnail: string;
-  };
-  pageCount: number;
-  publishedDate: string;
-  averageRating: number;
-}
-
 export function useBookDetails(bookId: string) {
-  const [book, setBook] = useState<BookDetails | null>(null);
+  const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

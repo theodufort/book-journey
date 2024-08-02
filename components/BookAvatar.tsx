@@ -1,20 +1,53 @@
+import { BookSearchResult } from "@/interfaces/BookSearch";
 import { Volume } from "@/interfaces/GoogleAPI";
 import { createAffLink } from "@/libs/amazon-aff";
+import { Database } from "@/types/supabase";
+import {
+  createClientComponentClient,
+  User,
+} from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 interface Props {
   vol: Volume;
   isBlurred: boolean;
+  allowAdd: boolean;
 }
 
-const BookAvatar = ({ vol, isBlurred }: Props) => {
+const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
+  const router = useRouter();
+  const supabase = createClientComponentClient<Database>();
   const [isExpanded, setIsExpanded] = useState(false);
-
+  const [error, setError] = useState<string | null>(null);
   const handleToggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
+  const [user, setUser] = useState<User | null>(null);
+  useEffect(() => {
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
 
+      setUser(data.user);
+    };
+
+    getUser();
+  }, [supabase]);
+  const addToReadingList = async (book_isbn: string, status: string) => {
+    const { error } = await supabase.from("reading_list").insert({
+      user_id: user.id,
+      book_id: book_isbn,
+      status: status,
+    });
+
+    if (error) {
+      setError("Failed to add book to reading list");
+      console.error(error);
+    } else {
+      router.push("/dashboard/reading-list");
+    }
+  };
   // Truncate the description if it's too long and not expanded
   const MAX_LENGTH = 100;
   const description = vol.volumeInfo.description || "";
@@ -23,7 +56,13 @@ const BookAvatar = ({ vol, isBlurred }: Props) => {
       ? description.substring(0, MAX_LENGTH) + "..."
       : description;
   return (
-    <div className="relative">
+    <div
+      className="relative"
+      key={
+        vol.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
+          ?.identifier
+      }
+    >
       <div
         className={`card w-auto bg-base-100 shadow-xl ${
           isBlurred ? "blur-md" : ""
@@ -143,6 +182,28 @@ const BookAvatar = ({ vol, isBlurred }: Props) => {
               </button>
             </a>
           </div>
+          {allowAdd ? (
+            <div className="card-actions justify-end">
+              <select
+                className="select select-bordered"
+                onChange={(e) =>
+                  addToReadingList(
+                    vol.volumeInfo.industryIdentifiers?.find(
+                      (id) => id.type === "ISBN_13"
+                    )?.identifier,
+                    e.target.value
+                  )
+                }
+              >
+                <option disabled selected>
+                  Add to Reading List
+                </option>
+                <option value="To Read">To Read</option>
+                <option value="Reading">Currently Reading</option>
+                <option value="Finished">Finished</option>
+              </select>
+            </div>
+          ) : null}
         </div>
       </div>
       {isBlurred && (

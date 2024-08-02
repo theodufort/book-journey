@@ -196,7 +196,10 @@ export default function UserProfile({
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {readBooks.map((book) => (
-              <div key={book.book_id} className="card bg-base-200 shadow-sm">
+              <div
+                key={book.book_id}
+                className="card bg-base-200 shadow-sm h-96"
+              >
                 <figure className="px-4 pt-4">
                   <Image
                     src={
@@ -214,7 +217,7 @@ export default function UserProfile({
                     {book.data.volumeInfo.title}
                   </h3>
                   <p className="text-xs">{book.data.volumeInfo.authors?.[0]}</p>
-                  <div className="rating rating-md py-2">
+                  <div className="rating rating-sm h-4/5">
                     {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((star) => (
                       <input
                         key={star}
@@ -223,7 +226,7 @@ export default function UserProfile({
                         className={`mask mask-star-2 ${
                           star % 1 === 0 ? "mask-half-2" : "mask-half-1"
                         } bg-orange-400`}
-                        style={{ marginTop: '0', marginBottom: '0' }}
+                        style={{ marginTop: "0", marginBottom: "0" }}
                         checked={book.rating === star}
                         readOnly
                       />
