@@ -424,14 +424,18 @@ const BookFinder = () => {
                 {bookSuggestions.map((x, index) => {
                   if (index > 2)
                     return (
-                      <div>
-                        <BookAvatar vol={x} isBlurred={true} />
+                      <div key={index}>
+                        <BookAvatar vol={x} isBlurred={true} allowAdd={false} />
                       </div>
                     );
                   else
                     return (
-                      <div>
-                        <BookAvatar vol={x} isBlurred={false} />
+                      <div key={index}>
+                        <BookAvatar
+                          vol={x}
+                          isBlurred={false}
+                          allowAdd={false}
+                        />
                       </div>
                     );
                 })}

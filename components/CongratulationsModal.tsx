@@ -24,11 +24,11 @@ const CongratulationsModal: React.FC<CongratulationsModalProps> = ({
         <h2 className="text-2xl font-bold mb-4">Congratulations!</h2>
         {messageType == "begin" ? (
           <p className="mb-4">
-            You've started reading "{bookTitle}". Enjoy your new adventure!
+            You&apos;ve started reading "{bookTitle}". Enjoy your new adventure!
           </p>
         ) : (
           <p className="mb-4">
-            You've finished reading "{bookTitle}". What will you read next?
+            You&apos;ve finished reading "{bookTitle}". What will you read next?
           </p>
         )}
         <button onClick={onClose} className="btn btn-primary">

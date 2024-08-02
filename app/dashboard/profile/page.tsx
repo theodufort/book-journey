@@ -245,7 +245,7 @@ export default function Profile() {
               ))}
             </div>
           ) : (
-            <p>You haven't added any friends yet.</p>
+            <p>You haven&apos;t added any friends yet.</p>
           )}
         </div>
       </section>

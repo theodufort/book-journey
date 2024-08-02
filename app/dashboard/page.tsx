@@ -223,7 +223,7 @@ export default function Dashboard() {
               </ul>
             ) : (
               <p className="text-lg">
-                You're not currently reading any books. Why not start one?
+                You&apos;re not currently reading any books. Why not start one?
               </p>
             )}
           </div>
