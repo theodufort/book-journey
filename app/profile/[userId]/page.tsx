@@ -85,7 +85,9 @@ export default function UserProfile({
               .filter((book) => book.status === "Finished")
               .map((book) => ({
                 ...book,
-                rating: booksData.find((b) => b.book_id === book.book_id)?.rating || 0
+                rating:
+                  booksData.find((b) => b.book_id === book.book_id)?.rating ||
+                  0,
               }))
           );
           setReadingBooks(
@@ -164,8 +166,10 @@ export default function UserProfile({
                 <div className="stat-value">
                   {readBooks.length > 0
                     ? (
-                        readBooks.reduce((sum, book) => sum + (book.rating || 0), 0) /
-                        readBooks.filter(book => book.rating > 0).length
+                        readBooks.reduce(
+                          (sum, book) => sum + (book.rating || 0),
+                          0
+                        ) / readBooks.filter((book) => book.rating > 0).length
                       ).toFixed(1) || "N/A"
                     : "N/A"}
                 </div>
@@ -200,18 +204,6 @@ export default function UserProfile({
                     <p className="text-xs">
                       {readingBooks[0].volumeInfo.authors[0]}
                     </p>
-                    <div className="rating rating-sm">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <input
-                          key={star}
-                          type="radio"
-                          name={`rating-${readingBooks[0].id}`}
-                          className="mask mask-star-2 bg-orange-400"
-                          checked={readingBooks[0].rating === star}
-                          readOnly
-                        />
-                      ))}
-                    </div>
                   </div>
                 </div>
               ) : (
@@ -244,13 +236,15 @@ export default function UserProfile({
                     {book.data.volumeInfo.title}
                   </h3>
                   <p className="text-xs">{book.data.volumeInfo.authors?.[0]}</p>
-                  <div className="rating rating-sm">
-                    {[1, 2, 3, 4, 5].map((star) => (
+                  <div className="rating rating-sm p-4">
+                    {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((star) => (
                       <input
                         key={star}
                         type="radio"
-                        name={`rating-${book.book_id}`}
-                        className="mask mask-star-2 bg-orange-400"
+                        name={`rating-${book.id}`}
+                        className={`mask mask-star-2 ${
+                          star % 1 === 0 ? "mask-half-2" : "mask-half-1"
+                        } bg-orange-400`}
                         checked={book.rating === star}
                         readOnly
                       />
