@@ -6,23 +6,19 @@ interface CategorySelectionProps {
   userId: string;
 }
 
+const categories = [
+  'Fiction', 'Non-Fiction', 'Mystery', 'Science Fiction', 'Fantasy',
+  'Romance', 'Thriller', 'Biography', 'History', 'Self-Help',
+  'Business', 'Science', 'Technology', 'Art', 'Travel'
+];
+
 const CategorySelection: React.FC<CategorySelectionProps> = ({ userId }) => {
-  const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const supabase = createClientComponentClient<Database>();
 
   useEffect(() => {
-    // Fetch categories and user preferences
-    const fetchData = async () => {
-      const { data: categoriesData, error: categoriesError } = await supabase
-        .from('categories')
-        .select('name');
-
-      if (categoriesError) {
-        console.error('Error fetching categories:', categoriesError);
-        return;
-      }
-
+    // Fetch user preferences
+    const fetchPreferences = async () => {
       const { data: preferencesData, error: preferencesError } = await supabase
         .from('user_preferences')
         .select('category')
@@ -33,11 +29,10 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({ userId }) => {
         return;
       }
 
-      setCategories(categoriesData.map(cat => cat.name));
       setSelectedCategories(preferencesData.map(pref => pref.category));
     };
 
-    fetchData();
+    fetchPreferences();
   }, [userId]);
 
   const handleCategoryChange = (category: string) => {
