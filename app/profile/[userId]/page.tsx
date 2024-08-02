@@ -221,10 +221,7 @@ export default function UserProfile({
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {readBooks.map((book) => (
-              <div
-                key={book.book_id}
-                className="card bg-base-200 shadow-sm"
-              >
+              <div key={book.book_id} className="card bg-base-200 shadow-sm">
                 <figure className="px-4 pt-4">
                   <Image
                     src={
@@ -265,10 +262,7 @@ export default function UserProfile({
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {toReadBooks.map((book) => (
-              <div
-                key={book.book_id}
-                className="card bg-base-200 shadow-sm"
-              >
+              <div key={book.book_id} className="card bg-base-200 shadow-sm">
                 <figure className="px-4 pt-4">
                   <Image
                     src={
