@@ -21,29 +21,46 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({ userId }) => {
     const fetchPreferences = async () => {
       const { data: preferencesData, error: preferencesError } = await supabase
         .from('user_preferences')
-        .select('category')
-        .eq('user_id', userId);
+        .select('preferred_categories')
+        .eq('user_id', userId)
+        .single();
 
       if (preferencesError) {
         console.error('Error fetching user preferences:', preferencesError);
         return;
       }
 
-      setSelectedCategories(preferencesData.map(pref => pref.category));
+      if (preferencesData && preferencesData.preferred_categories) {
+        setSelectedCategories(preferencesData.preferred_categories);
+      }
     };
 
     fetchPreferences();
   }, [userId]);
 
-  const handleCategoryChange = (category: string) => {
+  const handleCategoryChange = async (category: string) => {
+    let newSelectedCategories: string[];
+    
     setSelectedCategories(prev => {
       if (prev.includes(category)) {
-        return prev.filter(cat => cat !== category);
+        newSelectedCategories = prev.filter(cat => cat !== category);
       } else if (prev.length < 5) {
-        return [...prev, category];
+        newSelectedCategories = [...prev, category];
+      } else {
+        newSelectedCategories = prev;
       }
-      return prev;
+      return newSelectedCategories;
     });
+
+    // Update user preferences in the database
+    const { error } = await supabase
+      .from('user_preferences')
+      .upsert({ user_id: userId, preferred_categories: newSelectedCategories })
+      .select();
+
+    if (error) {
+      console.error('Error updating user preferences:', error);
+    }
   };
 
   return (
