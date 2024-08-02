@@ -2,6 +2,7 @@
 import { User } from "@supabase/supabase-js";
 import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Database } from "@/types/supabase";
 
 const PointsSection = () => {
   const [points, setPoints] = useState<number | null>(null);

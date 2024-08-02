@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
+import { Database } from "@/types/supabase";
 interface ActivityItem {
   id: number;
   activity_type: string;
