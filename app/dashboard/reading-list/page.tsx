@@ -64,12 +64,22 @@ export default function ReadingList() {
 
       // Only award points if the book wasn't previously finished and is now being marked as finished
       if (status === "Finished" && existingBook?.status !== "Finished") {
-        const { error: pointsError } = await supabase.rpc("increment_points", {
-          user_id: user.id,
-          points_to_add: 10, // Adjust this value as needed
-        });
+        const { data: userData, error: userError } = await supabase
+          .from("users")
+          .select("points")
+          .eq("id", user.id)
+          .single();
 
-        if (pointsError) throw pointsError;
+        if (userError) throw userError;
+
+        const newPoints = (userData?.points || 0) + 10; // Adjust this value as needed
+
+        const { error: updatePointsError } = await supabase
+          .from("users")
+          .update({ points: newPoints })
+          .eq("id", user.id);
+
+        if (updatePointsError) throw updatePointsError;
       }
 
       setReadingList((prevList) =>
