@@ -46,6 +46,21 @@ export default function ReadingList() {
 
       if (updateError) throw updateError;
 
+      // Add activity record
+      if (existingBook?.status !== status) {
+        const activityType = status === "Reading" ? "started_reading" : "finished_reading";
+        const { error: activityError } = await supabase
+          .from("user_activity")
+          .insert({
+            user_id: user.id,
+            activity_type: activityType,
+            book_id: bookId,
+            timestamp: new Date().toISOString(),
+          });
+
+        if (activityError) throw activityError;
+      }
+
       // Only award points if the book wasn't previously finished and is now being marked as finished
       if (status === "Finished" && existingBook?.status !== "Finished") {
         const { error: pointsError } = await supabase.rpc("increment_points", {
@@ -58,7 +73,7 @@ export default function ReadingList() {
 
       setReadingList((prevList) =>
         prevList.map((book) =>
-          book.id === bookId ? { ...book, status } : book
+          book.book_id === bookId ? { ...book, status } : book
         )
       );
     } catch (error) {
