@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Modal } from './Modal';
 
 interface OnboardingPopupProps {
   isOpen: boolean;
@@ -41,33 +40,36 @@ const OnboardingPopup: React.FC<OnboardingPopupProps> = ({ isOpen, onClose }) =>
     }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <Modal isModalOpen={isOpen} setIsModalOpen={onClose}>
-      <div className="p-6 max-w-md mx-auto">
-        <h2 className="text-2xl font-bold mb-4">{steps[step - 1].title}</h2>
-        <p className="mb-6">{steps[step - 1].content}</p>
+    <div className="modal modal-open">
+      <div className="modal-box relative">
+        <button onClick={onClose} className="btn btn-sm btn-circle absolute right-2 top-2">✕</button>
+        <h3 className="font-bold text-lg">{steps[step - 1].title}</h3>
+        <p className="py-4">{steps[step - 1].content}</p>
         
         {/* Step content goes here */}
         {/* You can add specific UI elements for each step */}
 
-        <div className="flex justify-between mt-8">
+        <div className="modal-action">
           {step > 1 && (
             <button
               onClick={handlePrevious}
-              className="px-4 py-2 bg-gray-200 rounded"
+              className="btn btn-outline"
             >
               Previous
             </button>
           )}
           <button
             onClick={handleNext}
-            className="px-4 py-2 bg-blue-500 text-white rounded"
+            className="btn btn-primary"
           >
             {step === steps.length ? 'Finish' : 'Next'}
           </button>
         </div>
       </div>
-    </Modal>
+    </div>
   );
 };
 
