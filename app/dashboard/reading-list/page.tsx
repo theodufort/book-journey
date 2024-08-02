@@ -48,7 +48,8 @@ export default function ReadingList() {
 
       // Add activity record
       if (existingBook?.status !== status) {
-        const activityType = status === "Reading" ? "started_reading" : "finished_reading";
+        const activityType =
+          status === "Reading" ? "book_started" : "book_finished";
         const { error: activityError } = await supabase
           .from("user_activity")
           .insert({
@@ -65,7 +66,7 @@ export default function ReadingList() {
       if (status === "Finished" && existingBook?.status !== "Finished") {
         const { error: pointsError } = await supabase.rpc("increment_points", {
           user_id: user.id,
-          points_to_add: 10 // Adjust this value as needed
+          points_to_add: 10, // Adjust this value as needed
         });
 
         if (pointsError) throw pointsError;
