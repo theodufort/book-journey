@@ -55,8 +55,8 @@ export default function ReadingList() {
           .insert({
             user_id: user.id,
             activity_type: activityType,
-            book_id: bookId,
-            timestamp: new Date().toISOString(),
+            details: JSON.stringify({ book_id: bookId }),
+            created_at: new Date().toISOString(),
           });
 
         if (activityError) throw activityError;
@@ -64,22 +64,37 @@ export default function ReadingList() {
 
       // Only award points if the book wasn't previously finished and is now being marked as finished
       if (status === "Finished" && existingBook?.status !== "Finished") {
+        const pointsToAward = 10; // Adjust this value as needed
+
         const { data: userData, error: userError } = await supabase
-          .from("users")
-          .select("points")
+          .from("auth")
+          .select("users (points)")
           .eq("id", user.id)
           .single();
 
         if (userError) throw userError;
 
-        const newPoints = (userData?.points || 0) + 10; // Adjust this value as needed
+        const currentPoints = userData?.users?.points || 0;
+        const newPoints = currentPoints + pointsToAward;
 
         const { error: updatePointsError } = await supabase
-          .from("users")
+          .from("auth.users")
           .update({ points: newPoints })
           .eq("id", user.id);
 
         if (updatePointsError) throw updatePointsError;
+
+        // Record the point transaction
+        const { error: transactionError } = await supabase
+          .from("point_transactions")
+          .insert({
+            user_id: user.id,
+            points: pointsToAward,
+            type: "earned",
+            description: "Finished reading a book",
+          });
+
+        if (transactionError) throw transactionError;
       }
 
       setReadingList((prevList) =>
