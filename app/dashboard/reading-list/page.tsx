@@ -28,13 +28,33 @@ export default function ReadingList() {
     if (!user) return;
 
     try {
-      const { error } = await supabase
+      // Check if the book is already finished
+      const { data: existingBook, error: fetchError } = await supabase
+        .from("reading_list")
+        .select("status")
+        .eq("user_id", user.id)
+        .eq("book_id", bookId)
+        .single();
+
+      if (fetchError) throw fetchError;
+
+      const { error: updateError } = await supabase
         .from("reading_list")
         .update({ status })
         .eq("user_id", user.id)
         .eq("book_id", bookId);
 
-      if (error) throw error;
+      if (updateError) throw updateError;
+
+      // Only award points if the book wasn't previously finished and is now being marked as finished
+      if (status === "Finished" && existingBook?.status !== "Finished") {
+        const { error: pointsError } = await supabase.rpc("increment_points", {
+          user_id: user.id,
+          points_to_add: 10 // Adjust this value as needed
+        });
+
+        if (pointsError) throw pointsError;
+      }
 
       setReadingList((prevList) =>
         prevList.map((book) =>
