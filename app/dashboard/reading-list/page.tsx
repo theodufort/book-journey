@@ -49,10 +49,10 @@ export default function ReadingList() {
       // Add activity record
       if (existingBook?.status !== status) {
         const activityType =
-          status === "Reading" ? "book_started" : "book_finished";
+          status === "book_added" ? "book_started" : "book_finished";
         const { error: activityError } = await supabase
           .from("user_activity")
-          .insert({
+          .upsert({
             user_id: user.id,
             activity_type: activityType,
             details: { book_id: bookId },
