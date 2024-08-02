@@ -1,5 +1,8 @@
 // app/api/books/search/route.ts
 import { NextRequest, NextResponse } from "next/server";
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import { Database } from "@/types/supabase";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -12,7 +15,25 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  const supabase = createRouteHandlerClient<Database>({ cookies });
+
   try {
+    // Check if the search results exist in the cache
+    const { data: cachedResults, error: cacheError } = await supabase
+      .from("books")
+      .select("data")
+      .eq("isbn_13", `search:${query}`)
+      .single();
+
+    if (cacheError && cacheError.code !== "PGRST116") {
+      console.error("Error checking cache:", cacheError);
+    }
+
+    if (cachedResults) {
+      return NextResponse.json(cachedResults.data);
+    }
+
+    // If not in cache, fetch from Google Books API
     const response = await fetch(
       `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
         query
@@ -39,11 +60,22 @@ export async function GET(request: NextRequest) {
         ) && item.volumeInfo.authors
     );
 
-    // Return the filtered data
-    return NextResponse.json({
+    const result = {
       items: filteredItems,
       totalItems: filteredItems.length,
-    });
+    };
+
+    // Cache the search results
+    const { error: insertError } = await supabase
+      .from("books")
+      .insert({ isbn_13: `search:${query}`, data: result });
+
+    if (insertError) {
+      console.error("Error caching search results:", insertError);
+    }
+
+    // Return the filtered data
+    return NextResponse.json(result);
   } catch (error) {
     console.error("Error fetching books:", error);
     return NextResponse.json(
