@@ -14,6 +14,12 @@ export default function BookListItem({
   status: string;
   onUpdate: () => void;
 }) {
+  // Truncate the description if it's too long and not expanded
+  const MAX_LENGTH = 100;
+  const [isExpanded, setIsExpanded] = useState(false);
+  const handleToggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
   const supabase = createClientComponentClient<Database>();
   const book = item.volumeInfo;
   const loading = false;
@@ -219,10 +225,14 @@ export default function BookListItem({
       ))}
     </div>
   );
-
+  const description = book.description || "";
+  const truncatedDescription =
+    description.length > MAX_LENGTH
+      ? description.substring(0, MAX_LENGTH) + "..."
+      : description;
   return (
     <>
-      <div className="card lg:card-side bg-base-100 shadow-xl">
+      <div className="card card-side bg-base-100 shadow-xl">
         <figure className="p-4">
           <img
             src={book.imageLinks?.thumbnail || "/placeholder-book-cover.jpg"}
@@ -238,12 +248,20 @@ export default function BookListItem({
           <p>
             <b>Page Count:</b> {book.pageCount || "Unknown"}
           </p>
-          <p>
-            <b>Description:</b>{" "}
-            {book.description
-              ? `${book.description.substring(0, 200)}...`
+          <b>Description:</b>{" "}
+          <div className="w-4/5">
+            {isExpanded ? description : truncatedDescription}
+            {description
+              ? description.length > MAX_LENGTH && (
+                  <button
+                    onClick={handleToggleExpand}
+                    className="text-blue-500 ml-2"
+                  >
+                    {isExpanded ? "Read Less" : "Read More"}
+                  </button>
+                )
               : "No description available"}
-          </p>
+          </div>
           <div className="card-actions justify-end my-auto inline-block">
             <div>
               <label>
