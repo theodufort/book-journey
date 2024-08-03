@@ -5,7 +5,7 @@ import ButtonAccount from "@/components/ButtonAccount";
 
 const HeaderDashboard = () => {
   return (
-    <div className="flex justify-between items-center mb-8">
+    <div className="flex justify-between items-center mb-8 space-x-4">
       <div className="inline-block">
         <ul className="menu menu-vertical lg:menu-horizontal bg-base-200 rounded-box">
           <li>
@@ -27,7 +27,7 @@ const HeaderDashboard = () => {
           </li>
         </ul>
       </div>
-      <div>
+      <div className="mb-auto md:mt-auto">
         <ButtonAccount />
       </div>
     </div>

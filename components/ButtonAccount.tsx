@@ -56,7 +56,7 @@ const ButtonAccount = () => {
     <Popover className="relative z-10">
       {({ open }) => (
         <>
-          <Popover.Button className="btn">
+          <Popover.Button className="btn w-max">
             {user?.user_metadata?.avatar_url ? (
               <img
                 src={user?.user_metadata?.avatar_url}
@@ -72,9 +72,11 @@ const ButtonAccount = () => {
               </span>
             )}
 
-            {user?.user_metadata?.name ||
-              user?.email?.split("@")[0] ||
-              "Account"}
+            <div className="hidden md:block">
+              {user?.user_metadata?.name ||
+                user?.email?.split("@")[0] ||
+                "Account"}
+            </div>
 
             {isLoading ? (
               <span className="loading loading-spinner loading-xs"></span>
@@ -103,7 +105,7 @@ const ButtonAccount = () => {
             leaveFrom="transform scale-100 opacity-100"
             leaveTo="transform scale-95 opacity-0"
           >
-            <Popover.Panel className="absolute left-0 z-10 mt-3 w-screen max-w-[16rem] transform">
+            <Popover.Panel className="absolute right-0 md:left-0 z-10 mt-3 w-auto max-w-[16rem] transform">
               <div className="overflow-hidden rounded-xl shadow-xl ring-1 ring-base-content ring-opacity-5 bg-base-100 p-1">
                 <div className="space-y-0.5 text-sm">
                   <button

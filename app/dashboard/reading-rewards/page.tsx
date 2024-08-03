@@ -115,7 +115,7 @@ export default function ReadingRewards() {
         <h1 className="text-3xl md:text-4xl font-extrabold">Reading Rewards</h1>
 
         {userPoints && (
-          <div className="stats shadow">
+          <div className="stats stats-vertical md:stats-horizontal shadow">
             <div className="stat">
               <div className="stat-title">Available Points</div>
               <div className="stat-value">{userPoints.points}</div>

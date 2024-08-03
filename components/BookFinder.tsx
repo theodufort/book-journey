@@ -104,7 +104,7 @@ const fieldsList: QuizQuestion[] = [
       { label: "Catalan, Valencian", value: "ca" },
       { label: "Chamorro", value: "ch" },
       { label: "Chechen", value: "ce" },
-      { label: "Chichewa, Chewa, Nyanja", value: "ny" },
+      { label: "Chichewa", value: "ny" },
       { label: "Chinese", value: "zh" },
       {
         label: "Church Slavonic",
@@ -117,7 +117,7 @@ const fieldsList: QuizQuestion[] = [
       { label: "Croatian", value: "hr" },
       { label: "Czech", value: "cs" },
       { label: "Danish", value: "da" },
-      { label: "Divehi, Dhivehi, Maldivian", value: "dv" },
+      { label: "Divehi", value: "dv" },
       { label: "Dutch, Flemish", value: "nl" },
       { label: "Dzongkha", value: "dz" },
       { label: "English", value: "en" },
@@ -130,12 +130,12 @@ const fieldsList: QuizQuestion[] = [
       { label: "French", value: "fr" },
       { label: "Western Frisian", value: "fy" },
       { label: "Fulah", value: "ff" },
-      { label: "Gaelic, Scottish Gaelic", value: "gd" },
+      { label: "Gaelic", value: "gd" },
       { label: "Galician", value: "gl" },
       { label: "Ganda", value: "lg" },
       { label: "Georgian", value: "ka" },
       { label: "German", value: "de" },
-      { label: "Greek, Modern (1453–)", value: "el" },
+      { label: "Greek, Modern", value: "el" },
       { label: "Kalaallisut, Greenlandic", value: "kl" },
       { label: "Guarani", value: "gn" },
       { label: "Gujarati", value: "gu" },
@@ -243,7 +243,7 @@ const fieldsList: QuizQuestion[] = [
       { label: "Thai", value: "th" },
       { label: "Tibetan", value: "bo" },
       { label: "Tigrinya", value: "ti" },
-      { label: "Tonga (Tonga Islands)", value: "to" },
+      { label: "Tonga", value: "to" },
       { label: "Tsonga", value: "ts" },
       { label: "Tswana", value: "tn" },
       { label: "Turkish", value: "tr" },
@@ -335,22 +335,23 @@ const BookFinder = () => {
   return (
     <section
       id="quiz"
-      className="max-w-7xl mx-auto bg-base-100 items-center justify-center gap-16 lg:gap-20 px-8 py-2 lg:py-20 text-black"
+      className="max-w-7xl bg-base-100 gap-16 lg:gap-20 px-8 py-10 lg:py-20 text-black"
     >
-      <h2 className="font-extrabold inline-block mb-6 text-4xl lg:text-6xl tracking-tight m-auto text-center">
+      <h2 className="font-extrabold inline-block mb-6 text-4xl lg:text-6xl tracking-tight">
         Find a book to read in 1 minute!
       </h2>
       <form onSubmit={handleSubmit}>
-        <div className="mb-4 grid grid-cols-3 gap-5">
+        <div className="mb-4 grid grid-cols-1 sm:grid-cols-3 gap-5">
           {fieldsList.map((field) => (
-            <div key={field.name} className="inline-block">
-              <label className="w-auto font-extrabold text-xl m-auto">
-                {field.label}{" "}
+            <div key={field.name} className="flex">
+              <label className="w-auto font-extrabold md:text-xl justify-start mr-2 my-auto">
+                {field.label}
+                {": "}
               </label>
-              <div className="m-auto">
+              <div className="flex ml-auto mr-0 justify-end min-h-10">
                 {field.inputType === "select" ? (
                   <select
-                    className="border-black border-2 rounded-lg w-max m-auto select select-bordered"
+                    className="border-black border-2 rounded-lg w-max max-w-full select select-bordered h-auto"
                     name={field.name}
                     value={formData[field.name] as string | number}
                     onChange={(e) =>
@@ -365,7 +366,7 @@ const BookFinder = () => {
                   </select>
                 ) : field.inputType === "input" ? (
                   <input
-                    className="border-black border-2 rounded-lg w-max m-auto input input-bordered"
+                    className="border-black border-2 rounded-lg w-4/5 input input-bordered h-auto"
                     type={field.dataType}
                     name={field.name}
                     value={
@@ -385,7 +386,7 @@ const BookFinder = () => {
                 ) : field.inputType === "checkbox" ? (
                   <input
                     type="checkbox"
-                    className="m-auto checkbox"
+                    className="checkbox h-auto"
                     name={field.name}
                     checked={formData[field.name] as any}
                     onChange={(e) =>
@@ -398,7 +399,10 @@ const BookFinder = () => {
           ))}
           {error && <p>{error}</p>}
         </div>
-        <button type="submit" className="btn btn-primary btn-wide">
+        <button
+          type="submit"
+          className="btn btn-primary btn-wide mx-auto flex my-5"
+        >
           Find Books
         </button>
       </form>

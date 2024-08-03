@@ -257,17 +257,17 @@ export default function ReadingList() {
     <main className="min-h-screen p-8 pb-24">
       <section className="max-w-6xl mx-auto space-y-8">
         <HeaderDashboard />
-
-        <h1 className="text-3xl md:text-4xl font-extrabold">
-          My Reading List
+        <div className="flex">
+          <h1 className="text-2xl md:text-4xl font-extrabold  my-auto">
+            My Reading List
+          </h1>
           <button
-            className="btn btn-primary float-end"
+            className="btn btn-primary float-end ml-auto mr-0 my-auto"
             onClick={() => router.push("/dashboard/reading-list/add")}
           >
-            Add to Reading List
+            Add <span className="hidden md:block">to Reading List</span>
           </button>
-        </h1>
-
+        </div>
         <div className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <PointsSection />

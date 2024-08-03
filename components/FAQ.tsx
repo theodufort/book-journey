@@ -13,22 +13,23 @@ interface FAQItemProps {
 
 const faqList: FAQItemProps[] = [
   {
-    question: "What do I get exactly?",
-    answer: <div className="space-y-2 leading-relaxed">Loreum Ipseum</div>,
-  },
-  {
-    question: "Can I get a refund?",
+    question: "Why should I use MyBookQuest instead of Goodreads?",
     answer: (
-      <p>
-        Yes! You can request a refund within 7 days of your purchase. Reach out
-        by email.
-      </p>
+      <div className="space-y-2 leading-relaxed">
+        We are a 100% Free platform that recommends books based on YOUR tastes,
+        we don't overpush you to impuulse buy books that don't suit your needs.
+        We think that transparency is key.
+      </div>
     ),
   },
   {
-    question: "I have another question",
+    question: "What are the main features that MyBookQuest has?",
     answer: (
-      <div className="space-y-2 leading-relaxed">Cool, contact us by email</div>
+      <p>
+        Our goal is to provide a free, simple to use, curated platform to make
+        the book reading and choosing process fast and fun so that you can spend
+        your time reading instead of browsing!
+      </p>
     ),
   },
 ];

@@ -232,7 +232,7 @@ export default function BookListItem({
       : description;
   return (
     <>
-      <div className="card card-side bg-base-100 shadow-xl">
+      <div className="card md:card-side bg-base-100 shadow-xl">
         <figure className="p-4">
           <img
             src={book.imageLinks?.thumbnail || "/placeholder-book-cover.jpg"}
@@ -280,7 +280,10 @@ export default function BookListItem({
               </select>
             </div>
             {status === "Finished" && renderRatingInput()}
-            <button className="btn btn-primary float-end" onClick={removeBook}>
+            <button
+              className="btn btn-primary md:ml-auto my-5 flex"
+              onClick={removeBook}
+            >
               Remove
             </button>
           </div>
