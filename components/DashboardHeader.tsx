@@ -5,27 +5,73 @@ import ButtonAccount from "@/components/ButtonAccount";
 
 const HeaderDashboard = () => {
   return (
-    <div className="flex justify-between items-center mb-8 space-x-4">
-      <div className="inline-block">
-        <ul className="menu menu-vertical lg:menu-horizontal bg-base-200 rounded-box">
-          <li>
-            <Link href="/dashboard">Dashboard</Link>
-          </li>
-          <li>
-            <Link href="/dashboard/reading-list">Reading List</Link>
-          </li>
-          <li>
-            <Link href="/dashboard/recommendations">
-              Reading Recommendations
-            </Link>
-          </li>
-          <li>
-            <Link href="/dashboard/reading-rewards">Reading Rewards</Link>
-          </li>
-          <li>
-            <Link href="/dashboard/profile">Profile</Link>
-          </li>
-        </ul>
+    <div className="flex justify-between items-center mb-8 space-x-4 navbar">
+      <div className="inline-block navbar-start">
+        <div className="dropdown">
+          <div
+            tabIndex={0}
+            role="button"
+            className="btn btn-ghost lg:hidden bg-base-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h8m-8 6h16"
+              />
+            </svg>
+          </div>
+          <ul
+            tabIndex={0}
+            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+          >
+            <li>
+              <Link href="/dashboard">Dashboard</Link>
+            </li>
+            <li>
+              <Link href="/dashboard/reading-list">Reading List</Link>
+            </li>
+            <li>
+              <Link href="/dashboard/recommendations">
+                Reading Recommendations
+              </Link>
+            </li>
+            <li>
+              <Link href="/dashboard/reading-rewards">Reading Rewards</Link>
+            </li>
+            <li>
+              <Link href="/dashboard/profile">Profile</Link>
+            </li>
+          </ul>
+        </div>{" "}
+        <div className="card navbar-center hidden lg:flex bg-base-200">
+          <ul className="menu menu-horizontal px-1">
+            <li>
+              <Link href="/dashboard">Dashboard</Link>
+            </li>
+            <li>
+              <Link href="/dashboard/reading-list">Reading List</Link>
+            </li>
+            <li>
+              <Link href="/dashboard/recommendations">
+                Reading Recommendations
+              </Link>
+            </li>
+            <li>
+              <Link href="/dashboard/reading-rewards">Reading Rewards</Link>
+            </li>
+            <li>
+              <Link href="/dashboard/profile">Profile</Link>
+            </li>
+          </ul>
+        </div>
       </div>
       <div className="mb-auto md:mt-auto">
         <ButtonAccount />

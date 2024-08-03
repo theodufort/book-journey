@@ -6,6 +6,8 @@ import { Database, Json } from "@/types/supabase";
 import Image from "next/image";
 import { checkBookExists } from "@/libs/supabase-helpers";
 import { Volume } from "@/interfaces/GoogleAPI";
+import { BookAvatarNoDetails } from "@/components/BookAvatarNoDetails";
+import { BookAvatarPublic } from "@/components/BookAvatarPublic";
 
 export default function UserProfile({
   params,
@@ -133,106 +135,72 @@ export default function UserProfile({
             </div>
           </div>
         </div>
-
-        <div className="bg-base-100 rounded-box p-8 shadow-xl">
-          <h2 className="text-2xl font-bold mb-4">Reading Journey</h2>
-          <div className="grid grid-cols-2 grid-rows-1">
-            <div className="stats stats-vertical lg:stats-horizontal shadow w-3/5">
-              <div className="stat">
-                <div className="stat-title">Books Read</div>
-                <div className="stat-value">{readBooks.length}</div>
-              </div>
-
-              <div className="stat">
-                <div className="stat-title">Avg Rating</div>
-                <div className="stat-value">
-                  {readBooks.length > 0
-                    ? (
-                        readBooks.reduce(
-                          (sum, book) => sum + (book.rating || 0),
-                          0
-                        ) / readBooks.filter((book) => book.rating > 0).length
-                      ).toFixed(1) || "N/A"
-                    : "N/A"}
+        <div className="grid md:grid-cols-2 grid-rows-1 gap-4">
+          <div className="bg-base-100 rounded-box p-8 shadow-xl">
+            <h2 className="text-2xl font-bold mb-4">Reading Journey</h2>
+            <div className="grid grid-cols-2 grid-rows-1">
+              <div className="stats stats-vertical lg:stats-horizontal shadow w-max">
+                <div className="stat">
+                  <div className="stat-title">Books Read</div>
+                  <div className="stat-value">{readBooks.length}</div>
                 </div>
-              </div>
-            </div>
-            <div className="w-4/5 flex">
-              {readingBooks.length > 0 ? (
-                <div
-                  key={readingBooks[0].book_id}
-                  className="card bg-base-200 shadow-sm"
-                >
-                  <figure className="px-4 pt-4">
-                    <Image
-                      src={
-                        readingBooks[0].data.volumeInfo.imageLinks?.thumbnail ||
-                        "/default-book-cover.png"
-                      }
-                      alt={readingBooks[0].data.volumeInfo.title}
-                      width={120}
-                      height={180}
-                      className="rounded-lg"
-                    />
-                  </figure>
-                  <div className="card-body items-center text-center p-4">
-                    <h3 className="card-title text-sm">
-                      {readingBooks[0].data.volumeInfo.title}
-                    </h3>
-                    <p className="text-xs">
-                      {readingBooks[0].data.volumeInfo.authors?.[0]}
-                    </p>
+
+                <div className="stat">
+                  <div className="stat-title">Avg Rating</div>
+                  <div className="stat-value">
+                    {readBooks.length > 0
+                      ? (
+                          readBooks.reduce(
+                            (sum, book) => sum + (book.rating || 0),
+                            0
+                          ) / readBooks.filter((book) => book.rating > 0).length
+                        ).toFixed(1) || "N/A"
+                      : "N/A"}
                   </div>
                 </div>
-              ) : (
-                <h4>Not currently reading any book</h4>
-              )}
+              </div>
             </div>
+          </div>
+          <div className="w-auto flex bg-base-100 rounded-box p-8 shadow-xl">
+            {readingBooks.length > 0 ? (
+              <div>
+                <h2 className="card-title text-xl md:text-2xl font-bold">
+                  Currently Reading ({readingBooks.length})
+                </h2>
+                {readingBooks && readingBooks.length > 0 ? (
+                  <div className="list-disc list-inside space-y-2">
+                    {readingBooks.map((item) => (
+                      <div
+                        key={
+                          item.data.volumeInfo.industryIdentifiers?.find(
+                            (id: any) => id.type === "ISBN_13"
+                          )?.identifier
+                        }
+                      >
+                        <BookAvatarNoDetails item={item.data} />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-lg">
+                    You&apos;re not currently reading any books. Why not start
+                    one?
+                  </p>
+                )}
+              </div>
+            ) : (
+              <h4>Not currently reading any book</h4>
+            )}
           </div>
         </div>
         <div className="bg-base-100 rounded-box p-8 shadow-xl">
           <h2 className="text-2xl font-bold mb-4">
             Read Books ({readBooks.length})
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {readBooks.map((book, index) => (
-              <div
-                key={`read-book-${book.book_id}-${index}`}
-                className="card bg-base-200 shadow-sm h-96"
-              >
-                <figure className="px-4 pt-4">
-                  <Image
-                    src={
-                      book.data.volumeInfo.imageLinks?.thumbnail ||
-                      "/default-book-cover.png"
-                    }
-                    alt={book.data.volumeInfo.title}
-                    width={120}
-                    height={180}
-                    className="rounded-lg"
-                  />
-                </figure>
-                <div className="card-body items-center text-center">
-                  <h3 className="card-title text-sm">
-                    {book.data.volumeInfo.title}
-                  </h3>
-                  <p className="text-xs">{book.data.volumeInfo.authors?.[0]}</p>
-                  <div className="rating rating-sm h-4/5">
-                    {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((star) => (
-                      <input
-                        key={star}
-                        type="radio"
-                        name={`rating-${book.book_id}`}
-                        className={`mask mask-star-2 ${
-                          star % 1 === 0 ? "mask-half-2" : "mask-half-1"
-                        } bg-orange-400`}
-                        style={{ marginTop: "0", marginBottom: "0" }}
-                        checked={book.rating === star}
-                        readOnly
-                      />
-                    ))}
-                  </div>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {readBooks.map((item, index) => (
+              <div key={`read-book-${item.book_id}-${index}`}>
+                <BookAvatarPublic item={item} showRating={true} />
               </div>
             ))}
           </div>
@@ -241,27 +209,10 @@ export default function UserProfile({
           <h2 className="text-2xl font-bold mb-4">
             Books to Read ({toReadBooks.length})
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {toReadBooks.map((book, index) => (
-              <div key={`to-read-book-${book.book_id}-${index}`} className="card bg-base-200 shadow-sm">
-                <figure className="px-4 pt-4">
-                  <Image
-                    src={
-                      book.data.volumeInfo.imageLinks?.thumbnail ||
-                      "/default-book-cover.png"
-                    }
-                    alt={book.data.volumeInfo.title}
-                    width={120}
-                    height={180}
-                    className="rounded-lg"
-                  />
-                </figure>
-                <div className="card-body items-center text-center p-4">
-                  <h3 className="card-title text-sm">
-                    {book.data.volumeInfo.title}
-                  </h3>
-                  <p className="text-xs">{book.data.volumeInfo.authors?.[0]}</p>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {toReadBooks.map((item, index) => (
+              <div key={`to-read-book-${item.book_id}-${index}`}>
+                <BookAvatarPublic item={item} showRating={false} />
               </div>
             ))}
           </div>

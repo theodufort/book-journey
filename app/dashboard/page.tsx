@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
 import OnboardingPopup from "@/components/OnboardingPopup";
+import { BookAvatarNoDetails } from "@/components/BookAvatarNoDetails";
 
 export default function Dashboard() {
   const supabase = createClientComponentClient<Database>();
@@ -198,30 +199,39 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-
-        {/* Current Reading List Preview */}
-        <div className="card bg-base-200 shadow-xl">
-          <div className="card-body">
-            <h2 className="card-title text-xl md:text-2xl font-bold">
-              Currently Reading
-            </h2>
-            {currentlyReading && currentlyReading.length > 0 ? (
-              <ul className="list-disc list-inside space-y-2">
-                {currentlyReading.map((item) => (
-                  <li key={item.id} className="text-lg">
-                    {item.title || "Unknown Title"} by{" "}
-                    {item.author || "Unknown Author"}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-lg">
-                You&apos;re not currently reading any books. Why not start one?
-              </p>
-            )}
+        <div className="grid md:grid-cols-2 grid-rows-1 gap-4">
+          <div>
+            <PointsSection />
+          </div>
+          {/* Current Reading List Preview */}
+          <div className="card bg-base-200 shadow-xl">
+            <div className="card-body">
+              <h2 className="card-title text-xl md:text-2xl font-bold">
+                Currently Reading
+              </h2>
+              {currentlyReading && currentlyReading.length > 0 ? (
+                <div className="list-disc list-inside space-y-2">
+                  {currentlyReading.map((item) => (
+                    <div
+                      key={
+                        item.volumeInfo.industryIdentifiers?.find(
+                          (id: any) => id.type === "ISBN_13"
+                        )?.identifier
+                      }
+                    >
+                      <BookAvatarNoDetails item={item} />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-lg">
+                  You&apos;re not currently reading any books. Why not start
+                  one?
+                </p>
+              )}
+            </div>
           </div>
         </div>
-        <PointsSection />
       </section>
     </main>
   );

@@ -28,7 +28,8 @@ CREATE TABLE public.user_preferences (
     preferred_categories TEXT[], -- Array of categories
     username VARCHAR(50) UNIQUE,
     bio TEXT,
-    profile_picture_url TEXT
+    profile_picture_url TEXT,
+    onboarded boolean not null default false
 );
 
 -- Friends table in the 'public' schema
