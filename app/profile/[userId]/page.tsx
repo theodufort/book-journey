@@ -236,7 +236,7 @@ export default function UserProfile({
                               const nextIndex =
                                 (currentIndex + 1) % readingBooks.length;
                               const carousel =
-                                document.querySelector(".carousel");
+                                document.querySelector(".carousel-reading");
                               const item = document.getElementById(
                                 `reading-${readingBooks[nextIndex].book_id}`
                               );
@@ -275,7 +275,7 @@ export default function UserProfile({
                   <div
                     className="carousel-item w-full inline-block"
                     id={`to-read-${item.book_id}`}
-                    key={`to-read-book-${item.book_id}-${index}`}
+                    key={`to-read-book-${item.book_id}`}
                   >
                     <BookAvatarPublic item={item} showRating={false} />
                   </div>
@@ -317,7 +317,7 @@ export default function UserProfile({
                             ?.scrollLeft
                       );
                       const nextIndex = (currentIndex + 1) % toReadBooks.length;
-                      const carousel = document.querySelector(".carousel-read");
+                      const carousel = document.querySelector(".carousel-to-read");
                       const item = document.getElementById(
                         `to-read-${toReadBooks[nextIndex].book_id}`
                       );
@@ -343,7 +343,7 @@ export default function UserProfile({
                   <div
                     className="carousel-item w-full inline-block"
                     id={`read-${item.book_id}`}
-                    key={`read-book-${item.book_id}-${index}`}
+                    key={`read-book-${item.book_id}`}
                   >
                     <BookAvatarPublic item={item} showRating={true} />
                   </div>
@@ -363,7 +363,7 @@ export default function UserProfile({
                       const prevIndex =
                         (currentIndex - 1 + readBooks.length) %
                         readBooks.length;
-                      const carousel = document.querySelector(".carousel");
+                      const carousel = document.querySelector(".carousel-read");
                       const item = document.getElementById(
                         `read-${readBooks[prevIndex].book_id}`
                       );
@@ -385,7 +385,7 @@ export default function UserProfile({
                             ?.scrollLeft
                       );
                       const nextIndex = (currentIndex + 1) % readBooks.length;
-                      const carousel = document.querySelector(".carousel");
+                      const carousel = document.querySelector(".carousel-read");
                       const item = document.getElementById(
                         `read-${readBooks[nextIndex].book_id}`
                       );
