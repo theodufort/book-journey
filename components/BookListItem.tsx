@@ -103,6 +103,7 @@ export default function BookListItem({
 
   async function updateBookStatus(ns: string, book_page_count: number) {
     setNewStatus(ns);
+    console.log(ns);
     if (status === "To Read" && ns === "Reading") {
       setMessageType("begin");
       setShowModal(true);
@@ -117,8 +118,9 @@ export default function BookListItem({
       //Add number of pages and time spent
       calculateUserStats(book_page_count);
     } else {
-      await performUpdate(ns, book_page_count);
+      setPendingUpdate(true);
     }
+    await performUpdate(ns, book_page_count);
     refreshParent();
   }
   async function calculateUserStats(book_page_count: number) {
