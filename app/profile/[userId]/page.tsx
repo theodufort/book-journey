@@ -202,6 +202,22 @@ export default function UserProfile({
                             key={`reading-${isbn13}`}
                           >
                             <BookAvatarNoDetails item={item.data} />
+                            {readingBooks.length > 1 && (
+                              <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+                                <a 
+                                  href={`#reading-${readingBooks[(index - 1 + readingBooks.length) % readingBooks.length].book_id}`} 
+                                  className={`btn btn-circle ${index === 0 ? 'btn-disabled' : ''}`}
+                                >
+                                  ❮
+                                </a> 
+                                <a 
+                                  href={`#reading-${readingBooks[(index + 1) % readingBooks.length].book_id}`} 
+                                  className={`btn btn-circle ${index === readingBooks.length - 1 ? 'btn-disabled' : ''}`}
+                                >
+                                  ❯
+                                </a>
+                              </div>
+                            )}
                           </div>
                         );
                       })}
