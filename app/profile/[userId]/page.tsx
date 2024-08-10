@@ -170,10 +170,18 @@ export default function UserProfile({
                   </h2>
                   {readingBooks.length > 1 && (
                     <div className="ml-auto">
-                      <a href={`#reading-${readingBooks[readingBooks.length - 1].book_id}`} className="btn btn-circle">
+                      <a
+                        href={`#reading-${
+                          readingBooks[readingBooks.length - 1].book_id
+                        }`}
+                        className="btn btn-circle"
+                      >
                         ❮
                       </a>
-                      <a href={`#reading-${readingBooks[1].book_id}`} className="btn btn-circle ml-2">
+                      <a
+                        href={`#reading-${readingBooks[1].book_id}`}
+                        className="btn btn-circle ml-2"
+                      >
                         ❯
                       </a>
                     </div>
@@ -183,9 +191,10 @@ export default function UserProfile({
                   {readingBooks.length > 0 ? (
                     <div className="carousel w-full">
                       {readingBooks.map((item, index) => {
-                        const isbn13 = item.data.volumeInfo.industryIdentifiers?.find(
-                          (id: any) => id.type === "ISBN_13"
-                        )?.identifier || item.book_id;
+                        const isbn13 =
+                          item.data.volumeInfo.industryIdentifiers?.find(
+                            (id: any) => id.type === "ISBN_13"
+                          )?.identifier || item.book_id;
                         return (
                           <div
                             className="carousel-item w-full inline-block"
@@ -193,12 +202,6 @@ export default function UserProfile({
                             key={`reading-${isbn13}`}
                           >
                             <BookAvatarNoDetails item={item.data} />
-                            {readingBooks.length > 1 && (
-                              <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                                <a href={`#reading-${readingBooks[(index - 1 + readingBooks.length) % readingBooks.length].book_id}`} className="btn btn-circle">❮</a> 
-                                <a href={`#reading-${readingBooks[(index + 1) % readingBooks.length].book_id}`} className="btn btn-circle">❯</a>
-                              </div>
-                            )}
                           </div>
                         );
                       })}
