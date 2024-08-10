@@ -172,8 +172,8 @@ export default function UserProfile({
                 <div className="w-full">
                   {readingBooks.length > 0 ? (
                     <div className="relative">
-                      <div className="carousel w-full">
-                        {readingBooks.map((item, index) => {
+                      <div className="carousel carousel-reading w-full">
+                        {readingBooks.map((item) => {
                           const isbn13 =
                             item.data.volumeInfo.industryIdentifiers?.find(
                               (id: any) => id.type === "ISBN_13"
@@ -208,7 +208,7 @@ export default function UserProfile({
                                 (currentIndex - 1 + readingBooks.length) %
                                 readingBooks.length;
                               const carousel =
-                                document.querySelector(".carousel");
+                                document.querySelector(".carousel-reading");
                               const item = document.getElementById(
                                 `reading-${readingBooks[prevIndex].book_id}`
                               );
@@ -270,8 +270,8 @@ export default function UserProfile({
               Books to Read ({toReadBooks.length})
             </h2>
             <div className="relative">
-              <div className="carousel w-full">
-                {toReadBooks.map((item, index) => (
+              <div className="carousel carousel-to-read w-full">
+                {toReadBooks.map((item) => (
                   <div
                     className="carousel-item w-full inline-block"
                     id={`to-read-${item.book_id}`}
@@ -295,7 +295,7 @@ export default function UserProfile({
                       const prevIndex =
                         (currentIndex - 1 + toReadBooks.length) %
                         toReadBooks.length;
-                      const carousel = document.querySelector(".carousel");
+                      const carousel = document.querySelector(".carousel-to-read");
                       const item = document.getElementById(
                         `to-read-${toReadBooks[prevIndex].book_id}`
                       );
@@ -317,7 +317,7 @@ export default function UserProfile({
                             ?.scrollLeft
                       );
                       const nextIndex = (currentIndex + 1) % toReadBooks.length;
-                      const carousel = document.querySelector(".carousel");
+                      const carousel = document.querySelector(".carousel-read");
                       const item = document.getElementById(
                         `to-read-${toReadBooks[nextIndex].book_id}`
                       );
@@ -338,8 +338,8 @@ export default function UserProfile({
               Read Books ({readBooks.length})
             </h2>
             <div className="relative">
-              <div className="carousel w-full">
-                {readBooks.map((item, index) => (
+              <div className="carousel carousel-read w-full">
+                {readBooks.map((item) => (
                   <div
                     className="carousel-item w-full inline-block"
                     id={`read-${item.book_id}`}
