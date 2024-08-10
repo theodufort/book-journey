@@ -121,7 +121,7 @@ export default function BookListItem({
       setPendingUpdate(true);
     }
     await performUpdate(ns, book_page_count);
-    refreshParent();
+    onUpdate(); // Call onUpdate immediately after updating the status
   }
   async function calculateUserStats(book_page_count: number) {
     const { data, error } = await supabase.rpc("update_reading_stats", {
