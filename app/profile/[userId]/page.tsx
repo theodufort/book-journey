@@ -164,39 +164,44 @@ export default function UserProfile({
           <div className="w-auto flex bg-base-100 rounded-box p-8 shadow-xl">
             {readingBooks.length > 0 ? (
               <div className="w-full">
-                <div className="flex">
+                <div className="flex mb-4">
                   <h2 className="card-title text-xl md:text-2xl font-bold">
                     Currently Reading ({readingBooks.length})
                   </h2>
-                  <div className="ml-auto">
-                    <a href="#slide4" className="btn btn-circle">
-                      ❮
-                    </a>
-                    <a href="#slide2" className="btn btn-circle ml-2">
-                      ❯
-                    </a>
-                  </div>
+                  {readingBooks.length > 1 && (
+                    <div className="ml-auto">
+                      <a href={`#reading-${readingBooks[readingBooks.length - 1].book_id}`} className="btn btn-circle">
+                        ❮
+                      </a>
+                      <a href={`#reading-${readingBooks[1].book_id}`} className="btn btn-circle ml-2">
+                        ❯
+                      </a>
+                    </div>
+                  )}
                 </div>
                 <div className="w-full">
-                  {readingBooks && readingBooks.length > 0 ? (
+                  {readingBooks.length > 0 ? (
                     <div className="carousel w-full">
-                      {readingBooks.map((item) => (
-                        <div
-                          className="carousel-item w-full inline-block"
-                          id={
-                            item.data.volumeInfo.industryIdentifiers?.find(
-                              (id: any) => id.type === "ISBN_13"
-                            )?.identifier
-                          }
-                          key={
-                            item.data.volumeInfo.industryIdentifiers?.find(
-                              (id: any) => id.type === "ISBN_13"
-                            )?.identifier
-                          }
-                        >
-                          <BookAvatarNoDetails item={item.data} />{" "}
-                        </div>
-                      ))}
+                      {readingBooks.map((item, index) => {
+                        const isbn13 = item.data.volumeInfo.industryIdentifiers?.find(
+                          (id: any) => id.type === "ISBN_13"
+                        )?.identifier || item.book_id;
+                        return (
+                          <div
+                            className="carousel-item w-full inline-block"
+                            id={`reading-${isbn13}`}
+                            key={`reading-${isbn13}`}
+                          >
+                            <BookAvatarNoDetails item={item.data} />
+                            {readingBooks.length > 1 && (
+                              <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+                                <a href={`#reading-${readingBooks[(index - 1 + readingBooks.length) % readingBooks.length].book_id}`} className="btn btn-circle">❮</a> 
+                                <a href={`#reading-${readingBooks[(index + 1) % readingBooks.length].book_id}`} className="btn btn-circle">❯</a>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
                   ) : (
                     <p className="text-lg">
