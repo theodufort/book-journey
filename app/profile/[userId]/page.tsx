@@ -191,11 +191,13 @@ export default function UserProfile({
                                     const prevIndex =
                                       (index - 1 + readingBooks.length) %
                                       readingBooks.length;
-                                    document
-                                      .getElementById(
-                                        `reading-${readingBooks[prevIndex].book_id}`
-                                      )
-                                      ?.scrollIntoView({ behavior: "smooth" });
+                                    const carousel = document.querySelector('.carousel');
+                                    const item = document.getElementById(
+                                      `reading-${readingBooks[prevIndex].book_id}`
+                                    );
+                                    if (carousel && item) {
+                                      carousel.scrollLeft = item.offsetLeft;
+                                    }
                                   }}
                                   className={`btn btn-circle ${
                                     index === 0 ? "btn-disabled" : ""
@@ -208,11 +210,13 @@ export default function UserProfile({
                                   onClick={() => {
                                     const nextIndex =
                                       (index + 1) % readingBooks.length;
-                                    document
-                                      .getElementById(
-                                        `reading-${readingBooks[nextIndex].book_id}`
-                                      )
-                                      ?.scrollIntoView({ behavior: "smooth" });
+                                    const carousel = document.querySelector('.carousel');
+                                    const item = document.getElementById(
+                                      `reading-${readingBooks[nextIndex].book_id}`
+                                    );
+                                    if (carousel && item) {
+                                      carousel.scrollLeft = item.offsetLeft;
+                                    }
                                   }}
                                   className={`btn btn-circle ${
                                     index === readingBooks.length - 1
