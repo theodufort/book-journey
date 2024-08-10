@@ -171,69 +171,73 @@ export default function UserProfile({
                 </div>
                 <div className="w-full">
                   {readingBooks.length > 0 ? (
-                    <div className="carousel w-full">
-                      {readingBooks.map((item, index) => {
-                        const isbn13 =
-                          item.data.volumeInfo.industryIdentifiers?.find(
-                            (id: any) => id.type === "ISBN_13"
-                          )?.identifier || item.book_id;
-                        return (
-                          <div
-                            className="carousel-item w-full inline-block relative"
-                            id={`reading-${isbn13}`}
-                            key={`reading-${isbn13}`}
+                    <div className="relative">
+                      <div className="carousel w-full">
+                        {readingBooks.map((item, index) => {
+                          const isbn13 =
+                            item.data.volumeInfo.industryIdentifiers?.find(
+                              (id: any) => id.type === "ISBN_13"
+                            )?.identifier || item.book_id;
+                          return (
+                            <div
+                              className="carousel-item w-full inline-block"
+                              id={`reading-${isbn13}`}
+                              key={`reading-${isbn13}`}
+                            >
+                              <BookAvatarNoDetails item={item.data} />
+                            </div>
+                          );
+                        })}
+                      </div>
+                      {readingBooks.length > 1 && (
+                        <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+                          <button
+                            onClick={() => {
+                              const currentIndex = readingBooks.findIndex(
+                                (book) =>
+                                  document.getElementById(`reading-${book.book_id}`)?.offsetLeft ===
+                                  (document.querySelector('.carousel') as HTMLElement)?.scrollLeft
+                              );
+                              const prevIndex =
+                                (currentIndex - 1 + readingBooks.length) %
+                                readingBooks.length;
+                              const carousel =
+                                document.querySelector(".carousel");
+                              const item = document.getElementById(
+                                `reading-${readingBooks[prevIndex].book_id}`
+                              );
+                              if (carousel && item) {
+                                carousel.scrollLeft = item.offsetLeft;
+                              }
+                            }}
+                            className="btn btn-circle"
                           >
-                            <BookAvatarNoDetails item={item.data} />
-                            {readingBooks.length > 1 && (
-                              <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                                <button
-                                  onClick={() => {
-                                    const prevIndex =
-                                      (index - 1 + readingBooks.length) %
-                                      readingBooks.length;
-                                    const carousel =
-                                      document.querySelector(".carousel");
-                                    const item = document.getElementById(
-                                      `reading-${readingBooks[prevIndex].book_id}`
-                                    );
-                                    if (carousel && item) {
-                                      carousel.scrollLeft = item.offsetLeft;
-                                    }
-                                  }}
-                                  className={`btn btn-circle ${
-                                    index === 0 ? "btn-disabled" : ""
-                                  }`}
-                                  disabled={index === 0}
-                                >
-                                  ❮
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    const nextIndex =
-                                      (index + 1) % readingBooks.length;
-                                    const carousel =
-                                      document.querySelector(".carousel");
-                                    const item = document.getElementById(
-                                      `reading-${readingBooks[nextIndex].book_id}`
-                                    );
-                                    if (carousel && item) {
-                                      carousel.scrollLeft = item.offsetLeft;
-                                    }
-                                  }}
-                                  className={`btn btn-circle ${
-                                    index === readingBooks.length - 1
-                                      ? "btn-disabled"
-                                      : ""
-                                  }`}
-                                  disabled={index === readingBooks.length - 1}
-                                >
-                                  ❯
-                                </button>
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
+                            ❮
+                          </button>
+                          <button
+                            onClick={() => {
+                              const currentIndex = readingBooks.findIndex(
+                                (book) =>
+                                  document.getElementById(`reading-${book.book_id}`)?.offsetLeft ===
+                                  (document.querySelector('.carousel') as HTMLElement)?.scrollLeft
+                              );
+                              const nextIndex =
+                                (currentIndex + 1) % readingBooks.length;
+                              const carousel =
+                                document.querySelector(".carousel");
+                              const item = document.getElementById(
+                                `reading-${readingBooks[nextIndex].book_id}`
+                              );
+                              if (carousel && item) {
+                                carousel.scrollLeft = item.offsetLeft;
+                              }
+                            }}
+                            className="btn btn-circle"
+                          >
+                            ❯
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <p className="text-lg">
