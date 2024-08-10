@@ -30,8 +30,21 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({ userId }) => {
         return;
       }
 
-      if (preferencesData && preferencesData.preferred_categories) {
+      if (preferencesData && preferencesData.preferred_categories && preferencesData.preferred_categories.length > 0) {
         setSelectedCategories(preferencesData.preferred_categories);
+      } else {
+        // If no categories are selected, default to the first category
+        const defaultCategory = categories[0];
+        setSelectedCategories([defaultCategory]);
+        // Update the database with the default category
+        const { error } = await supabase
+          .from('user_preferences')
+          .upsert({ user_id: userId, preferred_categories: [defaultCategory] })
+          .select();
+
+        if (error) {
+          console.error('Error setting default category:', error);
+        }
       }
     };
 
@@ -43,6 +56,10 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({ userId }) => {
     
     setSelectedCategories(prev => {
       if (prev.includes(category)) {
+        // Prevent deselecting if it's the last category
+        if (prev.length === 1) {
+          return prev;
+        }
         newSelectedCategories = prev.filter(cat => cat !== category);
       } else if (prev.length < 5) {
         newSelectedCategories = [...prev, category];
