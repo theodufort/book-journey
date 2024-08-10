@@ -163,30 +163,48 @@ export default function UserProfile({
           </div>
           <div className="w-auto flex bg-base-100 rounded-box p-8 shadow-xl">
             {readingBooks.length > 0 ? (
-              <div>
-                <h2 className="card-title text-xl md:text-2xl font-bold">
-                  Currently Reading ({readingBooks.length})
-                </h2>
-                {readingBooks && readingBooks.length > 0 ? (
-                  <div className="list-disc list-inside space-y-2">
-                    {readingBooks.map((item) => (
-                      <div
-                        key={
-                          item.data.volumeInfo.industryIdentifiers?.find(
-                            (id: any) => id.type === "ISBN_13"
-                          )?.identifier
-                        }
-                      >
-                        <BookAvatarNoDetails item={item.data} />
-                      </div>
-                    ))}
+              <div className="w-full">
+                <div className="flex">
+                  <h2 className="card-title text-xl md:text-2xl font-bold">
+                    Currently Reading ({readingBooks.length})
+                  </h2>
+                  <div className="ml-auto">
+                    <a href="#slide4" className="btn btn-circle">
+                      ❮
+                    </a>
+                    <a href="#slide2" className="btn btn-circle ml-2">
+                      ❯
+                    </a>
                   </div>
-                ) : (
-                  <p className="text-lg">
-                    You&apos;re not currently reading any books. Why not start
-                    one?
-                  </p>
-                )}
+                </div>
+                <div className="w-full">
+                  {readingBooks && readingBooks.length > 0 ? (
+                    <div className="carousel w-full">
+                      {readingBooks.map((item) => (
+                        <div
+                          className="carousel-item w-full inline-block"
+                          id={
+                            item.data.volumeInfo.industryIdentifiers?.find(
+                              (id: any) => id.type === "ISBN_13"
+                            )?.identifier
+                          }
+                          key={
+                            item.data.volumeInfo.industryIdentifiers?.find(
+                              (id: any) => id.type === "ISBN_13"
+                            )?.identifier
+                          }
+                        >
+                          <BookAvatarNoDetails item={item.data} />{" "}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-lg">
+                      You&apos;re not currently reading any books. Why not start
+                      one?
+                    </p>
+                  )}
+                </div>
               </div>
             ) : (
               <h4>Not currently reading any book</h4>
