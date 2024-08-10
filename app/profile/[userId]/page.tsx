@@ -256,24 +256,134 @@ export default function UserProfile({
           <h2 className="text-2xl font-bold mb-4">
             Read Books ({readBooks.length})
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {readBooks.map((item, index) => (
-              <div key={`read-book-${item.book_id}-${index}`}>
-                <BookAvatarPublic item={item} showRating={true} />
+          <div className="relative">
+            <div className="carousel w-full">
+              {readBooks.map((item, index) => (
+                <div
+                  className="carousel-item w-full inline-block"
+                  id={`read-${item.book_id}`}
+                  key={`read-book-${item.book_id}-${index}`}
+                >
+                  <BookAvatarPublic item={item} showRating={true} />
+                </div>
+              ))}
+            </div>
+            {readBooks.length > 1 && (
+              <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+                <button
+                  onClick={() => {
+                    const currentIndex = readBooks.findIndex(
+                      (book) =>
+                        document.getElementById(`read-${book.book_id}`)?.offsetLeft ===
+                        (document.querySelector('.carousel') as HTMLElement)?.scrollLeft
+                    );
+                    const prevIndex =
+                      (currentIndex - 1 + readBooks.length) %
+                      readBooks.length;
+                    const carousel =
+                      document.querySelector(".carousel");
+                    const item = document.getElementById(
+                      `read-${readBooks[prevIndex].book_id}`
+                    );
+                    if (carousel && item) {
+                      carousel.scrollLeft = item.offsetLeft;
+                    }
+                  }}
+                  className="btn btn-circle"
+                >
+                  ❮
+                </button>
+                <button
+                  onClick={() => {
+                    const currentIndex = readBooks.findIndex(
+                      (book) =>
+                        document.getElementById(`read-${book.book_id}`)?.offsetLeft ===
+                        (document.querySelector('.carousel') as HTMLElement)?.scrollLeft
+                    );
+                    const nextIndex =
+                      (currentIndex + 1) % readBooks.length;
+                    const carousel =
+                      document.querySelector(".carousel");
+                    const item = document.getElementById(
+                      `read-${readBooks[nextIndex].book_id}`
+                    );
+                    if (carousel && item) {
+                      carousel.scrollLeft = item.offsetLeft;
+                    }
+                  }}
+                  className="btn btn-circle"
+                >
+                  ❯
+                </button>
               </div>
-            ))}
+            )}
           </div>
         </div>
         <div className="bg-base-100 rounded-box p-8 shadow-xl">
           <h2 className="text-2xl font-bold mb-4">
             Books to Read ({toReadBooks.length})
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {toReadBooks.map((item, index) => (
-              <div key={`to-read-book-${item.book_id}-${index}`}>
-                <BookAvatarPublic item={item} showRating={false} />
+          <div className="relative">
+            <div className="carousel w-full">
+              {toReadBooks.map((item, index) => (
+                <div
+                  className="carousel-item w-full inline-block"
+                  id={`to-read-${item.book_id}`}
+                  key={`to-read-book-${item.book_id}-${index}`}
+                >
+                  <BookAvatarPublic item={item} showRating={false} />
+                </div>
+              ))}
+            </div>
+            {toReadBooks.length > 1 && (
+              <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+                <button
+                  onClick={() => {
+                    const currentIndex = toReadBooks.findIndex(
+                      (book) =>
+                        document.getElementById(`to-read-${book.book_id}`)?.offsetLeft ===
+                        (document.querySelector('.carousel') as HTMLElement)?.scrollLeft
+                    );
+                    const prevIndex =
+                      (currentIndex - 1 + toReadBooks.length) %
+                      toReadBooks.length;
+                    const carousel =
+                      document.querySelector(".carousel");
+                    const item = document.getElementById(
+                      `to-read-${toReadBooks[prevIndex].book_id}`
+                    );
+                    if (carousel && item) {
+                      carousel.scrollLeft = item.offsetLeft;
+                    }
+                  }}
+                  className="btn btn-circle"
+                >
+                  ❮
+                </button>
+                <button
+                  onClick={() => {
+                    const currentIndex = toReadBooks.findIndex(
+                      (book) =>
+                        document.getElementById(`to-read-${book.book_id}`)?.offsetLeft ===
+                        (document.querySelector('.carousel') as HTMLElement)?.scrollLeft
+                    );
+                    const nextIndex =
+                      (currentIndex + 1) % toReadBooks.length;
+                    const carousel =
+                      document.querySelector(".carousel");
+                    const item = document.getElementById(
+                      `to-read-${toReadBooks[nextIndex].book_id}`
+                    );
+                    if (carousel && item) {
+                      carousel.scrollLeft = item.offsetLeft;
+                    }
+                  }}
+                  className="btn btn-circle"
+                >
+                  ❯
+                </button>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </section>
