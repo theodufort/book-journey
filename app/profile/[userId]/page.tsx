@@ -168,24 +168,6 @@ export default function UserProfile({
                   <h2 className="card-title text-xl md:text-2xl font-bold">
                     Currently Reading ({readingBooks.length})
                   </h2>
-                  {readingBooks.length > 1 && (
-                    <div className="ml-auto">
-                      <a
-                        href={`#reading-${
-                          readingBooks[readingBooks.length - 1].book_id
-                        }`}
-                        className="btn btn-circle"
-                      >
-                        ❮
-                      </a>
-                      <a
-                        href={`#reading-${readingBooks[1].book_id}`}
-                        className="btn btn-circle ml-2"
-                      >
-                        ❯
-                      </a>
-                    </div>
-                  )}
                 </div>
                 <div className="w-full">
                   {readingBooks.length > 0 ? (
@@ -204,22 +186,39 @@ export default function UserProfile({
                             <BookAvatarNoDetails item={item.data} />
                             {readingBooks.length > 1 && (
                               <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                                <button 
+                                <button
                                   onClick={() => {
-                                    const prevIndex = (index - 1 + readingBooks.length) % readingBooks.length;
-                                    document.getElementById(`reading-${readingBooks[prevIndex].book_id}`)?.scrollIntoView({behavior: 'smooth'});
+                                    const prevIndex =
+                                      (index - 1 + readingBooks.length) %
+                                      readingBooks.length;
+                                    document
+                                      .getElementById(
+                                        `reading-${readingBooks[prevIndex].book_id}`
+                                      )
+                                      ?.scrollIntoView({ behavior: "smooth" });
                                   }}
-                                  className={`btn btn-circle ${index === 0 ? 'btn-disabled' : ''}`}
+                                  className={`btn btn-circle ${
+                                    index === 0 ? "btn-disabled" : ""
+                                  }`}
                                   disabled={index === 0}
                                 >
                                   ❮
-                                </button> 
-                                <button 
+                                </button>
+                                <button
                                   onClick={() => {
-                                    const nextIndex = (index + 1) % readingBooks.length;
-                                    document.getElementById(`reading-${readingBooks[nextIndex].book_id}`)?.scrollIntoView({behavior: 'smooth'});
+                                    const nextIndex =
+                                      (index + 1) % readingBooks.length;
+                                    document
+                                      .getElementById(
+                                        `reading-${readingBooks[nextIndex].book_id}`
+                                      )
+                                      ?.scrollIntoView({ behavior: "smooth" });
                                   }}
-                                  className={`btn btn-circle ${index === readingBooks.length - 1 ? 'btn-disabled' : ''}`}
+                                  className={`btn btn-circle ${
+                                    index === readingBooks.length - 1
+                                      ? "btn-disabled"
+                                      : ""
+                                  }`}
                                   disabled={index === readingBooks.length - 1}
                                 >
                                   ❯
