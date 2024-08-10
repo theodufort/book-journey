@@ -197,11 +197,35 @@ export default function UserProfile({
                           )?.identifier || item.book_id;
                         return (
                           <div
-                            className="carousel-item w-full inline-block"
+                            className="carousel-item w-full inline-block relative"
                             id={`reading-${isbn13}`}
                             key={`reading-${isbn13}`}
                           >
                             <BookAvatarNoDetails item={item.data} />
+                            {readingBooks.length > 1 && (
+                              <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+                                <button 
+                                  onClick={() => {
+                                    const prevIndex = (index - 1 + readingBooks.length) % readingBooks.length;
+                                    document.getElementById(`reading-${readingBooks[prevIndex].book_id}`)?.scrollIntoView({behavior: 'smooth'});
+                                  }}
+                                  className={`btn btn-circle ${index === 0 ? 'btn-disabled' : ''}`}
+                                  disabled={index === 0}
+                                >
+                                  ❮
+                                </button> 
+                                <button 
+                                  onClick={() => {
+                                    const nextIndex = (index + 1) % readingBooks.length;
+                                    document.getElementById(`reading-${readingBooks[nextIndex].book_id}`)?.scrollIntoView({behavior: 'smooth'});
+                                  }}
+                                  className={`btn btn-circle ${index === readingBooks.length - 1 ? 'btn-disabled' : ''}`}
+                                  disabled={index === readingBooks.length - 1}
+                                >
+                                  ❯
+                                </button>
+                              </div>
+                            )}
                           </div>
                         );
                       })}
