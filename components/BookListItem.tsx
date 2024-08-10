@@ -119,6 +119,7 @@ export default function BookListItem({
     } else {
       await performUpdate(ns, book_page_count);
     }
+    refreshParent();
   }
   async function calculateUserStats(book_page_count: number) {
     const { data, error } = await supabase.rpc("update_reading_stats", {
@@ -154,7 +155,7 @@ export default function BookListItem({
     if (error) {
       console.error("Error updating book status:", error);
     } else {
-      onUpdate();
+      refreshParent();
     }
   }
 
@@ -190,6 +191,11 @@ export default function BookListItem({
 
     if (error) console.error("Error removing book:", error);
     else onUpdate();
+  }
+
+  // Function to refresh the parent component
+  function refreshParent() {
+    onUpdate();
   }
 
   function handleModalClose() {
