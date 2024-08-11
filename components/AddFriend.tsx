@@ -49,7 +49,7 @@ export default function AddFriend({ user, onFriendAdded }: AddFriendProps) {
           className="input input-bordered w-full max-w-xs"
           required
         />
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="btn btn-primary ml-5">
           Add Friend
         </button>
       </form>

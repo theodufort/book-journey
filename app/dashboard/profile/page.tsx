@@ -9,6 +9,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import AddFriend from "@/components/AddFriend";
 import { Database } from "@/types/supabase";
 import CategorySelection from "@/components/CategorySelection";
+import Link from "next/link";
 type Friend = {
   id: string;
   name: string;
@@ -172,7 +173,16 @@ export default function Profile() {
       <section className="max-w-6xl mx-auto space-y-8">
         <HeaderDashboard />
 
-        <h1 className="text-3xl md:text-4xl font-extrabold">My Profile</h1>
+        <div className="flex">
+          <h1 className="text-3xl md:text-4xl font-extrabold">My Profile</h1>
+          {user ? (
+            <button className="btn btn-info ml-5">
+              <Link href={"/profile/" + user.id} target="_blank" passHref>
+                View public profile
+              </Link>
+            </button>
+          ) : null}
+        </div>
         {user ? <CategorySelection userId={user.id} /> : null}
         {user ? (
           <div>
