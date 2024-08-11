@@ -50,7 +50,9 @@ export default function Dashboard() {
       if (onboarded != true) {
         setShowUnboard(false);
       }
-    } catch {}
+    } catch {
+      console.log("error checking onboarded");
+    }
     try {
       const { data: readingListResponse } = await supabase
         .from("reading_list")
