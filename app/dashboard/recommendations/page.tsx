@@ -40,7 +40,7 @@ export default function Recommendations() {
         throw new Error("Invalid recommendations data received");
       }
       const volumesWithImages = data.filter(
-        (item) => item.volumeInfo.imageLinks
+        (item: any) => item.volumeInfo.imageLinks
       );
       setBookSuggestions(volumesWithImages);
       setBooksLoaded(true);
