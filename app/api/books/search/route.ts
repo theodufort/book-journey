@@ -74,7 +74,7 @@ export async function GET(request: NextRequest) {
       console.error("Error caching search results:", insertError);
     }
     //Cache unique books
-    filteredItems.forEach(async (b) => {
+    filteredItems.forEach(async (b: any) => {
       await supabase.from("books").upsert({
         isbn_13: b.volumeInfo.industryIdentifiers?.find(
           (id: any) => id.type === "ISBN_13"
