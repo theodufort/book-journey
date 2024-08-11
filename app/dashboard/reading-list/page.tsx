@@ -26,130 +26,129 @@ export default function ReadingList() {
 
   async function updateBookProgress(bookId: string, status: string) {
     //Currently needs fixing as always creating user_activity of type book_added
-    return;
-    // if (!user) return;
+    if (!user) return;
 
-    // try {
-    //   // Check if the book is already finished
-    //   const { data: existingBook, error: fetchError } = await supabase
-    //     .from("reading_list")
-    //     .select("status")
-    //     .eq("user_id", user.id)
-    //     .eq("book_id", bookId)
-    //     .single();
+    try {
+      //   // Check if the book is already finished
+      //   const { data: existingBook, error: fetchError } = await supabase
+      //     .from("reading_list")
+      //     .select("status")
+      //     .eq("user_id", user.id)
+      //     .eq("book_id", bookId)
+      //     .single();
 
-    //   if (fetchError) throw fetchError;
+      //   if (fetchError) throw fetchError;
 
-    //   const { error: updateError } = await supabase
-    //     .from("reading_list")
-    //     .update({ status })
-    //     .eq("user_id", user.id)
-    //     .eq("book_id", bookId);
+      //   const { error: updateError } = await supabase
+      //     .from("reading_list")
+      //     .update({ status })
+      //     .eq("user_id", user.id)
+      //     .eq("book_id", bookId);
 
-    //   if (updateError) throw updateError;
+      //   if (updateError) throw updateError;
 
-    //   // Add activity record
-    //   if (existingBook?.status !== status) {
-    //     let activityType;
-    //     let details: { book_id: string; title?: string; new_status: string };
+      //   // Add activity record
+      //   if (existingBook?.status !== status) {
+      //     let activityType;
+      //     let details: { book_id: string; title?: string; new_status: string };
 
-    //     if (existingBook?.status === "To Read" && status === "Reading") {
-    //       activityType = "book_started";
-    //     } else if (status === "Finished") {
-    //       activityType = "book_finished";
-    //     } else {
-    //       activityType = "book_added";
-    //     }
+      //     if (existingBook?.status === "To Read" && status === "Reading") {
+      //       activityType = "book_started";
+      //     } else if (status === "Finished") {
+      //       activityType = "book_finished";
+      //     } else {
+      //       activityType = "book_added";
+      //     }
 
-    //     // Fetch book details to get the title
-    //     const bookDetails = readingList.find((book) => book.book_id === bookId);
-    //     const bookTitle = bookDetails?.data.volumeInfo.title || "Unknown Title";
+      //     // Fetch book details to get the title
+      //     const bookDetails = readingList.find((book) => book.book_id === bookId);
+      //     const bookTitle = bookDetails?.data.volumeInfo.title || "Unknown Title";
 
-    //     details = {
-    //       book_id: bookId,
-    //       title: bookTitle,
-    //       new_status: status,
-    //     };
+      //     details = {
+      //       book_id: bookId,
+      //       title: bookTitle,
+      //       new_status: status,
+      //     };
 
-    //     const { error: activityError } = await supabase
-    //       .from("user_activity")
-    //       .insert({
-    //         user_id: user.id,
-    //         activity_type: activityType,
-    //         details: details,
-    //         created_at: new Date().toISOString(),
-    //       });
+      //     const { error: activityError } = await supabase
+      //       .from("user_activity")
+      //       .insert({
+      //         user_id: user.id,
+      //         activity_type: activityType,
+      //         details: details,
+      //         created_at: new Date().toISOString(),
+      //       });
 
-    //     if (activityError) throw activityError;
-    //   }
+      //     if (activityError) throw activityError;
+      //   }
 
-    //   // Only award points if the book wasn't previously finished and is now being marked as finished
-    //   if (status === "Finished" && existingBook?.status !== "Finished") {
-    //     const pointsToAward = 10; // Adjust this value as needed
+      //   // Only award points if the book wasn't previously finished and is now being marked as finished
+      //   if (status === "Finished" && existingBook?.status !== "Finished") {
+      //     const pointsToAward = 10; // Adjust this value as needed
 
-    //     // Update user_points
-    //     const { data: userPoints, error: userPointsError } = await supabase
-    //       .from("user_points")
-    //       .select("points, points_earned")
-    //       .eq("user_id", user.id)
-    //       .single();
+      //     // Update user_points
+      //     const { data: userPoints, error: userPointsError } = await supabase
+      //       .from("user_points")
+      //       .select("points, points_earned")
+      //       .eq("user_id", user.id)
+      //       .single();
 
-    //     if (userPointsError) throw userPointsError;
+      //     if (userPointsError) throw userPointsError;
 
-    //     const newPoints = (userPoints?.points || 0) + pointsToAward;
-    //     const newPointsEarned =
-    //       (userPoints?.points_earned || 0) + pointsToAward;
+      //     const newPoints = (userPoints?.points || 0) + pointsToAward;
+      //     const newPointsEarned =
+      //       (userPoints?.points_earned || 0) + pointsToAward;
 
-    //     const { error: updatePointsError } = await supabase
-    //       .from("user_points")
-    //       .upsert({
-    //         user_id: user.id,
-    //         points: newPoints,
-    //         points_earned: newPointsEarned,
-    //       });
+      //     const { error: updatePointsError } = await supabase
+      //       .from("user_points")
+      //       .upsert({
+      //         user_id: user.id,
+      //         points: newPoints,
+      //         points_earned: newPointsEarned,
+      //       });
 
-    //     if (updatePointsError) throw updatePointsError;
+      //     if (updatePointsError) throw updatePointsError;
 
-    //     // Record the point transaction
-    //     const { error: transactionError } = await supabase
-    //       .from("point_transactions")
-    //       .insert({
-    //         user_id: user.id,
-    //         points: pointsToAward,
-    //         type: "earned",
-    //         description: "Finished reading a book",
-    //       });
+      //     // Record the point transaction
+      //     const { error: transactionError } = await supabase
+      //       .from("point_transactions")
+      //       .insert({
+      //         user_id: user.id,
+      //         points: pointsToAward,
+      //         type: "earned",
+      //         description: "Finished reading a book",
+      //       });
 
-    //     if (transactionError) throw transactionError;
+      //     if (transactionError) throw transactionError;
 
-    //     // Add points_earned activity
-    //     const { error: pointsActivityError } = await supabase
-    //       .from("user_activity")
-    //       .insert({
-    //         user_id: user.id,
-    //         activity_type: "points_earned",
-    //         details: {
-    //           points: pointsToAward,
-    //           reason: "Finished reading a book",
-    //         },
-    //         created_at: new Date().toISOString(),
-    //       });
+      //     // Add points_earned activity
+      //     const { error: pointsActivityError } = await supabase
+      //       .from("user_activity")
+      //       .insert({
+      //         user_id: user.id,
+      //         activity_type: "points_earned",
+      //         details: {
+      //           points: pointsToAward,
+      //           reason: "Finished reading a book",
+      //         },
+      //         created_at: new Date().toISOString(),
+      //       });
 
-    //     if (pointsActivityError) throw pointsActivityError;
-    //   }
+      //     if (pointsActivityError) throw pointsActivityError;
+      //   }
 
-    //   // Update the reading list state
-    //   setReadingList((prevList) => {
-    //     return prevList.map((book) =>
-    //       book.book_id === bookId ? { ...book, status } : book
-    //     );
-    //   });
+      // Update the reading list state
+      setReadingList((prevList) => {
+        return prevList.map((book) =>
+          book.book_id === bookId ? { ...book, status } : book
+        );
+      });
 
-    //   // Refetch the reading list to ensure all data is up to date
-    //   await fetchReadingList(user.id);
-    // } catch (error) {
-    //   console.error("Error updating book progress:", error);
-    // }
+      // Refetch the reading list to ensure all data is up to date
+      await fetchReadingList(user.id);
+    } catch (error) {
+      console.error("Error updating book progress:", error);
+    }
   }
 
   useEffect(() => {

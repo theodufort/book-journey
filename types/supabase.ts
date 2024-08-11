@@ -184,6 +184,7 @@ export type Database = {
           factor_id: string
           id: string
           ip_address: unknown
+          otp_code: string | null
           verified_at: string | null
         }
         Insert: {
@@ -191,6 +192,7 @@ export type Database = {
           factor_id: string
           id: string
           ip_address: unknown
+          otp_code?: string | null
           verified_at?: string | null
         }
         Update: {
@@ -198,6 +200,7 @@ export type Database = {
           factor_id?: string
           id?: string
           ip_address?: unknown
+          otp_code?: string | null
           verified_at?: string | null
         }
         Relationships: [
@@ -216,6 +219,8 @@ export type Database = {
           factor_type: Database["auth"]["Enums"]["factor_type"]
           friendly_name: string | null
           id: string
+          last_challenged_at: string | null
+          phone: string | null
           secret: string | null
           status: Database["auth"]["Enums"]["factor_status"]
           updated_at: string
@@ -226,6 +231,8 @@ export type Database = {
           factor_type: Database["auth"]["Enums"]["factor_type"]
           friendly_name?: string | null
           id: string
+          last_challenged_at?: string | null
+          phone?: string | null
           secret?: string | null
           status: Database["auth"]["Enums"]["factor_status"]
           updated_at: string
@@ -236,6 +243,8 @@ export type Database = {
           factor_type?: Database["auth"]["Enums"]["factor_type"]
           friendly_name?: string | null
           id?: string
+          last_challenged_at?: string | null
+          phone?: string | null
           secret?: string | null
           status?: Database["auth"]["Enums"]["factor_status"]
           updated_at?: string
@@ -680,7 +689,7 @@ export type Database = {
       aal_level: "aal1" | "aal2" | "aal3"
       code_challenge_method: "s256" | "plain"
       factor_status: "unverified" | "verified"
-      factor_type: "totp" | "webauthn"
+      factor_type: "totp" | "webauthn" | "phone"
       one_time_token_type:
         | "confirmation_token"
         | "reauthentication_token"
@@ -963,6 +972,7 @@ export type Database = {
       user_preferences: {
         Row: {
           bio: string | null
+          onboarded: boolean
           preferred_categories: string[] | null
           profile_picture_url: string | null
           user_id: string
@@ -970,6 +980,7 @@ export type Database = {
         }
         Insert: {
           bio?: string | null
+          onboarded?: boolean
           preferred_categories?: string[] | null
           profile_picture_url?: string | null
           user_id: string
@@ -977,6 +988,7 @@ export type Database = {
         }
         Update: {
           bio?: string | null
+          onboarded?: boolean
           preferred_categories?: string[] | null
           profile_picture_url?: string | null
           user_id?: string

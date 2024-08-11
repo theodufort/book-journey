@@ -73,6 +73,15 @@ export async function GET(request: NextRequest) {
     if (insertError) {
       console.error("Error caching search results:", insertError);
     }
+    //Cache unique books
+    filteredItems.forEach(async (b) => {
+      await supabase.from("books").upsert({
+        isbn_13: b.volumeInfo.industryIdentifiers?.find(
+          (id: any) => id.type === "ISBN_13"
+        )?.identifier,
+        data: b,
+      });
+    });
 
     // Return the filtered data
     return NextResponse.json(result);

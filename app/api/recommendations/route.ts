@@ -1,5 +1,6 @@
 "use server";
 import { BookVolumes, Volume } from "@/interfaces/GoogleAPI";
+import { Database } from "@/types/supabase";
 import {
   SupabaseClient,
   createRouteHandlerClient,
@@ -9,6 +10,22 @@ import { NextResponse } from "next/server";
 
 const GOOGLE_BOOKS_API_BASE = "https://www.googleapis.com/books/v1";
 const GOOGLE_BOOKS_API_KEY = "YOUR_GOOGLE_BOOKS_API_KEY"; // Replace with your actual API key
+
+async function getUserCategories(
+  supabase: SupabaseClient<any, "public", any>,
+  userId: string
+) {
+  const { data, error } = await supabase
+    .from("user_preferences")
+    .select("prefered_categories")
+    .eq("user_id", userId);
+  if (error) {
+    console.error("Error fetching read books:", error);
+    return [];
+  }
+
+  return data || [];
+}
 
 async function getReadBooks(
   supabase: SupabaseClient<any, "public", any>,
@@ -54,9 +71,10 @@ async function getRecommendations(
   const bookDetails = await Promise.all(
     readBooks.map((book) => getBookDetails(book.book_id))
   );
-
+  const userPrefs = await getUserCategories(supabase, userId);
   const categories = new Set<string>();
 
+  userPrefs.forEach((cat) => categories.add(cat.prefered_categories));
   bookDetails.forEach((book) => {
     if (book && book.categories) {
       book.categories.forEach((category: string) => categories.add(category));
@@ -83,22 +101,11 @@ async function getRecommendations(
           ?.identifier
       ) && book.volumeInfo.authors
   );
-  // .map((book: Volume) => ({
-  //   id: book.volumeInfo.industryIdentifiers?.find(
-  //     (id) => id.type === "ISBN_13"
-  //   )?.identifier,
-  //   title: book.volumeInfo.title,
-  //   authors: book.volumeInfo.authors[0],
-  //   description: book.volumeInfo.description,
-  //   mainCategory: book.volumeInfo.mainCategory,
-  //   category: book.volumeInfo.categories,
-  // }));
-
-  return recommendations.slice(0, 20); // Return top 5 recommendations
+  return recommendations.slice(0, 20); // Return top x recommendations
 }
 
 export async function GET() {
-  const supabase = createRouteHandlerClient({ cookies });
+  const supabase = createRouteHandlerClient<Database>({ cookies });
   try {
     const {
       data: { user },

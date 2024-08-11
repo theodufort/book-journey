@@ -39,7 +39,10 @@ export default function Recommendations() {
       if (!data || data.length == 0) {
         throw new Error("Invalid recommendations data received");
       }
-      setBookSuggestions(data);
+      const volumesWithImages = data.filter(
+        (item) => item.volumeInfo.imageLinks
+      );
+      setBookSuggestions(volumesWithImages);
       setBooksLoaded(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -77,7 +80,11 @@ export default function Recommendations() {
           Book Recommendations
         </h1>
 
-        {isLoading && <div className="text-center">Loading...</div>}
+        {isLoading && (
+          <div className="flex justify-center items-center">
+            <span className="loading loading-spinner loading-lg"></span>
+          </div>
+        )}
         {error && (
           <div className="text-center text-red-500">Error: {error}</div>
         )}
@@ -89,7 +96,7 @@ export default function Recommendations() {
                 No recommendations available at the moment.
               </p>
             ) : (
-              <div className="grid grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 {bookSuggestions.map((x, index) => (
                   <div key={`book-suggestion-${x.id}-${index}`}>
                     <BookAvatar vol={x} isBlurred={false} allowAdd={true} />

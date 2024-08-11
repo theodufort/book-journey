@@ -28,10 +28,9 @@ export const BookAvatarPublic = ({ item, showRating }: props) => {
                 key={star}
                 type="radio"
                 name={`rating-${item.book_id}`}
-                className={`mask mask-star-2 ${
+                className={`mask mask-star-2 h-auto min-h-full ${
                   star % 1 === 0 ? "mask-half-2" : "mask-half-1"
                 } bg-orange-400`}
-                style={{ marginTop: "0", marginBottom: "0" }}
                 checked={item.rating === star}
                 readOnly
               />

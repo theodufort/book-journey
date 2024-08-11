@@ -20,7 +20,7 @@ export default function Dashboard() {
   } | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showOnboard, setShowUnboard] = useState(true);
+  const [showOnboard, setShowUnboard] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -42,6 +42,15 @@ export default function Dashboard() {
 
   async function fetchDashboardData() {
     setLoading(true);
+    try {
+      const {
+        data: { onboarded },
+        error,
+      } = await supabase.from("user_preferences").select("onboarded").single();
+      if (onboarded != true) {
+        setShowUnboard(false);
+      }
+    } catch {}
     try {
       const { data: readingListResponse } = await supabase
         .from("reading_list")
@@ -90,7 +99,8 @@ export default function Dashboard() {
       const { count, error } = await supabase
         .from("reading_list")
         .select("*", { count: "exact", head: true })
-        .eq("status", "Finished");
+        .eq("status", "Finished")
+        .eq("user_id", user.id);
       // Always set default stats, whether there's an error or no data
       setStats({
         books_read: count || 0,

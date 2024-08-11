@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import CategorySelection from "./CategorySelection";
+import { Database } from "@/types/supabase";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 interface OnboardingPopupProps {
   isOpen: boolean;
@@ -12,6 +14,7 @@ const OnboardingPopup: React.FC<OnboardingPopupProps> = ({
   onClose,
   userId,
 }) => {
+  const supabase = createClientComponentClient<Database>();
   const [step, setStep] = useState(1);
 
   const steps = [
@@ -33,11 +36,14 @@ const OnboardingPopup: React.FC<OnboardingPopupProps> = ({
       // Add recommendations preview or rewards explanation here
     },
   ];
-
+  async function handleFinishOnboarding() {
+    await supabase.from("user_preferences").update({ onboarded: true });
+  }
   const handleNext = () => {
     if (step < steps.length) {
       setStep(step + 1);
     } else {
+      handleFinishOnboarding();
       onClose();
     }
   };

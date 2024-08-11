@@ -69,7 +69,11 @@ const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
         }`}
       >
         <figure>
-          <img src={vol.volumeInfo.imageLinks.thumbnail} alt="Book Thumbnail" />
+          <img
+            src={vol.volumeInfo.imageLinks.thumbnail}
+            alt="Book Thumbnail"
+            className="pt-5"
+          />
         </figure>
         <div className="card-body items-center text-center">
           <h3 className="card-title">{vol.volumeInfo.title}</h3>

@@ -161,7 +161,7 @@ export default function UserProfile({
               </div>
             </div>
           </div>
-          <div className="w-auto flex bg-base-100 rounded-box p-8 shadow-xl">
+          <div className="w-auto flex bg-base-100 rounded-box p-8">
             {readingBooks.length > 0 ? (
               <div className="w-full">
                 <div className="flex mb-4">
@@ -275,69 +275,67 @@ export default function UserProfile({
                     </div>
                   ))}
                 </div>
-                <div className="w-auto flex bg-base-100 rounded-box p-8 shadow-xl">
+                <div className="w-auto flex bg-base-100 rounded-box p-8">
                   <div className="w-full">
                     {readingBooks.length > 1 && (
-                      <div className="relative">
-                        <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                          <button
-                            onClick={() => {
-                              const currentIndex = toReadBooks.findIndex(
-                                (book) =>
-                                  document.getElementById(
-                                    `toread-${book.book_id}`
-                                  )?.offsetLeft ===
-                                  (
-                                    document.querySelector(
-                                      ".carousel-toread"
-                                    ) as HTMLElement
-                                  )?.scrollLeft
-                              );
-                              const prevIndex =
-                                (currentIndex - 1 + toReadBooks.length) %
-                                readingBooks.length;
-                              const carousel =
-                                document.querySelector(".carousel-toread");
-                              const item = document.getElementById(
-                                `reading-${toReadBooks[prevIndex].book_id}`
-                              );
-                              if (carousel && item) {
-                                carousel.scrollLeft = item.offsetLeft;
-                              }
-                            }}
-                            className="btn btn-circle"
-                          >
-                            ❮
-                          </button>
-                          <button
-                            onClick={() => {
-                              const currentIndex = toReadBooks.findIndex(
-                                (book) =>
-                                  document.getElementById(
-                                    `toread-${book.book_id}`
-                                  )?.offsetLeft ===
-                                  (
-                                    document.querySelector(
-                                      ".carousel-toread"
-                                    ) as HTMLElement
-                                  )?.scrollLeft
-                              );
-                              const nextIndex =
-                                (currentIndex + 1) % toReadBooks.length;
-                              const carousel =
-                                document.querySelector(".carousel-toread");
-                              const item = document.getElementById(
-                                `toread-${toReadBooks[nextIndex].book_id}`
-                              );
-                              if (carousel && item) {
-                                carousel.scrollLeft = item.offsetLeft;
-                              }
-                            }}
-                            className="btn btn-circle"
-                          >
-                            ❯
-                          </button>
-                        </div>
+                      <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+                        <button
+                          onClick={() => {
+                            const currentIndex = toReadBooks.findIndex(
+                              (book) =>
+                                document.getElementById(
+                                  `toread-${book.book_id}`
+                                )?.offsetLeft ===
+                                (
+                                  document.querySelector(
+                                    ".carousel-toread"
+                                  ) as HTMLElement
+                                )?.scrollLeft
+                            );
+                            const prevIndex =
+                              (currentIndex - 1 + toReadBooks.length) %
+                              readingBooks.length;
+                            const carousel =
+                              document.querySelector(".carousel-toread");
+                            const item = document.getElementById(
+                              `reading-${toReadBooks[prevIndex].book_id}`
+                            );
+                            if (carousel && item) {
+                              carousel.scrollLeft = item.offsetLeft;
+                            }
+                          }}
+                          className="btn btn-circle"
+                        >
+                          ❮
+                        </button>
+                        <button
+                          onClick={() => {
+                            const currentIndex = toReadBooks.findIndex(
+                              (book) =>
+                                document.getElementById(
+                                  `toread-${book.book_id}`
+                                )?.offsetLeft ===
+                                (
+                                  document.querySelector(
+                                    ".carousel-toread"
+                                  ) as HTMLElement
+                                )?.scrollLeft
+                            );
+                            const nextIndex =
+                              (currentIndex + 1) % toReadBooks.length;
+                            const carousel =
+                              document.querySelector(".carousel-toread");
+                            const item = document.getElementById(
+                              `toread-${toReadBooks[nextIndex].book_id}`
+                            );
+                            if (carousel && item) {
+                              carousel.scrollLeft = item.offsetLeft;
+                            }
+                          }}
+                          className="btn btn-circle"
+                        >
+                          ❯
+                        </button>
                       </div>
                     )}
                   </div>
@@ -345,7 +343,7 @@ export default function UserProfile({
               </div>
             </div>
           </div>
-          <div className="w-auto bg-base-100 rounded-box p-8 shadow-xl overflow-hidden">
+          <div className="w-auto bg-base-100 rounded-box p-8 shadow-xl">
             <div className="flex mb-4">
               <h2 className="card-title text-xl md:text-2xl font-bold">
                 Read Books ({readBooks.length})
@@ -356,7 +354,7 @@ export default function UserProfile({
                 <div className="carousel carousel-read w-full">
                   {readBooks.map((item) => (
                     <div
-                      className="carousel-item w-full md:w-1/2 lg:w-1/3 p-2"
+                      className="carousel-item w-full inline-block"
                       id={`read-${item.book_id}`}
                       key={`read-book-${item.book_id}`}
                     >
@@ -368,9 +366,26 @@ export default function UserProfile({
                   <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
                     <button
                       onClick={() => {
-                        const carousel = document.querySelector(".carousel-read") as HTMLElement;
-                        if (carousel) {
-                          carousel.scrollLeft -= carousel.offsetWidth;
+                        const currentIndex = readBooks.findIndex(
+                          (book) =>
+                            document.getElementById(`read-${book.book_id}`)
+                              ?.offsetLeft ===
+                            (
+                              document.querySelector(
+                                ".carousel-read"
+                              ) as HTMLElement
+                            )?.scrollLeft
+                        );
+                        const prevIndex =
+                          (currentIndex - 1 + readingBooks.length) %
+                          readBooks.length;
+                        const carousel =
+                          document.querySelector(".carousel-read");
+                        const item = document.getElementById(
+                          `reading-${readBooks[prevIndex].book_id}`
+                        );
+                        if (carousel && item) {
+                          carousel.scrollLeft = item.offsetLeft;
                         }
                       }}
                       className="btn btn-circle"
@@ -379,9 +394,24 @@ export default function UserProfile({
                     </button>
                     <button
                       onClick={() => {
-                        const carousel = document.querySelector(".carousel-read") as HTMLElement;
-                        if (carousel) {
-                          carousel.scrollLeft += carousel.offsetWidth;
+                        const currentIndex = readBooks.findIndex(
+                          (book) =>
+                            document.getElementById(`read-${book.book_id}`)
+                              ?.offsetLeft ===
+                            (
+                              document.querySelector(
+                                ".carousel-read"
+                              ) as HTMLElement
+                            )?.scrollLeft
+                        );
+                        const nextIndex = (currentIndex + 1) % readBooks.length;
+                        const carousel =
+                          document.querySelector(".carousel-read");
+                        const item = document.getElementById(
+                          `read-${readBooks[nextIndex].book_id}`
+                        );
+                        if (carousel && item) {
+                          carousel.scrollLeft = item.offsetLeft;
                         }
                       }}
                       className="btn btn-circle"
