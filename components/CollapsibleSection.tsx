@@ -22,12 +22,6 @@ export default function CollapsibleSection({
 
   return (
     <div className="collapse collapse-arrow bg-base-200">
-      <input
-        className="block"
-        type="checkbox"
-        checked={isExpanded}
-        onChange={onToggle}
-      />
       <div className="collapse-title text-xl font-medium flex my-auto">
         <div className="my-auto">{title}</div>
         <label className="input input-bordered flex items-center gap-2 ml-5 w-1/2">
@@ -50,6 +44,12 @@ export default function CollapsibleSection({
           </svg>
         </label>
       </div>
+      <input
+        className="w-1/12 ml-auto"
+        type="checkbox"
+        checked={isExpanded}
+        onChange={onToggle}
+      />
       <div className="collapse-content">
         <div className="space-y-4">
           {books.map((item) => (
