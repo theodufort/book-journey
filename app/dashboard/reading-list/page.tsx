@@ -265,6 +265,7 @@ export default function ReadingList() {
             onClick={() => router.push("/dashboard/reading-list/add")}
           >
             <span className="hidden md:block">Add to Reading List</span>
+            <span className="block md:hidden text-2xl">+</span>
           </button>
         </div>
         <div className="space-y-8">

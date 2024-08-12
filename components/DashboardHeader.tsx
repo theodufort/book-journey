@@ -42,7 +42,7 @@ const HeaderDashboard = () => {
   }, [user, supabase]);
   return (
     <div className="flex justify-between items-center mb-8 space-x-4 navbar">
-      <div className="inline-block navbar-start">
+      <div className="inline-block navbar-start max-w-min">
         <div className="dropdown">
           <div
             tabIndex={0}
@@ -110,7 +110,7 @@ const HeaderDashboard = () => {
         </div>
       </div>
       <div className="mb-auto md:mt-auto">
-        <div className="mr-5">How to earn points?</div>
+        <div className="mr-5 hidden md:block">How to earn points?</div>
         {user ? (
           <div className="bg-base-200 text-primary rounded-xl p-2 h-full mr-5">
             {points} points
