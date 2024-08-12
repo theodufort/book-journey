@@ -211,11 +211,10 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-        <div className="grid md:grid-cols-2 grid-rows-1 gap-4">
+        {/* <div className="grid md:grid-cols-2 grid-rows-1 gap-4">
           <div>
             <PointsSection />
           </div>
-          {/* Current Reading List Preview */}
           <div className="w-auto flex card bg-base-200 shadow-xl p-8">
             {currentlyReading.length > 0 ? (
               <div className="w-full">
@@ -311,7 +310,7 @@ export default function Dashboard() {
               <h4>Not currently reading any book</h4>
             )}
           </div>
-        </div>
+        </div>  */}
       </section>
     </main>
   );
