@@ -216,32 +216,100 @@ export default function Dashboard() {
             <PointsSection />
           </div>
           {/* Current Reading List Preview */}
-          <div className="card bg-base-200 shadow-xl">
-            <div className="card-body">
-              <h2 className="card-title text-xl md:text-2xl font-bold">
-                Currently Reading
-              </h2>
-              {currentlyReading && currentlyReading.length > 0 ? (
-                <div className="list-disc list-inside space-y-2">
-                  {currentlyReading.map((item) => (
-                    <div
-                      key={
-                        item.volumeInfo.industryIdentifiers?.find(
-                          (id: any) => id.type === "ISBN_13"
-                        )?.identifier
-                      }
-                    >
-                      <BookAvatarNoDetails item={item} />
-                    </div>
-                  ))}
+          <div className="w-auto flex card bg-base-200 shadow-xl p-8">
+            {currentlyReading.length > 0 ? (
+              <div className="w-full">
+                <div className="flex mb-4">
+                  <h2 className="card-title text-xl md:text-2xl font-bold">
+                    Currently Reading ({currentlyReading.length})
+                  </h2>
                 </div>
-              ) : (
-                <p className="text-lg">
-                  You&apos;re not currently reading any books. Why not start
-                  one?
-                </p>
-              )}
-            </div>
+                <div className="w-full">
+                  <div className="relative">
+                    <div className="carousel carousel-reading w-full">
+                      {currentlyReading.map((item) => {
+                        const isbn13 =
+                          item.volumeInfo.industryIdentifiers?.find(
+                            (id: any) => id.type === "ISBN_13"
+                          )?.identifier || item.book_id;
+                        return (
+                          <div
+                            className="carousel-item w-full inline-block"
+                            id={`reading-${isbn13}`}
+                            key={`reading-${isbn13}`}
+                          >
+                            <BookAvatarNoDetails item={item} />
+                          </div>
+                        );
+                      })}
+                    </div>
+                    {currentlyReading.length > 1 && (
+                      <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+                        <button
+                          onClick={() => {
+                            const currentIndex = currentlyReading.findIndex(
+                              (book) =>
+                                document.getElementById(
+                                  `reading-${book.book_id}`
+                                )?.offsetLeft ===
+                                (
+                                  document.querySelector(
+                                    ".carousel-reading"
+                                  ) as HTMLElement
+                                )?.scrollLeft
+                            );
+                            const prevIndex =
+                              (currentIndex - 1 + currentlyReading.length) %
+                              currentlyReading.length;
+                            const carousel =
+                              document.querySelector(".carousel-reading");
+                            const item = document.getElementById(
+                              `reading-${currentlyReading[prevIndex].book_id}`
+                            );
+                            if (carousel && item) {
+                              carousel.scrollLeft = item.offsetLeft;
+                            }
+                          }}
+                          className="btn btn-circle"
+                        >
+                          ❮
+                        </button>
+                        <button
+                          onClick={() => {
+                            const currentIndex = currentlyReading.findIndex(
+                              (book) =>
+                                document.getElementById(
+                                  `reading-${book.book_id}`
+                                )?.offsetLeft ===
+                                (
+                                  document.querySelector(
+                                    ".carousel-reading"
+                                  ) as HTMLElement
+                                )?.scrollLeft
+                            );
+                            const nextIndex =
+                              (currentIndex + 1) % currentlyReading.length;
+                            const carousel =
+                              document.querySelector(".carousel-reading");
+                            const item = document.getElementById(
+                              `reading-${currentlyReading[nextIndex].book_id}`
+                            );
+                            if (carousel && item) {
+                              carousel.scrollLeft = item.offsetLeft;
+                            }
+                          }}
+                          className="btn btn-circle"
+                        >
+                          ❯
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <h4>Not currently reading any book</h4>
+            )}
           </div>
         </div>
       </section>

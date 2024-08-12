@@ -182,3 +182,18 @@ BEGIN
     END IF;
 END;
 $$;
+
+CREATE OR REPLACE FUNCTION auth.insert_user_related_records()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Insert into public.user_points
+    INSERT INTO public.user_points (user_id, points_earned, points_redeemed, points)
+    VALUES (NEW.id, 0,0,0);
+
+    -- Insert into public.reading_stats
+    INSERT INTO public.reading_stats (user_id, books_read, pages_read,reading_time_minutes)
+    VALUES (NEW.id, 0, 0,0);
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;

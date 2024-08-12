@@ -264,14 +264,14 @@ export default function ReadingList() {
             className="btn btn-primary float-end ml-auto mr-0 my-auto"
             onClick={() => router.push("/dashboard/reading-list/add")}
           >
-            Add <span className="hidden md:block">to Reading List</span>
+            <span className="hidden md:block">Add to Reading List</span>
           </button>
         </div>
         <div className="space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <PointsSection />
             <RecentActivitySection />
-          </div>
+          </div> */}
           {readingList.length === 0 ? (
             <div className="text-center p-8 bg-base-200 rounded-box">
               <h2 className="text-2xl font-bold mb-4">

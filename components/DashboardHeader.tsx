@@ -2,8 +2,44 @@
 
 import Link from "next/link";
 import ButtonAccount from "@/components/ButtonAccount";
+import { useEffect, useState } from "react";
+import {
+  createClientComponentClient,
+  User,
+} from "@supabase/auth-helpers-nextjs";
+import { Database } from "@/types/supabase";
 
 const HeaderDashboard = () => {
+  const [points, setPoints] = useState<number | null>(null);
+  const supabase = createClientComponentClient<Database>();
+  const [user, setUser] = useState<User | null>(null);
+  useEffect(() => {
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUser(data.user);
+    };
+
+    getUser();
+  }, [supabase]);
+  useEffect(() => {
+    const fetchPoints = async () => {
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from("user_points")
+        .select("points")
+        .eq("user_id", user.id)
+        .single();
+
+      if (error) {
+        console.error("Error fetching points:", error);
+      } else {
+        setPoints(data?.points || 0);
+      }
+    };
+
+    fetchPoints();
+  }, [user, supabase]);
   return (
     <div className="flex justify-between items-center mb-8 space-x-4 navbar">
       <div className="inline-block navbar-start">
@@ -74,6 +110,12 @@ const HeaderDashboard = () => {
         </div>
       </div>
       <div className="mb-auto md:mt-auto">
+        <div className="mr-5">How to earn points?</div>
+        {user ? (
+          <div className="bg-base-200 text-primary rounded-xl p-2 h-full mr-5">
+            {points} points
+          </div>
+        ) : null}
         <ButtonAccount />
       </div>
     </div>

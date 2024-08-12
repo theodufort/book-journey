@@ -108,6 +108,8 @@ export default function BookListItem({
       setMessageType("begin");
       setShowModal(true);
       setPendingUpdate(true);
+      calculateUserStats(book_page_count, 1);
+      await performUpdate(ns, book_page_count);
     } else if (
       (status === "Reading" || status === "To Read") &&
       ns === "Finished"
@@ -116,22 +118,28 @@ export default function BookListItem({
       setShowModal(true);
       setPendingUpdate(true);
       //Add number of pages and time spent
-      calculateUserStats(book_page_count);
+      calculateUserStats(book_page_count, 1);
+      await performUpdate(ns, book_page_count);
+    } else if (ns != "Finished") {
+      //Substract number of pages and time spent
+      calculateUserStats(book_page_count, -1);
+      await performUpdate(ns, book_page_count);
+      onUpdate(); // Call onUpdate immediately after updating the status
     } else {
+      calculateUserStats(book_page_count, 1);
+      await performUpdate(ns, book_page_count);
       setPendingUpdate(true);
     }
-    await performUpdate(ns, book_page_count);
-    onUpdate(); // Call onUpdate immediately after updating the status
   }
-  async function calculateUserStats(book_page_count: number) {
+  async function calculateUserStats(book_page_count: number, opp: number) {
     const { data, error } = await supabase.rpc("update_reading_stats", {
       p_user_id: user.id,
-      p_books_read: 1,
-      p_pages_read: book_page_count,
+      p_books_read: opp,
+      p_pages_read: book_page_count * opp,
       p_reading_time_minutes:
-        book_page_count / Math.round(Number(process.env.AVERAGE_READ_SPEED)), // Assuming 2 pages per minute on average
+        (book_page_count / Math.round(Number(process.env.AVERAGE_READ_SPEED))) *
+        opp, // Assuming 2 pages per minute on average
     });
-
     if (error) {
       console.error("Error updating reading stats:", error);
     }
@@ -156,8 +164,6 @@ export default function BookListItem({
 
     if (error) {
       console.error("Error updating book status:", error);
-    } else {
-      refreshParent();
     }
   }
 
@@ -175,8 +181,6 @@ export default function BookListItem({
     console.log(error);
     if (error) {
       console.error("Error updating rating:", error);
-    } else {
-      onUpdate();
     }
   }
 
@@ -195,13 +199,9 @@ export default function BookListItem({
     else onUpdate();
   }
 
-  // Function to refresh the parent component
-  function refreshParent() {
-    onUpdate();
-  }
-
   function handleModalClose() {
     setShowModal(false);
+    onUpdate();
     if (pendingUpdate) {
       setPendingUpdate(false);
     }
