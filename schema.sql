@@ -197,3 +197,15 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION public.increment_points_earned(
+    _user_id UUID, 
+    _points_to_add INT
+)
+RETURNS VOID AS $$
+BEGIN
+    UPDATE public.user_points
+    SET points_earned = points_earned + _points_to_add
+    WHERE user_id = _user_id;
+END;
+$$ LANGUAGE plpgsql;

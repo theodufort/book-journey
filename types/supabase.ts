@@ -1021,6 +1021,13 @@ export type Database = {
         }
         Returns: Json
       }
+      increment_points_earned: {
+        Args: {
+          _user_id: string
+          _points_to_add: number
+        }
+        Returns: undefined
+      }
       update_reading_stats: {
         Args: {
           p_user_id: string

@@ -49,9 +49,19 @@ export default function BookListItem({
       type: "earned",
       description,
     });
-
     if (error) {
       console.error("Error awarding points:", error);
+    }
+    const { data: dataUpdatePoints, error: errorUpdatePoints } =
+      await supabase.rpc("increment_points_earned", {
+        _user_id: user.id,
+        _points_to_add: points,
+      });
+
+    if (error) {
+      console.error("Error incrementing points:", error);
+    } else {
+      console.log("Points incremented successfully:", data);
     }
   }
   useEffect(() => {
