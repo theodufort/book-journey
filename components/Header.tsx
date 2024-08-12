@@ -54,10 +54,9 @@ const Header = () => {
             title={`${config.appName} homepage`}
           >
             <Image
-              src={logo}
+              src={"/logo.png"}
               alt={`${config.appName} logo`}
               className="w-8"
-              placeholder="blur"
               priority={true}
               width={32}
               height={32}
