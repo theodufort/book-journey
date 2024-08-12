@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { User } from "@supabase/supabase-js";
 import BookListItem from "./BookListItem";
 import { Volume } from "@/interfaces/GoogleAPI";
@@ -18,7 +19,13 @@ export default function CollapsibleSection({
   books: ReadingListItem[];
   onUpdate: (bookId: string, newStatus: string) => void;
 }) {
+  const [searchTerm, setSearchTerm] = useState("");
+
   if (books.length === 0) return null;
+
+  const filteredBooks = books.filter((item) =>
+    item.data.volumeInfo.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="collapse collapse-arrow bg-base-200">
@@ -29,6 +36,9 @@ export default function CollapsibleSection({
             type="text"
             className="grow"
             placeholder="Search for a book..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onClick={(e) => e.stopPropagation()}
           />
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -52,20 +62,24 @@ export default function CollapsibleSection({
       />
       <div className="collapse-content">
         <div className="space-y-4">
-          {books.map((item) => (
-            <BookListItem
-              key={
-                item.data.volumeInfo.industryIdentifiers?.find(
-                  (id) => id.type === "ISBN_13"
-                )?.identifier ||
-                item.data.id ||
-                Math.random().toString()
-              }
-              status={status}
-              item={item.data}
-              onUpdate={() => onUpdate(item.book_id, status)}
-            />
-          ))}
+          {filteredBooks.length > 0 ? (
+            filteredBooks.map((item) => (
+              <BookListItem
+                key={
+                  item.data.volumeInfo.industryIdentifiers?.find(
+                    (id) => id.type === "ISBN_13"
+                  )?.identifier ||
+                  item.data.id ||
+                  Math.random().toString()
+                }
+                status={status}
+                item={item.data}
+                onUpdate={() => onUpdate(item.book_id, status)}
+              />
+            ))
+          ) : (
+            <p>No books found matching your search.</p>
+          )}
         </div>
       </div>
     </div>
