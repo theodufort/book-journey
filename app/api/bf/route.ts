@@ -12,15 +12,11 @@ async function searchVolumes(
   const max_page_count = body.max_page_count;
   const lang = body.language;
   try {
-    console.log(searchQuery);
-    console.log(
-      `https://www.googleapis.com/books/v1/volumes?${
-        searchQuery != "" ? "q=" + searchQuery + "&" : ""
-      }maxResults=40&langRestrict=${lang}&key=${process.env.GOOGLE_API_KEY}`
-    );
     const url = `https://www.googleapis.com/books/v1/volumes?${
       searchQuery != "" ? "q=" + searchQuery + "&" : "q="
-    }maxResults=40&langRestrict=${lang}&key=${process.env.GOOGLE_API_KEY}`;
+    }maxResults=40&langRestrict=${lang}&key=${
+      process.env.GOOGLE_API_KEY
+    }&orderBy=newest`;
     const response = await axios.get(url);
     // Process the response
     if (response.status === 200) {

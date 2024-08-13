@@ -1,15 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { Database } from '@/types/supabase';
+import React, { useState, useEffect } from "react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Database } from "@/types/supabase";
 
 interface CategorySelectionProps {
   userId: string;
 }
 
 const categories = [
-  'Fiction', 'Non-Fiction', 'Mystery', 'Science Fiction', 'Fantasy',
-  'Romance', 'Thriller', 'Biography', 'History', 'Self-Help',
-  'Business', 'Science', 'Technology', 'Art', 'Travel'
+  "Fiction",
+  "Non-Fiction",
+  "Mystery",
+  "Science Fiction",
+  "Fantasy",
+  "Romance",
+  "Thriller",
+  "Biography",
+  "History",
+  "Self-Help",
+  "Business",
+  "Science",
+  "Technology",
+  "Art",
+  "Travel",
 ];
 
 const CategorySelection: React.FC<CategorySelectionProps> = ({ userId }) => {
@@ -20,17 +32,21 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({ userId }) => {
     // Fetch user preferences
     const fetchPreferences = async () => {
       const { data: preferencesData, error: preferencesError } = await supabase
-        .from('user_preferences')
-        .select('preferred_categories')
-        .eq('user_id', userId)
+        .from("user_preferences")
+        .select("preferred_categories")
+        .eq("user_id", userId)
         .single();
 
       if (preferencesError) {
-        console.error('Error fetching user preferences:', preferencesError);
+        console.error("Error fetching user preferences:", preferencesError);
         return;
       }
 
-      if (preferencesData && preferencesData.preferred_categories && preferencesData.preferred_categories.length > 0) {
+      if (
+        preferencesData &&
+        preferencesData.preferred_categories &&
+        preferencesData.preferred_categories.length > 0
+      ) {
         setSelectedCategories(preferencesData.preferred_categories);
       } else {
         // If no categories are selected, default to the first category
@@ -38,12 +54,12 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({ userId }) => {
         setSelectedCategories([defaultCategory]);
         // Update the database with the default category
         const { error } = await supabase
-          .from('user_preferences')
+          .from("user_preferences")
           .upsert({ user_id: userId, preferred_categories: [defaultCategory] })
           .select();
 
         if (error) {
-          console.error('Error setting default category:', error);
+          console.error("Error setting default category:", error);
         }
       }
     };
@@ -53,14 +69,14 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({ userId }) => {
 
   const handleCategoryChange = async (category: string) => {
     let newSelectedCategories: string[];
-    
-    setSelectedCategories(prev => {
+
+    setSelectedCategories((prev) => {
       if (prev.includes(category)) {
         // Prevent deselecting if it's the last category
         if (prev.length === 1) {
           return prev;
         }
-        newSelectedCategories = prev.filter(cat => cat !== category);
+        newSelectedCategories = prev.filter((cat) => cat !== category);
       } else if (prev.length < 5) {
         newSelectedCategories = [...prev, category];
       } else {
@@ -70,28 +86,27 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({ userId }) => {
     });
 
     // Update user preferences in the database
-    const { error } = await supabase
-      .from('user_preferences')
+    supabase
+      .from("user_preferences")
       .upsert({ user_id: userId, preferred_categories: newSelectedCategories })
       .select();
-
-    if (error) {
-      console.error('Error updating user preferences:', error);
-    }
   };
 
   return (
     <div>
       <p className="mb-2">Select up to 5 categories:</p>
       <div className="grid grid-cols-2 gap-2">
-        {categories.map(category => (
+        {categories.map((category) => (
           <label key={category} className="flex items-center">
             <input
               type="checkbox"
               className="checkbox checkbox-primary mr-2"
               checked={selectedCategories.includes(category)}
               onChange={() => handleCategoryChange(category)}
-              disabled={selectedCategories.length >= 5 && !selectedCategories.includes(category)}
+              disabled={
+                selectedCategories.length >= 5 &&
+                !selectedCategories.includes(category)
+              }
             />
             {category}
           </label>

@@ -13,6 +13,7 @@ const HeaderDashboard = () => {
   const [points, setPoints] = useState<number | null>(null);
   const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
+  const [dropDown, setDropDown] = useState<boolean>(false);
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
@@ -45,9 +46,9 @@ const HeaderDashboard = () => {
       <div className="inline-block navbar-start">
         <div className="dropdown">
           <div
-            tabIndex={0}
             role="button"
             className="btn btn-ghost lg:hidden bg-base-200"
+            onClick={() => setDropDown(!dropDown)}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -65,8 +66,9 @@ const HeaderDashboard = () => {
             </svg>
           </div>
           <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-auto p-2 shadow"
+            className={`menu menu-sm bg-base-200 rounded-box z-[1] mt-3 w-auto p-2 shadow absolute ${
+              dropDown ? "block" : "hidden"
+            }`}
           >
             <li>
               <Link href="/dashboard">Dashboard</Link>

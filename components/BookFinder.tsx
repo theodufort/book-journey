@@ -39,38 +39,38 @@ const fieldsList: QuizQuestion[] = [
       { label: "Romance", value: "romance" },
     ],
   },
-  {
-    name: "format",
-    label: "Format",
-    inputType: "select",
-    options: [
-      { label: "Physical", value: "physical" },
-      { label: "E-Book", value: "ebook" },
-      { label: "Audio", value: "audio" },
-    ],
-  },
-  {
-    name: "min_page_count",
-    label: "Min Page Count",
-    inputType: "input",
-    dataType: "number",
-    min: 1,
-    max: null,
-  },
-  {
-    name: "max_page_count",
-    label: "Max Page Count",
-    inputType: "input",
-    dataType: "number",
-    min: 1,
-    max: null,
-  },
-  {
-    name: "author",
-    label: "Author",
-    inputType: "input",
-    dataType: "text",
-  },
+  // {
+  //   name: "format",
+  //   label: "Format",
+  //   inputType: "select",
+  //   options: [
+  //     { label: "Physical", value: "physical" },
+  //     { label: "E-Book", value: "ebook" },
+  //     { label: "Audio", value: "audio" },
+  //   ],
+  // },
+  // {
+  //   name: "min_page_count",
+  //   label: "Min Page Count",
+  //   inputType: "input",
+  //   dataType: "number",
+  //   min: 1,
+  //   max: null,
+  // },
+  // {
+  //   name: "max_page_count",
+  //   label: "Max Page Count",
+  //   inputType: "input",
+  //   dataType: "number",
+  //   min: 1,
+  //   max: null,
+  // },
+  // {
+  //   name: "author",
+  //   label: "Author",
+  //   inputType: "input",
+  //   dataType: "text",
+  // },
   {
     name: "language",
     label: "Language",
@@ -336,11 +336,11 @@ const BookFinder = () => {
       id="quiz"
       className="max-w-7xl bg-base-100 gap-16 lg:gap-20 px-8 py-10 lg:py-20 text-black"
     >
-      <h2 className="font-extrabold inline-block mb-6 text-4xl lg:text-6xl tracking-tight">
+      <h2 className="font-extrabold flex mb-6 mx-auto justify-center text-4xl lg:text-6xl tracking-tight">
         Find a book to read in 1 minute!
       </h2>
       <form onSubmit={handleSubmit}>
-        <div className="mb-4 grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div className="mb-4 grid grid-cols-1 md:w-2/5 gap-5 m-auto">
           {fieldsList.map((field) => (
             <div key={field.name} className="flex">
               <label className="w-auto font-extrabold md:text-xl justify-start mr-2 my-auto">
@@ -423,7 +423,7 @@ const BookFinder = () => {
           </h3>
           {booksLoaded ? (
             bookSuggestions.length != 0 ? (
-              <div className="grid grid-cols-3 gap-5">
+              <div className="grid md:grid-cols-3 grid-cols-1 gap-5">
                 {bookSuggestions.map((x, index) => {
                   if (index > 2)
                     return (
