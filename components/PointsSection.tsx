@@ -23,14 +23,14 @@ const PointsSection = () => {
 
       const { data, error } = await supabase
         .from("user_points")
-        .select("points")
+        .select("points_earned,points_redeemed")
         .eq("user_id", user.id)
         .single();
 
       if (error) {
         console.error("Error fetching points:", error);
       } else {
-        setPoints(data?.points || 0);
+        setPoints(data?.points_earned - data?.points_redeemed || 0);
       }
     };
 

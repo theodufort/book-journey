@@ -27,14 +27,14 @@ const HeaderDashboard = () => {
 
       const { data, error } = await supabase
         .from("user_points")
-        .select("points")
+        .select("points_earned, points_redeemed")
         .eq("user_id", user.id)
         .single();
 
       if (error) {
         console.error("Error fetching points:", error);
       } else {
-        setPoints(data?.points || 0);
+        setPoints(data?.points_earned - data?.points_redeemed || 0);
       }
     };
 
@@ -42,7 +42,7 @@ const HeaderDashboard = () => {
   }, [user, supabase]);
   return (
     <div className="flex justify-between items-center mb-8 space-x-4 navbar">
-      <div className="inline-block navbar-start max-w-min">
+      <div className="inline-block navbar-start">
         <div className="dropdown">
           <div
             tabIndex={0}
@@ -66,7 +66,7 @@ const HeaderDashboard = () => {
           </div>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-auto p-2 shadow"
           >
             <li>
               <Link href="/dashboard">Dashboard</Link>
@@ -87,7 +87,7 @@ const HeaderDashboard = () => {
             </li>
           </ul>
         </div>{" "}
-        <div className="card navbar-center hidden lg:flex bg-base-200">
+        <div className="card navbar-center hidden md:flex bg-base-200 ">
           <ul className="menu menu-horizontal px-1">
             <li>
               <Link href="/dashboard">Dashboard</Link>
@@ -111,11 +111,11 @@ const HeaderDashboard = () => {
       </div>
       <div className="mb-auto md:mt-auto">
         <div className="mr-5 hidden md:block">How to earn points?</div>
-        {user ? (
-          <div className="bg-base-200 text-primary rounded-xl p-2 h-full mr-5">
-            {points} points
-          </div>
-        ) : null}
+        <div className="bg-base-200 text-primary rounded-xl p-2 h-full mr-5">
+          <Link href="/dashboard/reading-rewards">
+            {user ? points : 0} points
+          </Link>
+        </div>
         <ButtonAccount />
       </div>
     </div>

@@ -68,7 +68,10 @@ export default function ReadingRewards() {
   }
 
   async function redeemReward(reward: Reward) {
-    if (!userPoints || userPoints.points < reward.cost) {
+    if (
+      !userPoints ||
+      userPoints?.points_earned - userPoints?.points_redeemed < reward.cost
+    ) {
       alert("Not enough points to redeem this reward.");
       return;
     }
@@ -77,7 +80,6 @@ export default function ReadingRewards() {
       const { error } = await supabase
         .from("user_points")
         .update({
-          points: userPoints.points - reward.cost,
           points_redeemed: userPoints.points_redeemed + reward.cost,
         })
         .eq("user_id", user.id);
@@ -118,7 +120,9 @@ export default function ReadingRewards() {
           <div className="stats stats-vertical md:stats-horizontal shadow">
             <div className="stat">
               <div className="stat-title">Available Points</div>
-              <div className="stat-value">{userPoints.points}</div>
+              <div className="stat-value">
+                {userPoints?.points_earned - userPoints?.points_redeemed}
+              </div>
             </div>
             <div className="stat">
               <div className="stat-title">Total Points Earned</div>
@@ -141,7 +145,11 @@ export default function ReadingRewards() {
                   <button
                     className="btn btn-primary"
                     onClick={() => redeemReward(reward)}
-                    disabled={!userPoints || userPoints.points < reward.cost}
+                    disabled={
+                      !userPoints ||
+                      userPoints.points_earned - userPoints.points_redeemed <
+                        reward.cost
+                    }
                   >
                     Redeem for {reward.cost} points
                   </button>

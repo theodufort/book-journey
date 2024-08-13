@@ -15,7 +15,6 @@ export interface ReadingListItem {
 }
 
 export interface UserPoints {
-  points: number;
   points_earned: number;
   points_redeemed: number;
 }

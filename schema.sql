@@ -52,7 +52,6 @@ CREATE TABLE public.reading_stats (
 -- User points table in the 'public' schema
 CREATE TABLE public.user_points (
     user_id UUID PRIMARY KEY REFERENCES auth.users(id),
-    points INT,
     points_earned INT,
     points_redeemed INT
 );
@@ -187,8 +186,8 @@ CREATE OR REPLACE FUNCTION auth.insert_user_related_records()
 RETURNS TRIGGER AS $$
 BEGIN
     -- Insert into public.user_points
-    INSERT INTO public.user_points (user_id, points_earned, points_redeemed, points)
-    VALUES (NEW.id, 0,0,0);
+    INSERT INTO public.user_points (user_id, points_earned, points_redeemed)
+    VALUES (NEW.id, 0,0);
 
     -- Insert into public.reading_stats
     INSERT INTO public.reading_stats (user_id, books_read, pages_read,reading_time_minutes)

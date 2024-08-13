@@ -17,7 +17,7 @@ async function getUserCategories(
 ) {
   const { data, error } = await supabase
     .from("user_preferences")
-    .select("prefered_categories")
+    .select("preferred_categories")
     .eq("user_id", userId);
   if (error) {
     console.error("Error fetching read books:", error);
@@ -71,37 +71,50 @@ async function getRecommendations(
   const bookDetails = await Promise.all(
     readBooks.map((book) => getBookDetails(book.book_id))
   );
-  const userPrefs = await getUserCategories(supabase, userId);
-  const categories = new Set<string>();
 
-  userPrefs.forEach((cat) => categories.add(cat.prefered_categories));
-  bookDetails.forEach((book) => {
+  const categories = new Set<string>();
+  if (bookDetails.length == 0) {
+    const userPrefs = await getUserCategories(supabase, userId);
+    userPrefs.forEach((cat) => categories.add(cat.preferred_categories));
+  }
+
+  bookDetails.forEach((book, index) => {
     if (book && book.categories) {
-      book.categories.forEach((category: string) => categories.add(category));
+      book.categories.forEach((category: string) => {
+        if (index < 2) {
+          categories.add(category);
+        }
+      });
     }
   });
 
-  const searchQuery = Array.from(categories).join("+subject:");
-  const url = `https://www.googleapis.com/books/v1/volumes?q=subject:${searchQuery}&maxResults=40&langRestrict=en&key=${process.env.GOOGLE_API_KEY}`;
+  const searchQuery = encodeURIComponent(
+    Array.from(categories).join("+subject:")
+  );
+  const url = `https://www.googleapis.com/books/v1/volumes?q=subject:${searchQuery}&maxResults=40&langRestrict=en&key=${process.env.GOOGLE_API_KEY}&orderBy=newest`;
   const searchResponse = await fetch(url);
-
   if (!searchResponse.ok) {
     console.error("Error fetching recommendations");
     return [];
   }
 
   const searchData = await searchResponse.json();
-
-  // Filter out books that the user has already read
-  const readBookIds = new Set(readBooks.map((book) => book.book_id));
-  const recommendations = searchData.items.filter(
-    (book: Volume) =>
-      !readBookIds.has(
-        book.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
-          ?.identifier
-      ) && book.volumeInfo.authors
-  );
-  return recommendations.slice(0, 20); // Return top x recommendations
+  console.log(searchData);
+  if (searchData.items) {
+    // Filter out books that the user has already read
+    const readBookIds = new Set(readBooks.map((book) => book.book_id));
+    const recommendations = searchData.items.filter(
+      (book: Volume) =>
+        !readBookIds.has(
+          book.volumeInfo.industryIdentifiers?.find(
+            (id) => id.type === "ISBN_13"
+          )?.identifier
+        ) && book.volumeInfo.authors
+    );
+    return recommendations.slice(0, 20); // Return top x recommendations
+  } else {
+    return [];
+  }
 }
 
 export async function GET() {

@@ -942,19 +942,16 @@ export type Database = {
       }
       user_points: {
         Row: {
-          points: number | null
           points_earned: number | null
           points_redeemed: number | null
           user_id: string
         }
         Insert: {
-          points?: number | null
           points_earned?: number | null
           points_redeemed?: number | null
           user_id: string
         }
         Update: {
-          points?: number | null
           points_earned?: number | null
           points_redeemed?: number | null
           user_id?: string

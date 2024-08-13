@@ -34,7 +34,6 @@ const fieldsList: QuizQuestion[] = [
     options: [
       { label: "Any", value: "any" },
       { label: "Fiction", value: "fiction" },
-      { label: "Non-Fiction", value: "non-fiction" },
       { label: "Mystery", value: "mystery" },
       { label: "Sci-Fi", value: "sci-fi" },
       { label: "Romance", value: "romance" },
