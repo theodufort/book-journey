@@ -110,7 +110,7 @@ export default function UserProfile({
   return (
     <main className="min-h-screen p-8 pb-24 bg-base-200">
       <section className="max-w-6xl mx-auto space-y-12">
-        <div className="bg-base-100 rounded-box p-8 shadow-xl">
+        <div className="bg-base-100 rounded-box p-8">
           <div className="flex items-center space-x-8">
             <div className="avatar">
               <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
@@ -136,10 +136,10 @@ export default function UserProfile({
           </div>
         </div>
         <div className="grid md:grid-cols-2 grid-rows-1 gap-4">
-          <div className="bg-base-100 rounded-box p-8 shadow-xl">
+          <div className="bg-base-100 rounded-box p-8">
             <h2 className="text-2xl font-bold mb-4">Reading Journey</h2>
             <div className="grid grid-cols-2 grid-rows-1">
-              <div className="stats stats-vertical lg:stats-horizontal shadow w-max">
+              <div className="stats stats-vertical lg:stats-horizontal w-max">
                 <div className="stat">
                   <div className="stat-title">Books Read</div>
                   <div className="stat-value">{readBooks.length}</div>
@@ -256,7 +256,7 @@ export default function UserProfile({
               <h4>Not currently reading any book</h4>
             )}
           </div>
-          <div className="w-auto bg-base-100 rounded-box p-8 shadow-xl">
+          <div className="w-auto bg-base-100 rounded-box p-8">
             <div className="flex mb-4">
               <h2 className="card-title text-xl md:text-2xl font-bold">
                 Books to Read ({toReadBooks.length})
@@ -343,7 +343,7 @@ export default function UserProfile({
               </div>
             </div>
           </div>
-          <div className="w-auto bg-base-100 rounded-box p-8 shadow-xl">
+          <div className="w-auto bg-base-100 rounded-box p-8">
             <div className="flex mb-4">
               <h2 className="card-title text-xl md:text-2xl font-bold">
                 Read Books ({readBooks.length})

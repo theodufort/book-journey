@@ -99,7 +99,6 @@ async function getRecommendations(
   }
 
   const searchData = await searchResponse.json();
-  console.log(searchData);
   if (searchData.items) {
     // Filter out books that the user has already read
     const readBookIds = new Set(readBooks.map((book) => book.book_id));

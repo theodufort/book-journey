@@ -73,7 +73,6 @@ export async function POST(req: Request) {
   if (author != undefined && author != "") {
     query += "+" + 'inauthor:"' + author + '"';
   }
-  console.log(query);
   try {
     const result = await searchVolumes(query, body);
     return Response.json(result);
