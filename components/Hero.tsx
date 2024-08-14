@@ -16,12 +16,12 @@ const Hero = () => {
           MyBookQuest is an all-in-one platform that helps you track, organize
           and fill your own personnal library.
         </p>
-        <button
+        {/* <button
           className="btn btn-primary btn-wide"
           onClick={() => router.push("/signin")}
         >
           Use {config.appName} for Free!
-        </button>
+        </button> */}
 
         <TestimonialsAvatars priority={true} />
       </div>
