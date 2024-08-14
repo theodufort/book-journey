@@ -28,7 +28,6 @@ const HeaderDashboard = () => {
   };
 
   useEffect(() => {
-    console.log("Theme changed to:", theme);
     const htmlElement = document.querySelector("html");
     if (htmlElement) {
       htmlElement.setAttribute("data-theme", theme || "light");
@@ -137,11 +136,7 @@ const HeaderDashboard = () => {
             How to earn points?
           </button>
         </div>
-        <div className="bg-base-200 text-primary rounded-xl p-2 h-full mr-5">
-          <Link href="/dashboard/reading-rewards">
-            {user ? points : 0} points
-          </Link>
-        </div>
+
         <button
           onClick={toggleTheme}
           className="btn btn-circle btn-ghost mr-5"
@@ -179,6 +174,11 @@ const HeaderDashboard = () => {
             </svg>
           )}
         </button>
+        <div className="bg-base-200 text-primary rounded-xl p-2 h-full mr-5">
+          <Link href="/dashboard/reading-rewards">
+            {user ? points : 0} points
+          </Link>
+        </div>
         <ButtonAccount />
       </div>
       <HowToEarnPointsPopup

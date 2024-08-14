@@ -19,7 +19,10 @@ CREATE TABLE public.reading_list (
     rating NUMERIC(3, 1),
     review TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    "pointsAwardedFinished" boolean not null default false,
+    "pointsAwardedRating" boolean not null default false,
+    "pointsAwardedTextReview" boolean not null default false,
 );
 
 -- User preferences table in the 'public' schema

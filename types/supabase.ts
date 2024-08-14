@@ -840,6 +840,9 @@ export type Database = {
           book_id: string
           created_at: string | null
           id: number
+          pointsAwardedFinished: boolean
+          pointsAwardedRating: boolean
+          pointsAwardedTextReview: boolean
           rating: number | null
           review: string | null
           status: string | null
@@ -850,6 +853,9 @@ export type Database = {
           book_id: string
           created_at?: string | null
           id?: number
+          pointsAwardedFinished?: boolean
+          pointsAwardedRating?: boolean
+          pointsAwardedTextReview?: boolean
           rating?: number | null
           review?: string | null
           status?: string | null
@@ -860,6 +866,9 @@ export type Database = {
           book_id?: string
           created_at?: string | null
           id?: number
+          pointsAwardedFinished?: boolean
+          pointsAwardedRating?: boolean
+          pointsAwardedTextReview?: boolean
           rating?: number | null
           review?: string | null
           status?: string | null
