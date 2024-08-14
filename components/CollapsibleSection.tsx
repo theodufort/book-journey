@@ -35,8 +35,16 @@ export default function CollapsibleSection({
       >
         <div className="flex items-center w-full md:w-auto">
           <div className="mr-2">{title}</div>
-          <div className="ml-auto md:hidden">
-            {isExpanded ? '▼' : '▶'}
+          <div className="ml-auto">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className={`h-6 w-6 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
           </div>
         </div>
         <label 
