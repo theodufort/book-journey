@@ -31,7 +31,7 @@ export default function CollapsibleSection({
     <div className="collapse collapse-arrow bg-base-200">
       <div className="collapse-title text-xl font-medium md:flex my-auto">
         <div className="my-auto">{title}</div>
-        <label className="input input-bordered flex items-center gap-2 mt-4 md:mt-0 md:ml-5 max-w-1/2">
+        <label className="input input-bordered flex items-center gap-2 mt-4 md:mt-0 md:ml-5 max-w-fit">
           <input
             type="text"
             className="grow"
