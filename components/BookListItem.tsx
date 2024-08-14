@@ -218,6 +218,25 @@ export default function BookListItem({
     }
   }
 
+  async function updateReview(reviewContent: string) {
+    if (!user) {
+      console.error("User not authenticated");
+      return;
+    }
+    const { error } = await supabase
+      .from("reading_list")
+      .update({ review: reviewContent })
+      .eq(
+        "book_id",
+        item.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
+          ?.identifier
+      )
+      .eq("user_id", user.id);
+    if (error) {
+      console.error("Error updating review:", error);
+    }
+  }
+
   async function removeBook() {
     const { error } = await supabase
       .from("reading_list")
@@ -267,6 +286,33 @@ export default function BookListItem({
       ))}
     </div>
   );
+  const [review, setReview] = useState("");
+
+  useEffect(() => {
+    if (user && status === "Finished") {
+      fetchReview();
+    }
+  }, [user, status]);
+
+  async function fetchReview() {
+    if (!user) return;
+    const { data, error } = await supabase
+      .from("reading_list")
+      .select("review")
+      .eq(
+        "book_id",
+        item.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
+          ?.identifier
+      )
+      .eq("user_id", user.id)
+      .single();
+    if (error) {
+      console.error("Error fetching review:", error);
+    } else {
+      setReview(data?.review || "");
+    }
+  }
+
   const renderReviewInput = () => {
     if (status === "Finished") {
       return (
@@ -279,6 +325,11 @@ export default function BookListItem({
             className="textarea textarea-bordered w-full"
             rows={4}
             placeholder="Write your review here..."
+            value={review}
+            onChange={(e) => {
+              setReview(e.target.value);
+              updateReview(e.target.value);
+            }}
           ></textarea>
         </div>
       );
