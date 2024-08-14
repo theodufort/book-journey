@@ -1,38 +1,53 @@
 import { useState } from "react";
 
-interface props {
+interface Props {
   showDialog: boolean;
+  onClose: () => void;
 }
-export const HowToEarnPointsPopup = ({ showDialog }: props) => {
+
+export const HowToEarnPointsPopup = ({ showDialog, onClose }: Props) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center m-0">
       <dialog className="modal" open={showDialog}>
-        <div className="modal-box w-11/12 max-w-2xl">
+        <div className="modal-box w-11/12 max-w-2xl bg-white dark:bg-gray-800 rounded-lg shadow-xl">
           <form method="dialog">
             <button
-              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-              onClick={() => {
-                showDialog = false;
-              }}
+              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              onClick={onClose}
             >
               ✕
             </button>
           </form>
-          <h3 className="font-bold text-lg pb-5">
-            Here is how you can earn points
+          <h3 className="font-bold text-2xl pb-5 text-center text-gray-800 dark:text-white">
+            How to Earn Points
           </h3>
-          <ul className="list-decimal list-inside">
-            <li>
-              Start reading a book of your choice by searching for it or adding
-              it from reading recommendations.
+          <ul className="list-none space-y-4">
+            <li className="flex items-start">
+              <span className="inline-flex items-center justify-center w-8 h-8 mr-2 text-white bg-blue-500 rounded-full flex-shrink-0">
+                1
+              </span>
+              <p className="text-gray-700 dark:text-gray-300">
+                Start reading a book of your choice by searching for it or adding
+                it from reading recommendations.
+              </p>
             </li>
-            <li>
-              When finished reading, change the reading status to "Finished" and
-              you will be awarded points!
+            <li className="flex items-start">
+              <span className="inline-flex items-center justify-center w-8 h-8 mr-2 text-white bg-blue-500 rounded-full flex-shrink-0">
+                2
+              </span>
+              <p className="text-gray-700 dark:text-gray-300">
+                When finished reading, change the reading status to "Finished" and
+                you will be awarded points!
+              </p>
             </li>
-            <li>
-              Earn additionnal points by leaving a star review and a text
-              review.
+            <li className="flex items-start">
+              <span className="inline-flex items-center justify-center w-8 h-8 mr-2 text-white bg-blue-500 rounded-full flex-shrink-0">
+                3
+              </span>
+              <p className="text-gray-700 dark:text-gray-300">
+                Earn additional points by leaving a star review and a text
+                review.
+              </p>
             </li>
           </ul>
         </div>
