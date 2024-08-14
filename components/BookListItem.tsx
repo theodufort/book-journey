@@ -43,25 +43,52 @@ export default function BookListItem({
       console.error("User not authenticated");
       return;
     }
-    const { data, error } = await supabase.from("point_transactions").insert({
-      user_id: user.id,
-      points,
-      type: "earned",
-      description,
-    });
-    if (error) {
-      console.error("Error awarding points:", error);
-    }
-    const { data: dataUpdatePoints, error: errorUpdatePoints } =
-      await supabase.rpc("increment_points_earned", {
-        _user_id: user.id,
-        _points_to_add: points,
+    const {
+      data: { pointsAwarded },
+    } = await supabase
+      .from("reading_list")
+      .select("pointsAwarded")
+      .eq("user_id", user.id)
+      .eq(
+        "book_id",
+        item.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
+          ?.identifier
+      )
+      .single();
+    if (!pointsAwarded) {
+      const { data, error } = await supabase.from("point_transactions").insert({
+        user_id: user.id,
+        points,
+        type: "earned",
+        description,
       });
+      //Prevent abuse of rewards
+      await supabase
+        .from("reading_list")
+        .update({
+          pointsAwarded: true,
+        })
+        .eq("user_id", user.id)
+        .eq(
+          "book_id",
+          item.volumeInfo.industryIdentifiers?.find(
+            (id) => id.type === "ISBN_13"
+          )?.identifier
+        );
+      if (error) {
+        console.error("Error awarding points:", error);
+      }
+      const { data: dataUpdatePoints, error: errorUpdatePoints } =
+        await supabase.rpc("increment_points_earned", {
+          _user_id: user.id,
+          _points_to_add: points,
+        });
 
-    if (error) {
-      console.error("Error incrementing points:", error);
-    } else {
-      console.log("Points incremented successfully:", data);
+      if (error) {
+        console.error("Error incrementing points:", error);
+      } else {
+        console.log("Points incremented successfully:", data);
+      }
     }
   }
   useEffect(() => {
@@ -113,7 +140,6 @@ export default function BookListItem({
 
   async function updateBookStatus(ns: string, book_page_count: number) {
     setNewStatus(ns);
-    console.log(ns);
     if (status === "To Read" && ns === "Reading") {
       setMessageType("begin");
       setShowModal(true);
@@ -158,7 +184,6 @@ export default function BookListItem({
     status: string = newStatus,
     book_page_count: number
   ) {
-    console.log(status);
     const { error } = await supabase
       .from("reading_list")
       .update({ status, rating })
@@ -188,7 +213,6 @@ export default function BookListItem({
           ?.identifier
       )
       .eq("user_id", user?.id);
-    console.log(error);
     if (error) {
       console.error("Error updating rating:", error);
     }
