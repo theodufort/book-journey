@@ -28,7 +28,7 @@ export default function CollapsibleSection({
   );
 
   return (
-    <div className={`collapse ${isExpanded ? 'collapse-open' : 'collapse-close'} bg-base-200`}>
+    <div className={`collapse ${isExpanded ? 'collapse-open' : 'collapse-close'} bg-base-200 mx-0`}>
       <div 
         className="collapse-title text-xl font-medium flex flex-col md:flex-row items-start md:items-center cursor-pointer"
         onClick={onToggle}
@@ -72,7 +72,7 @@ export default function CollapsibleSection({
           </svg>
         </label>
       </div>
-      <div className="collapse-content">
+      <div className="collapse-content px-0 sm:px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredBooks.length > 0 ? (
             filteredBooks.map((item) => (

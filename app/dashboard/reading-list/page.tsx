@@ -253,8 +253,8 @@ export default function ReadingList() {
   }
 
   return (
-    <main className="min-h-screen p-8 pb-24">
-      <section className="max-w-6xl mx-auto space-y-8">
+    <main className="min-h-screen p-4 sm:p-8 pb-24">
+      <section className="max-w-6xl mx-auto space-y-4 sm:space-y-8">
         <HeaderDashboard />
         <div className="flex">
           <h1 className="text-2xl md:text-4xl font-extrabold  my-auto">
