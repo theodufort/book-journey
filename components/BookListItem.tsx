@@ -267,6 +267,8 @@ export default function BookListItem({
       ))}
     </div>
   );
+  const renderReviewInput = () => (
+  );
   const description = book.description || "";
   const truncatedDescription =
     description.length > MAX_LENGTH
@@ -275,11 +277,11 @@ export default function BookListItem({
   return (
     <>
       <div className="card md:card-side bg-base-100 shadow-xl">
-        <figure className="p-4 md:w-1/3">
+        <figure className="p-10 md:w-1/4">
           <img
             src={book.imageLinks?.thumbnail || "/placeholder-book-cover.jpg"}
             alt={book.title || "Book cover"}
-            className="rounded-lg w-full h-auto object-cover"
+            className="rounded-lg md:w-full object-cover"
           />
         </figure>
         <div className="card-body md:w-2/3">
@@ -292,7 +294,7 @@ export default function BookListItem({
           </p>
           <div className="description-container">
             <b>Description:</b>{" "}
-            <div className="description-text">
+            <div className="description-text text-justify">
               {isExpanded ? description : truncatedDescription}
               {description && description.length > MAX_LENGTH && (
                 <button
@@ -305,7 +307,7 @@ export default function BookListItem({
               {!description && "No description available"}
             </div>
           </div>
-          <div className="card-actions justify-end mt-4">
+          <div className="card-actions justify-start mt-4">
             <div>
               <label>
                 <b>Status:</b>{" "}
