@@ -73,7 +73,7 @@ export default function CollapsibleSection({
         </label>
       </div>
       <div className="collapse-content">
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredBooks.length > 0 ? (
             filteredBooks.map((item) => (
               <BookListItem
@@ -90,7 +90,7 @@ export default function CollapsibleSection({
               />
             ))
           ) : (
-            <p>No books found matching your search.</p>
+            <p className="col-span-full">No books found matching your search.</p>
           )}
         </div>
       </div>
