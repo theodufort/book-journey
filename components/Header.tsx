@@ -8,6 +8,9 @@ import Image from "next/image";
 import ButtonSignin from "./ButtonSignin";
 import logo from "@/app/icon.png";
 import config from "@/config";
+import { Database } from "@/types/supabase";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { User } from "@supabase/supabase-js";
 
 const links: {
   href: string;
@@ -32,9 +35,21 @@ const cta: JSX.Element = <ButtonSignin extraStyle="btn-primary" />;
 // A header with a logo on the left, links in the center (like Pricing, etc...), and a CTA (like Get Started or Login) on the right.
 // The header is responsive, and on mobile, the links are hidden behind a burger button.
 const Header = () => {
+  const supabase = createClientComponentClient<Database>();
+  const [user, setUser] = useState<User | null>(null);
   const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
+  useEffect(() => {
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (data.user) {
+        setUser(data.user);
+      } else {
+        console.log("User not authenticated");
+      }
+    };
+    getUser();
+  }, [supabase]);
   // setIsOpen(false) when the route changes (i.e: when the user clicks on a link on mobile)
   useEffect(() => {
     setIsOpen(false);
