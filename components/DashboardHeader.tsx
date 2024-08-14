@@ -21,6 +21,13 @@ const HeaderDashboard = () => {
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
   };
+
+  useEffect(() => {
+    const htmlElement = document.querySelector('html');
+    if (htmlElement) {
+      htmlElement.setAttribute('data-theme', theme || 'light');
+    }
+  }, [theme]);
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
