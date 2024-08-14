@@ -44,10 +44,10 @@ export default function BookListItem({
       return;
     }
     const {
-      data: { pointsAwarded },
+      data: { pointsAwardedFinished },
     } = await supabase
       .from("reading_list")
-      .select("pointsAwarded")
+      .select("pointsAwardedFinished")
       .eq("user_id", user.id)
       .eq(
         "book_id",
@@ -55,7 +55,7 @@ export default function BookListItem({
           ?.identifier
       )
       .single();
-    if (!pointsAwarded) {
+    if (!pointsAwardedFinished) {
       const { data, error } = await supabase.from("point_transactions").insert({
         user_id: user.id,
         points,
@@ -66,7 +66,7 @@ export default function BookListItem({
       await supabase
         .from("reading_list")
         .update({
-          pointsAwarded: true,
+          pointsAwardedFinished: true,
         })
         .eq("user_id", user.id)
         .eq(
