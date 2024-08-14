@@ -14,6 +14,7 @@ export default function BookListItem({
   status: string;
   onUpdate: () => void;
 }) {
+  const [review, setReview] = useState("");
   // Truncate the description if it's too long and not expanded
   const MAX_LENGTH = 100;
   const [isExpanded, setIsExpanded] = useState(false);
@@ -286,7 +287,6 @@ export default function BookListItem({
       ))}
     </div>
   );
-  const [review, setReview] = useState("");
 
   useEffect(() => {
     if (user && status === "Finished") {
