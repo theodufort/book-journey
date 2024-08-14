@@ -275,14 +275,14 @@ export default function BookListItem({
   return (
     <>
       <div className="card md:card-side bg-base-100 shadow-xl">
-        <figure className="p-4">
+        <figure className="p-4 md:w-1/3">
           <img
             src={book.imageLinks?.thumbnail || "/placeholder-book-cover.jpg"}
             alt={book.title || "Book cover"}
-            className="rounded-lg"
+            className="rounded-lg w-full h-auto object-cover"
           />
         </figure>
-        <div className="card-body">
+        <div className="card-body md:w-2/3">
           <h2 className="card-title">{book.title || "Untitled"}</h2>
           <p>
             <b>Author:</b> {book.authors?.join(", ") || "Unknown"}
@@ -290,21 +290,22 @@ export default function BookListItem({
           <p>
             <b>Page Count:</b> {book.pageCount || "Unknown"}
           </p>
-          <b>Description:</b>{" "}
-          <div className="w-4/5">
-            {isExpanded ? description : truncatedDescription}
-            {description
-              ? description.length > MAX_LENGTH && (
-                  <button
-                    onClick={handleToggleExpand}
-                    className="text-blue-500 ml-2"
-                  >
-                    {isExpanded ? "Read Less" : "Read More"}
-                  </button>
-                )
-              : "No description available"}
+          <div className="description-container">
+            <b>Description:</b>{" "}
+            <div className="description-text">
+              {isExpanded ? description : truncatedDescription}
+              {description && description.length > MAX_LENGTH && (
+                <button
+                  onClick={handleToggleExpand}
+                  className="text-blue-500 ml-2"
+                >
+                  {isExpanded ? "Read Less" : "Read More"}
+                </button>
+              )}
+              {!description && "No description available"}
+            </div>
           </div>
-          <div className="card-actions justify-end my-auto inline-block">
+          <div className="card-actions justify-end mt-4">
             <div>
               <label>
                 <b>Status:</b>{" "}
