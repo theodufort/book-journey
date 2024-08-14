@@ -8,6 +8,7 @@ import {
   User,
 } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
+import { HowToEarnPointsPopup } from "./HowToEarnPointsPopup";
 
 const HeaderDashboard = () => {
   const [points, setPoints] = useState<number | null>(null);
@@ -112,7 +113,9 @@ const HeaderDashboard = () => {
         </div>
       </div>
       <div className="mb-auto md:mt-auto">
-        <div className="mr-5 hidden md:block">How to earn points?</div>
+        <div className="mr-5 hidden md:block">
+          <button>How to earn points?</button>
+        </div>
         <div className="bg-base-200 text-primary rounded-xl p-2 h-full mr-5">
           <Link href="/dashboard/reading-rewards">
             {user ? points : 0} points
@@ -120,6 +123,7 @@ const HeaderDashboard = () => {
         </div>
         <ButtonAccount />
       </div>
+      <HowToEarnPointsPopup showDialog={true} onClose={function (): void {}} />
     </div>
   );
 };
