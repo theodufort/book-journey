@@ -267,8 +267,24 @@ export default function BookListItem({
       ))}
     </div>
   );
-  const renderReviewInput = () => (
-  );
+  const renderReviewInput = () => {
+    if (status === "Finished") {
+      return (
+        <div className="mt-4">
+          <label htmlFor="review" className="block font-bold mb-2">
+            Your Review:
+          </label>
+          <textarea
+            id="review"
+            className="textarea textarea-bordered w-full"
+            rows={4}
+            placeholder="Write your review here..."
+          ></textarea>
+        </div>
+      );
+    }
+    return null;
+  };
   const description = book.description || "";
   const truncatedDescription =
     description.length > MAX_LENGTH
@@ -324,7 +340,12 @@ export default function BookListItem({
                 <option value="Finished">Finished</option>
               </select>
             </div>
-            {status === "Finished" && renderRatingInput()}
+            {status === "Finished" && (
+              <>
+                {renderRatingInput()}
+                {renderReviewInput()}
+              </>
+            )}
             <button
               className="btn btn-primary md:ml-auto my-5 flex"
               onClick={removeBook}
