@@ -373,7 +373,7 @@ export default function BookListItem({
               {!description && "No description available"}
             </div>
           </div>
-          <div className="card-actions justify-start mt-4">
+          <div className="grid grid-cols-1 card-actions justify-start mt-4">
             <div>
               <label>
                 <b>Status:</b>{" "}
