@@ -28,8 +28,12 @@ export default function CollapsibleSection({
   );
 
   return (
-    <div className={`collapse ${isExpanded ? 'collapse-open' : 'collapse-close'} bg-base-200 mx-0`}>
-      <div 
+    <div
+      className={`collapse ${
+        isExpanded ? "collapse-open" : "collapse-close"
+      } bg-base-200 mx-0`}
+    >
+      <div
         className="collapse-title text-xl font-medium flex flex-col md:flex-row items-start md:items-center cursor-pointer"
         onClick={onToggle}
       >
@@ -38,16 +42,23 @@ export default function CollapsibleSection({
           <div className="ml-auto">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className={`h-6 w-6 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+              className={`h-6 w-6 transition-transform ${
+                isExpanded ? "rotate-180" : ""
+              }`}
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </div>
         </div>
-        <label 
+        <label
           className="input input-bordered flex items-center gap-2 mt-4 md:mt-0 md:ml-5 w-full md:w-auto"
           onClick={(e) => e.stopPropagation()}
         >
@@ -72,8 +83,8 @@ export default function CollapsibleSection({
           </svg>
         </label>
       </div>
-      <div className="collapse-content px-0 sm:px-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="collapse-content sm:px-4">
+        <div className="grid grid-cols-1 gap-4">
           {filteredBooks.length > 0 ? (
             filteredBooks.map((item) => (
               <BookListItem
@@ -90,7 +101,9 @@ export default function CollapsibleSection({
               />
             ))
           ) : (
-            <p className="col-span-full">No books found matching your search.</p>
+            <p className="col-span-full">
+              No books found matching your search.
+            </p>
           )}
         </div>
       </div>

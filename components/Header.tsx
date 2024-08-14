@@ -85,7 +85,7 @@ const Header = () => {
             <span className="font-extrabold text-lg">{config.appName}</span>
           </Link>
         </div>
-        
+
         {/* Conditional rendering based on user authentication */}
         {user ? (
           <div className="flex justify-end flex-1">
