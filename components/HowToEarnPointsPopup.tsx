@@ -9,7 +9,7 @@ export const HowToEarnPointsPopup = ({ showDialog, onClose }: Props) => {
   return (
     <dialog
       open={showDialog}
-      className="modal fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center m-0"
+      className="modal fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 z-50 flex justify-center items-center m-0"
     >
       <div className="modal-box w-11/12 max-w-2xl bg-white dark:bg-gray-800 rounded-lg shadow-xl">
         <form method="dialog">
@@ -25,7 +25,7 @@ export const HowToEarnPointsPopup = ({ showDialog, onClose }: Props) => {
         </h3>
         <ul className="list-none space-y-4">
           <li className="flex items-start">
-            <span className="inline-flex items-center justify-center w-8 h-8 mr-2 text-white bg-blue-500 rounded-full flex-shrink-0">
+            <span className="inline-flex items-center justify-center w-8 h-8 mr-2 text-white bg-blue-500 dark:bg-blue-600 rounded-full flex-shrink-0">
               1
             </span>
             <p className="text-gray-700 dark:text-gray-300">
@@ -34,7 +34,7 @@ export const HowToEarnPointsPopup = ({ showDialog, onClose }: Props) => {
             </p>
           </li>
           <li className="flex items-start">
-            <span className="inline-flex items-center justify-center w-8 h-8 mr-2 text-white bg-blue-500 rounded-full flex-shrink-0">
+            <span className="inline-flex items-center justify-center w-8 h-8 mr-2 text-white bg-blue-500 dark:bg-blue-600 rounded-full flex-shrink-0">
               2
             </span>
             <p className="text-gray-700 dark:text-gray-300">
@@ -43,7 +43,7 @@ export const HowToEarnPointsPopup = ({ showDialog, onClose }: Props) => {
             </p>
           </li>
           <li className="flex items-start">
-            <span className="inline-flex items-center justify-center w-8 h-8 mr-2 text-white bg-blue-500 rounded-full flex-shrink-0">
+            <span className="inline-flex items-center justify-center w-8 h-8 mr-2 text-white bg-blue-500 dark:bg-blue-600 rounded-full flex-shrink-0">
               3
             </span>
             <p className="text-gray-700 dark:text-gray-300">
