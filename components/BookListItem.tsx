@@ -98,6 +98,11 @@ export default function BookListItem({
       fetchRating();
     }
   }, [item.id, user]);
+  useEffect(() => {
+    if (user && status === "Finished") {
+      fetchReview();
+    }
+  }, [user, status]);
 
   async function fetchRating() {
     if (!user) {
@@ -287,12 +292,6 @@ export default function BookListItem({
       ))}
     </div>
   );
-
-  useEffect(() => {
-    if (user && status === "Finished") {
-      fetchReview();
-    }
-  }, [user, status]);
 
   async function fetchReview() {
     if (!user) return;
