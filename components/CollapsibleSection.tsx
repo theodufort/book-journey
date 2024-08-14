@@ -28,17 +28,27 @@ export default function CollapsibleSection({
   );
 
   return (
-    <div className="collapse collapse-arrow bg-base-200">
-      <div className="collapse-title text-xl font-medium md:flex my-auto">
-        <div className="my-auto">{title}</div>
-        <label className="input input-bordered flex items-center gap-2 mt-4 md:mt-0 md:ml-5 max-w-fit">
+    <div className={`collapse ${isExpanded ? 'collapse-open' : 'collapse-close'} bg-base-200`}>
+      <div 
+        className="collapse-title text-xl font-medium flex flex-col md:flex-row items-start md:items-center cursor-pointer"
+        onClick={onToggle}
+      >
+        <div className="flex items-center w-full md:w-auto">
+          <div className="mr-2">{title}</div>
+          <div className="ml-auto md:hidden">
+            {isExpanded ? '▼' : '▶'}
+          </div>
+        </div>
+        <label 
+          className="input input-bordered flex items-center gap-2 mt-4 md:mt-0 md:ml-5 w-full md:w-auto"
+          onClick={(e) => e.stopPropagation()}
+        >
           <input
             type="text"
             className="grow"
             placeholder="Search for a book..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            onClick={(e) => e.stopPropagation()}
           />
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -54,12 +64,6 @@ export default function CollapsibleSection({
           </svg>
         </label>
       </div>
-      <input
-        className="w-1/12 ml-auto"
-        type="checkbox"
-        checked={isExpanded}
-        onChange={onToggle}
-      />
       <div className="collapse-content">
         <div className="space-y-4">
           {filteredBooks.length > 0 ? (
