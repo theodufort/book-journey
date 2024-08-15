@@ -62,39 +62,111 @@ export default function BookListItem({
           ?.identifier
       )
       .single();
-    if (!pointsAwardedFinished) {
-      // const { data, error } = await supabase.from("point_transactions").insert({
-      //   user_id: user.id,
-      //   points,
-      //   type: "earned",
-      //   description,
-      // });
-      //Prevent abuse of rewards
-      await supabase
-        .from("reading_list")
-        .update({
-          pointsAwardedFinished: true,
-        })
-        .eq("user_id", user.id)
-        .eq(
-          "book_id",
-          item.volumeInfo.industryIdentifiers?.find(
-            (id) => id.type === "ISBN_13"
-          )?.identifier
-        );
-      if (error) {
-        console.error("Error awarding points:", error);
-      }
-      const { data: dataUpdatePoints, error: errorUpdatePoints } =
-        await supabase.rpc("increment_points_earned", {
-          _user_id: user.id,
-          _points_to_add: points,
-        });
+    switch (type) {
+      case "pointsAwardedFinished": {
+        // const { data, error } = await supabase.from("point_transactions").insert({
+        //   user_id: user.id,
+        //   points,
+        //   type: "earned",
+        //   description,
+        // });
+        //Prevent abuse of rewards
+        await supabase
+          .from("reading_list")
+          .update({
+            pointsAwardedFinished: true,
+          })
+          .eq("user_id", user.id)
+          .eq(
+            "book_id",
+            item.volumeInfo.industryIdentifiers?.find(
+              (id) => id.type === "ISBN_13"
+            )?.identifier
+          );
+        if (error) {
+          console.error("Error awarding points:", error);
+        }
+        const { data: dataUpdatePoints, error: errorUpdatePoints } =
+          await supabase.rpc("increment_points_earned", {
+            _user_id: user.id,
+            _points_to_add: points,
+          });
 
-      if (error) {
-        console.error("Error incrementing points:", errorUpdatePoints);
-      } else {
-        console.log("Points incremented successfully:", dataUpdatePoints);
+        if (error) {
+          console.error("Error incrementing points:", errorUpdatePoints);
+        } else {
+          console.log("Points incremented successfully:", dataUpdatePoints);
+        }
+      }
+      case "pointsAwardedRating": {
+        // const { data, error } = await supabase.from("point_transactions").insert({
+        //   user_id: user.id,
+        //   points,
+        //   type: "earned",
+        //   description,
+        // });
+        //Prevent abuse of rewards
+        await supabase
+          .from("reading_list")
+          .update({
+            pointsAwardedRating: true,
+          })
+          .eq("user_id", user.id)
+          .eq(
+            "book_id",
+            item.volumeInfo.industryIdentifiers?.find(
+              (id) => id.type === "ISBN_13"
+            )?.identifier
+          );
+        if (error) {
+          console.error("Error awarding points:", error);
+        }
+        const { data: dataUpdatePoints, error: errorUpdatePoints } =
+          await supabase.rpc("increment_points_earned", {
+            _user_id: user.id,
+            _points_to_add: points,
+          });
+
+        if (error) {
+          console.error("Error incrementing points:", errorUpdatePoints);
+        } else {
+          console.log("Points incremented successfully:", dataUpdatePoints);
+        }
+      }
+      case "pointsAwardedTextReview": {
+        // const { data, error } = await supabase.from("point_transactions").insert({
+        //   user_id: user.id,
+        //   points,
+        //   type: "earned",
+        //   description,
+        // });
+        //Prevent abuse of rewards
+        await supabase
+          .from("reading_list")
+          .update({
+            pointsAwardedTextReview: true,
+          })
+          .eq("user_id", user.id)
+          .eq(
+            "book_id",
+            item.volumeInfo.industryIdentifiers?.find(
+              (id) => id.type === "ISBN_13"
+            )?.identifier
+          );
+        if (error) {
+          console.error("Error awarding points:", error);
+        }
+        const { data: dataUpdatePoints, error: errorUpdatePoints } =
+          await supabase.rpc("increment_points_earned", {
+            _user_id: user.id,
+            _points_to_add: points,
+          });
+
+        if (error) {
+          console.error("Error incrementing points:", errorUpdatePoints);
+        } else {
+          console.log("Points incremented successfully:", dataUpdatePoints);
+        }
       }
     }
   }
