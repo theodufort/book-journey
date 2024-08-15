@@ -27,10 +27,6 @@ const links: {
     label: "Find a Book in 2 minutes!",
   },
   {
-    href: "/#testimonials",
-    label: "Reviews",
-  },
-  {
     href: "/#faq",
     label: "FAQ",
   },

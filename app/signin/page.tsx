@@ -117,7 +117,7 @@ export default function Login() {
           Sign-up with Google
         </button>
 
-        <div className="divider text-xs text-base-content/50 font-medium">
+        {/* <div className="divider text-xs text-base-content/50 font-medium">
           OR
         </div>
 
@@ -145,7 +145,7 @@ export default function Login() {
             )}
             Send Magic Link
           </button>
-        </form>
+        </form> */}
       </div>
     </main>
   );

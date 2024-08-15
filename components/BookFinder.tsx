@@ -334,7 +334,7 @@ const BookFinder = () => {
   return (
     <section
       id="quiz"
-      className="max-w-7xl bg-base-100 gap-16 lg:gap-20 px-8 py-10 lg:py-20 text-black"
+      className="max-w-7xl bg-base-100 gap-16 lg:gap-20 px-8 py-10 lg:py-20 m-auto"
     >
       <h2 className="font-extrabold flex mb-6 mx-auto justify-center text-4xl lg:text-6xl tracking-tight">
         Find a book to read in 1 minute!

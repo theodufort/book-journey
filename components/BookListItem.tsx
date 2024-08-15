@@ -39,16 +39,22 @@ export default function BookListItem({
     };
     getUser();
   }, [supabase]);
-  async function awardPoints(points: number, description: string) {
+  async function awardPoints(points: number, type: string) {
     if (!user) {
       console.error("User not authenticated");
       return;
     }
     const {
-      data: { pointsAwardedFinished },
+      data: {
+        pointsAwardedFinished,
+        pointsAwardedRating,
+        pointsAwardedTextReview,
+      },
     } = await supabase
       .from("reading_list")
-      .select("pointsAwardedFinished")
+      .select(
+        "pointsAwardedFinished, pointsAwardedRating, pointsAwardedTextReview"
+      )
       .eq("user_id", user.id)
       .eq(
         "book_id",
@@ -57,12 +63,12 @@ export default function BookListItem({
       )
       .single();
     if (!pointsAwardedFinished) {
-      const { data, error } = await supabase.from("point_transactions").insert({
-        user_id: user.id,
-        points,
-        type: "earned",
-        description,
-      });
+      // const { data, error } = await supabase.from("point_transactions").insert({
+      //   user_id: user.id,
+      //   points,
+      //   type: "earned",
+      //   description,
+      // });
       //Prevent abuse of rewards
       await supabase
         .from("reading_list")
@@ -231,8 +237,9 @@ export default function BookListItem({
         .update({ pointsAwardedRating: true })
         .eq(
           "book_id",
-          item.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
-            ?.identifier
+          item.volumeInfo.industryIdentifiers?.find(
+            (id) => id.type === "ISBN_13"
+          )?.identifier
         )
         .eq("user_id", user?.id);
     }
@@ -257,15 +264,19 @@ export default function BookListItem({
 
     if (error) {
       console.error("Error updating review:", error);
-    } else if (!data.pointsAwardedTextReview && reviewContent.trim().length > 0) {
+    } else if (
+      !data.pointsAwardedTextReview &&
+      reviewContent.trim().length > 0
+    ) {
       await awardPoints(50, `Reviewed book: ${book.title}`);
       await supabase
         .from("reading_list")
         .update({ pointsAwardedTextReview: true })
         .eq(
           "book_id",
-          item.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
-            ?.identifier
+          item.volumeInfo.industryIdentifiers?.find(
+            (id) => id.type === "ISBN_13"
+          )?.identifier
         )
         .eq("user_id", user.id);
     }
