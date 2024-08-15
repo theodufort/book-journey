@@ -97,6 +97,7 @@ export default function BookListItem({
         } else {
           console.log("Points incremented successfully:", dataUpdatePoints);
         }
+        break;
       }
       case "pointsAwardedRating": {
         // const { data, error } = await supabase.from("point_transactions").insert({
@@ -132,6 +133,7 @@ export default function BookListItem({
         } else {
           console.log("Points incremented successfully:", dataUpdatePoints);
         }
+        break;
       }
       case "pointsAwardedTextReview": {
         // const { data, error } = await supabase.from("point_transactions").insert({
@@ -167,6 +169,7 @@ export default function BookListItem({
         } else {
           console.log("Points incremented successfully:", dataUpdatePoints);
         }
+        break;
       }
     }
   }
