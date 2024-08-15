@@ -269,7 +269,7 @@ export default function BookListItem({
   const renderRatingInput = () => (
     <div className="rating rating-md rating-half inline-block my-2">
       <label>
-        <b>Your Rating:</b>{" "}
+        <b>Your Rating (+50 points):</b>{" "}
       </label>
       <input
         type="radio"
@@ -317,7 +317,7 @@ export default function BookListItem({
       return (
         <div className="mt-4">
           <label htmlFor="review" className="block font-bold mb-2">
-            Your Review:
+            Your Review (+50 points):
           </label>
           <textarea
             id="review"
