@@ -92,9 +92,9 @@ export default function BookListItem({
         });
 
       if (error) {
-        console.error("Error incrementing points:", error);
+        console.error("Error incrementing points:", errorUpdatePoints);
       } else {
-        console.log("Points incremented successfully:", data);
+        console.log("Points incremented successfully:", dataUpdatePoints);
       }
     }
   }
@@ -206,7 +206,7 @@ export default function BookListItem({
       )
       .eq("user_id", user?.id);
     if (status === "Finished") {
-      awardPoints(100, `Finished reading ${book.title}`);
+      awardPoints(100, "pointsAwardedFinished");
     }
 
     if (error) {
@@ -231,7 +231,7 @@ export default function BookListItem({
     if (error) {
       console.error("Error updating rating:", error);
     } else if (!data.pointsAwardedRating) {
-      await awardPoints(25, `Rated book: ${book.title}`);
+      await awardPoints(25, "pointsAwardedRating");
       await supabase
         .from("reading_list")
         .update({ pointsAwardedRating: true })
@@ -268,7 +268,7 @@ export default function BookListItem({
       !data.pointsAwardedTextReview &&
       reviewContent.trim().length > 0
     ) {
-      await awardPoints(50, `Reviewed book: ${book.title}`);
+      await awardPoints(50, "pointsAwardedTextReview");
       await supabase
         .from("reading_list")
         .update({ pointsAwardedTextReview: true })
