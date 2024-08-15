@@ -210,7 +210,7 @@ export default function BookListItem({
 
   async function updateRating(newRating: number) {
     setRating(newRating);
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("reading_list")
       .update({ rating: newRating })
       .eq(
@@ -218,9 +218,23 @@ export default function BookListItem({
         item.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
           ?.identifier
       )
-      .eq("user_id", user?.id);
+      .eq("user_id", user?.id)
+      .select("pointsAwardedRating")
+      .single();
+
     if (error) {
       console.error("Error updating rating:", error);
+    } else if (!data.pointsAwardedRating) {
+      await awardPoints(25, `Rated book: ${book.title}`);
+      await supabase
+        .from("reading_list")
+        .update({ pointsAwardedRating: true })
+        .eq(
+          "book_id",
+          item.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
+            ?.identifier
+        )
+        .eq("user_id", user?.id);
     }
   }
 
@@ -229,7 +243,7 @@ export default function BookListItem({
       console.error("User not authenticated");
       return;
     }
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("reading_list")
       .update({ review: reviewContent })
       .eq(
@@ -237,9 +251,23 @@ export default function BookListItem({
         item.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
           ?.identifier
       )
-      .eq("user_id", user.id);
+      .eq("user_id", user.id)
+      .select("pointsAwardedTextReview")
+      .single();
+
     if (error) {
       console.error("Error updating review:", error);
+    } else if (!data.pointsAwardedTextReview && reviewContent.trim().length > 0) {
+      await awardPoints(50, `Reviewed book: ${book.title}`);
+      await supabase
+        .from("reading_list")
+        .update({ pointsAwardedTextReview: true })
+        .eq(
+          "book_id",
+          item.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
+            ?.identifier
+        )
+        .eq("user_id", user.id);
     }
   }
 
