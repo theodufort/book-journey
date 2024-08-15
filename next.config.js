@@ -11,6 +11,7 @@ const nextConfig = {
       "example.com",
       "books.google.com",
       "googleusercontent.com",
+      "mybookquest.com",
     ],
   },
 };
