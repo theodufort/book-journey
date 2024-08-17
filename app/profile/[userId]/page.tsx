@@ -330,7 +330,7 @@ export default function UserProfile({
               </label>
             </div>
             <div className="w-full">
-              <div className="relative h-64 overflow-y-auto">
+              <div className="relative min-h-[16rem]">
                 <div className="carousel carousel-to-read w-full">
                   {filteredToReadBooks.map((item) => (
                     <div
@@ -347,11 +347,11 @@ export default function UserProfile({
           </div>
           <div className="w-auto bg-base-100 rounded-box p-8">
             <div className="w-full">
-              <h2 className="card-title text-xl md:text-2xl font-bold">
+              <h2 className="card-title text-xl md:text-2xl font-bold mb-4">
                 Read Books ({readBooks.length})
               </h2>
               <label
-                className="input m-auto input-bordered flex items-center gap-2 mt-4 w-full"
+                className="input input-bordered flex items-center gap-2 w-full mb-4"
                 onClick={(e) => e.stopPropagation()}
               >
                 <input
@@ -376,7 +376,7 @@ export default function UserProfile({
               </label>
             </div>
             <div className="w-full">
-              <div className="relative">
+              <div className="relative min-h-[16rem]">
                 <div className="carousel carousel-read w-full">
                   {filteredReadBooks.map((item) => (
                     <div
