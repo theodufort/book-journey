@@ -70,32 +70,32 @@ export default function BookListItem({
         //   type: "earned",
         //   description,
         // });
-        //Prevent abuse of rewards
-        await supabase
-          .from("reading_list")
-          .update({
-            pointsAwardedFinished: true,
-          })
-          .eq("user_id", user.id)
-          .eq(
-            "book_id",
-            item.volumeInfo.industryIdentifiers?.find(
-              (id) => id.type === "ISBN_13"
-            )?.identifier
-          );
-        if (error) {
-          console.error("Error awarding points:", error);
-        }
-        const { data: dataUpdatePoints, error: errorUpdatePoints } =
-          await supabase.rpc("increment_points_earned", {
-            _user_id: user.id,
-            _points_to_add: points,
-          });
+        if (!pointsAwardedFinished) {
+          //Prevent abuse of rewards
+          await supabase
+            .from("reading_list")
+            .update({
+              pointsAwardedFinished: true,
+            })
+            .eq("user_id", user.id)
+            .eq(
+              "book_id",
+              item.volumeInfo.industryIdentifiers?.find(
+                (id) => id.type === "ISBN_13"
+              )?.identifier
+            );
 
-        if (error) {
-          console.error("Error incrementing points:", errorUpdatePoints);
-        } else {
-          console.log("Points incremented successfully:", dataUpdatePoints);
+          const { data: dataUpdatePoints, error: errorUpdatePoints } =
+            await supabase.rpc("increment_points_earned", {
+              _user_id: user.id,
+              _points_to_add: points,
+            });
+
+          if (errorUpdatePoints) {
+            console.error("Error incrementing points:", errorUpdatePoints);
+          } else {
+            console.log("Points incremented successfully:", dataUpdatePoints);
+          }
         }
         break;
       }
@@ -106,32 +106,32 @@ export default function BookListItem({
         //   type: "earned",
         //   description,
         // });
-        //Prevent abuse of rewards
-        await supabase
-          .from("reading_list")
-          .update({
-            pointsAwardedRating: true,
-          })
-          .eq("user_id", user.id)
-          .eq(
-            "book_id",
-            item.volumeInfo.industryIdentifiers?.find(
-              (id) => id.type === "ISBN_13"
-            )?.identifier
-          );
-        if (error) {
-          console.error("Error awarding points:", error);
-        }
-        const { data: dataUpdatePoints, error: errorUpdatePoints } =
-          await supabase.rpc("increment_points_earned", {
-            _user_id: user.id,
-            _points_to_add: points,
-          });
+        if (!pointsAwardedRating) {
+          //Prevent abuse of rewards
+          await supabase
+            .from("reading_list")
+            .update({
+              pointsAwardedRating: true,
+            })
+            .eq("user_id", user.id)
+            .eq(
+              "book_id",
+              item.volumeInfo.industryIdentifiers?.find(
+                (id) => id.type === "ISBN_13"
+              )?.identifier
+            );
 
-        if (error) {
-          console.error("Error incrementing points:", errorUpdatePoints);
-        } else {
-          console.log("Points incremented successfully:", dataUpdatePoints);
+          const { data: dataUpdatePoints, error: errorUpdatePoints } =
+            await supabase.rpc("increment_points_earned", {
+              _user_id: user.id,
+              _points_to_add: points,
+            });
+
+          if (errorUpdatePoints) {
+            console.error("Error incrementing points:", errorUpdatePoints);
+          } else {
+            console.log("Points incremented successfully:", dataUpdatePoints);
+          }
         }
         break;
       }
@@ -142,32 +142,32 @@ export default function BookListItem({
         //   type: "earned",
         //   description,
         // });
-        //Prevent abuse of rewards
-        await supabase
-          .from("reading_list")
-          .update({
-            pointsAwardedTextReview: true,
-          })
-          .eq("user_id", user.id)
-          .eq(
-            "book_id",
-            item.volumeInfo.industryIdentifiers?.find(
-              (id) => id.type === "ISBN_13"
-            )?.identifier
-          );
-        if (error) {
-          console.error("Error awarding points:", error);
-        }
-        const { data: dataUpdatePoints, error: errorUpdatePoints } =
-          await supabase.rpc("increment_points_earned", {
-            _user_id: user.id,
-            _points_to_add: points,
-          });
+        if (!pointsAwardedTextReview) {
+          //Prevent abuse of rewards
+          await supabase
+            .from("reading_list")
+            .update({
+              pointsAwardedTextReview: true,
+            })
+            .eq("user_id", user.id)
+            .eq(
+              "book_id",
+              item.volumeInfo.industryIdentifiers?.find(
+                (id) => id.type === "ISBN_13"
+              )?.identifier
+            );
 
-        if (error) {
-          console.error("Error incrementing points:", errorUpdatePoints);
-        } else {
-          console.log("Points incremented successfully:", dataUpdatePoints);
+          const { data: dataUpdatePoints, error: errorUpdatePoints } =
+            await supabase.rpc("increment_points_earned", {
+              _user_id: user.id,
+              _points_to_add: points,
+            });
+
+          if (errorUpdatePoints) {
+            console.error("Error incrementing points:", errorUpdatePoints);
+          } else {
+            console.log("Points incremented successfully:", dataUpdatePoints);
+          }
         }
         break;
       }
@@ -383,27 +383,29 @@ export default function BookListItem({
   const renderRatingInput = () => (
     <div className="rating rating-md rating-half inline-block my-2">
       <label>
-        <b>Your Rating (+50 points):</b>{" "}
+        <b>Your Rating (+25 points):</b>{" "}
       </label>
-      <input
-        type="radio"
-        name={`rating-${item.id}`}
-        className="rating-hidden"
-        checked={rating === 0}
-        onChange={() => updateRating(0)}
-      />
-      {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((star) => (
+      <div className="flex">
         <input
-          key={star}
           type="radio"
           name={`rating-${item.id}`}
-          className={`mask mask-star-2 ${
-            star % 1 === 0 ? "mask-half-2" : "mask-half-1"
-          } bg-orange-400`}
-          checked={rating === star}
-          onChange={() => updateRating(star)}
+          className="rating-hidden"
+          checked={rating === 0}
+          onChange={() => updateRating(0)}
         />
-      ))}
+        {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((star) => (
+          <input
+            key={star}
+            type="radio"
+            name={`rating-${item.id}`}
+            className={`mask mask-star-2 ${
+              star % 1 === 0 ? "mask-half-2" : "mask-half-1"
+            } bg-orange-400`}
+            checked={rating === star}
+            onChange={() => updateRating(star)}
+          />
+        ))}
+      </div>
     </div>
   );
 
