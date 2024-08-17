@@ -129,7 +129,7 @@ export default function UserProfile({
 
   return (
     <main className="min-h-screen p-4 md:p-8 pb-24 bg-base-200">
-      <section className="max-w-full md:max-w-6xl mx-auto space-y-12">
+      <section className="max-w-full md:max-w-6xl mx-auto space-y-6">
         <div className="bg-base-100 rounded-box p-8">
           <div className="flex items-center space-x-8">
             <div className="avatar">
@@ -376,7 +376,7 @@ export default function UserProfile({
               </label>
             </div>
             <div className="w-full">
-              <div className="relative min-h-[16rem]">
+              <div className="relative">
                 <div className="carousel carousel-read w-full">
                   {filteredReadBooks.map((item) => (
                     <div
