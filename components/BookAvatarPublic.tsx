@@ -22,13 +22,13 @@ export const BookAvatarPublic = ({ item, showRating }: props) => {
         <h3 className="card-title text-sm">{item.data.volumeInfo.title}</h3>
         <p className="text-xs">{item.data.volumeInfo.authors?.[0]}</p>
         {showRating ? (
-          <div className="rating rating-md">
+          <div className="rating rating-sm h-4/5">
             {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((star) => (
               <input
                 key={star}
                 type="radio"
                 name={`rating-${item.book_id}`}
-                className={`mask mask-star-2 ${
+                className={`mask mask-star-2  ${
                   star % 1 === 0 ? "mask-half-2" : "mask-half-1"
                 } bg-orange-400`}
                 checked={item.rating === star}
