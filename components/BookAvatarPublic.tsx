@@ -22,7 +22,7 @@ export const BookAvatarPublic = ({ item, showRating }: props) => {
         <h3 className="card-title text-sm">{item.data.volumeInfo.title}</h3>
         <p className="text-xs">{item.data.volumeInfo.authors?.[0]}</p>
         {showRating ? (
-          <div className="rating rating-sm h-4/5">
+          <div className="rating rating-sm py-2">
             {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((star) => (
               <input
                 key={star}
