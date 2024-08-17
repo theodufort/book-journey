@@ -8,7 +8,6 @@ import { checkBookExists } from "@/libs/supabase-helpers";
 import { Volume } from "@/interfaces/GoogleAPI";
 import { BookAvatarNoDetails } from "@/components/BookAvatarNoDetails";
 import { BookAvatarPublic } from "@/components/BookAvatarPublic";
-import { FaSearch } from "react-icons/fa";
 
 export default function UserProfile({
   params,
@@ -27,13 +26,19 @@ export default function UserProfile({
   const [searchReadingBooks, setSearchReadingBooks] = useState("");
 
   const filteredReadBooks = readBooks.filter((book) =>
-    book.data.volumeInfo.title.toLowerCase().includes(searchReadBooks.toLowerCase())
+    book.data.volumeInfo.title
+      .toLowerCase()
+      .includes(searchReadBooks.toLowerCase())
   );
   const filteredToReadBooks = toReadBooks.filter((book) =>
-    book.data.volumeInfo.title.toLowerCase().includes(searchToReadBooks.toLowerCase())
+    book.data.volumeInfo.title
+      .toLowerCase()
+      .includes(searchToReadBooks.toLowerCase())
   );
   const filteredReadingBooks = readingBooks.filter((book) =>
-    book.data.volumeInfo.title.toLowerCase().includes(searchReadingBooks.toLowerCase())
+    book.data.volumeInfo.title
+      .toLowerCase()
+      .includes(searchReadingBooks.toLowerCase())
   );
 
   useEffect(() => {
@@ -179,21 +184,34 @@ export default function UserProfile({
           <div className="w-auto flex bg-base-100 rounded-box p-8">
             {readingBooks.length > 0 ? (
               <div className="w-full">
-                <div className="flex mb-4 justify-between items-center">
-                  <h2 className="card-title text-xl md:text-2xl font-bold">
-                    Currently Reading ({readingBooks.length})
-                  </h2>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      placeholder="Search books"
-                      className="input input-bordered w-full max-w-xs pr-10"
-                      value={searchReadingBooks}
-                      onChange={(e) => setSearchReadingBooks(e.target.value)}
+                <h2 className="card-title text-xl md:text-2xl font-bold">
+                  Currently Reading ({readingBooks.length})
+                </h2>
+
+                <label
+                  className="input m-auto input-bordered flex items-center gap-2 mt-4 w-full"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <input
+                    type="text"
+                    placeholder="Search for a book..."
+                    className="grow"
+                    value={searchReadingBooks}
+                    onChange={(e) => setSearchReadingBooks(e.target.value)}
+                  />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                    className="h-4 w-4 opacity-70"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                      clipRule="evenodd"
                     />
-                    <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                  </div>
-                </div>
+                  </svg>
+                </label>
                 <div className="w-full">
                   <div className="relative">
                     <div className="carousel carousel-reading w-full">
@@ -282,20 +300,34 @@ export default function UserProfile({
             )}
           </div>
           <div className="w-auto bg-base-100 rounded-box p-8">
-            <div className="flex mb-4 justify-between items-center">
-              <h2 className="card-title text-xl md:text-2xl font-bold">
-                Books to Read ({toReadBooks.length})
-              </h2>
-              <div className="relative">
+            <h2 className="card-title text-xl md:text-2xl font-bold">
+              Books to Read ({toReadBooks.length})
+            </h2>
+            <div className="relative justify-start">
+              <label
+                className="input m-auto input-bordered flex items-center gap-2 mt-4  w-full"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <input
                   type="text"
-                  placeholder="Search books"
-                  className="input input-bordered w-full max-w-xs pr-10"
+                  placeholder="Search for a book..."
+                  className="grow"
                   value={searchToReadBooks}
                   onChange={(e) => setSearchToReadBooks(e.target.value)}
                 />
-                <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                  className="h-4 w-4 opacity-70"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </label>
             </div>
             <div className="w-full">
               <div className="relative">
@@ -379,20 +411,34 @@ export default function UserProfile({
             </div>
           </div>
           <div className="w-auto bg-base-100 rounded-box p-8">
-            <div className="flex mb-4 justify-between items-center">
+            <div className="w-full">
               <h2 className="card-title text-xl md:text-2xl font-bold">
                 Read Books ({readBooks.length})
               </h2>
-              <div className="relative">
+              <label
+                className="input m-auto input-bordered flex items-center gap-2 mt-4 w-full"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <input
                   type="text"
-                  placeholder="Search books"
-                  className="input input-bordered w-full max-w-xs pr-10"
+                  placeholder="Search for a book..."
+                  className="grow"
                   value={searchReadBooks}
                   onChange={(e) => setSearchReadBooks(e.target.value)}
                 />
-                <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                  className="h-4 w-4 opacity-70"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </label>
             </div>
             <div className="w-full">
               <div className="relative">
