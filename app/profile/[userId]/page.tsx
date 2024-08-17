@@ -128,8 +128,8 @@ export default function UserProfile({
   }
 
   return (
-    <main className="min-h-screen p-8 pb-24 bg-base-200">
-      <section className="max-w-6xl mx-auto space-y-12">
+    <main className="min-h-screen p-4 md:p-8 pb-24 bg-base-200">
+      <section className="max-w-full md:max-w-6xl mx-auto space-y-12">
         <div className="bg-base-100 rounded-box p-8">
           <div className="flex items-center space-x-8">
             <div className="avatar">
@@ -155,7 +155,7 @@ export default function UserProfile({
             </div>
           </div>
         </div>
-        <div className="grid md:grid-cols-2 grid-rows-1 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="bg-base-100 rounded-box p-8">
             <h2 className="text-2xl font-bold mb-4">Reading Journey</h2>
             <div className="grid grid-cols-2 grid-rows-1">
@@ -222,7 +222,7 @@ export default function UserProfile({
                           )?.identifier || item.book_id;
                         return (
                           <div
-                            className="carousel-item w-full inline-block"
+                            className="carousel-item w-full md:w-1/2 lg:w-1/3 inline-block"
                             id={`reading-${isbn13}`}
                             key={`reading-${isbn13}`}
                           >
@@ -334,7 +334,7 @@ export default function UserProfile({
                 <div className="carousel carousel-to-read w-full">
                   {filteredToReadBooks.map((item) => (
                     <div
-                      className="carousel-item w-full inline-block"
+                      className="carousel-item w-full md:w-1/2 lg:w-1/3 inline-block"
                       id={`to-read-${item.book_id}`}
                       key={`to-read-book-${item.book_id}`}
                     >
@@ -445,7 +445,7 @@ export default function UserProfile({
                 <div className="carousel carousel-read w-full">
                   {filteredReadBooks.map((item) => (
                     <div
-                      className="carousel-item w-full inline-block"
+                      className="carousel-item w-full md:w-1/2 lg:w-1/3 inline-block"
                       id={`read-${item.book_id}`}
                       key={`read-book-${item.book_id}`}
                     >
