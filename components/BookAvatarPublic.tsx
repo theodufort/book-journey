@@ -5,7 +5,7 @@ interface props {
 }
 export const BookAvatarPublic = ({ item, showRating }: props) => {
   return (
-    <div className="card shadow-sm h-96">
+    <div className="card shadow-sm">
       <figure className="px-4 pt-4">
         <Image
           src={
@@ -18,7 +18,7 @@ export const BookAvatarPublic = ({ item, showRating }: props) => {
           className="rounded-lg"
         />
       </figure>
-      <div className="card-body items-center text-center">
+      <div className="card-body flex flex-col items-center text-center">
         <h3 className="card-title text-sm">{item.data.volumeInfo.title}</h3>
         <p className="text-xs">{item.data.volumeInfo.authors?.[0]}</p>
         {showRating ? (
@@ -28,7 +28,7 @@ export const BookAvatarPublic = ({ item, showRating }: props) => {
                 key={star}
                 type="radio"
                 name={`rating-${item.book_id}`}
-                className={`mask mask-star-2 h-auto min-h-full ${
+                className={`mask mask-star-2 h-auto min-h-full  ${
                   star % 1 === 0 ? "mask-half-2" : "mask-half-1"
                 } bg-orange-400`}
                 checked={item.rating === star}
