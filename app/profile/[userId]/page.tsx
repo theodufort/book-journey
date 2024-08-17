@@ -8,6 +8,7 @@ import { checkBookExists } from "@/libs/supabase-helpers";
 import { Volume } from "@/interfaces/GoogleAPI";
 import { BookAvatarNoDetails } from "@/components/BookAvatarNoDetails";
 import { BookAvatarPublic } from "@/components/BookAvatarPublic";
+import { FaSearch } from "react-icons/fa";
 
 export default function UserProfile({
   params,
@@ -20,6 +21,20 @@ export default function UserProfile({
   const [readingBooks, setReadingBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const supabase = createClientComponentClient<Database>();
+
+  const [searchReadBooks, setSearchReadBooks] = useState("");
+  const [searchToReadBooks, setSearchToReadBooks] = useState("");
+  const [searchReadingBooks, setSearchReadingBooks] = useState("");
+
+  const filteredReadBooks = readBooks.filter((book) =>
+    book.data.volumeInfo.title.toLowerCase().includes(searchReadBooks.toLowerCase())
+  );
+  const filteredToReadBooks = toReadBooks.filter((book) =>
+    book.data.volumeInfo.title.toLowerCase().includes(searchToReadBooks.toLowerCase())
+  );
+  const filteredReadingBooks = readingBooks.filter((book) =>
+    book.data.volumeInfo.title.toLowerCase().includes(searchReadingBooks.toLowerCase())
+  );
 
   useEffect(() => {
     async function fetchProfileData() {
@@ -164,15 +179,25 @@ export default function UserProfile({
           <div className="w-auto flex bg-base-100 rounded-box p-8">
             {readingBooks.length > 0 ? (
               <div className="w-full">
-                <div className="flex mb-4">
+                <div className="flex mb-4 justify-between items-center">
                   <h2 className="card-title text-xl md:text-2xl font-bold">
                     Currently Reading ({readingBooks.length})
                   </h2>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="Search books"
+                      className="input input-bordered w-full max-w-xs pr-10"
+                      value={searchReadingBooks}
+                      onChange={(e) => setSearchReadingBooks(e.target.value)}
+                    />
+                    <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  </div>
                 </div>
                 <div className="w-full">
                   <div className="relative">
                     <div className="carousel carousel-reading w-full">
-                      {readingBooks.map((item) => {
+                      {filteredReadingBooks.map((item) => {
                         const isbn13 =
                           item.data.volumeInfo.industryIdentifiers?.find(
                             (id: any) => id.type === "ISBN_13"
@@ -257,15 +282,25 @@ export default function UserProfile({
             )}
           </div>
           <div className="w-auto bg-base-100 rounded-box p-8">
-            <div className="flex mb-4">
+            <div className="flex mb-4 justify-between items-center">
               <h2 className="card-title text-xl md:text-2xl font-bold">
                 Books to Read ({toReadBooks.length})
               </h2>
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search books"
+                  className="input input-bordered w-full max-w-xs pr-10"
+                  value={searchToReadBooks}
+                  onChange={(e) => setSearchToReadBooks(e.target.value)}
+                />
+                <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              </div>
             </div>
             <div className="w-full">
               <div className="relative">
                 <div className="carousel carousel-to-read w-full">
-                  {toReadBooks.map((item) => (
+                  {filteredToReadBooks.map((item) => (
                     <div
                       className="carousel-item w-full inline-block"
                       id={`to-read-${item.book_id}`}
@@ -344,15 +379,25 @@ export default function UserProfile({
             </div>
           </div>
           <div className="w-auto bg-base-100 rounded-box p-8">
-            <div className="flex mb-4">
+            <div className="flex mb-4 justify-between items-center">
               <h2 className="card-title text-xl md:text-2xl font-bold">
                 Read Books ({readBooks.length})
               </h2>
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search books"
+                  className="input input-bordered w-full max-w-xs pr-10"
+                  value={searchReadBooks}
+                  onChange={(e) => setSearchReadBooks(e.target.value)}
+                />
+                <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              </div>
             </div>
             <div className="w-full">
               <div className="relative">
                 <div className="carousel carousel-read w-full">
-                  {readBooks.map((item) => (
+                  {filteredReadBooks.map((item) => (
                     <div
                       className="carousel-item w-full inline-block"
                       id={`read-${item.book_id}`}
