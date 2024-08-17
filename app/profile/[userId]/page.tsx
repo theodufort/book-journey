@@ -330,8 +330,8 @@ export default function UserProfile({
               </label>
             </div>
             <div className="w-full">
-              <div className="relative min-h-[16rem]">
-                <div className="carousel carousel-to-read w-full">
+              <div className="relative min-h-[20rem]">
+                <div className="carousel carousel-to-read w-full h-full">
                   {filteredToReadBooks.map((item) => (
                     <div
                       className="carousel-item w-full md:w-1/2 lg:w-1/3 inline-block"
