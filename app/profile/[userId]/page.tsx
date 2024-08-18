@@ -222,7 +222,7 @@ export default function UserProfile({
                           )?.identifier || item.book_id;
                         return (
                           <div
-                            className="carousel-item w-full md:w-1/2 lg:w-1/3 inline-block"
+                            className="carousel-item w-full inline-block"
                             id={`reading-${isbn13}`}
                             key={`reading-${isbn13}`}
                           >
@@ -334,7 +334,7 @@ export default function UserProfile({
                 <div className="carousel carousel-to-read w-full h-full">
                   {filteredToReadBooks.map((item) => (
                     <div
-                      className="carousel-item w-full md:w-1/2 lg:w-1/3 inline-block"
+                      className="carousel-item w-full inline-block"
                       id={`to-read-${item.book_id}`}
                       key={`to-read-book-${item.book_id}`}
                     >
@@ -380,7 +380,7 @@ export default function UserProfile({
                 <div className="carousel carousel-read w-full h-full">
                   {filteredReadBooks.map((item) => (
                     <div
-                      className="carousel-item w-full md:w-1/2 lg:w-1/3 inline-block"
+                      className="carousel-item w-full inline-block"
                       id={`read-${item.book_id}`}
                       key={`read-book-${item.book_id}`}
                     >

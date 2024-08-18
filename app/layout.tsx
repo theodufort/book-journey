@@ -5,8 +5,9 @@ import PlausibleProvider from "next-plausible";
 import { getSEOTags } from "@/libs/seo";
 import ClientLayout from "@/components/LayoutClient";
 import config from "@/config";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
-import { ThemeProvider } from 'next-themes';
+import { ThemeProvider } from "next-themes";
 
 const font = Inter({ subsets: ["latin"] });
 
@@ -27,10 +28,15 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       {config.domainName && (
         <head>
           <PlausibleProvider domain={config.domainName} />
+          <Analytics />
         </head>
       )}
       <body className={font.className}>
-        <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>
+        <ThemeProvider
+          attribute="data-theme"
+          defaultTheme="system"
+          enableSystem
+        >
           {/* ClientLayout contains all the client wrappers (Crisp chat support, toast messages, tooltips, etc.) */}
           <ClientLayout>{children}</ClientLayout>
         </ThemeProvider>
