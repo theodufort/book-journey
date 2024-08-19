@@ -237,19 +237,21 @@ export default function Profile() {
           {friends.length > 0 ? (
             <div className="grid-cols-4 col-span-4">
               {friends.map((friend, index) => (
-                <div
-                  className="grid grid-cols-2 grid-rows-1 w-1/5"
-                  key={`friend-${friend.id}-${index}`}
-                >
-                  <img
-                    height={40}
-                    width={40}
-                    src={friend.img}
-                    className="rounded-full shrink-0"
-                    referrerPolicy="no-referrer"
-                  ></img>
-                  <p>{friend.name}</p>
-                </div>
+                <Link href={"/profile/" + friend.id} target="_blank">
+                  <div
+                    className="grid grid-cols-2 grid-rows-1 w-1/5"
+                    key={`friend-${friend.id}-${index}`}
+                  >
+                    <img
+                      height={40}
+                      width={40}
+                      src={friend.img}
+                      className="rounded-full shrink-0"
+                      referrerPolicy="no-referrer"
+                    ></img>
+                    <p className="m-auto">{friend.name}</p>
+                  </div>
+                </Link>
               ))}
             </div>
           ) : (
