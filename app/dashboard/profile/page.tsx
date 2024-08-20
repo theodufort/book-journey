@@ -1,6 +1,4 @@
 "use client";
-export const dynamic = "force-dynamic";
-
 import { useEffect, useState } from "react";
 import HeaderDashboard from "@/components/DashboardHeader";
 import { User } from "@supabase/supabase-js";
@@ -237,7 +235,11 @@ export default function Profile() {
           {friends.length > 0 ? (
             <div className="grid-cols-4 col-span-4">
               {friends.map((friend, index) => (
-                <Link href={"/profile/" + friend.id} target="_blank">
+                <Link
+                  href={"/profile/" + friend.id}
+                  target="_blank"
+                  key={friend.id}
+                >
                   <div
                     className="grid grid-cols-2 grid-rows-1 w-1/5"
                     key={`friend-${friend.id}-${index}`}
