@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import Header from "@/components/Header";
 import CTA from "@/components/CTA";
