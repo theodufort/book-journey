@@ -136,7 +136,7 @@ export default function ReadingRewards() {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {rewards.map((reward) => (
+          {/* {rewards.map((reward) => (
             <div key={reward.id} className="card bg-base-100 shadow-xl">
               <div className="card-body">
                 <h2 className="card-title">{reward.name}</h2>
@@ -156,7 +156,8 @@ export default function ReadingRewards() {
                 </div>
               </div>
             </div>
-          ))}
+          ))} */}
+          <div>Rewards coming soon! Stay tuned!</div>
         </div>
       </section>
     </main>
