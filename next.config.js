@@ -1,4 +1,12 @@
 /** @type {import('next').NextConfig} */
+const nextPwa = require("next-pwa");
+const withPwa = nextPwa({
+  dest: "public",
+  register: true,
+  skipWaiting: true,
+  // important to avoid running the generation everytime on your local environment
+  disable: process.env.NODE_ENV === "development",
+});
 const nextConfig = {
   reactStrictMode: true,
   images: {
@@ -16,4 +24,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withPwa(nextConfig);
