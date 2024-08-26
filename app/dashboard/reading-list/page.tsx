@@ -183,7 +183,7 @@ export default function ReadingList() {
       } else {
         // Fetch book details from our API route
         const bookDetails = await Promise.all(
-          booksData.map(async (item) => {
+          booksData.map(async (item: any) => {
             try {
               const response = await fetch(`/api/books/${item.book_id}`);
               if (!response.ok) {
