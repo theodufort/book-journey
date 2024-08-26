@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.mybookquest.twa",
+      "sha256_cert_fingerprints": [
+        "7D:C0:BF:A4:4F:D0:BC:7F:8B:F8:55:82:F5:D8:54:23:60:7C:6D:12:BD:89:0C:E8:D5:0E:D1:2F:DE:F3:BA:78"
+      ]
+    }
+  }
+]
