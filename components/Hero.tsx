@@ -13,8 +13,8 @@ const Hero = () => {
           The Simple Book Tracking App.
         </h1>
         <p className="text-lg opacity-80 leading-relaxed">
-          MyBookQuest is an all-in-one platform that helps you track, organize
-          and fill your own personnal library while being rewarded for it!
+          MyBookQuest is an all-in-one platform that helps you track, organise
+          and fill your own personal library while being rewarded for it!
         </p>
         {/* <button
           className="btn btn-primary btn-wide"
