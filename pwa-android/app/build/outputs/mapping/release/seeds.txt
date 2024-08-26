@@ -1,49 +1,49 @@
+androidx.core.app.RemoteActionCompat
+androidx.annotation.Keep
+com.mybookquest.twa.DelegationService
+androidx.core.graphics.drawable.IconCompatParcelizer
+com.google.androidbrowserhelper.trusted.ManageDataLauncherActivity
+androidx.versionedparcelable.CustomVersionedParcelable
 androidx.lifecycle.FullLifecycleObserverAdapter
 androidx.lifecycle.SingleGeneratedAdapterObserver
-androidx.core.graphics.drawable.IconCompat
-androidx.core.graphics.drawable.IconCompatParcelizer
-androidx.lifecycle.CompositeGeneratedAdaptersObserver
-androidx.core.app.CoreComponentFactory
-com.mybookquest.twa.Application
-android.support.v4.graphics.drawable.IconCompatParcelizer
-com.google.androidbrowserhelper.trusted.NotificationPermissionRequestActivity
-android.support.v4.app.RemoteActionCompatParcelizer
-androidx.annotation.Keep
-com.mybookquest.twa.LauncherActivity
-androidx.core.app.RemoteActionCompat
-androidx.versionedparcelable.CustomVersionedParcelable
-androidx.versionedparcelable.ParcelImpl
-com.google.androidbrowserhelper.trusted.FocusActivity
-com.google.androidbrowserhelper.trusted.ManageDataLauncherActivity
-androidx.core.content.FileProvider
-com.google.androidbrowserhelper.trusted.WebViewFallbackActivity
-com.mybookquest.twa.DelegationService
 androidx.core.app.RemoteActionCompatParcelizer
-androidx.lifecycle.ReflectiveGenericLifecycleObserver
+com.google.androidbrowserhelper.trusted.NotificationPermissionRequestActivity
+com.mybookquest.twa.LauncherActivity
 androidx.browser.browseractions.BrowserActionsFallbackMenuView
+android.support.v4.graphics.drawable.IconCompatParcelizer
+com.mybookquest.twa.Application
+com.google.androidbrowserhelper.trusted.FocusActivity
+com.google.androidbrowserhelper.trusted.WebViewFallbackActivity
+androidx.core.graphics.drawable.IconCompat
+androidx.lifecycle.ReflectiveGenericLifecycleObserver
+androidx.lifecycle.CompositeGeneratedAdaptersObserver
+androidx.versionedparcelable.ParcelImpl
+androidx.core.content.FileProvider
+android.support.v4.app.RemoteActionCompatParcelizer
+androidx.core.app.CoreComponentFactory
 androidx.versionedparcelable.ParcelImpl: android.os.Parcelable$Creator CREATOR
-android.support.v4.graphics.drawable.IconCompatParcelizer: androidx.core.graphics.drawable.IconCompat read(androidx.versionedparcelable.VersionedParcel)
-android.support.v4.graphics.drawable.IconCompatParcelizer: IconCompatParcelizer()
-androidx.core.graphics.drawable.IconCompatParcelizer: androidx.core.graphics.drawable.IconCompat read(androidx.versionedparcelable.VersionedParcel)
-com.mybookquest.twa.LauncherActivity: LauncherActivity()
-android.support.v4.app.RemoteActionCompatParcelizer: RemoteActionCompatParcelizer()
-androidx.core.graphics.drawable.IconCompatParcelizer: void write(androidx.core.graphics.drawable.IconCompat,androidx.versionedparcelable.VersionedParcel)
-com.google.androidbrowserhelper.trusted.ManageDataLauncherActivity: ManageDataLauncherActivity()
-com.google.androidbrowserhelper.trusted.FocusActivity: FocusActivity()
-androidx.core.app.RemoteActionCompatParcelizer: androidx.core.app.RemoteActionCompat read(androidx.versionedparcelable.VersionedParcel)
-androidx.core.app.RemoteActionCompatParcelizer: RemoteActionCompatParcelizer()
-androidx.core.graphics.drawable.IconCompat: IconCompat()
-androidx.versionedparcelable.CustomVersionedParcelable: CustomVersionedParcelable()
-androidx.browser.browseractions.BrowserActionsFallbackMenuView: BrowserActionsFallbackMenuView(android.content.Context,android.util.AttributeSet)
 android.support.v4.app.RemoteActionCompatParcelizer: void write(androidx.core.app.RemoteActionCompat,androidx.versionedparcelable.VersionedParcel)
-com.google.androidbrowserhelper.trusted.NotificationPermissionRequestActivity: NotificationPermissionRequestActivity()
+com.mybookquest.twa.LauncherActivity: LauncherActivity()
+android.support.v4.graphics.drawable.IconCompatParcelizer: androidx.core.graphics.drawable.IconCompat read(androidx.versionedparcelable.VersionedParcel)
 androidx.core.app.RemoteActionCompat: RemoteActionCompat()
-com.mybookquest.twa.Application: Application()
-com.google.androidbrowserhelper.trusted.WebViewFallbackActivity: WebViewFallbackActivity()
-android.support.v4.app.RemoteActionCompatParcelizer: androidx.core.app.RemoteActionCompat read(androidx.versionedparcelable.VersionedParcel)
-androidx.core.app.RemoteActionCompatParcelizer: void write(androidx.core.app.RemoteActionCompat,androidx.versionedparcelable.VersionedParcel)
-androidx.core.graphics.drawable.IconCompatParcelizer: IconCompatParcelizer()
+androidx.core.graphics.drawable.IconCompat: IconCompat()
 com.mybookquest.twa.DelegationService: DelegationService()
-androidx.core.content.FileProvider: FileProvider()
+androidx.browser.browseractions.BrowserActionsFallbackMenuView: BrowserActionsFallbackMenuView(android.content.Context,android.util.AttributeSet)
+androidx.versionedparcelable.CustomVersionedParcelable: CustomVersionedParcelable()
+androidx.core.graphics.drawable.IconCompatParcelizer: IconCompatParcelizer()
+android.support.v4.graphics.drawable.IconCompatParcelizer: IconCompatParcelizer()
+androidx.core.app.RemoteActionCompatParcelizer: void write(androidx.core.app.RemoteActionCompat,androidx.versionedparcelable.VersionedParcel)
 android.support.v4.graphics.drawable.IconCompatParcelizer: void write(androidx.core.graphics.drawable.IconCompat,androidx.versionedparcelable.VersionedParcel)
+androidx.core.app.RemoteActionCompatParcelizer: androidx.core.app.RemoteActionCompat read(androidx.versionedparcelable.VersionedParcel)
+com.mybookquest.twa.Application: Application()
+androidx.core.content.FileProvider: FileProvider()
+androidx.core.graphics.drawable.IconCompatParcelizer: androidx.core.graphics.drawable.IconCompat read(androidx.versionedparcelable.VersionedParcel)
+com.google.androidbrowserhelper.trusted.WebViewFallbackActivity: WebViewFallbackActivity()
+androidx.core.app.RemoteActionCompatParcelizer: RemoteActionCompatParcelizer()
+android.support.v4.app.RemoteActionCompatParcelizer: androidx.core.app.RemoteActionCompat read(androidx.versionedparcelable.VersionedParcel)
+com.google.androidbrowserhelper.trusted.FocusActivity: FocusActivity()
+androidx.core.graphics.drawable.IconCompatParcelizer: void write(androidx.core.graphics.drawable.IconCompat,androidx.versionedparcelable.VersionedParcel)
+com.google.androidbrowserhelper.trusted.NotificationPermissionRequestActivity: NotificationPermissionRequestActivity()
 androidx.core.app.CoreComponentFactory: CoreComponentFactory()
+android.support.v4.app.RemoteActionCompatParcelizer: RemoteActionCompatParcelizer()
+com.google.androidbrowserhelper.trusted.ManageDataLauncherActivity: ManageDataLauncherActivity()
