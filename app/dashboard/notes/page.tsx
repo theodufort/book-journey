@@ -264,7 +264,7 @@ export default function BookNotes() {
                         </>
                       ) : (
                         <div className="flex-grow w-full p-3 rounded-md bg-base-200 overflow-y-auto whitespace-pre-wrap">
-                          {notes[selectedBook.book_id] || "No notes yet."}
+                          {notes[selectedBook.book_id]?.content || "No notes yet."}
                         </div>
                       )}
                     </div>
