@@ -179,7 +179,7 @@ export default function BookNotes() {
                     </p>
                     <div
                       ref={notesContainerRef}
-                      className="mb-4 flex flex-col h-64"
+                      className="flex flex-col h-[calc(100vh-300px)]"
                     >
                       {isEditMode ? (
                         <>
