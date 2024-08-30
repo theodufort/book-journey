@@ -182,9 +182,17 @@ export default function BookNotes() {
                 {selectedBook ? (
                   <>
                     <div className="flex justify-between items-center mb-4">
-                      <h2 className="text-2xl font-semibold">
-                        {selectedBook.data.volumeInfo.title}
-                      </h2>
+                      <div>
+                        <h2 className="text-2xl font-semibold">
+                          {selectedBook.data.volumeInfo.title}
+                        </h2>
+                        <p className="text-gray-600">
+                          {selectedBook.data.volumeInfo.authors?.join(", ")}
+                        </p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Last Updated: {new Date().toLocaleString()}
+                        </p>
+                      </div>
                       <button
                         className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                         onClick={() => setIsEditMode(!isEditMode)}
@@ -192,9 +200,6 @@ export default function BookNotes() {
                         {isEditMode ? "View" : "Edit"}
                       </button>
                     </div>
-                    <p className="text-gray-600 mb-4">
-                      {selectedBook.data.volumeInfo.authors?.join(", ")}
-                    </p>
                     <div
                       ref={notesContainerRef}
                       className="flex flex-col h-[calc(100vh-300px)]"
