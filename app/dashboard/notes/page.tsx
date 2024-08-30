@@ -179,32 +179,32 @@ export default function BookNotes() {
                     </p>
                     <div
                       ref={notesContainerRef}
-                      className="mb-4 relative grid grid-rows-2"
+                      className="mb-4 flex flex-col h-64"
                     >
                       {isEditMode ? (
-                        <textarea
-                          className="w-full h-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                          value={notes[selectedBook.book_id] || ""}
-                          onChange={(e) =>
-                            handleNoteChange(
-                              selectedBook.book_id,
-                              e.target.value
-                            )
-                          }
-                          placeholder="Enter your notes here..."
-                        />
+                        <>
+                          <textarea
+                            className="flex-grow w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none mb-2"
+                            value={notes[selectedBook.book_id] || ""}
+                            onChange={(e) =>
+                              handleNoteChange(
+                                selectedBook.book_id,
+                                e.target.value
+                              )
+                            }
+                            placeholder="Enter your notes here..."
+                          />
+                          <button
+                            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                            onClick={saveNote}
+                          >
+                            Save Note
+                          </button>
+                        </>
                       ) : (
-                        <div className="w-full h-full p-3 border rounded-md bg-base-200 overflow-y-auto absolute top-0 left-0">
+                        <div className="flex-grow w-full p-3 border rounded-md bg-base-200 overflow-y-auto">
                           {notes[selectedBook.book_id] || "No notes yet."}
                         </div>
-                      )}
-                      {isEditMode && (
-                        <button
-                          className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                          onClick={saveNote}
-                        >
-                          Save Note
-                        </button>
                       )}
                     </div>
                   </>
