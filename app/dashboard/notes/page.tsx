@@ -184,7 +184,7 @@ export default function BookNotes() {
                       {isEditMode ? (
                         <>
                           <textarea
-                            className="flex-grow w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none mb-2"
+                            className="flex-grow w-full p-3  rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none mb-2"
                             value={notes[selectedBook.book_id] || ""}
                             onChange={(e) =>
                               handleNoteChange(
@@ -202,7 +202,7 @@ export default function BookNotes() {
                           </button>
                         </>
                       ) : (
-                        <div className="flex-grow w-full p-3 border rounded-md bg-base-200 overflow-y-auto">
+                        <div className="flex-grow w-full p-3  rounded-md bg-base-200 overflow-y-auto">
                           {notes[selectedBook.book_id] || "No notes yet."}
                         </div>
                       )}
