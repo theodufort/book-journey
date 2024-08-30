@@ -260,16 +260,11 @@ export default function BookNotes() {
                             }
                             placeholder="Enter your notes here..."
                           />
-                          <button
-                            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                            onClick={saveNote}
-                          >
-                            Save Note
-                          </button>
                         </>
                       ) : (
                         <div className="flex-grow w-full p-3 rounded-md bg-base-200 overflow-y-auto whitespace-pre-wrap">
-                          {notes[selectedBook.book_id]?.content || "No notes yet."}
+                          {notes[selectedBook.book_id]?.content ||
+                            "No notes yet."}
                         </div>
                       )}
                     </div>
