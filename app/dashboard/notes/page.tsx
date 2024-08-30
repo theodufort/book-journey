@@ -95,17 +95,17 @@ export default function BookNotes() {
         {loading ? (
           <p>Loading...</p>
         ) : (
-          <div className="bg-white shadow-md rounded-lg overflow-hidden">
+          <div className="bg-base-200 shadow-md rounded-lg overflow-hidden">
             <div className="flex">
               <div className="w-1/3 border-r">
-                <h2 className="text-xl font-semibold p-4 bg-gray-50 border-b">
-                  Your Reading List
+                <h2 className="text-xl font-semibold p-4 bg-base-200 border-b">
+                  Your Notes
                 </h2>
                 <ul className="divide-y overflow-y-auto max-h-[calc(100vh-200px)]">
                   {readingList.map((book) => (
                     <li
                       key={book.book_id}
-                      className={`cursor-pointer p-4 hover:bg-gray-50 transition-colors ${
+                      className={`cursor-pointer p-4 transition-colors ${
                         selectedBook?.book_id === book.book_id
                           ? "bg-blue-50"
                           : ""
