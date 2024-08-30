@@ -704,6 +704,41 @@ export type Database = {
   }
   public: {
     Tables: {
+      book_notes: {
+        Row: {
+          book_id: string
+          created_at: string | null
+          id: number
+          notes: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          book_id: string
+          created_at?: string | null
+          id?: number
+          notes?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          book_id?: string
+          created_at?: string | null
+          id?: number
+          notes?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "book_notes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       books: {
         Row: {
           added_at: string

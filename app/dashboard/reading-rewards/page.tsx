@@ -6,6 +6,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 import { UserPoints, Reward } from "@/interfaces/Dashboard";
 import { Database } from "@/types/supabase";
+import { DashboardFooter } from "@/components/DashboardFooter";
 
 export default function ReadingRewards() {
   const supabase = createClientComponentClient<Database>();
@@ -160,6 +161,7 @@ export default function ReadingRewards() {
           <div>Rewards coming soon! Stay tuned!</div>
         </div>
       </section>
+      <DashboardFooter />
     </main>
   );
 }

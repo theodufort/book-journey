@@ -9,6 +9,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
 import OnboardingPopup from "@/components/OnboardingPopup";
 import { BookAvatarNoDetails } from "@/components/BookAvatarNoDetails";
+import { DashboardFooter } from "@/components/DashboardFooter";
 
 export default function Dashboard() {
   const supabase = createClientComponentClient<Database>();
@@ -312,6 +313,7 @@ export default function Dashboard() {
           </div>
         </div>  */}
       </section>
+      <DashboardFooter />
     </main>
   );
 }

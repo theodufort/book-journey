@@ -211,3 +211,13 @@ BEGIN
     WHERE user_id = _user_id;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE TABLE public.book_notes (
+     id SERIAL PRIMARY KEY,
+     user_id UUID REFERENCES auth.users(id),
+     book_id VARCHAR(20) NOT NULL,
+     notes TEXT,
+     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+     UNIQUE(user_id, book_id)
+ );

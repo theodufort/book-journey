@@ -107,7 +107,7 @@ export default function BookNotes() {
     if (error) {
       console.error("Error fetching notes:", error);
     } else {
-      const notesObj = data?.reduce((acc, item) => {
+      const notesObj = data?.reduce((acc: any, item) => {
         acc[item.book_id] = {
           content: item.notes,
           lastUpdated: item.updated_at,

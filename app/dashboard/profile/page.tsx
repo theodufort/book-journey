@@ -261,6 +261,7 @@ export default function Profile() {
           )}
         </div>
       </section>
+      <DashboardFooter />
     </main>
   );
 }

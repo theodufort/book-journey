@@ -451,6 +451,7 @@ export default function UserProfile({
           </div>
         </div>
       </section>
+      <DashboardFooter />
     </main>
   );
 }

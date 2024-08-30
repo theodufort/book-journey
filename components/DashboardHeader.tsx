@@ -96,13 +96,16 @@ const HeaderDashboard = () => {
               <Link href="/dashboard/reading-list">Reading List</Link>
             </li>
             <li>
+              <Link href="/dashboard/notes">Reading Notes</Link>
+            </li>
+            <li>
               <Link href="/dashboard/recommendations">
                 Reading Recommendations
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link href="/dashboard/reading-rewards">Reading Rewards</Link>
-            </li>
+            </li> */}
             <li>
               <Link href="/dashboard/profile">Profile</Link>
             </li>
@@ -117,13 +120,16 @@ const HeaderDashboard = () => {
               <Link href="/dashboard/reading-list">Reading List</Link>
             </li>
             <li>
+              <Link href="/dashboard/notes">Reading Notes</Link>
+            </li>
+            <li>
               <Link href="/dashboard/recommendations">
                 Reading Recommendations
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link href="/dashboard/reading-rewards">Reading Rewards</Link>
-            </li>
+            </li> */}
             <li>
               <Link href="/dashboard/profile">Profile</Link>
             </li>

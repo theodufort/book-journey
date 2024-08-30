@@ -6,6 +6,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Volume } from "@/interfaces/GoogleAPI";
 import { Database } from "@/types/supabase";
 import BookAvatar from "@/components/BookAvatar";
+import { DashboardFooter } from "@/components/DashboardFooter";
 
 export default function Recommendations() {
   const [isLoading, setIsLoading] = useState(true);
@@ -107,6 +108,7 @@ export default function Recommendations() {
           </>
         )}
       </section>
+      <DashboardFooter />
     </main>
   );
 }
