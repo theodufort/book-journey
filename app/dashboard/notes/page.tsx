@@ -101,7 +101,7 @@ export default function BookNotes() {
                 <h2 className="text-xl font-semibold p-4 bg-gray-50 border-b">
                   Your Reading List
                 </h2>
-                <ul className="divide-y">
+                <ul className="divide-y overflow-y-auto max-h-[calc(100vh-200px)]">
                   {readingList.map((book) => (
                     <li
                       key={book.book_id}
@@ -112,7 +112,8 @@ export default function BookNotes() {
                       }`}
                       onClick={() => setSelectedBook(book)}
                     >
-                      {book.title}
+                      <h3 className="font-semibold">{book.title}</h3>
+                      <p className="text-sm text-gray-500">{book.author}</p>
                     </li>
                   ))}
                 </ul>
@@ -120,9 +121,10 @@ export default function BookNotes() {
               <div className="w-2/3 p-6">
                 {selectedBook ? (
                   <>
-                    <h2 className="text-2xl font-semibold mb-4">
+                    <h2 className="text-2xl font-semibold mb-2">
                       {selectedBook.title}
                     </h2>
+                    <p className="text-gray-600 mb-4">{selectedBook.author}</p>
                     <textarea
                       className="w-full h-64 p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       value={notes[selectedBook.book_id] || ""}
