@@ -233,9 +233,14 @@ export default function BookNotes() {
                       </div>
                       <button
                         className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                        onClick={() => setIsEditMode(!isEditMode)}
+                        onClick={() => {
+                          if (isEditMode) {
+                            saveNote();
+                          }
+                          setIsEditMode(!isEditMode);
+                        }}
                       >
-                        {isEditMode ? "View" : "Edit"}
+                        {isEditMode ? "Save & View" : "Edit"}
                       </button>
                     </div>
                     <div
