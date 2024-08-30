@@ -9,6 +9,7 @@ export interface Row {
   status: string;
 }
 export interface ReadingListItem {
+  data: any;
   id: string;
   book_id: string;
   status: string;

@@ -8,6 +8,7 @@ import AddFriend from "@/components/AddFriend";
 import { Database } from "@/types/supabase";
 import CategorySelection from "@/components/CategorySelection";
 import Link from "next/link";
+import { DashboardFooter } from "@/components/DashboardFooter";
 type Friend = {
   id: string;
   name: string;
