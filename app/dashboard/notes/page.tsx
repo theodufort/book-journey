@@ -4,7 +4,7 @@ import { ReadingListItem } from "@/interfaces/Dashboard";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Volume } from "@/interfaces/GoogleAPI";
 
 export default function BookNotes() {
@@ -13,9 +13,9 @@ export default function BookNotes() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const [notes, setNotes] = useState<{ [bookId: string]: string }>({});
-  const [selectedBook, setSelectedBook] = useState<ReadingListItem | null>(
-    null
-  );
+  const [selectedBook, setSelectedBook] = useState<ReadingListItem | null>(null);
+  const [isEditMode, setIsEditMode] = useState(true);
+  const notesContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -157,24 +157,42 @@ export default function BookNotes() {
               <div className="w-2/3 p-6">
                 {selectedBook ? (
                   <>
-                    <h2 className="text-2xl font-semibold mb-2">
-                      {selectedBook.data.volumeInfo.title}
-                    </h2>
+                    <div className="flex justify-between items-center mb-4">
+                      <h2 className="text-2xl font-semibold">
+                        {selectedBook.data.volumeInfo.title}
+                      </h2>
+                      <button
+                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                        onClick={() => setIsEditMode(!isEditMode)}
+                      >
+                        {isEditMode ? "View" : "Edit"}
+                      </button>
+                    </div>
                     <p className="text-gray-600 mb-4">{selectedBook.data.volumeInfo.authors?.join(", ")}</p>
-                    <textarea
-                      className="w-full h-64 p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      value={notes[selectedBook.book_id] || ""}
-                      onChange={(e) =>
-                        handleNoteChange(selectedBook.book_id, e.target.value)
-                      }
-                      placeholder="Enter your notes here..."
-                    />
-                    <button
-                      className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                      onClick={saveNote}
-                    >
-                      Save Note
-                    </button>
+                    <div ref={notesContainerRef} className="h-64 overflow-y-auto mb-4">
+                      {isEditMode ? (
+                        <textarea
+                          className="w-full h-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          value={notes[selectedBook.book_id] || ""}
+                          onChange={(e) =>
+                            handleNoteChange(selectedBook.book_id, e.target.value)
+                          }
+                          placeholder="Enter your notes here..."
+                        />
+                      ) : (
+                        <div className="w-full h-full p-3 border rounded-md bg-gray-50">
+                          {notes[selectedBook.book_id] || "No notes yet."}
+                        </div>
+                      )}
+                    </div>
+                    {isEditMode && (
+                      <button
+                        className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                        onClick={saveNote}
+                      >
+                        Save Note
+                      </button>
+                    )}
                   </>
                 ) : (
                   <p className="text-gray-500 text-center mt-8">
