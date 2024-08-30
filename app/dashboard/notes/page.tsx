@@ -6,6 +6,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { useEffect, useState, useRef, useMemo } from "react";
 import { Volume } from "@/interfaces/GoogleAPI";
+import { DashboardFooter } from "@/components/DashboardFooter";
 
 export default function BookNotes() {
   const supabase = createClientComponentClient<Database>();
@@ -161,7 +162,6 @@ export default function BookNotes() {
   };
   return (
     <main className="min-h-screen p-4 sm:p-8 pb-24">
-      <Footer />
       <section className="max-w-6xl mx-auto space-y-4 sm:space-y-8">
         <HeaderDashboard />
         <h1 className="text-2xl md:text-4xl font-extrabold  my-auto">
@@ -280,13 +280,9 @@ export default function BookNotes() {
           </div>
         )}
       </section>
+      <DashboardFooter />
     </main>
   );
 }
 
 // Add this at the end of the file
-const Footer = () => (
-  <footer className="fixed bottom-0 left-0 right-0 bg-base-300 text-center py-1 text-xs">
-    Download the app
-  </footer>
-);

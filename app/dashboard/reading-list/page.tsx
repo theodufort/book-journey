@@ -11,6 +11,7 @@ import PointsSection from "@/components/PointsSection";
 import RecentActivitySection from "@/components/RecentActivitySection";
 import { Database, Json } from "@/types/supabase";
 import { checkBookExists } from "@/libs/supabase-helpers";
+import { DashboardFooter } from "@/components/DashboardFooter";
 
 export default function ReadingList() {
   const supabase = createClientComponentClient<Database>();
@@ -254,7 +255,6 @@ export default function ReadingList() {
 
   return (
     <main className="min-h-screen p-4 sm:p-8 pb-24">
-      <Footer />
       <section className="max-w-6xl mx-auto space-y-4 sm:space-y-8">
         <HeaderDashboard />
         <div className="flex">
@@ -330,13 +330,9 @@ export default function ReadingList() {
           )}
         </div>
       </section>
+      <DashboardFooter />
     </main>
   );
 }
 
 // Add this at the end of the file
-const Footer = () => (
-  <footer className="fixed bottom-0 left-0 right-0 bg-base-300 text-center py-1 text-xs">
-    Download the app
-  </footer>
-);

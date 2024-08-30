@@ -9,6 +9,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 import { BookSearchResult } from "@/interfaces/BookSearch";
 import { Database } from "@/types/supabase";
+import { DashboardFooter } from "@/components/DashboardFooter";
 
 export default function AddBook() {
   const supabase = createClientComponentClient<Database>();
@@ -70,7 +71,6 @@ export default function AddBook() {
 
   return (
     <main className="min-h-screen p-8 pb-24">
-      <Footer />
       <section className="max-w-6xl mx-auto space-y-8">
         <HeaderDashboard />
 
@@ -129,13 +129,9 @@ export default function AddBook() {
           ))}
         </div>
       </section>
+      <DashboardFooter />
     </main>
   );
 }
 
 // Add this at the end of the file
-const Footer = () => (
-  <footer className="fixed bottom-0 left-0 right-0 bg-base-300 text-center py-1 text-xs">
-    Download the app
-  </footer>
-);
