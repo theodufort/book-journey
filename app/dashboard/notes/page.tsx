@@ -179,7 +179,7 @@ export default function BookNotes() {
                     </p>
                     <div
                       ref={notesContainerRef}
-                      className="h-64 mb-4 relative"
+                      className="mb-4 relative grid grid-rows-2"
                     >
                       {isEditMode ? (
                         <textarea
@@ -198,15 +198,15 @@ export default function BookNotes() {
                           {notes[selectedBook.book_id] || "No notes yet."}
                         </div>
                       )}
+                      {isEditMode && (
+                        <button
+                          className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                          onClick={saveNote}
+                        >
+                          Save Note
+                        </button>
+                      )}
                     </div>
-                    {isEditMode && (
-                      <button
-                        className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                        onClick={saveNote}
-                      >
-                        Save Note
-                      </button>
-                    )}
                   </>
                 ) : (
                   <p className="text-gray-500 text-center mt-8">
