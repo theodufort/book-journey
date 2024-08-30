@@ -141,8 +141,7 @@ export default function BookNotes() {
         updated_at: updatedAt,
       },
       {
-        onConflict: "user_id,book_id",
-        update: ["notes", "updated_at"],
+        onConflict: "user_id,book_id"
       }
     );
 
