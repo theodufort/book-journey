@@ -12,14 +12,13 @@ export default function BookNotes() {
   const [readingList, setReadingList] = useState<ReadingListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
-  const [notes, setNotes] = useState<{ [bookId: string]: string }>({});
+  const [notes, setNotes] = useState<{ [bookId: string]: { content: string, lastUpdated: string | null } }>({});
   const [selectedBook, setSelectedBook] = useState<ReadingListItem | null>(
     null
   );
   const [isEditMode, setIsEditMode] = useState(true);
   const notesContainerRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
 
   const filteredReadingList = useMemo(() => {
     return readingList.filter((book) =>
@@ -99,14 +98,17 @@ export default function BookNotes() {
   const fetchNotes = async () => {
     const { data, error } = await supabase
       .from("book_notes")
-      .select("book_id, notes")
+      .select("book_id, notes, updated_at")
       .eq("user_id", user?.id);
 
     if (error) {
       console.error("Error fetching notes:", error);
     } else {
       const notesObj = data?.reduce((acc, item) => {
-        acc[item.book_id] = item.notes;
+        acc[item.book_id] = {
+          content: item.notes,
+          lastUpdated: item.updated_at
+        };
         return acc;
       }, {});
       setNotes(notesObj);
@@ -114,19 +116,26 @@ export default function BookNotes() {
   };
 
   const handleNoteChange = (bookId: string, note: string) => {
-    setNotes((prev) => ({ ...prev, [bookId]: note.replace(/\n/g, "\n") }));
+    setNotes((prev) => ({
+      ...prev,
+      [bookId]: {
+        ...prev[bookId],
+        content: note.replace(/\n/g, "\n")
+      }
+    }));
   };
 
   const saveNote = async () => {
     if (!selectedBook) return;
 
-    const noteContent = notes[selectedBook.book_id] || "";
+    const noteContent = notes[selectedBook.book_id]?.content || "";
+    const updatedAt = new Date().toISOString();
     const { error } = await supabase.from("book_notes").upsert(
       {
         user_id: user?.id,
         book_id: selectedBook.book_id,
         notes: noteContent,
-        updated_at: new Date().toISOString(),
+        updated_at: updatedAt,
       },
       {
         onConflict: "user_id,book_id",
@@ -138,8 +147,14 @@ export default function BookNotes() {
       console.error("Error saving note:", error);
     } else {
       console.log("Note saved successfully");
-      // Update the last updated time in the UI
-      setLastUpdated(new Date().toLocaleString());
+      // Update the last updated time in the local state
+      setNotes((prev) => ({
+        ...prev,
+        [selectedBook.book_id]: {
+          ...prev[selectedBook.book_id],
+          lastUpdated: updatedAt
+        }
+      }));
     }
   };
 
@@ -205,7 +220,9 @@ export default function BookNotes() {
                           {selectedBook.data.volumeInfo.authors?.join(", ")}
                         </p>
                         <p className="text-sm text-gray-500 mt-1">
-                          Last Updated: {lastUpdated || "Not saved yet"}
+                          Last Updated: {notes[selectedBook.book_id]?.lastUpdated 
+                            ? new Date(notes[selectedBook.book_id].lastUpdated).toLocaleString() 
+                            : "Not saved yet"}
                         </p>
                       </div>
                       <button
@@ -223,7 +240,7 @@ export default function BookNotes() {
                         <>
                           <textarea
                             className="flex-grow w-full p-3  rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none mb-2"
-                            value={notes[selectedBook.book_id] || ""}
+                            value={notes[selectedBook.book_id]?.content || ""}
                             onChange={(e) =>
                               handleNoteChange(
                                 selectedBook.book_id,
