@@ -12,7 +12,9 @@ export default function BookNotes() {
   const [readingList, setReadingList] = useState<ReadingListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
-  const [notes, setNotes] = useState<{ [bookId: string]: { content: string, lastUpdated: string | null } }>({});
+  const [notes, setNotes] = useState<{
+    [bookId: string]: { content: string; lastUpdated: string | null };
+  }>({});
   const [selectedBook, setSelectedBook] = useState<ReadingListItem | null>(
     null
   );
@@ -107,7 +109,7 @@ export default function BookNotes() {
       const notesObj = data?.reduce((acc, item) => {
         acc[item.book_id] = {
           content: item.notes,
-          lastUpdated: item.updated_at
+          lastUpdated: item.updated_at,
         };
         return acc;
       }, {});
@@ -120,8 +122,8 @@ export default function BookNotes() {
       ...prev,
       [bookId]: {
         ...prev[bookId],
-        content: note.replace(/\n/g, "\n")
-      }
+        content: note.replace(/\n/g, "\n"),
+      },
     }));
   };
 
@@ -152,12 +154,11 @@ export default function BookNotes() {
         ...prev,
         [selectedBook.book_id]: {
           ...prev[selectedBook.book_id],
-          lastUpdated: updatedAt
-        }
+          lastUpdated: updatedAt,
+        },
       }));
     }
   };
-
   return (
     <main className="min-h-screen p-4 sm:p-8 pb-24">
       <section className="max-w-6xl mx-auto space-y-4 sm:space-y-8">
@@ -166,7 +167,9 @@ export default function BookNotes() {
           Book Notes
         </h1>
         {loading ? (
-          <p>Loading...</p>
+          <main className="min-h-screen p-8 pb-24 flex items-center justify-center">
+            <span className="loading loading-spinner loading-lg"></span>
+          </main>
         ) : (
           <div className="bg-base-200 shadow-md rounded-lg overflow-hidden">
             <div className="flex">
@@ -220,8 +223,11 @@ export default function BookNotes() {
                           {selectedBook.data.volumeInfo.authors?.join(", ")}
                         </p>
                         <p className="text-sm text-gray-500 mt-1">
-                          Last Updated: {notes[selectedBook.book_id]?.lastUpdated 
-                            ? new Date(notes[selectedBook.book_id].lastUpdated).toLocaleString() 
+                          Last Updated:{" "}
+                          {notes[selectedBook.book_id]?.lastUpdated
+                            ? new Date(
+                                notes[selectedBook.book_id].lastUpdated
+                              ).toLocaleString()
                             : "Not saved yet"}
                         </p>
                       </div>
