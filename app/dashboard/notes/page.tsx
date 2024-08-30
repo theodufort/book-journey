@@ -109,16 +109,17 @@ export default function BookNotes() {
   };
 
   const handleNoteChange = (bookId: string, note: string) => {
-    setNotes((prev) => ({ ...prev, [bookId]: note }));
+    setNotes((prev) => ({ ...prev, [bookId]: note.replace(/\n/g, '\n') }));
   };
 
   const saveNote = async () => {
     if (!selectedBook) return;
 
+    const noteContent = notes[selectedBook.book_id] || "";
     const { error } = await supabase.from("book_notes").upsert({
       user_id: user?.id,
       book_id: selectedBook.book_id,
-      notes: notes[selectedBook.book_id] || "",
+      notes: noteContent,
     });
 
     if (error) {
@@ -219,7 +220,7 @@ export default function BookNotes() {
                           </button>
                         </>
                       ) : (
-                        <div className="flex-grow w-full p-3  rounded-md bg-base-200 overflow-y-auto">
+                        <div className="flex-grow w-full p-3 rounded-md bg-base-200 overflow-y-auto whitespace-pre-wrap">
                           {notes[selectedBook.book_id] || "No notes yet."}
                         </div>
                       )}
