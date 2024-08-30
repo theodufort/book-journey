@@ -4,7 +4,7 @@ import { ReadingListItem } from "@/interfaces/Dashboard";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { Volume } from "@/interfaces/GoogleAPI";
 
 export default function BookNotes() {
@@ -13,11 +13,10 @@ export default function BookNotes() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const [notes, setNotes] = useState<{ [bookId: string]: string }>({});
-  const [selectedBook, setSelectedBook] = useState<ReadingListItem | null>(
-    null
-  );
+  const [selectedBook, setSelectedBook] = useState<ReadingListItem | null>(null);
   const [isEditMode, setIsEditMode] = useState(true);
   const notesContainerRef = useRef<HTMLDivElement>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -136,11 +135,22 @@ export default function BookNotes() {
           <div className="bg-base-200 shadow-md rounded-lg overflow-hidden">
             <div className="flex">
               <div className="w-1/3 border-r">
-                <h2 className="text-xl font-semibold p-4 bg-base-200 border-b">
-                  Your Notes
-                </h2>
-                <ul className="divide-y overflow-y-auto max-h-[calc(100vh-200px)]">
-                  {readingList.map((book) => (
+                <div className="p-4 bg-base-200 border-b">
+                  <h2 className="text-xl font-semibold mb-2">Your Notes</h2>
+                  <input
+                    type="text"
+                    placeholder="Search books..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="input input-bordered w-full"
+                  />
+                </div>
+                <ul className="divide-y overflow-y-auto max-h-[calc(100vh-250px)]">
+                  {useMemo(() => {
+                    return readingList.filter((book) =>
+                      book.data.volumeInfo.title.toLowerCase().includes(searchQuery.toLowerCase())
+                    );
+                  }, [readingList, searchQuery]).map((book) => (
                     <li
                       key={book.book_id}
                       className={`cursor-pointer p-4 transition-colors ${
@@ -158,6 +168,13 @@ export default function BookNotes() {
                       </p>
                     </li>
                   ))}
+                  {readingList.length > 0 && useMemo(() => readingList.filter((book) =>
+                    book.data.volumeInfo.title.toLowerCase().includes(searchQuery.toLowerCase())
+                  ), [readingList, searchQuery]).length === 0 && (
+                    <li className="p-4 text-center text-gray-500">
+                      No books found matching your search.
+                    </li>
+                  )}
                 </ul>
               </div>
               <div className="w-2/3 p-6">
