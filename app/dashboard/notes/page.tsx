@@ -161,7 +161,7 @@ export default function BookNotes() {
     }
   };
   return (
-    <main className="min-h-screen p-4 sm:p-8 pb-24">
+    <main className="min-h-screen p-4 sm:p-8 pb-16">
       <section className="max-w-6xl mx-auto space-y-4 sm:space-y-8">
         <HeaderDashboard />
         <h1 className="text-2xl md:text-4xl font-extrabold  my-auto">
