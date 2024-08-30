@@ -70,6 +70,7 @@ export default function AddBook() {
 
   return (
     <main className="min-h-screen p-8 pb-24">
+      <Footer />
       <section className="max-w-6xl mx-auto space-y-8">
         <HeaderDashboard />
 
@@ -131,3 +132,10 @@ export default function AddBook() {
     </main>
   );
 }
+
+// Add this at the end of the file
+const Footer = () => (
+  <footer className="fixed bottom-0 left-0 right-0 bg-base-300 text-center py-1 text-xs">
+    Download the app
+  </footer>
+);
