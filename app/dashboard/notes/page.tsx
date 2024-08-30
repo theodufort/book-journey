@@ -17,6 +17,7 @@ export default function BookNotes() {
   const [isEditMode, setIsEditMode] = useState(true);
   const notesContainerRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
 
   const filteredReadingList = useMemo(() => {
     return readingList.filter((book) =>
@@ -116,16 +117,27 @@ export default function BookNotes() {
     if (!selectedBook) return;
 
     const noteContent = notes[selectedBook.book_id] || "";
-    const { error } = await supabase.from("book_notes").upsert({
-      user_id: user?.id,
-      book_id: selectedBook.book_id,
-      notes: noteContent,
-    });
+    const { error } = await supabase
+      .from("book_notes")
+      .upsert(
+        {
+          user_id: user?.id,
+          book_id: selectedBook.book_id,
+          notes: noteContent,
+          last_updated: new Date().toISOString(),
+        },
+        {
+          onConflict: 'user_id,book_id',
+          update: ['notes', 'last_updated'],
+        }
+      );
 
     if (error) {
       console.error("Error saving note:", error);
     } else {
       console.log("Note saved successfully");
+      // Update the last updated time in the UI
+      setLastUpdated(new Date().toLocaleString());
     }
   };
 
@@ -190,7 +202,7 @@ export default function BookNotes() {
                           {selectedBook.data.volumeInfo.authors?.join(", ")}
                         </p>
                         <p className="text-sm text-gray-500 mt-1">
-                          Last Updated: {new Date().toLocaleString()}
+                          Last Updated: {lastUpdated || 'Not saved yet'}
                         </p>
                       </div>
                       <button
