@@ -18,6 +18,12 @@ export default function BookNotes() {
   const notesContainerRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const filteredReadingList = useMemo(() => {
+    return readingList.filter((book) =>
+      book.data.volumeInfo.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [readingList, searchQuery]);
+
   useEffect(() => {
     const fetchUser = async () => {
       const {
@@ -146,11 +152,7 @@ export default function BookNotes() {
                   />
                 </div>
                 <ul className="divide-y overflow-y-auto max-h-[calc(100vh-250px)]">
-                  {useMemo(() => {
-                    return readingList.filter((book) =>
-                      book.data.volumeInfo.title.toLowerCase().includes(searchQuery.toLowerCase())
-                    );
-                  }, [readingList, searchQuery]).map((book) => (
+                  {filteredReadingList.map((book) => (
                     <li
                       key={book.book_id}
                       className={`cursor-pointer p-4 transition-colors ${
@@ -168,9 +170,7 @@ export default function BookNotes() {
                       </p>
                     </li>
                   ))}
-                  {readingList.length > 0 && useMemo(() => readingList.filter((book) =>
-                    book.data.volumeInfo.title.toLowerCase().includes(searchQuery.toLowerCase())
-                  ), [readingList, searchQuery]).length === 0 && (
+                  {readingList.length > 0 && filteredReadingList.length === 0 && (
                     <li className="p-4 text-center text-gray-500">
                       No books found matching your search.
                     </li>
