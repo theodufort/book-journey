@@ -13,7 +13,9 @@ export default function BookNotes() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const [notes, setNotes] = useState<{ [bookId: string]: string }>({});
-  const [selectedBook, setSelectedBook] = useState<ReadingListItem | null>(null);
+  const [selectedBook, setSelectedBook] = useState<ReadingListItem | null>(
+    null
+  );
   const [isEditMode, setIsEditMode] = useState(true);
   const notesContainerRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -21,7 +23,9 @@ export default function BookNotes() {
 
   const filteredReadingList = useMemo(() => {
     return readingList.filter((book) =>
-      book.data.volumeInfo.title.toLowerCase().includes(searchQuery.toLowerCase())
+      book.data.volumeInfo.title
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase())
     );
   }, [readingList, searchQuery]);
 
@@ -110,27 +114,25 @@ export default function BookNotes() {
   };
 
   const handleNoteChange = (bookId: string, note: string) => {
-    setNotes((prev) => ({ ...prev, [bookId]: note.replace(/\n/g, '\n') }));
+    setNotes((prev) => ({ ...prev, [bookId]: note.replace(/\n/g, "\n") }));
   };
 
   const saveNote = async () => {
     if (!selectedBook) return;
 
     const noteContent = notes[selectedBook.book_id] || "";
-    const { error } = await supabase
-      .from("book_notes")
-      .upsert(
-        {
-          user_id: user?.id,
-          book_id: selectedBook.book_id,
-          notes: noteContent,
-          last_updated: new Date().toISOString(),
-        },
-        {
-          onConflict: 'user_id,book_id',
-          update: ['notes', 'last_updated'],
-        }
-      );
+    const { error } = await supabase.from("book_notes").upsert(
+      {
+        user_id: user?.id,
+        book_id: selectedBook.book_id,
+        notes: noteContent,
+        updated_at: new Date().toISOString(),
+      },
+      {
+        onConflict: "user_id,book_id",
+        update: ["notes", "updated_at"],
+      }
+    );
 
     if (error) {
       console.error("Error saving note:", error);
@@ -183,11 +185,12 @@ export default function BookNotes() {
                       </p>
                     </li>
                   ))}
-                  {readingList.length > 0 && filteredReadingList.length === 0 && (
-                    <li className="p-4 text-center text-gray-500">
-                      No books found matching your search.
-                    </li>
-                  )}
+                  {readingList.length > 0 &&
+                    filteredReadingList.length === 0 && (
+                      <li className="p-4 text-center text-gray-500">
+                        No books found matching your search.
+                      </li>
+                    )}
                 </ul>
               </div>
               <div className="w-2/3 p-6">
@@ -202,7 +205,7 @@ export default function BookNotes() {
                           {selectedBook.data.volumeInfo.authors?.join(", ")}
                         </p>
                         <p className="text-sm text-gray-500 mt-1">
-                          Last Updated: {lastUpdated || 'Not saved yet'}
+                          Last Updated: {lastUpdated || "Not saved yet"}
                         </p>
                       </div>
                       <button
