@@ -13,7 +13,9 @@ export default function BookNotes() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const [notes, setNotes] = useState<{ [bookId: string]: string }>({});
-  const [selectedBook, setSelectedBook] = useState<ReadingListItem | null>(null);
+  const [selectedBook, setSelectedBook] = useState<ReadingListItem | null>(
+    null
+  );
   const [isEditMode, setIsEditMode] = useState(true);
   const notesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -143,13 +145,17 @@ export default function BookNotes() {
                       key={book.book_id}
                       className={`cursor-pointer p-4 transition-colors ${
                         selectedBook?.book_id === book.book_id
-                          ? "bg-blue-50"
+                          ? "bg-base-200"
                           : ""
                       }`}
                       onClick={() => setSelectedBook(book)}
                     >
-                      <h3 className="font-semibold">{book.data.volumeInfo.title}</h3>
-                      <p className="text-sm text-gray-500">{book.data.volumeInfo.authors?.join(", ")}</p>
+                      <h3 className="font-semibold">
+                        {book.data.volumeInfo.title}
+                      </h3>
+                      <p className="text-sm text-gray-500">
+                        {book.data.volumeInfo.authors?.join(", ")}
+                      </p>
                     </li>
                   ))}
                 </ul>
@@ -168,19 +174,27 @@ export default function BookNotes() {
                         {isEditMode ? "View" : "Edit"}
                       </button>
                     </div>
-                    <p className="text-gray-600 mb-4">{selectedBook.data.volumeInfo.authors?.join(", ")}</p>
-                    <div ref={notesContainerRef} className="h-64 overflow-y-auto mb-4">
+                    <p className="text-gray-600 mb-4">
+                      {selectedBook.data.volumeInfo.authors?.join(", ")}
+                    </p>
+                    <div
+                      ref={notesContainerRef}
+                      className="h-64 overflow-y-auto mb-4"
+                    >
                       {isEditMode ? (
                         <textarea
                           className="w-full h-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           value={notes[selectedBook.book_id] || ""}
                           onChange={(e) =>
-                            handleNoteChange(selectedBook.book_id, e.target.value)
+                            handleNoteChange(
+                              selectedBook.book_id,
+                              e.target.value
+                            )
                           }
                           placeholder="Enter your notes here..."
                         />
                       ) : (
-                        <div className="w-full h-full p-3 border rounded-md bg-gray-50">
+                        <div className="w-full h-full p-3 border rounded-md bg-base-200">
                           {notes[selectedBook.book_id] || "No notes yet."}
                         </div>
                       )}
