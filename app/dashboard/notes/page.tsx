@@ -179,11 +179,11 @@ export default function BookNotes() {
                     </p>
                     <div
                       ref={notesContainerRef}
-                      className="h-64 overflow-y-auto mb-4"
+                      className="h-64 mb-4 relative"
                     >
                       {isEditMode ? (
                         <textarea
-                          className="w-full h-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="w-full h-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                           value={notes[selectedBook.book_id] || ""}
                           onChange={(e) =>
                             handleNoteChange(
@@ -194,7 +194,7 @@ export default function BookNotes() {
                           placeholder="Enter your notes here..."
                         />
                       ) : (
-                        <div className="w-full h-full p-3 border rounded-md bg-base-200">
+                        <div className="w-full h-full p-3 border rounded-md bg-base-200 overflow-y-auto absolute top-0 left-0">
                           {notes[selectedBook.book_id] || "No notes yet."}
                         </div>
                       )}
