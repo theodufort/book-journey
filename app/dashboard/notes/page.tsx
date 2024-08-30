@@ -5,6 +5,7 @@ import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
+import { Volume } from "@/interfaces/GoogleAPI";
 
 export default function BookNotes() {
   const supabase = createClientComponentClient<Database>();
@@ -35,17 +36,52 @@ export default function BookNotes() {
 
   const fetchReadingList = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("reading_list")
-      .select("*")
-      .eq("user_id", user?.id);
+    try {
+      const { data: booksData, error: booksError } = await supabase
+        .from("reading_list")
+        .select(
+          `
+          book_id::text, 
+          status
+        `
+        )
+        .eq("user_id", user?.id);
 
-    if (error) {
-      console.error("Error fetching reading list:", error);
-    } else {
-      setReadingList(data || []);
+      if (booksError) {
+        console.error("Error fetching reading list:", booksError);
+        setReadingList([]);
+      } else {
+        // Fetch book details from our API route
+        const bookDetails = await Promise.all(
+          booksData.map(async (item: any) => {
+            try {
+              const response = await fetch(`/api/books/${item.book_id}`);
+              if (!response.ok) {
+                throw new Error(
+                  `Failed to fetch book details for ${item.book_id}`
+                );
+              }
+              const bookData: Volume = await response.json();
+              return {
+                data: bookData,
+                book_id: item.book_id,
+                status: item.status,
+              };
+            } catch (error) {
+              console.error(error);
+              return null;
+            }
+          })
+        );
+        // Filter out any null results from failed fetches
+        const validBookDetails = bookDetails.filter((book) => book != null);
+        setReadingList(validBookDetails as ReadingListItem[]);
+      }
+    } catch (error) {
+      console.error("Unexpected error:", error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const fetchNotes = async () => {
@@ -112,8 +148,8 @@ export default function BookNotes() {
                       }`}
                       onClick={() => setSelectedBook(book)}
                     >
-                      <h3 className="font-semibold">{book.title}</h3>
-                      <p className="text-sm text-gray-500">{book.author}</p>
+                      <h3 className="font-semibold">{book.data.volumeInfo.title}</h3>
+                      <p className="text-sm text-gray-500">{book.data.volumeInfo.authors?.join(", ")}</p>
                     </li>
                   ))}
                 </ul>
@@ -122,9 +158,9 @@ export default function BookNotes() {
                 {selectedBook ? (
                   <>
                     <h2 className="text-2xl font-semibold mb-2">
-                      {selectedBook.title}
+                      {selectedBook.data.volumeInfo.title}
                     </h2>
-                    <p className="text-gray-600 mb-4">{selectedBook.author}</p>
+                    <p className="text-gray-600 mb-4">{selectedBook.data.volumeInfo.authors?.join(", ")}</p>
                     <textarea
                       className="w-full h-64 p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       value={notes[selectedBook.book_id] || ""}
