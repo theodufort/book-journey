@@ -1,16 +1,42 @@
+"use client";
 import Link from "next/link";
 import Script from "next/script";
-import { articles } from "../_assets/content";
 import BadgeCategory from "../_assets/components/BadgeCategory";
 import Avatar from "../_assets/components/Avatar";
 import { getSEOTags } from "@/libs/seo";
 import config from "@/config";
+import { Database } from "@/types/supabase";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useEffect, useState } from "react";
+import { BasicArticleInfo } from "../_assets/content";
+const supabase = createClientComponentClient<Database>();
 
 export async function generateMetadata({
   params,
 }: {
   params: { articleId: string };
 }) {
+  const [articles, setArticles] = useState<BasicArticleInfo[]>([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    fetchArticles();
+  }, []);
+  const fetchArticles = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("blog_articles")
+        .select(
+          "id, slug, title, description, isbn13, image_url, image_alt, published_at"
+        );
+
+      if (error) throw error;
+      setArticles(data);
+    } catch (error) {
+      console.error("Error fetching articles:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   const article = articles.find((article) => article.slug === params.articleId);
 
   return getSEOTags({
@@ -111,7 +137,7 @@ export default async function Article({
         {/* HEADER WITH CATEGORIES AND DATE AND TITLE */}
         <section className="my-12 md:my-20 max-w-[800px]">
           <div className="flex items-center gap-4 mb-6">
-            {article.categories.map((category) => 
+            {article.categories.map((category) =>
               category ? (
                 <BadgeCategory
                   category={category}
