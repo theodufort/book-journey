@@ -2,7 +2,7 @@ import type { JSX } from "react";
 import { StaticImageData } from "next/image";
 import theoImg from "@/app/blog/_assets/images/authors/theo.png";
 import introducingSupabaseImg from "@/public/blog/introducing-supabase/header.png";
-import ArticleContent from "./ArticleContent";
+import ArticleContent from "./components/ArticleContext";
 
 // ==================================================================================================================================================================
 // BLOG CATEGORIES 🏷️
@@ -186,8 +186,7 @@ export const articles: articleType[] = [
   {
     slug: "introducing-supabase",
     title: "Introducing Supabase to ShipFast",
-    description:
-      "Supabase is an open-source Firebase alternative. It's a great tool for building a backend for your app. It's now integrated with ShipFast!",
+    description: "",
     categories: [
       categories.find((category) => category.slug === categorySlugs.feature),
     ],
@@ -207,15 +206,6 @@ export const articles: articleType[] = [
         content={
           <>
             <section>
-              <h2 className={styles.h2}>Introduction</h2>
-              <p className={styles.p}>
-                Supabase is an open-source Firebase alternative. It&apos;s a great
-                tool for building a backend for your app. It&apos;s now integrated
-                with ShipFast!
-              </p>
-            </section>
-
-            <section>
               <h3 className={styles.h3}>1. Create a supabase account</h3>
               <p className={styles.p}>
                 First, go to{" "}
@@ -225,8 +215,8 @@ export const articles: articleType[] = [
                 and create an account. It&apos;s free for up to 10,000 rows per
                 table.
                 <br />
-                Then create a new project and a new table. You can use the following
-                SQL schema:
+                Then create a new project and a new table. You can use the
+                following SQL schema:
               </p>
 
               <pre className={styles.code}>
@@ -263,43 +253,3 @@ export const articles: articleType[] = [
     ),
   },
 ];
-import React from 'react';
-import Image from 'next/image';
-import { StaticImageData } from 'next/image';
-
-interface ArticleContentProps {
-  image: {
-    src: StaticImageData;
-    alt: string;
-  };
-  content: React.ReactNode;
-}
-
-const styles = {
-  h2: "text-2xl lg:text-4xl font-bold tracking-tight mb-4 text-base-content",
-  h3: "text-xl lg:text-2xl font-bold tracking-tight mb-2 text-base-content",
-  p: "text-base-content/90 leading-relaxed",
-  ul: "list-inside list-disc text-base-content/90 leading-relaxed",
-  li: "list-item",
-  code: "text-sm font-mono bg-neutral text-neutral-content p-6 rounded-box my-4 overflow-x-scroll select-all",
-  codeInline: "text-sm font-mono bg-base-300 px-1 py-0.5 rounded-box select-all",
-};
-
-const ArticleContent: React.FC<ArticleContentProps> = ({ image, content }) => {
-  return (
-    <>
-      <Image
-        src={image.src}
-        alt={image.alt}
-        width={700}
-        height={500}
-        priority={true}
-        className="rounded-box"
-        placeholder="blur"
-      />
-      {content}
-    </>
-  );
-};
-
-export default ArticleContent;
