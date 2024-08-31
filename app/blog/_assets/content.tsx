@@ -2,7 +2,7 @@ import type { JSX } from "react";
 import { StaticImageData } from "next/image";
 import theoImg from "@/app/blog/_assets/images/authors/theo.png";
 import introducingSupabaseImg from "@/public/blog/introducing-supabase/header.png";
-import ArticleContent from "./components/ArticleContext";
+import ArticleContent from "./components/ArticleContent";
 
 // ==================================================================================================================================================================
 // BLOG CATEGORIES 🏷️
@@ -203,25 +203,25 @@ export const articles: articleType[] = [
           src: introducingSupabaseImg,
           alt: "Supabase and ShipFast logo combined",
         }}
-        content={
-          <>
-            <section>
-              <h3 className={styles.h3}>1. Create a supabase account</h3>
-              <p className={styles.p}>
-                First, go to{" "}
-                <a href="https://supabase.com/" className="link link-primary">
-                  Supabase
-                </a>{" "}
-                and create an account. It&apos;s free for up to 10,000 rows per
-                table.
-                <br />
-                Then create a new project and a new table. You can use the
-                following SQL schema:
-              </p>
-
-              <pre className={styles.code}>
-                <code>
-                  {`CREATE TABLE public.users (
+        sections={[
+          {
+            title: "1. Create a supabase account",
+            content: (
+              <>
+                <p>
+                  First, go to{" "}
+                  <a href="https://supabase.com/" className="link link-primary">
+                    Supabase
+                  </a>{" "}
+                  and create an account. It&apos;s free for up to 10,000 rows per
+                  table.
+                  <br />
+                  Then create a new project and a new table. You can use the
+                  following SQL schema:
+                </p>
+                <pre>
+                  <code>
+                    {`CREATE TABLE public.users (
   id bigint NOT NULL DEFAULT nextval('users_id_seq'::regclass),
   email text NOT NULL,
   password text NOT NULL,
@@ -229,26 +229,30 @@ export const articles: articleType[] = [
   updated_at timestamp with time zone NOT NULL DEFAULT now(),
   CONSTRAINT users_pkey PRIMARY KEY (id)
 );`}
-                </code>
-              </pre>
-            </section>
-
-            <section>
-              <h3 className={styles.h3}>2. Add your credentials to ShipFast</h3>
-              <p className={styles.p}>
-                Copy the <span className={styles.codeInline}>API URL</span> and{" "}
-                <span className={styles.codeInline}>API Key</span> from your
-                Supabase project settings and add them to your ShipFast project
-                settings. Add these files to your project:
-              </p>
-
-              <ul className={styles.ul}>
-                <li className={styles.li}>.env.local</li>
-                <li className={styles.li}>.env.production</li>
-              </ul>
-            </section>
-          </>
-        }
+                  </code>
+                </pre>
+              </>
+            ),
+          },
+          {
+            title: "2. Add your credentials to ShipFast",
+            content: (
+              <>
+                <p>
+                  Copy the <span className="code-inline">API URL</span> and{" "}
+                  <span className="code-inline">API Key</span> from your
+                  Supabase project settings and add them to your ShipFast project
+                  settings. Add these files to your project:
+                </p>
+                <ul>
+                  <li>.env.local</li>
+                  <li>.env.production</li>
+                </ul>
+              </>
+            ),
+          },
+        ]}
+        styles={styles}
       />
     ),
   },
