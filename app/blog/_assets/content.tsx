@@ -18,33 +18,22 @@ export type categoryType = {
 
 // These slugs are used to generate pages in the /blog/category/[categoryI].js. It's a way to group articles by category.
 const categorySlugs: { [key: string]: string } = {
-  feature: "feature",
-  tutorial: "tutorial",
+  reviews: "reviews",
 };
 
 // All the blog categories data display in the /blog/category/[categoryI].js pages.
 export const categories: categoryType[] = [
   {
     // The slug to use in the URL, from the categorySlugs object above.
-    slug: categorySlugs.feature,
+    slug: categorySlugs.reviews,
     // The title to display the category title (h1), the category badge, the category filter, and more. Less than 60 characters.
-    title: "New Features",
+    title: "Book Reviews",
     // A short version of the title above, display in small components like badges. 1 or 2 words
-    titleShort: "Features",
+    titleShort: "Reviews",
     // The description of the category to display in the category page. Up to 160 characters.
-    description:
-      "Here are the latest features we've added to ShipFast. I'm constantly improving our product to help you ship faster.",
+    description: "Here are book reviews we have made.",
     // A short version of the description above, only displayed in the <Header /> on mobile. Up to 60 characters.
-    descriptionShort: "Latest features added to ShipFast.",
-  },
-  {
-    slug: categorySlugs.tutorial,
-    title: "How Tos & Tutorials",
-    titleShort: "Tutorials",
-    description:
-      "Learn how to use ShipFast with these step-by-step tutorials. I'll show you how to ship faster and save time.",
-    descriptionShort:
-      "Learn how to use ShipFast with these step-by-step tutorials.",
+    descriptionShort: "Detailed book reviews.",
   },
 ];
 
@@ -136,7 +125,7 @@ export const authors: authorType[] = [
     // The name to display in the author's bio. Up to 60 characters.
     name: "Theo Dufort",
     // The job to display in the author's bio. Up to 60 characters.
-    job: "Maker of MyBookQuest",
+    job: "Founder of MyBookQuest",
     // The description of the author to display in the author's bio. Up to 160 characters.
     description:
       "Theo is a programmer and avid book reader, he mainly loves fantasy books and biographies.",
@@ -214,8 +203,8 @@ export const articles: articleType[] = [
                   <a href="https://supabase.com/" className="link link-primary">
                     Supabase
                   </a>{" "}
-                  and create an account. It&apos;s free for up to 10,000 rows per
-                  table.
+                  and create an account. It&apos;s free for up to 10,000 rows
+                  per table.
                   <br />
                   Then create a new project and a new table. You can use the
                   following SQL schema:
@@ -242,8 +231,8 @@ export const articles: articleType[] = [
                 <p>
                   Copy the <span className="code-inline">API URL</span> and{" "}
                   <span className="code-inline">API Key</span> from your
-                  Supabase project settings and add them to your ShipFast project
-                  settings. Add these files to your project:
+                  Supabase project settings and add them to your ShipFast
+                  project settings. Add these files to your project:
                 </p>
                 <ul>
                   <li>.env.local</li>
