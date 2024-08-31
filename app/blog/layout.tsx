@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { Metadata } from "next";
 import HeaderBlog from "./_assets/components/HeaderBlog";
 import Footer from "@/components/Footer";
@@ -14,15 +13,9 @@ export default function BlogLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <Suspense>
-        <HeaderBlog />
-      </Suspense>
-
-      <main className="min-h-screen max-w-6xl mx-auto p-8">{children}</main>
-
-      <div className="h-24" />
-
+    <div className="flex flex-col min-h-screen">
+      <HeaderBlog />
+      <main className="flex-grow max-w-6xl mx-auto w-full p-8">{children}</main>
       <Footer />
     </div>
   );

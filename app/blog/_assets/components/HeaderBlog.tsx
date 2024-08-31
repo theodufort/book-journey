@@ -292,3 +292,46 @@ const HeaderBlog = () => {
 };
 
 export default HeaderBlog;
+"use client";
+
+import Link from "next/link";
+import config from "@/config";
+import { usePathname } from "next/navigation";
+
+export default function HeaderBlog() {
+  const pathname = usePathname();
+
+  const isActive = (path: string) => {
+    return pathname === path ? "font-semibold" : "";
+  };
+
+  return (
+    <header className="bg-white border-b border-gray-200">
+      <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
+        <Link href="/" className="flex items-center space-x-2">
+          <span className="font-bold text-xl">{config.appName}</span>
+          <span className="text-sm text-gray-600">Blog</span>
+        </Link>
+        <nav>
+          <ul className="flex space-x-4">
+            <li>
+              <Link href="/blog" className={`${isActive("/blog")}`}>
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link href="/blog/categories" className={`${isActive("/blog/categories")}`}>
+                Categories
+              </Link>
+            </li>
+            <li>
+              <Link href="/blog/about" className={`${isActive("/blog/about")}`}>
+                About
+              </Link>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+  );
+}
