@@ -28,14 +28,18 @@ const cta: JSX.Element = (
 const fetchCategories = async () => {
   const { data, error } = await supabase
     .from("blog_categories")
-    .select("*")
-    .maybeSingle();
+    .select("*");
+  if (error) {
+    console.error("Error fetching categories:", error);
+    return [];
+  }
   return data;
 };
+
 const ButtonPopoverCategories = () => {
-  const [categories, setCategories] = useState();
+  const [categories, setCategories] = useState<any[]>([]);
   useEffect(() => {
-    setCategories(fetchCategories());
+    fetchCategories().then(setCategories);
   }, []);
   return (
     <Popover className="relative z-30">
@@ -104,6 +108,11 @@ const ButtonPopoverCategories = () => {
 
 const ButtonAccordionCategories = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [categories, setCategories] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchCategories().then(setCategories);
+  }, []);
 
   return (
     <>
@@ -141,7 +150,7 @@ const ButtonAccordionCategories = () => {
                 href={`/blog/category/${category.slug}`}
                 className="text-base-content/80 hover:text-base-content duration-100 link link-hover"
               >
-                {category?.titleShort || category.title}
+                {category.name}
               </Link>
             </li>
           ))}
