@@ -17,3 +17,17 @@ export default async function LayoutBlog({ children }: { children: any }) {
     </div>
   );
 }
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Blog | MyBookQuest",
+  description: "Explore our latest articles and insights on reading and books.",
+};
+
+export default function BlogLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return <>{children}</>;
+}
