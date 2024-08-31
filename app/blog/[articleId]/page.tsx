@@ -111,13 +111,15 @@ export default async function Article({
         {/* HEADER WITH CATEGORIES AND DATE AND TITLE */}
         <section className="my-12 md:my-20 max-w-[800px]">
           <div className="flex items-center gap-4 mb-6">
-            {article.categories.map((category) => (
-              <BadgeCategory
-                category={category}
-                key={category.title}
-                extraStyle="!badge-lg"
-              />
-            ))}
+            {article.categories.map((category) => 
+              category ? (
+                <BadgeCategory
+                  category={category}
+                  key={category.title}
+                  extraStyle="!badge-lg"
+                />
+              ) : null
+            )}
             <span className="text-base-content/80" itemProp="datePublished">
               {new Date(article.publishedAt).toLocaleDateString("en-US", {
                 month: "long",

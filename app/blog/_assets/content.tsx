@@ -178,7 +178,7 @@ export const articles: articleType[] = [
     description: "",
     categories: [
       categories.find((category) => category.slug === categorySlugs.feature),
-    ],
+    ].filter(Boolean),
     author: authors.find((author) => author.slug === authorSlugs.theo),
     publishedAt: "2023-11-20",
     image: {
