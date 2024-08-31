@@ -1,8 +1,18 @@
 import { Suspense } from "react";
+import { Metadata } from "next";
 import HeaderBlog from "./_assets/components/HeaderBlog";
 import Footer from "@/components/Footer";
 
-export default async function LayoutBlog({ children }: { children: any }) {
+export const metadata: Metadata = {
+  title: "Blog | MyBookQuest",
+  description: "Explore our latest articles and insights on reading and books.",
+};
+
+export default function BlogLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <div>
       <Suspense>
@@ -16,18 +26,4 @@ export default async function LayoutBlog({ children }: { children: any }) {
       <Footer />
     </div>
   );
-}
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Blog | MyBookQuest",
-  description: "Explore our latest articles and insights on reading and books.",
-};
-
-export default function BlogLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return <>{children}</>;
 }
