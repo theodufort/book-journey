@@ -1,48 +1,63 @@
-import { categories, articles } from "../../_assets/content";
+"use client";
+
+import { useEffect, useState } from "react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Database } from "@/types/supabase";
 import CardArticle from "../../_assets/components/CardArticle";
 import CardCategory from "../../_assets/components/CardCategory";
-import { getSEOTags } from "@/libs/seo";
 import config from "@/config";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { categoryId: string };
-}) {
-  const category = categories.find(
-    (category) => category.slug === params.categoryId
-  );
+const supabase = createClientComponentClient<Database>();
 
-  return getSEOTags({
-    title: `${category.title} | Blog by ${config.appName}`,
-    description: category.description,
-    canonicalUrlRelative: `/blog/category/${category.slug}`,
-  });
-}
+export default function Category({ params }: { params: { categoryId: string } }) {
+  const [category, setCategory] = useState<any>(null);
+  const [articlesInCategory, setArticlesInCategory] = useState<any[]>([]);
+  const [otherCategories, setOtherCategories] = useState<any[]>([]);
 
-export default async function Category({
-  params,
-}: {
-  params: { categoryId: string };
-}) {
-  const category = categories.find(
-    (category) => category.slug === params.categoryId
-  );
-  const articlesInCategory = articles
-    .filter((article) =>
-      article.categories.map((c) => c.slug).includes(category.slug)
-    )
-    .sort(
-      (a, b) =>
-        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-    )
-    .slice(0, 3);
+  useEffect(() => {
+    const fetchData = async () => {
+      // Fetch the current category
+      const { data: categoryData } = await supabase
+        .from("blog_categories")
+        .select("*")
+        .eq("slug", params.categoryId)
+        .single();
+
+      if (categoryData) {
+        setCategory(categoryData);
+
+        // Fetch articles in this category
+        const { data: articlesData } = await supabase
+          .from("blog_articles")
+          .select("*")
+          .eq("category_id", categoryData.id)
+          .order("published_at", { ascending: false })
+          .limit(3);
+
+        setArticlesInCategory(articlesData || []);
+
+        // Fetch other categories
+        const { data: categoriesData } = await supabase
+          .from("blog_categories")
+          .select("*")
+          .neq("id", categoryData.id);
+
+        setOtherCategories(categoriesData || []);
+      }
+    };
+
+    fetchData();
+  }, [params.categoryId]);
+
+  if (!category) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
       <section className="mt-12 mb-24 md:mb-32 max-w-3xl mx-auto text-center">
         <h1 className="font-extrabold text-3xl lg:text-5xl tracking-tight mb-6 md:mb-12">
-          {category.title}
+          {category.name}
         </h1>
         <p className="md:text-lg opacity-80 max-w-xl mx-auto">
           {category.description}
@@ -51,7 +66,7 @@ export default async function Category({
 
       <section className="mb-24">
         <h2 className="font-bold text-2xl lg:text-4xl tracking-tight text-center mb-8 md:mb-12">
-          Most recent articles in {category.title}
+          Most recent articles in {category.name}
         </h2>
 
         <div className="grid lg:grid-cols-2 gap-8">
@@ -72,11 +87,9 @@ export default async function Category({
         </h2>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {categories
-            .filter((c) => c.slug !== category.slug)
-            .map((category) => (
-              <CardCategory key={category.slug} category={category} tag="h3" />
-            ))}
+          {otherCategories.map((otherCategory) => (
+            <CardCategory key={otherCategory.slug} category={otherCategory} tag="h3" />
+          ))}
         </div>
       </section>
     </>
