@@ -232,10 +232,47 @@ CREATE TABLE public.blog_articles (
     author_id UUID REFERENCES auth.users(id),
     image_url TEXT,
     image_alt TEXT,
+    isbn13 VARCHAR(13),
     published_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Function to get basic article info
+CREATE OR REPLACE FUNCTION public.get_basic_article_info(p_slug VARCHAR(255))
+RETURNS TABLE (
+    id INT,
+    slug VARCHAR(255),
+    title VARCHAR(255),
+    description TEXT,
+    isbn13 VARCHAR(13),
+    image_url TEXT,
+    image_alt TEXT,
+    published_at TIMESTAMP WITH TIME ZONE
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        a.id, a.slug, a.title, a.description, a.isbn13, 
+        a.image_url, a.image_alt, a.published_at
+    FROM public.blog_articles a
+    WHERE a.slug = p_slug;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to get full article content
+CREATE OR REPLACE FUNCTION public.get_full_article_content(p_slug VARCHAR(255))
+RETURNS TABLE (
+    id INT,
+    content TEXT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT a.id, a.content
+    FROM public.blog_articles a
+    WHERE a.slug = p_slug;
+END;
+$$ LANGUAGE plpgsql;
 
 -- Blog categories table
 CREATE TABLE public.blog_categories (
