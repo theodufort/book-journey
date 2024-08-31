@@ -203,6 +203,7 @@ export const articles: articleType[] = [
           src: introducingSupabaseImg,
           alt: "Supabase and ShipFast logo combined",
         }}
+        articleId={1}
         sections={[
           {
             title: "1. Create a supabase account",
