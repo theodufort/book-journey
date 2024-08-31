@@ -1,22 +1,25 @@
-import { categories, articles } from "./_assets/content";
+"use client";
+
+import { useArticles } from "./_assets/content";
 import CardArticle from "./_assets/components/CardArticle";
 import CardCategory from "./_assets/components/CardCategory";
 import config from "@/config";
 import { getSEOTags } from "@/libs/seo";
 
-export const metadata = getSEOTags({
-  title: `${config.appName} Blog | Everything Books`,
-  description: "Learn everything about books and read tailored reviews",
-  canonicalUrlRelative: "/blog",
-});
+export default function Blog() {
+  const { articles, loading } = useArticles();
 
-export default async function Blog() {
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   const articlesToDisplay = articles
     .sort(
       (a, b) =>
-        new Date(b.publishedAt).valueOf() - new Date(a.publishedAt).valueOf()
+        new Date(b.published_at).valueOf() - new Date(a.published_at).valueOf()
     )
     .slice(0, 6);
+
   return (
     <>
       <section className="text-center max-w-xl mx-auto mt-12 mb-24 md:mb-32">
@@ -24,7 +27,7 @@ export default async function Blog() {
           The {config.appName} Blog
         </h1>
         <p className="text-lg opacity-80 leading-relaxed">
-          Read our diverse articles on eveything book related!
+          Read our diverse articles on everything book related!
         </p>
       </section>
 
@@ -38,17 +41,9 @@ export default async function Blog() {
         ))}
       </section>
 
-      <section>
-        <p className="font-bold text-2xl lg:text-4xl tracking-tight text-center mb-8 md:mb-12">
-          Browse articles by category
-        </p>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {categories.map((category) => (
-            <CardCategory key={category.slug} category={category} tag="div" />
-          ))}
-        </div>
-      </section>
+      {/* Note: Categories are not fetched dynamically yet. You may want to implement this in the future. */}
     </>
   );
 }
+
+// Note: Metadata is handled in the layout.tsx file
