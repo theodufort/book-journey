@@ -221,3 +221,33 @@ CREATE TABLE public.book_notes (
      updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
      UNIQUE(user_id, book_id)
  );
+
+-- Blog articles table
+CREATE TABLE public.blog_articles (
+    id SERIAL PRIMARY KEY,
+    slug VARCHAR(255) UNIQUE NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    content TEXT NOT NULL,
+    author_id UUID REFERENCES auth.users(id),
+    image_url TEXT,
+    image_alt TEXT,
+    published_at TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Blog categories table
+CREATE TABLE public.blog_categories (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL,
+    slug VARCHAR(100) UNIQUE NOT NULL,
+    description TEXT
+);
+
+-- Junction table for articles and categories
+CREATE TABLE public.article_categories (
+    article_id INT REFERENCES public.blog_articles(id),
+    category_id INT REFERENCES public.blog_categories(id),
+    PRIMARY KEY (article_id, category_id)
+);
