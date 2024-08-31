@@ -114,7 +114,7 @@ export default async function Article({
             {article.categories.map((category) => (
               <BadgeCategory
                 category={category}
-                key={category.title}
+                key={category.slug}
                 extraStyle="!badge-lg"
               />
             ))}
