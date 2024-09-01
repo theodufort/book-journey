@@ -53,6 +53,12 @@ export default async function Article({
     .select("*")
     .eq("slug", params.articleId)
     .single();
-
-  return <ArticleClientContent articleId={params.articleId} initialArticle={article || null} />;
+  console.log(article);
+  if (article != null)
+    return (
+      <ArticleClientContent
+        articleId={params.articleId}
+        initialArticle={article || null}
+      />
+    );
 }

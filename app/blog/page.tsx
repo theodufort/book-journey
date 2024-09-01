@@ -8,7 +8,7 @@ import { getSEOTags } from "@/libs/seo";
 
 export default function Blog() {
   const { articles, loading } = useArticles();
-
+  console.log(articles);
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -37,6 +37,7 @@ export default function Blog() {
             article={article}
             key={article.slug}
             isImagePriority={i <= 2}
+            showCategory={false}
           />
         ))}
       </section>

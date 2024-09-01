@@ -2,6 +2,8 @@
 import Link from "next/link";
 import Header from "@/components/Header";
 import CTA from "@/components/CTA";
+import FeaturesListicle from "@/components/FeaturesListicle";
+
 import FAQ from "@/components/FAQ";
 import FeaturesAccordion from "@/components/FeaturesAccordion";
 import Footer from "@/components/Footer";
@@ -41,6 +43,7 @@ export default function Page() {
       </Suspense>
       <main>
         <Hero />
+        {/* <FeaturesListicle /> */}
         <Problem />
         <BookFinder />
         <FAQ />

@@ -222,21 +222,22 @@ CREATE TABLE public.book_notes (
      UNIQUE(user_id, book_id)
  );
 
--- Blog articles table
-CREATE TABLE public.blog_articles (
-    id SERIAL PRIMARY KEY,
-    slug VARCHAR(255) UNIQUE NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    description TEXT,
-    content TEXT NOT NULL,
-    author_id UUID REFERENCES auth.users(id),
-    image_url TEXT,
-    image_alt TEXT,
-    isbn13 VARCHAR(13),
-    published_at TIMESTAMP WITH TIME ZONE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
+create table
+  public.blog_articles (
+    id serial not null,
+    slug character varying(255) not null,
+    title character varying(255) not null,
+    description text null,
+    content text not null,
+    image_url text null,
+    image_alt text null,
+    isbn13 character varying(13) null,
+    published_at timestamp with time zone null default (now() at time zone 'utc'::text),
+    created_at timestamp with time zone null default current_timestamp,
+    updated_at timestamp with time zone null default current_timestamp,
+    constraint blog_articles_pkey primary key (id),
+    constraint blog_articles_slug_key unique (slug)
+  ) tablespace pg_default;
 
 -- Function to get basic article info
 CREATE OR REPLACE FUNCTION public.get_basic_article_info(p_slug VARCHAR(255))

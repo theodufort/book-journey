@@ -4,6 +4,7 @@ import Link from "next/link";
 import Script from "next/script";
 import BadgeCategory from "./BadgeCategory";
 import Avatar from "./Avatar";
+import image from "../images/authors/theo.png";
 import config from "@/config";
 import { BasicArticleInfo } from "../content";
 
@@ -14,13 +15,14 @@ export default function ArticleContent({
   article: BasicArticleInfo | null;
   articlesRelated: BasicArticleInfo[];
 }) {
+  console.log(article);
   if (!article) {
     return <div>Article not found</div>;
   }
 
   return (
     <>
-      {/* SCHEMA JSON-LD MARKUP FOR GOOGLE */}
+      {/* SCHEMA JSON-LD MARKUP FOR GOOGLE
       {article.slug && (
         <Script
           type="application/ld+json"
@@ -46,8 +48,7 @@ export default function ArticleContent({
             }),
           }}
         />
-      )}
-
+      )} */}
       {/* GO BACK LINK */}
       <div>
         <Link
@@ -70,7 +71,6 @@ export default function ArticleContent({
           Back to Blog
         </Link>
       </div>
-
       <article>
         {/* HEADER WITH CATEGORIES AND DATE AND TITLE */}
         <section className="my-12 md:my-20 max-w-[800px]">
@@ -108,8 +108,8 @@ export default function ArticleContent({
             <p className="text-base-content/80 text-sm mb-2 md:mb-3">
               Posted by
             </p>
-            <Avatar name="Article Author" image={theoImg} /> {/* You may want to update this if you have author information */}
-
+            <Avatar name="Theo" image={"/blog/authors/theo.png"} />
+            {/* You may want to update this if you have author information */}
             {articlesRelated.length > 0 && (
               <div className="hidden md:block mt-12">
                 <p className=" text-base-content/80 text-sm  mb-2 md:mb-3">

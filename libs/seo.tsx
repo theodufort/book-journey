@@ -20,6 +20,7 @@ export const getSEOTags = ({
   return {
     // up to 50 characters (what does your app do for the user?) > your main should be here
     title: title || config.appName,
+    manifest: "/manifest.json",
     // up to 160 characters (how does your app help the user?)
     description: description || config.appDescription,
     // some keywords separated by commas. by default it will be your app name
@@ -49,14 +50,14 @@ export const getSEOTags = ({
       type: "website",
     },
 
-    twitter: {
-      title: openGraph?.title || config.appName,
-      description: openGraph?.description || config.appDescription,
-      // If you add an twitter-image.(jpg|jpeg|png|gif) image to the /app folder, you don't need the code below
-      // images: [openGraph?.image || defaults.og.image],
-      card: "summary_large_image",
-      creator: "@marc_louvion",
-    },
+    // twitter: {
+    //   title: openGraph?.title || config.appName,
+    //   description: openGraph?.description || config.appDescription,
+    //   // If you add an twitter-image.(jpg|jpeg|png|gif) image to the /app folder, you don't need the code below
+    //   // images: [openGraph?.image || defaults.og.image],
+    //   card: "summary_large_image",
+    //   creator: "@marc_louvion",
+    // },
 
     // If a canonical URL is given, we add it. The metadataBase will turn the relative URL into a fully qualified URL
     ...(canonicalUrlRelative && {

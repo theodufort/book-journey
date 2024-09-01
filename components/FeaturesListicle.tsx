@@ -13,14 +13,14 @@ const features: {
   svg: JSX.Element;
 }[] = [
   {
-    name: "Emails",
+    name: "Recommendations",
     description: (
       <>
         <ul className="space-y-1">
           {[
-            "Send transactional emails",
-            "DNS setup to avoid spam folder (DKIM, DMARC, SPF in subdomain)",
-            "Webhook to receive & forward emails",
+            "Get tailored book recommendations",
+            "No recommendation bias",
+            "Based on ratings, comments and personal preferences",
           ].map((item) => (
             <li key={item} className="flex items-center gap-3">
               <svg
@@ -39,21 +39,6 @@ const features: {
               {item}
             </li>
           ))}
-          <li className="flex items-center gap-3 text-accent font-medium">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              className="w-[18px] h-[18px] inline shrink-0"
-            >
-              <path
-                fillRule="evenodd"
-                d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Time saved: 2 hours
-          </li>
         </ul>
       </>
     ),
@@ -74,47 +59,30 @@ const features: {
     ),
   },
   {
-    name: "Payments",
+    name: "Notes",
     description: (
       <>
         <ul className="space-y-2">
-          {[
-            "Create checkout sessions",
-            "Handle webhooks to update user's account",
-            "Tips to setup your account & reduce chargebacks",
-          ].map((item) => (
-            <li key={item} className="flex items-center gap-3">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                className="w-[18px] h-[18px] inline shrink-0 opacity-80"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                  clipRule="evenodd"
-                />
-              </svg>
+          {["Take notes on books", "Keep your knowledge organized"].map(
+            (item) => (
+              <li key={item} className="flex items-center gap-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  className="w-[18px] h-[18px] inline shrink-0 opacity-80"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                    clipRule="evenodd"
+                  />
+                </svg>
 
-              {item}
-            </li>
-          ))}
-          <li className="flex items-center gap-3 text-accent font-medium">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              className="w-[18px] h-[18px] inline shrink-0"
-            >
-              <path
-                fillRule="evenodd"
-                d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Time saved: 2 hours
-          </li>
+                {item}
+              </li>
+            )
+          )}
         </ul>
       </>
     ),
@@ -437,28 +405,9 @@ const FeaturesListicle = () => {
   }, [featureSelected, hasClicked]);
 
   return (
-    <section className="py-24" id="features">
-      <div className="max-w-3xl mx-auto">
-        <div className="bg-base-100 max-md:px-8 max-w-3xl">
-          <p className="text-accent font-medium text-sm font-mono mb-3">
-            {/* Pure decoration, you can remove it */}
-            const launch_time = &quot;Today&quot;;
-          </p>
-          <h2 className="font-extrabold text-3xl lg:text-5xl tracking-tight mb-8">
-            {/* 💡 COPY TIP: Remind visitors about the value of your product. Why do they need it? */}
-            Supercharge your app instantly, launch faster, make $
-          </h2>
-          <div className="text-base-content/80 leading-relaxed mb-8 lg:text-lg">
-            {/* 💡 COPY TIP: Explain how your product delivers what you promise in the headline. */}
-            Login users, process payments and send emails at lightspeed. Spend
-            your time building your startup, not integrating APIs. ShipFast
-            provides you with the boilerplate code you need to launch, FAST.
-          </div>
-        </div>
-      </div>
-
+    <section id="features">
       <div>
-        <div className="grid grid-cols-4 md:flex justify-start gap-4 md:gap-12 max-md:px-8 max-w-3xl mx-auto mb-8">
+        <div className="grid grid-cols-4 md:flex justify-center gap-4 md:gap-12 max-md:px-8 max-w-3xl mx-auto mb-8">
           {features.map((feature) => (
             <span
               key={feature.name}
@@ -490,7 +439,7 @@ const FeaturesListicle = () => {
           ))}
         </div>
         <div className="bg-base-200">
-          <div className="max-w-3xl mx-auto flex flex-col md:flex-row justify-center md:justify-start md:items-center gap-12">
+          <div className="max-w-3xl mx-auto flex flex-col md:flex-row justify-center md:items-center gap-12">
             <div
               className="text-base-content/80 leading-relaxed space-y-4 px-12 md:px-0 py-12 max-w-xl animate-opacity"
               key={featureSelected}

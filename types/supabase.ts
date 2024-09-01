@@ -704,6 +704,99 @@ export type Database = {
   }
   public: {
     Tables: {
+      article_categories: {
+        Row: {
+          article_id: number
+          category_id: number
+        }
+        Insert: {
+          article_id: number
+          category_id: number
+        }
+        Update: {
+          article_id?: number
+          category_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "article_categories_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "blog_articles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "article_categories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "blog_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      blog_articles: {
+        Row: {
+          content: string
+          created_at: string | null
+          description: string | null
+          id: number
+          image_alt: string | null
+          image_url: string | null
+          isbn13: string | null
+          published_at: string | null
+          slug: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          description?: string | null
+          id?: number
+          image_alt?: string | null
+          image_url?: string | null
+          isbn13?: string | null
+          published_at?: string | null
+          slug: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          description?: string | null
+          id?: number
+          image_alt?: string | null
+          image_url?: string | null
+          isbn13?: string | null
+          published_at?: string | null
+          slug?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      blog_categories: {
+        Row: {
+          description: string | null
+          id: number
+          name: string
+          slug: string
+        }
+        Insert: {
+          description?: string | null
+          id?: number
+          name: string
+          slug: string
+        }
+        Update: {
+          description?: string | null
+          id?: number
+          name?: string
+          slug?: string
+        }
+        Relationships: []
+      }
       book_notes: {
         Row: {
           book_id: string
@@ -1055,6 +1148,30 @@ export type Database = {
           p_isbn_13: string
         }
         Returns: Json
+      }
+      get_basic_article_info: {
+        Args: {
+          p_slug: string
+        }
+        Returns: {
+          id: number
+          slug: string
+          title: string
+          description: string
+          isbn13: string
+          image_url: string
+          image_alt: string
+          published_at: string
+        }[]
+      }
+      get_full_article_content: {
+        Args: {
+          p_slug: string
+        }
+        Returns: {
+          id: number
+          content: string
+        }[]
       }
       get_user_metadata: {
         Args: {
