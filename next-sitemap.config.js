@@ -1,4 +1,4 @@
-const { getBlogSlugs } = require("./libs/sitemap.ts");
+const { getBlogSlugs } = require("./libs/sitemap.js");
 module.exports = {
   outdir: "app/",
   additionalPaths: async (config) => {
