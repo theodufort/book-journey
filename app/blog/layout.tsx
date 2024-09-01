@@ -1,17 +1,14 @@
 import { Metadata } from "next";
 import HeaderBlog from "./_assets/components/HeaderBlog";
 import Footer from "@/components/Footer";
+import { ReactNode } from "react";
 
 export const metadata: Metadata = {
   title: "Blog | MyBookQuest",
   description: "Explore our latest articles and insights on reading and books.",
 };
 
-export default function BlogLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function BlogLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex flex-col min-h-screen">
       <HeaderBlog />
