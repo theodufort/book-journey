@@ -10,7 +10,7 @@ const getBlogSlugs = async () => {
   const concatSlugs = slugs.map((x) => {
     return {
       loc: "/blog/" + x.slug,
-      lastmod: Date.now().toLocaleString(),
+      lastmod: Date.now().toISOString(),
       changefreq: "daily",
     };
   });
