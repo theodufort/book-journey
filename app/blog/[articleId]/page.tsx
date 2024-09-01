@@ -1,13 +1,24 @@
 import { getSEOTags } from "@/libs/seo";
-import { BasicArticleInfo } from "../_assets/content";
-import ArticleContent from "../_assets/components/ArticleContent";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Database } from "@/types/supabase";
+import ArticleClientContent from "./ArticleClientContent";
+
+const supabase = createClientComponentClient<Database>();
 
 export async function generateMetadata({
   params,
 }: {
   params: { articleId: string };
 }) {
-  const article = await fetchArticle(params.articleId);
+  const { data: article } = await supabase
+    .from("blog_articles")
+    .select("*")
+    .eq("slug", params.articleId)
+    .single();
+
+  if (!article) {
+    return {};
+  }
 
   return getSEOTags({
     title: article.title,
@@ -32,39 +43,20 @@ export async function generateMetadata({
   });
 }
 
-async function fetchArticle(articleId: string): Promise<BasicArticleInfo> {
-  // Implement your server-side fetching logic here
-  // This is a placeholder implementation
-  return {
-    id: parseInt(articleId),
-    slug: articleId,
-    title: "Sample Article",
-    description: "This is a sample article description",
-    isbn13: "1234567890123",
-    image_url: "/sample-image.jpg",
-    image_alt: "Sample Image",
-    published_at: new Date().toISOString(),
-  };
-}
-
 export default async function Article({
   params,
 }: {
   params: { articleId: string };
 }) {
-  const article = await fetchArticle(params.articleId);
+  const { data: article } = await supabase
+    .from("blog_articles")
+    .select("*")
+    .eq("slug", params.articleId)
+    .single();
 
-  return (
-    <ArticleContent
-      image={{
-        src: article.image_url,
-        alt: article.image_alt,
-      }}
-      isbn13={article.isbn13}
-      description={article.description}
-      pageCount="Unknown" // Add this information to your BasicArticleInfo if available
-      sections={[]} // Add sections if you have them
-      styles={{}} // Add styles if needed
-    />
-  );
+  if (!article) {
+    return <div>Article not found</div>;
+  }
+
+  return <ArticleClientContent articleId={params.articleId} initialArticle={article} />;
 }
