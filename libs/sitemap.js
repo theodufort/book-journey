@@ -8,7 +8,7 @@ const getBlogSlugs = async () => {
     .from("blog_articles")
     .select("slug");
   const concatSlugs = slugs.map((x) => {
-    return { loc: "/blog/" + x.slug };
+    return { loc: "/blog/" + x.slug, lastmod: Date.now(), changefreq: "daily" };
   });
   return concatSlugs;
 };
