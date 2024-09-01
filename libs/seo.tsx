@@ -76,38 +76,38 @@ export const getSEOTags = ({
 // I recommend this one below to your /page.js for software apps: It tells Google your AppName is a Software, and it has a rating of 4.8/5 from 12 reviews.
 // Fill the fields with your own data
 // See https://shipfa.st/docs/features/seo
-export const renderSchemaTags = () => {
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{
-        __html: JSON.stringify({
-          "@context": "http://schema.org",
-          "@type": "SoftwareApplication",
-          name: config.appName,
-          description: config.appDescription,
-          image: `https://${config.domainName}/icon.png`,
-          url: `https://${config.domainName}/`,
-          author: {
-            "@type": "Person",
-            name: "Marc Lou",
-          },
-          datePublished: "2023-08-01",
-          applicationCategory: "EducationalApplication",
-          aggregateRating: {
-            "@type": "AggregateRating",
-            ratingValue: "4.8",
-            ratingCount: "12",
-          },
-          offers: [
-            {
-              "@type": "Offer",
-              price: "9.00",
-              priceCurrency: "USD",
-            },
-          ],
-        }),
-      }}
-    ></script>
-  );
-};
+// export const renderSchemaTags = () => {
+//   return (
+//     <script
+//       type="application/ld+json"
+//       dangerouslySetInnerHTML={{
+//         __html: JSON.stringify({
+//           "@context": "http://schema.org",
+//           "@type": "SoftwareApplication",
+//           name: config.appName,
+//           description: config.appDescription,
+//           image: `https://${config.domainName}/icon.png`,
+//           url: `https://${config.domainName}/`,
+//           author: {
+//             "@type": "Person",
+//             name: "Marc Lou",
+//           },
+//           datePublished: "2023-08-01",
+//           applicationCategory: "EducationalApplication",
+//           aggregateRating: {
+//             "@type": "AggregateRating",
+//             ratingValue: "4.8",
+//             ratingCount: "12",
+//           },
+//           offers: [
+//             {
+//               "@type": "Offer",
+//               price: "9.00",
+//               priceCurrency: "USD",
+//             },
+//           ],
+//         }),
+//       }}
+//     ></script>
+//   );
+// };
