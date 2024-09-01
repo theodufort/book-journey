@@ -12,7 +12,7 @@ export default function ArticleContent({
   article,
   articlesRelated,
 }: {
-  article: BasicArticleInfo | null;
+  article: any;
   articlesRelated: BasicArticleInfo[];
 }) {
   console.log(article);

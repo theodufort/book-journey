@@ -6,7 +6,7 @@ const getBlogSlugs = async () => {
   const { data: slugs, error } = await supabase
     .from("blog_articles")
     .select("slug");
-  return slugs.map((x) => {
+  return slugs.map((x: any) => {
     return { loc: "/blog/" + x };
   });
 };
