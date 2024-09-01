@@ -110,32 +110,6 @@ export default function ArticleContent({
             </p>
             <Avatar name="Theo" image={"/blog/authors/theo.png"} />
             {/* You may want to update this if you have author information */}
-            {articlesRelated.length > 0 && (
-              <div className="hidden md:block mt-12">
-                <p className=" text-base-content/80 text-sm  mb-2 md:mb-3">
-                  Related reading
-                </p>
-                <div className="space-y-2 md:space-y-5">
-                  {articlesRelated.map((article) => (
-                    <div className="" key={article.slug}>
-                      <p className="mb-0.5">
-                        <Link
-                          href={`/blog/${article.slug}`}
-                          className="link link-hover hover:link-primary font-medium"
-                          title={article.title}
-                          rel="bookmark"
-                        >
-                          {article.title}
-                        </Link>
-                      </p>
-                      <p className="text-base-content/80 max-w-full text-sm">
-                        {article.description}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </section>
 
           {/* ARTICLE CONTENT */}
