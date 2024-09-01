@@ -31,12 +31,12 @@ export default function ArticleContent({
             name: article.title,
             headline: article.title,
             description: article.description,
-            image: `https://${config.domainName}${article.image.urlRelative}`,
-            datePublished: article.publishedAt,
-            dateModified: article.publishedAt,
+            image: article.image_url,
+            datePublished: article.published_at,
+            dateModified: article.published_at,
             author: {
               "@type": "Person",
-              name: article.author.name,
+              name: "Article Author", // You may want to update this if you have author information
             },
           }),
         }}
@@ -102,7 +102,7 @@ export default function ArticleContent({
             <p className="text-base-content/80 text-sm mb-2 md:mb-3">
               Posted by
             </p>
-            <Avatar article={article} />
+            <Avatar name="Article Author" image={theoImg} /> {/* You may want to update this if you have author information */}
 
             {articlesRelated.length > 0 && (
               <div className="hidden md:block mt-12">
@@ -134,7 +134,7 @@ export default function ArticleContent({
 
           {/* ARTICLE CONTENT */}
           <section className="w-full max-md:pt-4 md:pr-20 space-y-12 md:space-y-20">
-            {article.content}
+            <div dangerouslySetInnerHTML={{ __html: article.content }} />
           </section>
         </div>
       </article>
