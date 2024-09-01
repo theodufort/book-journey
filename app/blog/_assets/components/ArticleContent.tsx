@@ -11,36 +11,42 @@ export default function ArticleContent({
   article,
   articlesRelated,
 }: {
-  article: BasicArticleInfo;
+  article: BasicArticleInfo | null;
   articlesRelated: BasicArticleInfo[];
 }) {
+  if (!article) {
+    return <div>Article not found</div>;
+  }
+
   return (
     <>
       {/* SCHEMA JSON-LD MARKUP FOR GOOGLE */}
-      <Script
-        type="application/ld+json"
-        id={`json-ld-article-${article.slug}`}
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Article",
-            mainEntityOfPage: {
-              "@type": "WebPage",
-              "@id": `https://${config.domainName}/blog/${article.slug}`,
-            },
-            name: article.title,
-            headline: article.title,
-            description: article.description,
-            image: article.image_url,
-            datePublished: article.published_at,
-            dateModified: article.published_at,
-            author: {
-              "@type": "Person",
-              name: "Article Author", // You may want to update this if you have author information
-            },
-          }),
-        }}
-      />
+      {article.slug && (
+        <Script
+          type="application/ld+json"
+          id={`json-ld-article-${article.slug}`}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Article",
+              mainEntityOfPage: {
+                "@type": "WebPage",
+                "@id": `https://${config.domainName}/blog/${article.slug}`,
+              },
+              name: article.title,
+              headline: article.title,
+              description: article.description,
+              image: article.image_url,
+              datePublished: article.published_at,
+              dateModified: article.published_at,
+              author: {
+                "@type": "Person",
+                name: "Article Author", // You may want to update this if you have author information
+              },
+            }),
+          }}
+        />
+      )}
 
       {/* GO BACK LINK */}
       <div>

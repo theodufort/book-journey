@@ -9,9 +9,9 @@ export default function ArticleClientContent({
   initialArticle,
 }: {
   articleId: string;
-  initialArticle: BasicArticleInfo;
+  initialArticle: BasicArticleInfo | null;
 }) {
-  const [article, setArticle] = useState<BasicArticleInfo>(initialArticle);
+  const [article, setArticle] = useState<BasicArticleInfo | null>(initialArticle);
   const { content, loading: contentLoading } = useArticleContent(articleId);
   const { articles, loading: articlesLoading } = useArticles();
 

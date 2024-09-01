@@ -54,9 +54,5 @@ export default async function Article({
     .eq("slug", params.articleId)
     .single();
 
-  if (!article) {
-    return <div>Article not found</div>;
-  }
-
-  return <ArticleClientContent articleId={params.articleId} initialArticle={article} />;
+  return <ArticleClientContent articleId={params.articleId} initialArticle={article || null} />;
 }
