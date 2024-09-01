@@ -1,13 +1,12 @@
 import { getSEOTags } from "@/libs/seo";
 import { BasicArticleInfo } from "../_assets/content";
-import ArticleContent from "./ArticleContent";
+import ArticleContent from "../_assets/components/ArticleContent";
 
 export async function generateMetadata({
   params,
 }: {
   params: { articleId: string };
 }) {
-  // Fetch the article data from your API or database
   const article = await fetchArticle(params.articleId);
 
   return getSEOTags({
@@ -21,7 +20,7 @@ export async function generateMetadata({
         url: `/blog/${article.slug}`,
         images: [
           {
-            url: article.image.urlRelative,
+            url: article.image_url,
             width: 1200,
             height: 660,
           },
@@ -35,8 +34,17 @@ export async function generateMetadata({
 
 async function fetchArticle(articleId: string): Promise<BasicArticleInfo> {
   // Implement your server-side fetching logic here
-  // This could be a database query or an API call
-  // Return the article data
+  // This is a placeholder implementation
+  return {
+    id: parseInt(articleId),
+    slug: articleId,
+    title: "Sample Article",
+    description: "This is a sample article description",
+    isbn13: "1234567890123",
+    image_url: "/sample-image.jpg",
+    image_alt: "Sample Image",
+    published_at: new Date().toISOString(),
+  };
 }
 
 export default async function Article({
@@ -45,13 +53,18 @@ export default async function Article({
   params: { articleId: string };
 }) {
   const article = await fetchArticle(params.articleId);
-  const articlesRelated = await fetchRelatedArticles(article);
 
-  return <ArticleContent article={article} articlesRelated={articlesRelated} />;
-}
-
-async function fetchRelatedArticles(article: BasicArticleInfo): Promise<BasicArticleInfo[]> {
-  // Implement your server-side logic to fetch related articles
-  // This could be a database query or an API call
-  // Return the related articles data
+  return (
+    <ArticleContent
+      image={{
+        src: article.image_url,
+        alt: article.image_alt,
+      }}
+      isbn13={article.isbn13}
+      description={article.description}
+      pageCount="Unknown" // Add this information to your BasicArticleInfo if available
+      sections={[]} // Add sections if you have them
+      styles={{}} // Add styles if needed
+    />
+  );
 }
