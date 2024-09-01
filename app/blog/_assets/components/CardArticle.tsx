@@ -42,7 +42,7 @@ const CardArticle = ({
         {/* CATEGORIES */}
         {showCategory && (
           <div className="flex flex-wrap gap-2">
-            {article.categories.map((category) => (
+            {article.categories.map((category: any) => (
               <BadgeCategory category={category} key={category.slug} />
             ))}
           </div>
