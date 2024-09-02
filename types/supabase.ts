@@ -742,7 +742,7 @@ export type Database = {
           id: number
           image_alt: string | null
           image_url: string | null
-          isbn13: string | null
+          isbn_13: string | null
           published_at: string | null
           slug: string
           title: string
@@ -755,7 +755,7 @@ export type Database = {
           id?: number
           image_alt?: string | null
           image_url?: string | null
-          isbn13?: string | null
+          isbn_13?: string | null
           published_at?: string | null
           slug: string
           title: string
@@ -768,13 +768,21 @@ export type Database = {
           id?: number
           image_alt?: string | null
           image_url?: string | null
-          isbn13?: string | null
+          isbn_13?: string | null
           published_at?: string | null
           slug?: string
           title?: string
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "blog_articles_isbn_13_fkey"
+            columns: ["isbn_13"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["isbn_13"]
+          },
+        ]
       }
       blog_categories: {
         Row: {
@@ -1185,6 +1193,13 @@ export type Database = {
           _points_to_add: number
         }
         Returns: undefined
+      }
+      return_books_with_no_article: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          isbn_13: string
+          data: Json
+        }[]
       }
       update_reading_stats: {
         Args: {

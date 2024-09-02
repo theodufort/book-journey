@@ -231,12 +231,13 @@ create table
     content text not null,
     image_url text null,
     image_alt text null,
-    isbn13 character varying(13) null,
-    published_at timestamp with time zone null default (now() at time zone 'utc'::text),
+    isbn_13 text null,
+    published_at timestamp with time zone null default now(),
     created_at timestamp with time zone null default current_timestamp,
     updated_at timestamp with time zone null default current_timestamp,
     constraint blog_articles_pkey primary key (id),
-    constraint blog_articles_slug_key unique (slug)
+    constraint blog_articles_slug_key unique (slug),
+    constraint blog_articles_isbn_13_fkey foreign key (isbn_13) references books (isbn_13)
   ) tablespace pg_default;
 
 -- Function to get basic article info
@@ -289,3 +290,17 @@ CREATE TABLE public.article_categories (
     category_id INT REFERENCES public.blog_categories(id),
     PRIMARY KEY (article_id, category_id)
 );
+
+select * from return_books_with_no_article()
+CREATE OR REPLACE FUNCTION return_books_with_no_article() 
+RETURNS TABLE(isbn_13 text, data jsonb) 
+AS $$
+BEGIN
+    RETURN QUERY 
+        SELECT b.isbn_13, b.data
+        FROM books b 
+        LEFT JOIN blog_articles ba 
+        ON b.isbn_13 = ba.isbn_13
+        WHERE ba.isbn_13 IS NULL;
+END;
+$$ LANGUAGE plpgsql;
