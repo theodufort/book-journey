@@ -14,7 +14,7 @@ export type BasicArticleInfo = {
   slug: string;
   title: string;
   description: string;
-  isbn13: string;
+  isbn_13: string;
   image_url: string;
   image_alt: string;
   published_at: string;
@@ -39,7 +39,7 @@ export const useArticles = () => {
       const { data, error } = await supabase
         .from("blog_articles")
         .select(
-          "id, slug, title, description, isbn13, image_url, image_alt, published_at"
+          "id, slug, title, description, isbn_13, image_url, image_alt, published_at"
         );
 
       if (error) throw error;

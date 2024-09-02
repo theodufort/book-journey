@@ -247,7 +247,7 @@ RETURNS TABLE (
     slug VARCHAR(255),
     title VARCHAR(255),
     description TEXT,
-    isbn13 VARCHAR(13),
+    isbn_13 VARCHAR(13),
     image_url TEXT,
     image_alt TEXT,
     published_at TIMESTAMP WITH TIME ZONE
@@ -255,7 +255,7 @@ RETURNS TABLE (
 BEGIN
     RETURN QUERY
     SELECT 
-        a.id, a.slug, a.title, a.description, a.isbn13, 
+        a.id, a.slug, a.title, a.description, a.isbn_13, 
         a.image_url, a.image_alt, a.published_at
     FROM public.blog_articles a
     WHERE a.slug = p_slug;
