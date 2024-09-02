@@ -43,7 +43,7 @@ export default function Page() {
       </Suspense>
       <main>
         <Hero />
-        {/* <FeaturesListicle /> */}
+        <FeaturesListicle />
         <Problem />
         <BookFinder />
         <FAQ />
