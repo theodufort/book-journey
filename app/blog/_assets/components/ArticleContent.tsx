@@ -7,7 +7,20 @@ import Avatar from "./Avatar";
 import image from "../images/authors/theo.png";
 import config from "@/config";
 import { BasicArticleInfo } from "../content";
-
+// These styles are used in the content of the articles. When you update them, all articles will be updated.
+const styles: {
+  [key: string]: string;
+} = {
+  h2: "text-2xl lg:text-4xl font-bold tracking-tight mb-4 text-base-content",
+  h3: "text-xl lg:text-2xl font-bold tracking-tight mb-2 text-base-content",
+  p: "text-base-content/90 leading-relaxed text-justify py-5",
+  ul: "list-inside list-disc text-base-content/90 leading-relaxed",
+  li: "list-item",
+  // Altnernatively, you can use the library react-syntax-highlighter to display code snippets.
+  code: "text-sm font-mono bg-neutral text-neutral-content p-6 rounded-box my-4 overflow-x-scroll select-all",
+  codeInline:
+    "text-sm font-mono bg-base-300 px-1 py-0.5 rounded-box select-all",
+};
 export default function ArticleContent({
   article,
   articlesRelated,
@@ -19,10 +32,50 @@ export default function ArticleContent({
   if (!article) {
     return <div>Article not found</div>;
   }
+  const parseArticleContent = () => {
+    // Update regex to use lazy quantifier and ensure multi-line support
+    const introMatch = article.content.match(
+      /Introduction:\s*([\s\S]*?)(?=\n\n|\nDevelopment:|Conclusion:|$)/i
+    );
+    const developmentMatch = article.content.match(
+      /Development:\s*([\s\S]*?)(?=\n\n|\nConclusion:|$)/i
+    );
+    const conclusionMatch = article.content.match(
+      /Conclusion:\s*([\s\S]*?)(?=$)/i
+    );
 
+    const introduction = introMatch
+      ? `<h2 class='${styles.h2}'>Introduction</h2><p class='${
+          styles.p
+        }'>${introMatch[1]
+          .trim()
+          .replace(/\n\n/g, "</p><p>")
+          .replace(/\n/g, " ")}</p>`
+      : "";
+    const development = developmentMatch
+      ? `<h2 class='${styles.h2}'>Development</h2><p class='${
+          styles.p
+        }'>${developmentMatch[1]
+          .trim()
+          .replace(/\n\n/g, "</p><p>")
+          .replace(/\n/g, " ")}</p>`
+      : "";
+    const conclusion = conclusionMatch
+      ? `<h2 class='${styles.h2}'>Conclusion</h2><p class='${
+          styles.p
+        }'>${conclusionMatch[1]
+          .trim()
+          .replace(/\n\n/g, "</p><p>")
+          .replace(/\n/g, " ")}</p>`
+      : "";
+
+    // Combine all formatted content
+    const formattedContent = `${introduction}${development}${conclusion}`;
+    return formattedContent;
+  };
+  const articleHTML = { __html: parseArticleContent() };
   return (
     <>
-      {/* SCHEMA JSON-LD MARKUP FOR GOOGLE
       {article.slug && (
         <Script
           type="application/ld+json"
@@ -48,7 +101,7 @@ export default function ArticleContent({
             }),
           }}
         />
-      )} */}
+      )}
       {/* GO BACK LINK */}
       <div>
         <Link
@@ -114,7 +167,7 @@ export default function ArticleContent({
 
           {/* ARTICLE CONTENT */}
           <section className="w-full max-md:pt-4 md:pr-20 space-y-12 md:space-y-20">
-            <div dangerouslySetInnerHTML={{ __html: article.content }} />
+            <div dangerouslySetInnerHTML={articleHTML} />
           </section>
         </div>
       </article>
