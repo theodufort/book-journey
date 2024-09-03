@@ -62,18 +62,18 @@ const CardArticle = ({
 
         <div className=" text-base-content/80 space-y-4">
           {/* DESCRIPTION */}
-          <p className="">{article.description}</p>
+          {/* <p className="">{article.description}</p> */}
 
           {/* AUTHOR & DATE */}
           <div className="flex items-center gap-4 text-sm">
             <Avatar name={"Theo"} image={"/blog/authors/theo.png"} />
 
-            <span itemProp="datePublished">
+            {/* <span itemProp="datePublished">
               {new Date(article.publishedAt).toLocaleDateString("en-US", {
                 month: "long",
                 day: "numeric",
               })}
-            </span>
+            </span> */}
           </div>
         </div>
       </div>
