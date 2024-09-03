@@ -23,12 +23,10 @@ const links: {
 ];
 
 const cta: JSX.Element = (
-  <ButtonSignin text="Prevent disputes" extraStyle="btn-primary md:btn-sm" />
+  <ButtonSignin text="Signin" extraStyle="btn-primary md:btn-sm" />
 );
 const fetchCategories = async () => {
-  const { data, error } = await supabase
-    .from("blog_categories")
-    .select("*");
+  const { data, error } = await supabase.from("blog_categories").select("*");
   if (error) {
     console.error("Error fetching categories:", error);
     return [];
