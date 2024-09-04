@@ -1,5 +1,5 @@
 import { BookVolumes, Volume } from "@/interfaces/GoogleAPI";
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
@@ -10,6 +10,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   const id = params.id;
+  const useProxy = request.nextUrl.searchParams.get("useProxy") === "true";
 
   if (!id) {
     return NextResponse.json({ error: "Invalid book ID" }, { status: 400 });
@@ -34,11 +35,18 @@ export async function GET(
 
   // If not in cache, fetch from Google Books API
   const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
+  const apiUrl = `https://www.googleapis.com/books/v1/volumes?q=isbn:${id}&langRestrict=en&key=${process.env.GOOGLE_API_KEY}`;
 
   try {
-    const response = await axios.get<BookVolumes>(
-      `https://www.googleapis.com/books/v1/volumes?q=isbn:${id}&langRestrict=en&key=${process.env.GOOGLE_API_KEY}`
-    );
+    const axiosConfig: AxiosRequestConfig = {};
+    if (useProxy) {
+      axiosConfig.proxy = {
+        host: process.env.PROXY_HOST || "",
+        port: parseInt(process.env.PROXY_PORT || "0"),
+      };
+    }
+
+    const response = await axios.get<BookVolumes>(apiUrl, axiosConfig);
 
     if (
       response.status !== 200 ||
