@@ -58,7 +58,7 @@ export default function Login() {
   };
 
   return (
-    <main className="p-8 md:p-24 h-full" data-theme={config.colors.theme}>
+    <main className="p-8 md:p-24 min-h-screen flex flex-col justify-center bg-base-200" data-theme={config.colors.theme}>
       <div className="text-center mb-4">
         <Link href="/" className="btn btn-ghost btn-sm">
           <svg
@@ -80,7 +80,7 @@ export default function Login() {
         Sign-in to {config.appName}{" "}
       </h1>
 
-      <div className="space-y-8 max-w-xl mx-auto">
+      <div className="space-y-8 max-w-xl mx-auto bg-base-100 p-8 rounded-box shadow-lg">
         <button
           className="btn btn-block"
           onClick={(e) =>
