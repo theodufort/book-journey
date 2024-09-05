@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { Database } from "@/types/supabase";
+import { HttpsProxyAgent } from "https-proxy-agent";
 
 export async function GET(
   request: NextRequest,
@@ -35,14 +36,21 @@ export async function GET(
 
   // If not in cache, fetch from Google Books API
   const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
-  const apiUrl = `https://www.googleapis.com/books/v1/volumes?q=isbn:${id}&langRestrict=en&key=${process.env.GOOGLE_API_KEY}`;
+  const apiUrl = useProxy
+    ? `https://www.googleapis.com/books/v1/volumes?q=isbn:${id}&langRestrict=en`
+    : `https://www.googleapis.com/books/v1/volumes?q=isbn:${id}&langRestrict=en&key=${process.env.GOOGLE_API_KEY}`;
 
   try {
     const axiosConfig: AxiosRequestConfig = {};
     if (useProxy) {
       axiosConfig.proxy = {
-        host: process.env.PROXY_HOST || "",
-        port: parseInt(process.env.PROXY_PORT || "0"),
+        protocol: "https",
+        host: "brd.superproxy.io",
+        port: 22225,
+        auth: {
+          username: "brd-customer-hl_20908051-zone-data_center",
+          password: "l9e3hvk0822v",
+        },
       };
     }
 
