@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { Database } from "@/types/supabase";
-import { HttpsProxyAgent } from "https-proxy-agent";
+import https from 'https';
 
 export async function GET(
   request: NextRequest,
@@ -52,6 +52,8 @@ export async function GET(
           password: "l9e3hvk0822v",
         },
       };
+      // Disable SSL certificate verification when using proxy
+      axiosConfig.httpsAgent = new https.Agent({ rejectUnauthorized: false });
     }
 
     const response = await axios.get<BookVolumes>(apiUrl, axiosConfig);
