@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
     const resend = new Resend(process.env.RESEND_API_KEY);
     const { data, error } = await resend.emails.send({
       from: "welcome@mybookquest.com",
-      to: "theodufort05@gmail.com",
+      to: userLoggedIn == null ? "theodufort05@gmail.com" : userLoggedIn.email,
       subject: "Welcome to MyBookQuest!",
       react: EmailTemplate(),
     });
