@@ -58,7 +58,10 @@ export default function Login() {
   };
 
   return (
-    <main className="p-8 md:p-24 min-h-screen flex flex-col justify-center bg-base-200" data-theme={config.colors.theme}>
+    <main
+      className="p-8 md:p-24 min-h-screen flex flex-col justify-center bg-base-200"
+      data-theme={config.colors.theme}
+    >
       <div className="text-center mb-4">
         <Link href="/" className="btn btn-ghost btn-sm">
           <svg

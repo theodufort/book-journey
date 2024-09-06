@@ -2,6 +2,8 @@ import { NextResponse, NextRequest } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import config from "@/config";
+import { Resend } from "resend";
+import { EmailTemplate } from "@/components/EmailTemplate";
 
 export const dynamic = "force-dynamic";
 
@@ -9,10 +11,25 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   const requestUrl = new URL(req.url);
   const code = requestUrl.searchParams.get("code");
-
+  var userLoggedIn;
   if (code) {
     const supabase = createRouteHandlerClient({ cookies });
     await supabase.auth.exchangeCodeForSession(code);
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    userLoggedIn = user;
+  } else {
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const { data, error } = await resend.emails.send({
+      from: "welcome@mybookquest.com",
+      to: "theodufort05@gmail.com",
+      subject: "Welcome to MyBookQuest!",
+      react: EmailTemplate(),
+    });
+    if (error) {
+      return Response.json({ error });
+    }
   }
 
   // URL to redirect to after sign in process completes
