@@ -16,7 +16,9 @@ export const EmailTemplate = () => (
       MyBookQuest can help you on your book discovery journey.
     </p>
     <p>Click the link below to schedule a time that works best for you:</p>
-    <a href="https://calendly.com/expoweb">Schedule a 15-Minute Call</a>
+    <a href="https://calendly.com/expoweb/15-minutes-onboarding">
+      Schedule a 15-Minute Call
+    </a>
     <p>
       If you have any immediate questions, feel free to reply to this email or
       reach out to me directly at{" "}
