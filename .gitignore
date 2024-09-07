@@ -52,3 +52,4 @@ debug.log
 **/public/worker-*.js
 **/public/worker-*.js.map
 bun.lockb
+tools/isbn_list.txt

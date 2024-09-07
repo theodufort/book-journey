@@ -24,6 +24,7 @@ export const metadata = getSEOTags();
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <meta name="impact-site-verification" value="369738092" />
       {config.domainName && (
         <head>
           <PlausibleProvider domain={config.domainName} />
