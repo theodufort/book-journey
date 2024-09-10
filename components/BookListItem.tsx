@@ -15,7 +15,8 @@ export default function BookListItem({
   onUpdate: () => void;
 }) {
   const [review, setReview] = useState("");
-  const [tags, setTags] = useState([]);
+  const [tags, setTags] = useState<string[]>([]);
+  const [newTag, setNewTag] = useState("");
   // Truncate the description if it's too long and not expanded
   const MAX_LENGTH = 100;
   const [isExpanded, setIsExpanded] = useState(false);
@@ -203,15 +204,45 @@ export default function BookListItem({
       .maybeSingle();
 
     if (error) {
-      if (error.code === "PGRST116") {
-        // No rating found for this book, set rating to 0
-        setRating(0);
-      } else {
-        console.error("Error fetching rating:", error);
-      }
+      console.error("Error fetching tags:", error);
     } else {
-      setTags(data.tags);
+      setTags(data?.tags || []);
     }
+  }
+
+  async function updateTags(newTags: string[]) {
+    if (!user) {
+      console.error("User not authenticated");
+      return;
+    }
+    const { error } = await supabase
+      .from("reading_list")
+      .update({ tags: newTags })
+      .eq("user_id", user.id)
+      .eq(
+        "book_id",
+        item.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
+          ?.identifier
+      );
+
+    if (error) {
+      console.error("Error updating tags:", error);
+    } else {
+      setTags(newTags);
+    }
+  }
+
+  function handleAddTag() {
+    if (newTag.trim() && !tags.includes(newTag.trim())) {
+      const updatedTags = [...tags, newTag.trim()];
+      updateTags(updatedTags);
+      setNewTag("");
+    }
+  }
+
+  function handleRemoveTag(tagToRemove: string) {
+    const updatedTags = tags.filter((tag) => tag !== tagToRemove);
+    updateTags(updatedTags);
   }
   async function fetchRating() {
     if (!user) {
@@ -521,10 +552,31 @@ export default function BookListItem({
             <p className="mb-2">
               <b>Tags:</b>{" "}
             </p>
-            <div className="flex space-x-2  ">
-              {tags.map((x) => (
-                <div className="badge badge-primary block">{x}</div>
+            <div className="flex flex-wrap gap-2">
+              {tags.map((tag) => (
+                <div key={tag} className="badge badge-primary gap-2">
+                  {tag}
+                  <button
+                    onClick={() => handleRemoveTag(tag)}
+                    className="btn btn-xs btn-circle btn-ghost"
+                  >
+                    ✕
+                  </button>
+                </div>
               ))}
+              <div className="badge badge-outline gap-2">
+                <input
+                  type="text"
+                  value={newTag}
+                  onChange={(e) => setNewTag(e.target.value)}
+                  onKeyPress={(e) => e.key === "Enter" && handleAddTag()}
+                  placeholder="Add tag..."
+                  className="bg-transparent border-none outline-none w-20"
+                />
+                <button onClick={handleAddTag} className="btn btn-xs btn-circle btn-ghost">
+                  +
+                </button>
+              </div>
             </div>
           </div>
           <div className="grid grid-cols-1 card-actions justify-start mt-4">
