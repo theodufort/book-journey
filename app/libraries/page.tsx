@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect } from "react";
 import { getSEOTags } from "@/libs/seo";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -5,14 +6,6 @@ import { Database } from "@/types/supabase";
 import Link from "next/link";
 
 const supabase = createClientComponentClient<Database>();
-
-export async function generateMetadata() {
-  return getSEOTags({
-    title: "Libraries Directory",
-    description: "Find libraries near you.",
-    canonicalUrlRelative: "/libraries",
-  });
-}
 
 export default function LibrariesDirectory() {
   const [libraries, setLibraries] = useState<any[]>([]);
@@ -33,7 +26,9 @@ export default function LibrariesDirectory() {
         setError("Error loading libraries. Please try again later.");
       } else {
         setLibraries(data || []);
-        const uniqueCounties = Array.from(new Set(data?.map(lib => lib.county_name) || []));
+        const uniqueCounties = Array.from(
+          new Set(data?.map((lib) => lib.county_name) || [])
+        );
         setCounties(uniqueCounties.sort());
       }
     }
@@ -42,14 +37,19 @@ export default function LibrariesDirectory() {
   }, []);
 
   const filteredLibraries = selectedCounty
-    ? libraries.filter(lib => lib.county_name === selectedCounty)
+    ? libraries.filter((lib) => lib.county_name === selectedCounty)
     : libraries;
 
-  const uniqueLocations = Array.from(new Set(filteredLibraries.map(lib => `${lib.state_name}-${lib.state_id}-${lib.city_ascii}`)))
-    .map(location => {
-      const [state, stateId, city] = location.split('-');
-      return { state, stateId, city };
-    });
+  const uniqueLocations = Array.from(
+    new Set(
+      filteredLibraries.map(
+        (lib) => `${lib.state_name}-${lib.state_id}-${lib.city_ascii}`
+      )
+    )
+  ).map((location) => {
+    const [state, stateId, city] = location.split("-");
+    return { state, stateId, city };
+  });
 
   const locationsByState = uniqueLocations.reduce((acc, location) => {
     if (!acc[location.state]) {
@@ -67,7 +67,9 @@ export default function LibrariesDirectory() {
     <div className="space-y-8">
       <h1 className="text-3xl font-bold">Libraries Directory</h1>
       <div className="mb-4">
-        <label htmlFor="county-filter" className="mr-2">Filter by county:</label>
+        <label htmlFor="county-filter" className="mr-2">
+          Filter by county:
+        </label>
         <select
           id="county-filter"
           value={selectedCounty}
@@ -89,7 +91,9 @@ export default function LibrariesDirectory() {
             {cities.map((city) => (
               <li key={`${state}-${city}`}>
                 <Link
-                  href={`/libraries/libraries-in-${encodeURIComponent(city.toLowerCase().replace(/\s+/g, '-'))}-${stateId.toLowerCase()}`}
+                  href={`/libraries/libraries-in-${encodeURIComponent(
+                    city.toLowerCase().replace(/\s+/g, "-")
+                  )}-${stateId.toLowerCase()}`}
                   className="text-blue-600 hover:underline"
                 >
                   {city}

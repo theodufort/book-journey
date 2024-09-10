@@ -304,3 +304,20 @@ BEGIN
         WHERE ba.isbn_13 IS NULL;
 END;
 $$ LANGUAGE plpgsql;
+
+create table
+  public.libraries (
+    id uuid not null default gen_random_uuid (),
+    display_name text not null,
+    city_ascii text not null,
+    state_id text not null,
+    state_name text not null,
+    county_name text not null,
+    lat text null,
+    lon text null,
+    created_at timestamp with time zone not null default now(),
+    slug text not null,
+    constraint libraries_pkey primary key (id),
+    constraint libraries_display_name_key unique (display_name),
+    constraint libraries_slug_key unique (slug)
+  ) tablespace pg_default;

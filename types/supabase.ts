@@ -897,6 +897,42 @@ export type Database = {
           },
         ]
       }
+      libraries: {
+        Row: {
+          city_ascii: string
+          county_name: string
+          created_at: string
+          display_name: string
+          id: string
+          lat: string | null
+          lon: string | null
+          state_id: string
+          state_name: string
+        }
+        Insert: {
+          city_ascii: string
+          county_name: string
+          created_at?: string
+          display_name: string
+          id?: string
+          lat?: string | null
+          lon?: string | null
+          state_id: string
+          state_name: string
+        }
+        Update: {
+          city_ascii?: string
+          county_name?: string
+          created_at?: string
+          display_name?: string
+          id?: string
+          lat?: string | null
+          lon?: string | null
+          state_id?: string
+          state_name?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
