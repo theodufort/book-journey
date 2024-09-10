@@ -1,17 +1,17 @@
-const { getBlogSlugs } = require("./libs/sitemap.js");
+const { getBlogSlugs, getLibrarySlugs } = require("./libs/sitemap.js");
 module.exports = {
   outdir: "app/",
   additionalPaths: async (config) => {
-    const result = await getBlogSlugs();
-    result.push({
-      loc: "/",
-    });
-    result.push({
-      loc: "/blog",
-    });
-    result.push({
-      loc: "/signin",
-    });
+    const blogSlugs = await getBlogSlugs();
+    const librarySlugs = await getLibrarySlugs();
+    const result = [
+      ...blogSlugs,
+      ...librarySlugs,
+      { loc: "/" },
+      { loc: "/blog" },
+      { loc: "/signin" },
+      { loc: "/libraries" },
+    ];
     return result;
   },
   // REQUIRED: add your own domain name here (e.g. https://shipfa.st),
