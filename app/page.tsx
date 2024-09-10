@@ -18,6 +18,7 @@ import {
   User,
 } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
+import { CalendlyFooter } from "@/components/CalendlyFooter";
 
 export default function Page() {
   const router = useRouter();
@@ -48,6 +49,7 @@ export default function Page() {
         <BookFinder />
         <FAQ />
       </main>
+      <CalendlyFooter />
       <Footer />
     </>
   );

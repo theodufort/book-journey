@@ -105,7 +105,7 @@ const features: {
     ),
   },
   {
-    name: "Rewards (Coming Soon)",
+    name: "Rewards",
     description: (
       <>
         <ul className="space-y-2">
