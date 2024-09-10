@@ -49,7 +49,7 @@ export default async function LibrariesDirectory() {
             {cities.map((city) => (
               <li key={`${state}-${city}`}>
                 <Link
-                  href={`/libraries/${encodeURIComponent(state.toLowerCase().replace(/\s+/g, '-'))}-${encodeURIComponent(city.toLowerCase().replace(/\s+/g, '-'))}`}
+                  href={`/libraries/libraries-in-${encodeURIComponent(city.toLowerCase().replace(/\s+/g, '-'))}-${state.toLowerCase().substring(0, 2)}`}
                   className="text-blue-600 hover:underline"
                 >
                   {city}
