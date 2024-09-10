@@ -15,6 +15,7 @@ export default function BookListItem({
   onUpdate: () => void;
 }) {
   const [review, setReview] = useState("");
+  const [tags, setTags] = useState([]);
   // Truncate the description if it's too long and not expanded
   const MAX_LENGTH = 100;
   const [isExpanded, setIsExpanded] = useState(false);
@@ -177,6 +178,7 @@ export default function BookListItem({
     // Fetch the current rating when the component mounts and user is available
     if (user) {
       fetchRating();
+      fetchTags();
     }
   }, [item.id, user]);
   useEffect(() => {
@@ -184,7 +186,33 @@ export default function BookListItem({
       fetchReview();
     }
   }, [user, status]);
+  async function fetchTags() {
+    if (!user) {
+      console.error("User not authenticated");
+      return;
+    }
+    const { data, error } = await supabase
+      .from("reading_list")
+      .select("tags")
+      .eq("user_id", user.id)
+      .eq(
+        "book_id",
+        item.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
+          ?.identifier
+      )
+      .maybeSingle();
 
+    if (error) {
+      if (error.code === "PGRST116") {
+        // No rating found for this book, set rating to 0
+        setRating(0);
+      } else {
+        console.error("Error fetching rating:", error);
+      }
+    } else {
+      setTags(data.tags);
+    }
+  }
   async function fetchRating() {
     if (!user) {
       console.error("User not authenticated");
@@ -487,6 +515,16 @@ export default function BookListItem({
                 </button>
               )}
               {!description && "No description available"}
+            </div>
+          </div>
+          <div>
+            <p className="mb-2">
+              <b>Tags:</b>{" "}
+            </p>
+            <div className="flex space-x-2  ">
+              {tags.map((x) => (
+                <div className="badge badge-primary block">{x}</div>
+              ))}
             </div>
           </div>
           <div className="grid grid-cols-1 card-actions justify-start mt-4">
