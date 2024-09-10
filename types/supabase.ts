@@ -1018,6 +1018,7 @@ export type Database = {
           rating: number | null
           review: string | null
           status: string | null
+          tags: string[] | null
           updated_at: string | null
           user_id: string | null
         }
@@ -1031,6 +1032,7 @@ export type Database = {
           rating?: number | null
           review?: string | null
           status?: string | null
+          tags?: string[] | null
           updated_at?: string | null
           user_id?: string | null
         }
@@ -1044,6 +1046,7 @@ export type Database = {
           rating?: number | null
           review?: string | null
           status?: string | null
+          tags?: string[] | null
           updated_at?: string | null
           user_id?: string | null
         }

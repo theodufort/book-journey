@@ -10,20 +10,36 @@ CREATE TABLE IF NOT EXISTS auth.users (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Reading list table in the 'public' schema
-CREATE TABLE public.reading_list (
-    id SERIAL PRIMARY KEY,
-    user_id UUID REFERENCES auth.users(id),
-    book_id VARCHAR(20) NOT NULL, -- ISBN or other identifier for books
-    status VARCHAR(50) CHECK (status IN ('To Read', 'Reading', 'Finished')),
-    rating NUMERIC(3, 1),
-    review TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+create table
+  public.reading_list (
+    id serial not null,
+    user_id uuid null,
+    book_id character varying(20) not null,
+    status character varying(50) null,
+    rating numeric(3, 1) null,
+    review text null,
+    created_at timestamp with time zone null default current_timestamp,
+    updated_at timestamp with time zone null default current_timestamp,
     "pointsAwardedFinished" boolean not null default false,
     "pointsAwardedRating" boolean not null default false,
     "pointsAwardedTextReview" boolean not null default false,
-);
+    tags text[] null default '{}'::text[],
+    constraint reading_list_pkey primary key (id),
+    constraint reading_list_user_id_fkey foreign key (user_id) references auth.users (id),
+    constraint reading_list_status_check check (
+      (
+        (status)::text = any (
+          (
+            array[
+              'To Read'::character varying,
+              'Reading'::character varying,
+              'Finished'::character varying
+            ]
+          )::text[]
+        )
+      )
+    )
+  ) tablespace pg_default;
 
 -- User preferences table in the 'public' schema
 CREATE TABLE public.user_preferences (
