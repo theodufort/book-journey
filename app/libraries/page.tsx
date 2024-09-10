@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { getSEOTags } from "@/libs/seo";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
@@ -13,19 +14,38 @@ export async function generateMetadata() {
   });
 }
 
-export default async function LibrariesDirectory() {
-  const { data: libraries, error } = await supabase
-    .from("libraries")
-    .select("state_name, state_id, city_ascii")
-    .order("state_name", { ascending: true })
-    .order("city_ascii", { ascending: true });
+export default function LibrariesDirectory() {
+  const [libraries, setLibraries] = useState<any[]>([]);
+  const [counties, setCounties] = useState<string[]>([]);
+  const [selectedCounty, setSelectedCounty] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
 
-  if (error) {
-    console.error(error);
-    return <div>Error loading libraries. Please try again later.</div>;
-  }
+  useEffect(() => {
+    async function fetchLibraries() {
+      const { data, error } = await supabase
+        .from("libraries")
+        .select("state_name, state_id, city_ascii, county_name")
+        .order("state_name", { ascending: true })
+        .order("city_ascii", { ascending: true });
 
-  const uniqueLocations = Array.from(new Set(libraries.map(lib => `${lib.state_name}-${lib.state_id}-${lib.city_ascii}`)))
+      if (error) {
+        console.error(error);
+        setError("Error loading libraries. Please try again later.");
+      } else {
+        setLibraries(data || []);
+        const uniqueCounties = Array.from(new Set(data?.map(lib => lib.county_name) || []));
+        setCounties(uniqueCounties.sort());
+      }
+    }
+
+    fetchLibraries();
+  }, []);
+
+  const filteredLibraries = selectedCounty
+    ? libraries.filter(lib => lib.county_name === selectedCounty)
+    : libraries;
+
+  const uniqueLocations = Array.from(new Set(filteredLibraries.map(lib => `${lib.state_name}-${lib.state_id}-${lib.city_ascii}`)))
     .map(location => {
       const [state, stateId, city] = location.split('-');
       return { state, stateId, city };
@@ -37,11 +57,31 @@ export default async function LibrariesDirectory() {
     }
     acc[location.state].cities.push(location.city);
     return acc;
-  }, {});
+  }, {} as Record<string, { stateId: string; cities: string[] }>);
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div className="space-y-8">
       <h1 className="text-3xl font-bold">Libraries Directory</h1>
+      <div className="mb-4">
+        <label htmlFor="county-filter" className="mr-2">Filter by county:</label>
+        <select
+          id="county-filter"
+          value={selectedCounty}
+          onChange={(e) => setSelectedCounty(e.target.value)}
+          className="px-4 py-2 border border-gray-300 rounded-md"
+        >
+          <option value="">All Counties</option>
+          {counties.map((county) => (
+            <option key={county} value={county}>
+              {county}
+            </option>
+          ))}
+        </select>
+      </div>
       {Object.entries(locationsByState).map(([state, { stateId, cities }]) => (
         <div key={state} className="space-y-4">
           <h2 className="text-2xl font-semibold">{state}</h2>
