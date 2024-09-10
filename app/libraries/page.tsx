@@ -21,7 +21,7 @@ export default async function LibrariesDirectory() {
     .order("city_ascii", { ascending: true });
 
   if (error) {
-    console.error("Error fetching libraries:", error);
+    console.error(error);
     return <div>Error loading libraries. Please try again later.</div>;
   }
 
@@ -48,7 +48,10 @@ export default async function LibrariesDirectory() {
               <ul className="list-disc list-inside">
                 {cityLibraries.map((library) => (
                   <li key={library.id}>
-                    <Link href={`/libraries/${library.slug}`} className="text-blue-600 hover:underline">
+                    <Link
+                      href={`/libraries/${library.slug}`}
+                      className="text-blue-600 hover:underline"
+                    >
                       {library.display_name}
                     </Link>
                   </li>
