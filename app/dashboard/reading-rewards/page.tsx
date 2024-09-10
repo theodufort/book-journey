@@ -7,6 +7,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { UserPoints, Reward } from "@/interfaces/Dashboard";
 import { Database } from "@/types/supabase";
 import { DashboardFooter } from "@/components/DashboardFooter";
+import { useRouter } from "next/navigation";
 
 export default function ReadingRewards() {
   const supabase = createClientComponentClient<Database>();
@@ -14,7 +15,7 @@ export default function ReadingRewards() {
   const [userPoints, setUserPoints] = useState<UserPoints | null>(null);
   const [loading, setLoading] = useState(true);
   const [rewards, setRewards] = useState<Reward[]>([]);
-
+  const router = useRouter();
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
@@ -55,15 +56,24 @@ export default function ReadingRewards() {
     setRewards([
       {
         id: 1,
-        name: "Free eBook",
-        description: "Get a free eBook of your choice",
-        cost: 500,
+        name: "BOOKSAMILLION: Coupon: 10% off $25",
+        description: "Coupon: 10% off $25",
+        cost: 100,
+        link: "https://www.kqzyfj.com/click-101259626-13986197",
       },
       {
         id: 2,
-        name: "Audiobook Credit",
-        description: "Get one free audiobook credit",
-        cost: 1000,
+        name: "BOOKSAMILLION: Coupon: 15% off $35",
+        description: "Coupon: 15% off $35",
+        cost: 200,
+        link: "https://www.jdoqocy.com/click-101259626-13986208",
+      },
+      {
+        id: 3,
+        name: "BOOKSAMILLION: Coupon: 20% off $100",
+        description: "Coupon: 20% off $100",
+        cost: 300,
+        link: "https://www.jdoqocy.com/click-101259626-13986212",
       },
     ]);
   }
@@ -95,6 +105,7 @@ export default function ReadingRewards() {
       });
 
       alert(`Successfully redeemed ${reward.name}!`);
+      router.push(reward.link);
       fetchUserPoints();
     } catch (error) {
       console.error("Error redeeming reward:", error);
@@ -137,7 +148,7 @@ export default function ReadingRewards() {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* {rewards.map((reward) => (
+          {rewards.map((reward) => (
             <div key={reward.id} className="card bg-base-100 shadow-xl">
               <div className="card-body">
                 <h2 className="card-title">{reward.name}</h2>
@@ -157,8 +168,8 @@ export default function ReadingRewards() {
                 </div>
               </div>
             </div>
-          ))} */}
-          <div>Rewards coming soon! Stay tuned!</div>
+          ))}
+          {/* <div>Rewards coming soon! Stay tuned!</div> */}
         </div>
       </section>
       <DashboardFooter />

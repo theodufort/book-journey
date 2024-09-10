@@ -25,4 +25,5 @@ export interface Reward {
   name: string;
   description: string;
   cost: number;
+  link: string;
 }
