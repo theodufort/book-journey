@@ -7,57 +7,48 @@ const supabase = createClientComponentClient<Database>();
 export async function generateMetadata({
   params,
 }: {
-  params: { articleId: string };
+  params: { libraryLocationId: string };
 }) {
-  const { data: article } = await supabase
+  const { data: library } = await supabase
     .from("libraries")
     .select("*")
-    .eq("slug", params.articleId)
+    .eq("slug", params.libraryLocationId)
     .single();
 
-  if (!article) {
+  if (!library) {
     return {};
   }
 
   return getSEOTags({
-    title: null,
-    description: null,
-    canonicalUrlRelative: `/libraries/${article.slug}`,
-    extraTags: {
-      openGraph: {
-        title: article.title,
-        description: article.description,
-        url: `/libraries/${article.slug}`,
-        images: [
-          {
-            url: null,
-            width: 1200,
-            height: 660,
-          },
-        ],
-        locale: "en_US",
-        type: "website",
-      },
-    },
+    title: `${library.display_name} | Library in ${library.city_ascii}, ${library.state_id}`,
+    description: `Information about ${library.display_name} located in ${library.city_ascii}, ${library.state_name}.`,
+    canonicalUrlRelative: `/libraries/${library.slug}`,
   });
 }
 
-export default async function Article({
+export default async function LibraryPage({
   params,
 }: {
-  params: { articleId: string };
+  params: { libraryLocationId: string };
 }) {
-  const { data: article } = await supabase
-    .from("blog_articles")
+  const { data: library } = await supabase
+    .from("libraries")
     .select("*")
-    .eq("slug", params.articleId)
+    .eq("slug", params.libraryLocationId)
     .single();
-  console.log(article);
-  if (article != null)
-    return (
-      <ArticleClientContent
-        articleId={params.articleId}
-        initialArticle={article || null}
-      />
-    );
+
+  if (!library) {
+    return <div>Library not found</div>;
+  }
+
+  return (
+    <div className="space-y-4">
+      <h1 className="text-3xl font-bold">{library.display_name}</h1>
+      <p>Location: {library.city_ascii}, {library.state_name}</p>
+      <p>County: {library.county_name}</p>
+      {library.lat && library.lon && (
+        <p>Coordinates: {library.lat}, {library.lon}</p>
+      )}
+    </div>
+  );
 }
