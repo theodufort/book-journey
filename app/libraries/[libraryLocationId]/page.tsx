@@ -5,22 +5,6 @@ import Link from "next/link";
 
 const supabase = createClientComponentClient<Database>();
 
-function getFullStateName(stateAbbr: string): string {
-  const stateMap = {
-    'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas', 'CA': 'California',
-    'CO': 'Colorado', 'CT': 'Connecticut', 'DE': 'Delaware', 'FL': 'Florida', 'GA': 'Georgia',
-    'HI': 'Hawaii', 'ID': 'Idaho', 'IL': 'Illinois', 'IN': 'Indiana', 'IA': 'Iowa',
-    'KS': 'Kansas', 'KY': 'Kentucky', 'LA': 'Louisiana', 'ME': 'Maine', 'MD': 'Maryland',
-    'MA': 'Massachusetts', 'MI': 'Michigan', 'MN': 'Minnesota', 'MS': 'Mississippi', 'MO': 'Missouri',
-    'MT': 'Montana', 'NE': 'Nebraska', 'NV': 'Nevada', 'NH': 'New Hampshire', 'NJ': 'New Jersey',
-    'NM': 'New Mexico', 'NY': 'New York', 'NC': 'North Carolina', 'ND': 'North Dakota', 'OH': 'Ohio',
-    'OK': 'Oklahoma', 'OR': 'Oregon', 'PA': 'Pennsylvania', 'RI': 'Rhode Island', 'SC': 'South Carolina',
-    'SD': 'South Dakota', 'TN': 'Tennessee', 'TX': 'Texas', 'UT': 'Utah', 'VT': 'Vermont',
-    'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming'
-  };
-  return stateMap[stateAbbr as keyof typeof stateMap] || stateAbbr;
-}
-
 export async function generateMetadata({
   params,
 }: {
@@ -32,7 +16,6 @@ export async function generateMetadata({
   }
   const [, city, stateAbbr] = match;
   const cityName = city.replace(/-/g, ' ');
-  const stateName = getFullStateName(stateAbbr.toUpperCase());
 
   return getSEOTags({
     title: `Libraries in ${cityName}, ${stateAbbr.toUpperCase()}`,
@@ -52,13 +35,12 @@ export default async function LibraryLocationPage({
   }
   const [, city, stateAbbr] = match;
   const cityName = city.replace(/-/g, ' ');
-  const stateName = getFullStateName(stateAbbr.toUpperCase());
 
   const { data: libraries, error } = await supabase
     .from("libraries")
     .select("*")
-    .eq("state_name", stateName)
     .eq("city_ascii", cityName)
+    .eq("state_id", stateAbbr.toUpperCase())
     .order("display_name", { ascending: true });
 
   if (error) {
@@ -70,9 +52,11 @@ export default async function LibraryLocationPage({
     return <div>No libraries found in this location.</div>;
   }
 
+  const stateName = libraries[0].state_name;
+
   return (
     <div className="space-y-4">
-      <h1 className="text-3xl font-bold">Libraries in {city}, {state}</h1>
+      <h1 className="text-3xl font-bold">Libraries in {cityName}, {stateAbbr.toUpperCase()}</h1>
       <ul className="space-y-2">
         {libraries.map((library) => (
           <li key={library.id} className="border p-4 rounded-lg">
