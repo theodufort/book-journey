@@ -49,7 +49,7 @@ export default function Page() {
         <BookFinder />
         <FAQ />
       </main>
-      <CalendlyFooter />
+      {/* <CalendlyFooter /> */}
       <Footer />
     </>
   );
