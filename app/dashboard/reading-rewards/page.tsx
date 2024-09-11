@@ -56,24 +56,63 @@ export default function ReadingRewards() {
     setRewards([
       {
         id: 1,
-        name: "BOOKSAMILLION: Coupon: 10% off $25",
-        description: "Coupon: 10% off $25",
+        name: "Coupon: 10% off $25",
+        type: "coupon",
+        merchant: "BOOKSAMILLION",
+        description:
+          "Get a coupon to buy any book on a trusted book selling website!",
         cost: 100,
         link: "https://www.kqzyfj.com/click-101259626-13986197",
       },
       {
         id: 2,
-        name: "BOOKSAMILLION: Coupon: 15% off $35",
-        description: "Coupon: 15% off $35",
+        name: "Coupon: 15% off $35",
+        type: "coupon",
+        merchant: "BOOKSAMILLION",
+        description:
+          "Get a coupon to buy any book on a trusted book selling website!",
         cost: 200,
         link: "https://www.jdoqocy.com/click-101259626-13986208",
       },
       {
         id: 3,
-        name: "BOOKSAMILLION: Coupon: 20% off $100",
-        description: "Coupon: 20% off $100",
+        name: "Coupon: 20% off $100",
+        type: "coupon",
+        merchant: "BOOKSAMILLION",
+        description:
+          "Get a coupon to buy any book on a trusted book selling website!",
         cost: 300,
         link: "https://www.jdoqocy.com/click-101259626-13986212",
+      },
+      {
+        id: 4,
+        name: "Coupon: 10% off $25",
+        type: "coupon",
+        merchant: "2NDANDCHARLES",
+        description:
+          "Get a coupon to buy any book on a trusted book selling website!",
+        cost: 100,
+        link: "https://www.tkqlhce.com/click-101259626-15658770",
+      },
+      {
+        id: 5,
+        name: "Coupon: 15% off $35",
+        type: "coupon",
+        merchant: "2NDANDCHARLES",
+        description:
+          "Get a coupon to buy any book on a trusted book selling website!",
+        cost: 200,
+        link: "https://www.dpbolvw.net/click-101259626-15658774",
+      },
+      {
+        id: 6,
+        name: "Coupon: 20% off $100",
+        type: "coupon",
+        merchant: "2NDANDCHARLES",
+        description:
+          "Get a coupon to buy any book on a trusted book selling website!",
+        cost: 300,
+        link: "https://www.anrdoezrs.net/click-101259626-15658777",
       },
     ]);
   }
@@ -130,17 +169,17 @@ export default function ReadingRewards() {
 
         {userPoints && (
           <div className="stats stats-vertical md:stats-horizontal shadow">
-            <div className="stat">
+            <div className="stat bg-base-300">
               <div className="stat-title">Available Points</div>
               <div className="stat-value">
                 {userPoints?.points_earned - userPoints?.points_redeemed}
               </div>
             </div>
-            <div className="stat">
+            <div className="stat bg-base-300">
               <div className="stat-title">Total Points Earned</div>
               <div className="stat-value">{userPoints.points_earned}</div>
             </div>
-            <div className="stat">
+            <div className="stat bg-base-300">
               <div className="stat-title">Total Points Redeemed</div>
               <div className="stat-value">{userPoints.points_redeemed}</div>
             </div>
@@ -149,11 +188,19 @@ export default function ReadingRewards() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {rewards.map((reward) => (
-            <div key={reward.id} className="card bg-base-100 shadow-xl">
+            <div key={reward.id} className="card bg-base-300 shadow-xl">
               <div className="card-body">
-                <h2 className="card-title">{reward.name}</h2>
-                <p>{reward.description}</p>
-                <div className="card-actions justify-end">
+                <div>
+                  <h2 className="card-title inline-block">{reward.name}</h2>{" "}
+                  <div className="float-right">
+                    <p className="text-2xl">
+                      {reward.type == "coupon" ? "🏷️" : null}
+                    </p>
+                  </div>
+                </div>
+                <p>{reward.merchant}</p>
+                {/* <p>{reward.description}</p> */}
+                <div className="card-actions justify-end mt-5">
                   <button
                     className="btn btn-primary"
                     onClick={() => redeemReward(reward)}
