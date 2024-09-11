@@ -46,6 +46,7 @@ export default function BookListItem({
       console.error("User not authenticated");
       return;
     }
+    // const {data}
     const {
       data: {
         pointsAwardedFinished,
@@ -573,7 +574,10 @@ export default function BookListItem({
                   placeholder="Add tag..."
                   className="bg-transparent border-none outline-none w-20"
                 />
-                <button onClick={handleAddTag} className="btn btn-xs btn-circle btn-ghost">
+                <button
+                  onClick={handleAddTag}
+                  className="btn btn-xs btn-circle btn-ghost"
+                >
                   +
                 </button>
               </div>

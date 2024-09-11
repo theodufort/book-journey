@@ -51,6 +51,11 @@ const HeaderDashboard = () => {
         .eq("user_id", user.id)
         .single();
 
+      if (data == null) {
+        await supabase
+          .from("user_points")
+          .insert({ user_id: user.id, points_earned: 0, points_redeemed: 0 });
+      }
       if (error) {
         console.error("Error fetching points:", error);
       } else {
@@ -103,9 +108,9 @@ const HeaderDashboard = () => {
                 Reading Recommendations
               </Link>
             </li>
-            {/* <li>
+            <li>
               <Link href="/dashboard/reading-rewards">Reading Rewards</Link>
-            </li> */}
+            </li>
             <li>
               <Link href="/dashboard/profile">Profile</Link>
             </li>
@@ -127,9 +132,9 @@ const HeaderDashboard = () => {
                 Reading Recommendations
               </Link>
             </li>
-            {/* <li>
+            <li>
               <Link href="/dashboard/reading-rewards">Reading Rewards</Link>
-            </li> */}
+            </li>
             <li>
               <Link href="/dashboard/profile">Profile</Link>
             </li>
@@ -182,7 +187,7 @@ const HeaderDashboard = () => {
         </button>
         <div className="bg-base-200 text-primary rounded-xl p-2 h-full mr-5">
           <Link href="/dashboard/reading-rewards">
-            {user ? points : 0} points
+            {points ? points : 0} points
           </Link>
         </div>
         <ButtonAccount />

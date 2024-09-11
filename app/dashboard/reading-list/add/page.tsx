@@ -10,6 +10,8 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { BookSearchResult } from "@/interfaces/BookSearch";
 import { Database } from "@/types/supabase";
 import { DashboardFooter } from "@/components/DashboardFooter";
+import { Resend } from "resend";
+import { FirstBookTemplate } from "@/components/FirstBookTemplate";
 
 export default function AddBook() {
   const supabase = createClientComponentClient<Database>();
@@ -54,7 +56,18 @@ export default function AddBook() {
     const isbn = book.volumeInfo.industryIdentifiers?.find(
       (id) => id.type === "ISBN_13"
     )?.identifier;
-
+    const { count } = await supabase
+      .from("reading_list")
+      .select("*", { count: "exact", head: true });
+    if (count == 0) {
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      const { data, error } = await resend.emails.send({
+        from: "welcome@mybookquest.com",
+        to: user == null ? "theodufort05@gmail.com" : user.email,
+        subject: "Congrats on adding your first book!",
+        react: FirstBookTemplate(),
+      });
+    }
     const { error } = await supabase.from("reading_list").insert({
       user_id: user.id,
       book_id: isbn,

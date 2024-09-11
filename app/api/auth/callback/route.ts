@@ -3,7 +3,7 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import config from "@/config";
 import { Resend } from "resend";
-import { EmailTemplate } from "@/components/EmailTemplate";
+import { WelcomeEmail } from "@/components/WelcomeTemplate";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
       from: "welcome@mybookquest.com",
       to: userLoggedIn == null ? "theodufort05@gmail.com" : userLoggedIn.email,
       subject: "Welcome to MyBookQuest!",
-      react: EmailTemplate(),
+      react: WelcomeEmail(),
     });
     if (error) {
       return Response.json({ error });
