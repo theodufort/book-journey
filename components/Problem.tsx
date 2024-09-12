@@ -1,6 +1,6 @@
+import { JSX } from "react";
 import ButtonSignin from "./ButtonSignin";
 
-const cta: JSX.Element = <ButtonSignin extraStyle="btn-primary" />;
 const Arrow = ({ extraStyle }: { extraStyle: string }) => {
   return (
     <svg
@@ -43,6 +43,7 @@ const Step = ({ emoji, text }: { emoji: string; text: string }) => {
 // - Problem Agitation: "Developers spend too much time adding features, get overwhelmed, and quit." (not about ShipFast at all)
 // - Features: "ShipFast has user auth, Stripe, emails all set up for you"
 const Problem = () => {
+  const cta: JSX.Element = <ButtonSignin extraStyle="btn-primary" />;
   return (
     <section>
       <div className="max-w-7xl mx-auto px-8 py-16 md:py-32 text-center">
