@@ -1,3 +1,6 @@
+import ButtonSignin from "./ButtonSignin";
+
+const cta: JSX.Element = <ButtonSignin extraStyle="btn-primary" />;
 const Arrow = ({ extraStyle }: { extraStyle: string }) => {
   return (
     <svg
@@ -41,7 +44,7 @@ const Step = ({ emoji, text }: { emoji: string; text: string }) => {
 // - Features: "ShipFast has user auth, Stripe, emails all set up for you"
 const Problem = () => {
   return (
-    <section className="bg-neutral text-neutral-content">
+    <section>
       <div className="max-w-7xl mx-auto px-8 py-16 md:py-32 text-center">
         <h2 className="max-w-3xl mx-auto font-extrabold text-4xl md:text-5xl tracking-tight mb-6 md:mb-8">
           Don't know what to read?
@@ -49,18 +52,22 @@ const Problem = () => {
         <p className="max-w-xl mx-auto text-lg opacity-90 leading-relaxed mb-12 md:mb-20">
           I love fantasy and romance books... what's the best book for me?
         </p>
-
         <div className="flex flex-col md:flex-row justify-center items-center md:items-start gap-6">
           <Step emoji="📕" text="Finished reading a book" />
 
-          <Arrow extraStyle="max-md:-scale-x-100 md:-rotate-90" />
+          <Arrow extraStyle="max-md:-scale-x-100 md:-rotate-90 " />
 
           <Step emoji="🤔" text="Wondering what to read next..." />
 
           <Arrow extraStyle="md:-scale-x-100 md:-rotate-90" />
 
-          <Step emoji="😥" text="Can't choose what to read next" />
+          <Step emoji="🤩" text="Get personalised recommendations" />
         </div>
+        <p className="max-w-xl mx-auto text-lg opacity-90 leading-relaxed mt-12 md:mt-20 mb-10">
+          Sign up to MyBookQuest for personalised recommendations. <br />
+          Free forever
+        </p>
+        {cta}
       </div>
     </section>
   );

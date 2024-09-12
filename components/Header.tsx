@@ -11,6 +11,7 @@ import config from "@/config";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
+import { ButtonTheme } from "./ButtonTheme";
 
 const DashboardButton = () => (
   <Link href="/dashboard" className="btn btn-primary">
@@ -21,16 +22,7 @@ const DashboardButton = () => (
 const links: {
   href: string;
   label: string;
-}[] = [
-  {
-    href: "/#quiz",
-    label: "Find a Book in 2 minutes!",
-  },
-  {
-    href: "/#faq",
-    label: "FAQ",
-  },
-];
+}[] = [];
 
 const cta: JSX.Element = <ButtonSignin extraStyle="btn-primary" />;
 
@@ -41,6 +33,7 @@ const Header = () => {
   const [user, setUser] = useState<User | null>(null);
   const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
@@ -85,12 +78,16 @@ const Header = () => {
         {/* Conditional rendering based on user authentication */}
         {user ? (
           <div className="flex justify-end flex-1">
+            {" "}
+            <ButtonTheme />
             <DashboardButton />
           </div>
         ) : (
           <>
             {/* Burger button to open menu on mobile */}
             <div className="flex lg:hidden">
+              {" "}
+              <ButtonTheme />
               <button
                 type="button"
                 className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5"
@@ -129,7 +126,11 @@ const Header = () => {
             </div>
 
             {/* CTA on large screens */}
-            <div className="hidden lg:flex lg:justify-end lg:flex-1">{cta}</div>
+            <div className="hidden lg:flex lg:justify-end lg:flex-1">
+              {" "}
+              <ButtonTheme />
+              {cta}
+            </div>
           </>
         )}
       </nav>
@@ -199,7 +200,7 @@ const Header = () => {
               </div>
               <div className="divider"></div>
               {/* Your CTA on small screens */}
-              <div className="flex flex-col">{cta}</div>
+              <div className="flex flex-col"> {cta}</div>
             </div>
           </div>
         </div>

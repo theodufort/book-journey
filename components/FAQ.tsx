@@ -23,7 +23,7 @@ const faqList: FAQItemProps[] = [
     ),
   },
   {
-    question: "What are the main features that MyBookQuest has?",
+    question: "What are the main features of MyBookQuest?",
     answer: (
       <p>
         Our goal is to provide a free, simple to use, curated platform to make
@@ -100,9 +100,10 @@ const FAQ = () => {
       <div className="py-24 px-8 max-w-7xl mx-auto flex flex-col md:flex-row gap-12">
         <div className="flex flex-col text-left basis-1/2">
           <p className="inline-block font-semibold text-primary mb-4">FAQ</p>
-          <p className="sm:text-4xl text-3xl font-extrabold text-base-content">
-            Frequently Asked Questions
-          </p>
+          <h2 className="sm:text-4xl text-3xl font-extrabold">
+            Frequently <br />
+            Asked Questions
+          </h2>
         </div>
 
         <ul className="basis-1/2">

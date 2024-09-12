@@ -16,7 +16,7 @@ const features: {
     name: "Rewards",
     description: (
       <>
-        <ul className="space-y-2">
+        <ul className="space-y-2 text-left">
           {[
             "Get rewarded for reading your favorite books",
             "Earn points when you rate and review",
@@ -34,7 +34,6 @@ const features: {
                   clipRule="evenodd"
                 />
               </svg>
-
               {item}
             </li>
           ))}
@@ -62,7 +61,7 @@ const features: {
     name: "Recommendations",
     description: (
       <>
-        <ul className="space-y-1">
+        <ul className="space-y-1 text-left">
           {[
             "Get tailored book recommendations",
             "No recommendation bias",
@@ -81,7 +80,6 @@ const features: {
                   clipRule="evenodd"
                 />
               </svg>
-
               {item}
             </li>
           ))}
@@ -105,7 +103,6 @@ const features: {
       </svg>
     ),
   },
-
   {
     name: "Notes",
     description: (
@@ -126,7 +123,6 @@ const features: {
                     clipRule="evenodd"
                   />
                 </svg>
-
                 {item}
               </li>
             )
@@ -153,109 +149,24 @@ const features: {
   },
 ];
 
-// A list of features with a listicle style.
-// - Click on a feature to display its description.
-// - Good to use when multiples features are available.
-// - Autoscroll the list of features (optional).
-const FeaturesListicle = () => {
-  const featuresEndRef = useRef<null>(null);
-  const [featureSelected, setFeatureSelected] = useState<string>(
-    features[0].name
-  );
-  const [hasClicked, setHasClicked] = useState<boolean>(false);
-
-  // (Optional) Autoscroll the list of features so user know it's interactive.
-  // Stop scrolling when user scroll after the featuresEndRef element (end of section)
-  // emove useEffect is not needed.
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (!hasClicked) {
-        const index = features.findIndex(
-          (feature) => feature.name === featureSelected
-        );
-        const nextIndex = (index + 1) % features.length;
-        setFeatureSelected(features[nextIndex].name);
-      }
-    }, 5000);
-
-    try {
-      // stop the interval when the user scroll after the featuresRef element
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            console.log("STOP AUTO CHANGE");
-            clearInterval(interval);
-          }
-        },
-        {
-          root: null,
-          rootMargin: "0px",
-          threshold: 0.5,
-        }
-      );
-      if (featuresEndRef.current) {
-        observer.observe(featuresEndRef.current);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-
-    return () => clearInterval(interval);
-  }, [featureSelected, hasClicked]);
-
+// Features component
+const FeaturesGrid = () => {
   return (
     <section id="features">
-      <div>
-        <div className="grid grid-cols-3 md:flex justify-center gap-4 md:gap-12 max-md:px-8 max-w-3xl mx-auto mb-8">
-          {features.map((feature) => (
-            <span
-              key={feature.name}
-              onClick={() => {
-                if (!hasClicked) setHasClicked(true);
-                setFeatureSelected(feature.name);
-              }}
-              className={`flex flex-col items-center justify-center gap-3 select-none cursor-pointer p-2 duration-200 group`}
-            >
-              <span
-                className={`duration-100 ${
-                  featureSelected === feature.name
-                    ? "text-primary"
-                    : "text-base-content/30 group-hover:text-base-content/50"
-                }`}
-              >
-                {feature.svg}
-              </span>
-              <span
-                className={`font-semibold text-sm ${
-                  featureSelected === feature.name
-                    ? "text-primary"
-                    : "text-base-content/50"
-                }`}
-              >
-                {feature.name}
-              </span>
-            </span>
-          ))}
-        </div>
-        <div className="bg-base-200">
-          <div className="max-w-3xl mx-auto flex flex-col md:flex-row justify-center md:items-center gap-12">
-            <div
-              className="text-base-content/80 leading-relaxed space-y-4 px-12 md:px-0 py-12 max-w-xl animate-opacity"
-              key={featureSelected}
-            >
-              <h3 className="font-semibold text-base-content text-lg">
-                {features.find((f) => f.name === featureSelected)["name"]}
-              </h3>
-
-              {features.find((f) => f.name === featureSelected)["description"]}
-            </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8 max-w-6xl mx-auto">
+        {features.map((feature) => (
+          <div
+            key={feature.name}
+            className="flex flex-col items-center text-center"
+          >
+            <div className="mb-4 text-primary">{feature.svg}</div>
+            <h3 className="font-bold text-lg mb-2">{feature.name}</h3>
+            <div className="text-base-content/80">{feature.description}</div>
           </div>
-        </div>
+        ))}
       </div>
-      {/* Just used to know it's the end of the autoscroll feature (optional, see useEffect) */}
-      <p className="opacity-0" ref={featuresEndRef}></p>
     </section>
   );
 };
 
-export default FeaturesListicle;
+export default FeaturesGrid;

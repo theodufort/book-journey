@@ -46,7 +46,6 @@ export default function Page() {
         <Hero />
         <FeaturesListicle />
         <Problem />
-        <BookFinder />
         <FAQ />
       </main>
       {/* <CalendlyFooter /> */}
