@@ -13,7 +13,7 @@ const Hero = () => {
           Get Rewarded for Reading.
         </h1>
         <p className="text-lg opacity-80 leading-relaxed">
-          MyBookQuest is an all-in-one platform that helps you track, organise
+          MyBookQuest is an all-in-one platform that helps you track, organize
           and fill your own personal library while being rewarded for it!
         </p>
         {/* <button
