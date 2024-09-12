@@ -1,6 +1,7 @@
 // components/HeaderDashboard.tsx
 
 import Link from "next/link";
+import Image from "next/image";
 import ButtonAccount from "@/components/ButtonAccount";
 import { useEffect, useState } from "react";
 import {
@@ -45,21 +46,34 @@ const HeaderDashboard = () => {
     const fetchPoints = async () => {
       if (!user) return;
 
-      const { data, error } = await supabase
+      const { data: checkExistPoints, error } = await supabase
         .from("user_points")
         .select("points_earned, points_redeemed")
         .eq("user_id", user.id)
         .single();
 
-      if (data == null) {
+      if (checkExistPoints == null) {
         await supabase
           .from("user_points")
           .insert({ user_id: user.id, points_earned: 0, points_redeemed: 0 });
       }
+
+      const { data: checkExistStreak } = await supabase
+        .from("user_point_streak")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (checkExistStreak == null) {
+        await supabase.from("user_point_streak").insert({ id: user.id });
+      }
       if (error) {
         console.error("Error fetching points:", error);
       } else {
-        setPoints(data?.points_earned - data?.points_redeemed || 0);
+        setPoints(
+          checkExistPoints?.points_earned - checkExistPoints?.points_redeemed ||
+            0
+        );
       }
     };
 
@@ -111,9 +125,6 @@ const HeaderDashboard = () => {
             <li>
               <Link href="/dashboard/reading-rewards">Reading Rewards</Link>
             </li>
-            <li>
-              <Link href="/dashboard/profile">Profile</Link>
-            </li>
           </ul>
         </div>{" "}
         <div className="card navbar-center hidden md:flex bg-base-200 ">
@@ -135,18 +146,15 @@ const HeaderDashboard = () => {
             <li>
               <Link href="/dashboard/reading-rewards">Reading Rewards</Link>
             </li>
-            <li>
-              <Link href="/dashboard/profile">Profile</Link>
-            </li>
           </ul>
         </div>
       </div>
       <div className="mb-auto md:mt-auto flex items-center">
-        <div className="mr-5 hidden md:block">
+        {/* <div className="mr-5 hidden md:block">
           <button onClick={() => setShowHowToEarnPoints(true)}>
             How to earn points?
           </button>
-        </div>
+        </div> */}
 
         <button
           onClick={toggleTheme}
@@ -185,10 +193,11 @@ const HeaderDashboard = () => {
             </svg>
           )}
         </button>
-        <div className="bg-base-200 text-primary rounded-xl p-2 h-full mr-5">
-          <Link href="/dashboard/reading-rewards">
-            {points ? points : 0} points
+        <div className="bg-base-200 text-primary rounded-xl p-2 h-full mr-5 flex shadow-md shadow-indigo-500">
+          <Link href="/dashboard/reading-rewards" className="mr-2">
+            {points ? points : 0}
           </Link>
+          <Image src={"/coin.png"} height={25} width={25} alt="coin" />
         </div>
         <ButtonAccount />
       </div>

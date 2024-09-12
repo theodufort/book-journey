@@ -2,6 +2,7 @@
 export const dynamic = "force-dynamic";
 import { useEffect, useState } from "react";
 import HeaderDashboard from "@/components/DashboardHeader";
+import Image from "next/image";
 import PointsSection from "@/components/PointsSection";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
@@ -10,6 +11,8 @@ import { Database } from "@/types/supabase";
 import OnboardingPopup from "@/components/OnboardingPopup";
 import { BookAvatarNoDetails } from "@/components/BookAvatarNoDetails";
 import { DashboardFooter } from "@/components/DashboardFooter";
+import ContributionGraph from "@/components/ContributionGraph";
+import StreakRewardSystem from "@/components/StreakRewardSystem";
 
 export default function Dashboard() {
   const supabase = createClientComponentClient<Database>();
@@ -167,7 +170,7 @@ export default function Dashboard() {
                 <div className="stat-value">{stats?.books_read || 0}</div>
               </div>
               <div className="stat">
-                <div className="stat-figure text-secondary">
+                <div className="stat-figure text-primary">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -186,7 +189,7 @@ export default function Dashboard() {
                 <div className="stat-value">{stats?.pages_read || 0}</div>
               </div>
               <div className="stat">
-                <div className="stat-figure text-secondary">
+                <div className="stat-figure text-primary">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -212,107 +215,23 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-        {/* <div className="grid md:grid-cols-2 grid-rows-1 gap-4">
-          <div>
-            <PointsSection />
+        <div className="card bg-base-200 shadow-xl">
+          <div className="card-body">
+            {/* <h2 className="card-title text-xl md:text-2xl font-bold">
+              Point Streak{" "}
+              <Image src={"/coin.png"} height={25} width={25} alt="coin" />
+            </h2> */}
+
+            <div className="m-auto">
+              <StreakRewardSystem />
+              <p className="m-auto mt-5 block text-lg opacity-90 text-center">
+                Sign In daily to earn points.
+              </p>
+            </div>
           </div>
-          <div className="w-auto flex card bg-base-200 shadow-xl p-8">
-            {currentlyReading.length > 0 ? (
-              <div className="w-full">
-                <div className="flex mb-4">
-                  <h2 className="card-title text-xl md:text-2xl font-bold">
-                    Currently Reading ({currentlyReading.length})
-                  </h2>
-                </div>
-                <div className="w-full">
-                  <div className="relative">
-                    <div className="carousel carousel-reading w-full">
-                      {currentlyReading.map((item) => {
-                        const isbn13 =
-                          item.volumeInfo.industryIdentifiers?.find(
-                            (id: any) => id.type === "ISBN_13"
-                          )?.identifier || item.book_id;
-                        return (
-                          <div
-                            className="carousel-item w-full inline-block"
-                            id={`reading-${isbn13}`}
-                            key={`reading-${isbn13}`}
-                          >
-                            <BookAvatarNoDetails item={item} />
-                          </div>
-                        );
-                      })}
-                    </div>
-                    {currentlyReading.length > 1 && (
-                      <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                        <button
-                          onClick={() => {
-                            const currentIndex = currentlyReading.findIndex(
-                              (book) =>
-                                document.getElementById(
-                                  `reading-${book.book_id}`
-                                )?.offsetLeft ===
-                                (
-                                  document.querySelector(
-                                    ".carousel-reading"
-                                  ) as HTMLElement
-                                )?.scrollLeft
-                            );
-                            const prevIndex =
-                              (currentIndex - 1 + currentlyReading.length) %
-                              currentlyReading.length;
-                            const carousel =
-                              document.querySelector(".carousel-reading");
-                            const item = document.getElementById(
-                              `reading-${currentlyReading[prevIndex].book_id}`
-                            );
-                            if (carousel && item) {
-                              carousel.scrollLeft = item.offsetLeft;
-                            }
-                          }}
-                          className="btn btn-circle"
-                        >
-                          ❮
-                        </button>
-                        <button
-                          onClick={() => {
-                            const currentIndex = currentlyReading.findIndex(
-                              (book) =>
-                                document.getElementById(
-                                  `reading-${book.book_id}`
-                                )?.offsetLeft ===
-                                (
-                                  document.querySelector(
-                                    ".carousel-reading"
-                                  ) as HTMLElement
-                                )?.scrollLeft
-                            );
-                            const nextIndex =
-                              (currentIndex + 1) % currentlyReading.length;
-                            const carousel =
-                              document.querySelector(".carousel-reading");
-                            const item = document.getElementById(
-                              `reading-${currentlyReading[nextIndex].book_id}`
-                            );
-                            if (carousel && item) {
-                              carousel.scrollLeft = item.offsetLeft;
-                            }
-                          }}
-                          className="btn btn-circle"
-                        >
-                          ❯
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <h4>Not currently reading any book</h4>
-            )}
-          </div>
-        </div>  */}
+        </div>
       </section>
+
       <DashboardFooter />
     </main>
   );

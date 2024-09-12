@@ -1124,6 +1124,47 @@ export type Database = {
           },
         ]
       }
+      user_point_streak: {
+        Row: {
+          day1: string | null
+          day2: string | null
+          day3: string | null
+          day4: string | null
+          day5: string | null
+          day6: string | null
+          day7: string | null
+          id: string
+        }
+        Insert: {
+          day1?: string | null
+          day2?: string | null
+          day3?: string | null
+          day4?: string | null
+          day5?: string | null
+          day6?: string | null
+          day7?: string | null
+          id?: string
+        }
+        Update: {
+          day1?: string | null
+          day2?: string | null
+          day3?: string | null
+          day4?: string | null
+          day5?: string | null
+          day6?: string | null
+          day7?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_point_streak_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_points: {
         Row: {
           points_earned: number | null
