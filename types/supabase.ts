@@ -1134,6 +1134,7 @@ export type Database = {
           day6: string | null
           day7: string | null
           id: string
+          reward_awarded: boolean[] | null
         }
         Insert: {
           day1?: string | null
@@ -1144,6 +1145,7 @@ export type Database = {
           day6?: string | null
           day7?: string | null
           id?: string
+          reward_awarded?: boolean[] | null
         }
         Update: {
           day1?: string | null
@@ -1154,6 +1156,7 @@ export type Database = {
           day6?: string | null
           day7?: string | null
           id?: string
+          reward_awarded?: boolean[] | null
         }
         Relationships: [
           {

@@ -26,7 +26,7 @@ const StreakRewardSystem = () => {
     const lastSignIn = new Date(user.last_sign_in_at);
     const today: any = new Date();
 
-    // Define the streak dates array
+    // Define the streak dates and reward tracking array
     const streakDates: any = [
       userStreak.day1,
       userStreak.day2,
@@ -35,6 +35,16 @@ const StreakRewardSystem = () => {
       userStreak.day5,
       userStreak.day6,
       userStreak.day7,
+    ];
+
+    const rewardAwarded: any = userStreak.reward_awarded || [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
     ];
 
     // Find the last day in the streak
@@ -46,7 +56,7 @@ const StreakRewardSystem = () => {
         ? new Date(streakDates[lastStreakDayIndex - 1])
         : null;
 
-    // Reset streak if the user hasn't signed in for more than 24 hours since the last streak date
+    // Reset streak if the user hasn't signed in for more than 48 hours since the last streak date
     if (lastStreakDate) {
       const diffInHours = Math.abs(today - lastStreakDate) / (1000 * 60 * 60);
 
@@ -62,6 +72,7 @@ const StreakRewardSystem = () => {
             day5: null,
             day6: null,
             day7: null,
+            reward_awarded: [false, false, false, false, false, false, false], // Reset reward tracking
           })
           .eq("id", user.id);
         console.log("Streak reset due to inactivity.");
@@ -73,12 +84,28 @@ const StreakRewardSystem = () => {
       }
     }
 
-    // If no streak has been started, initialize the first day
+    // If no streak has been started, initialize the first day and award points
     if (lastStreakDayIndex === 0) {
       await supabase
         .from("user_point_streak")
-        .update({ day1: today.toISOString() })
+        .update({
+          day1: today.toISOString(),
+          reward_awarded: [true, false, false, false, false, false, false], // Award points for day 1
+        })
         .eq("id", user.id);
+      const { data: dataUpdatePoints, error: errorUpdatePoints } =
+        await supabase.rpc("increment_points_earned", {
+          _user_id: user.id,
+          _points_to_add: rewards[lastStreakDayIndex],
+        });
+
+      if (errorUpdatePoints) {
+        console.error("Error incrementing points:", errorUpdatePoints);
+      } else {
+        console.log("Points incremented successfully:", dataUpdatePoints);
+      }
+      console.log("Started streak and awarded points for day 1.");
+      return;
     } else if (lastStreakDate) {
       // Calculate the difference in days between today and the last streak date
       const diffInDays = Math.floor(
@@ -88,11 +115,30 @@ const StreakRewardSystem = () => {
       if (diffInDays === 1) {
         // Update the next day in the streak
         const updateData: any = {};
-        updateData[`day${lastStreakDayIndex + 1}`] = today.toISOString();
+        const nextDayIndex = lastStreakDayIndex + 1;
+        updateData[`day${nextDayIndex}`] = today.toISOString();
+        rewardAwarded[lastStreakDayIndex] = true; // Mark the reward as awarded for this day
+        updateData["reward_awarded"] = rewardAwarded;
+
         await supabase
           .from("user_point_streak")
           .update(updateData)
           .eq("id", user.id);
+
+        const { data: dataUpdatePoints, error: errorUpdatePoints } =
+          await supabase.rpc("increment_points_earned", {
+            _user_id: user.id,
+            _points_to_add: rewards[lastStreakDayIndex],
+          });
+
+        if (errorUpdatePoints) {
+          console.error("Error incrementing points:", errorUpdatePoints);
+        } else {
+          console.log("Points incremented successfully:", dataUpdatePoints);
+        }
+        console.log(
+          `Streak updated to day ${nextDayIndex} and awarded points.`
+        );
       } else if (diffInDays > 1) {
         // If more than one day has passed, reset the streak
         await supabase
@@ -105,8 +151,10 @@ const StreakRewardSystem = () => {
             day5: null,
             day6: null,
             day7: null,
+            reward_awarded: [true, false, false, false, false, false, false], // Reset and award points for new start
           })
           .eq("id", user.id);
+        console.log("Streak reset and awarded points for day 1.");
       }
     }
   }

@@ -337,3 +337,18 @@ create table
     constraint libraries_display_name_key unique (display_name),
     constraint libraries_slug_key unique (slug)
   ) tablespace pg_default;
+
+ create table
+  public.user_point_streak (
+    id uuid not null default gen_random_uuid (),
+    day1 timestamp with time zone null,
+    day2 timestamp with time zone null,
+    day3 timestamp with time zone null,
+    day4 timestamp with time zone null,
+    day5 timestamp with time zone null,
+    day6 timestamp with time zone null,
+    day7 timestamp with time zone null,
+    reward_awarded boolean[] null default '{f,f,f,f,f,f,f}'::boolean[],
+    constraint user_point_streak_pkey primary key (id),
+    constraint user_point_streak_id_fkey foreign key (id) references auth.users (id) on update cascade on delete cascade
+  ) tablespace pg_default;
