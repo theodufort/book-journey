@@ -54,6 +54,14 @@ const Footer = () => {
                     Support
                   </a>
                 )}
+                <a
+                  href={"/tools"}
+                  target="_blank"
+                  className="link link-hover"
+                  aria-label="Tools"
+                >
+                  Tools
+                </a>
               </div>
             </div>
 
