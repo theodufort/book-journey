@@ -75,7 +75,9 @@ export default function Recommendations() {
   return (
     <main className="min-h-screen p-8 pb-24">
       <section className="max-w-6xl mx-auto space-y-8">
-        <HeaderDashboard />
+        <div className="z-50">
+          <HeaderDashboard />
+        </div>
 
         <h1 className="text-3xl md:text-4xl font-extrabold">
           Book Recommendations
@@ -97,9 +99,12 @@ export default function Recommendations() {
                 No recommendations available at the moment.
               </p>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 ">
                 {bookSuggestions.map((x, index) => (
-                  <div key={`book-suggestion-${x.id}-${index}`}>
+                  <div
+                    key={`book-suggestion-${x.id}-${index}`}
+                    className="-z-10"
+                  >
                     <BookAvatar vol={x} isBlurred={false} allowAdd={true} />
                   </div>
                 ))}
@@ -108,7 +113,6 @@ export default function Recommendations() {
           </>
         )}
       </section>
-      <DashboardFooter />
     </main>
   );
 }

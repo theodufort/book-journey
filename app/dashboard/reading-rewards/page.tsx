@@ -163,7 +163,9 @@ export default function ReadingRewards() {
   return (
     <main className="min-h-screen p-8 pb-24">
       <section className="max-w-6xl mx-auto space-y-8">
-        <HeaderDashboard />
+        <div className="z-50">
+          <HeaderDashboard />
+        </div>
 
         <h1 className="text-3xl md:text-4xl font-extrabold">Reading Rewards</h1>
 
@@ -188,7 +190,7 @@ export default function ReadingRewards() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {rewards.map((reward) => (
-            <div key={reward.id} className="card bg-base-300 shadow-xl">
+            <div key={reward.id} className="card bg-base-300 shadow-xl -z-10">
               <div className="card-body">
                 <div>
                   <h2 className="card-title inline-block">{reward.name}</h2>{" "}
@@ -219,7 +221,6 @@ export default function ReadingRewards() {
           {/* <div>Rewards coming soon! Stay tuned!</div> */}
         </div>
       </section>
-      <DashboardFooter />
     </main>
   );
 }

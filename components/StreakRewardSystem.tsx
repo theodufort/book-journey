@@ -5,7 +5,7 @@ import {
 } from "@supabase/auth-helpers-nextjs";
 import React, { useEffect, useState } from "react";
 const rewards = [1, 1, 3, 3, 5, 5, 10, 10];
-const StreakRewardSystem = () => {
+const StreakRewardSystem = ({ onUpdate }: { onUpdate: () => void }) => {
   const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
   const [streak, setStreak] = useState(null);
@@ -16,6 +16,7 @@ const StreakRewardSystem = () => {
       .select("*")
       .eq("id", user.id)
       .single();
+    setStreak(userStreak);
 
     if (error) {
       console.error("Error fetching user streak:", error);
@@ -62,7 +63,7 @@ const StreakRewardSystem = () => {
 
       if (diffInHours > 48) {
         // If more than 48 hours (2 days) have passed, reset the streak
-        await supabase
+        const { data: userStreak } = await supabase
           .from("user_point_streak")
           .update({
             day1: today.toISOString(),
@@ -74,7 +75,10 @@ const StreakRewardSystem = () => {
             day7: null,
             reward_awarded: [false, false, false, false, false, false, false], // Reset reward tracking
           })
-          .eq("id", user.id);
+          .eq("id", user.id)
+          .select()
+          .single();
+        setStreak(userStreak);
         console.log("Streak reset due to inactivity.");
         return;
       } else if (diffInHours < 24) {
@@ -86,13 +90,16 @@ const StreakRewardSystem = () => {
 
     // If no streak has been started, initialize the first day and award points
     if (lastStreakDayIndex === 0) {
-      await supabase
+      const { data: userStreak } = await supabase
         .from("user_point_streak")
         .update({
           day1: today.toISOString(),
           reward_awarded: [true, false, false, false, false, false, false], // Award points for day 1
         })
-        .eq("id", user.id);
+        .eq("id", user.id)
+        .select()
+        .single();
+      setStreak(userStreak);
       const { data: dataUpdatePoints, error: errorUpdatePoints } =
         await supabase.rpc("increment_points_earned", {
           _user_id: user.id,
@@ -103,6 +110,7 @@ const StreakRewardSystem = () => {
         console.error("Error incrementing points:", errorUpdatePoints);
       } else {
         console.log("Points incremented successfully:", dataUpdatePoints);
+        onUpdate();
       }
       console.log("Started streak and awarded points for day 1.");
       return;
@@ -120,11 +128,13 @@ const StreakRewardSystem = () => {
         rewardAwarded[lastStreakDayIndex] = true; // Mark the reward as awarded for this day
         updateData["reward_awarded"] = rewardAwarded;
 
-        await supabase
+        const { data: userStreak } = await supabase
           .from("user_point_streak")
           .update(updateData)
-          .eq("id", user.id);
-
+          .eq("id", user.id)
+          .select()
+          .single();
+        setStreak(userStreak);
         const { data: dataUpdatePoints, error: errorUpdatePoints } =
           await supabase.rpc("increment_points_earned", {
             _user_id: user.id,
@@ -135,13 +145,14 @@ const StreakRewardSystem = () => {
           console.error("Error incrementing points:", errorUpdatePoints);
         } else {
           console.log("Points incremented successfully:", dataUpdatePoints);
+          onUpdate();
         }
         console.log(
           `Streak updated to day ${nextDayIndex} and awarded points.`
         );
       } else if (diffInDays > 1) {
         // If more than one day has passed, reset the streak
-        await supabase
+        const { data: userStreak } = await supabase
           .from("user_point_streak")
           .update({
             day1: today.toISOString(),
@@ -153,7 +164,10 @@ const StreakRewardSystem = () => {
             day7: null,
             reward_awarded: [true, false, false, false, false, false, false], // Reset and award points for new start
           })
-          .eq("id", user.id);
+          .eq("id", user.id)
+          .select()
+          .single();
+        setStreak(userStreak);
         console.log("Streak reset and awarded points for day 1.");
       }
     }
@@ -167,66 +181,57 @@ const StreakRewardSystem = () => {
 
     getUser();
   }, [supabase]);
-  async function updateStreak() {
-    // Fetch the user's streak data from the database
-    const { data: streakSetting } = await supabase
-      .from("user_point_streak")
-      .select("*")
-      .eq("id", user.id)
-      .single();
-    setStreak(streakSetting);
-  }
+
   useEffect(() => {
     if (user) {
       checkStreak();
-      updateStreak();
     }
   }, [user]);
   return (
-    <div className="m-auto">
+    <div className="m-auto flex">
       {streak != null ? (
-        <ul className="steps steps-vertical lg:steps-horizontal gap-4">
+        <ul className="steps steps-vertical lg:steps-horizontal gap-4 m-auto">
           <li
             data-content={`+${rewards[0]}`}
-            className={`step ${streak.day1 ? "step-warning" : null}`}
+            className={`step ${streak.day1 ? "step-primary" : null}`}
           >
-            <div className="badge badge-primary">Day 1</div>
+            <p>Day 1</p>
           </li>
           <li
             data-content={`+${rewards[1]}`}
-            className={`step ${streak.day2 ? "step-warning" : null}`}
+            className={`step ${streak.day2 ? "step-primary" : null}`}
           >
-            <div className="badge badge-primary">Day 2</div>
+            <p>Day 2</p>
           </li>
           <li
             data-content={`+${rewards[2]}`}
-            className={`step ${streak.day3 ? "step-warning" : null}`}
+            className={`step ${streak.day3 ? "step-primary" : null}`}
           >
-            <div className="badge badge-primary">Day 3</div>
+            <p>Day 3</p>
           </li>
           <li
             data-content={`+${rewards[3]}`}
-            className={`step ${streak.day4 ? "step-warning" : null}`}
+            className={`step ${streak.day4 ? "step-primary" : null}`}
           >
-            <div className="badge badge-primary">Day 4</div>
+            <p>Day 4</p>
           </li>
           <li
             data-content={`+${rewards[4]}`}
-            className={`step ${streak.day5 ? "step-warning" : null}`}
+            className={`step ${streak.day5 ? "step-primary" : null}`}
           >
-            <div className="badge badge-primary">Day 5</div>
+            <p>Day 5</p>
           </li>
           <li
             data-content={`+${rewards[5]}`}
             className={`step ${streak.day6 ? "step-primary" : null}`}
           >
-            <div className="badge badge-primary">Day 6</div>
+            <p>Day 6</p>
           </li>
           <li
             data-content={`+${rewards[6]}`}
             className={`step ${streak.day7 ? "step-primary" : null}`}
           >
-            <div className="badge badge-primary">Day 7</div>
+            <p>Day 7</p>
           </li>
         </ul>
       ) : null}

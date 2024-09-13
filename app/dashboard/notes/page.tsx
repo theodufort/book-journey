@@ -141,7 +141,7 @@ export default function BookNotes() {
         updated_at: updatedAt,
       },
       {
-        onConflict: "user_id,book_id"
+        onConflict: "user_id,book_id",
       }
     );
 
@@ -162,7 +162,9 @@ export default function BookNotes() {
   return (
     <main className="min-h-screen p-4 sm:p-8 pb-16">
       <section className="max-w-6xl mx-auto space-y-4 sm:space-y-8">
-        <HeaderDashboard />
+        <div className="z-50">
+          <HeaderDashboard />
+        </div>
         <h1 className="text-2xl md:text-4xl font-extrabold  my-auto">
           Book Notes
         </h1>
@@ -279,7 +281,6 @@ export default function BookNotes() {
           </div>
         )}
       </section>
-      <DashboardFooter />
     </main>
   );
 }

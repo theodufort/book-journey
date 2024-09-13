@@ -26,13 +26,11 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [showOnboard, setShowUnboard] = useState(false);
   const router = useRouter();
-
+  const getUser = async () => {
+    const { data } = await supabase.auth.getUser();
+    setUser(data.user);
+  };
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user);
-    };
-
     getUser();
   }, [supabase]);
 
@@ -131,7 +129,9 @@ export default function Dashboard() {
   return (
     <main className="min-h-screen p-8 pb-24">
       <section className="max-w-6xl mx-auto space-y-8">
-        <HeaderDashboard />
+        <div className="z-50">
+          <HeaderDashboard />
+        </div>
         {user && showOnboard ? (
           <OnboardingPopup
             isOpen={true}
@@ -144,7 +144,7 @@ export default function Dashboard() {
         <h1 className="text-3xl md:text-4xl font-extrabold">My Dashboard</h1>
 
         {/* Reading Stats */}
-        <div className="card bg-base-200 shadow-xl">
+        <div className="card bg-base-200 shadow-xl -z-10">
           <div className="card-body">
             <h2 className="card-title text-xl md:text-2xl font-bold">
               Reading Stats
@@ -215,7 +215,7 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-        <div className="card bg-base-200 shadow-xl">
+        <div className="card bg-base-200 shadow-xl -z-10">
           <div className="card-body">
             {/* <h2 className="card-title text-xl md:text-2xl font-bold">
               Point Streak{" "}
@@ -223,16 +223,18 @@ export default function Dashboard() {
             </h2> */}
 
             <div className="m-auto">
-              <StreakRewardSystem />
+              <StreakRewardSystem
+                onUpdate={() => {
+                  getUser();
+                }}
+              />
               <p className="m-auto mt-5 block text-lg opacity-90 text-center">
-                Sign In daily to earn points.
+                Come back daily to earn points.
               </p>
             </div>
           </div>
         </div>
       </section>
-
-      <DashboardFooter />
     </main>
   );
 }

@@ -84,20 +84,25 @@ export default function AddBook() {
 
   return (
     <main className="min-h-screen p-8 pb-16">
-      <section className="max-w-6xl mx-auto space-y-8">
+      <div className="z-50">
         <HeaderDashboard />
-
+      </div>
+      <section className="max-w-6xl mx-auto space-y-8 bg-base-200 rounded-box p-4 md:p-8">
         <h1 className="text-3xl md:text-4xl font-extrabold">Add a Book</h1>
 
-        <form onSubmit={searchBooks} className="space-y-4">
+        <form onSubmit={searchBooks} className="flex">
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by title or ISBN"
-            className="input input-bordered w-full"
+            className="input input-bordered w-full max-w-lg"
           />
-          <button type="submit" className="btn btn-primary" disabled={loading}>
+          <button
+            type="submit"
+            className="btn btn-primary ml-2"
+            disabled={loading}
+          >
             {loading ? "Searching..." : "Search"}
           </button>
         </form>
@@ -128,8 +133,9 @@ export default function AddBook() {
                   <select
                     className="select select-bordered"
                     onChange={(e) => addToReadingList(book, e.target.value)}
+                    defaultValue=""
                   >
-                    <option disabled selected>
+                    <option value="" disabled hidden>
                       Add to Reading List
                     </option>
                     <option value="To Read">To Read</option>
@@ -142,7 +148,6 @@ export default function AddBook() {
           ))}
         </div>
       </section>
-      <DashboardFooter />
     </main>
   );
 }

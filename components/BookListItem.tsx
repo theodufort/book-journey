@@ -441,11 +441,11 @@ export default function BookListItem({
   }
 
   const renderRatingInput = () => (
-    <div className="rating rating-md rating-half inline-block my-2">
+    <div className="rating rating-md rating-half inline-block ">
       <label>
         <b>Your Rating (+25 points):</b>{" "}
       </label>
-      <div className="flex">
+      <div className="flex mt-2">
         <input
           type="radio"
           name={`rating-${item.id}`}
@@ -491,14 +491,13 @@ export default function BookListItem({
   const renderReviewInput = () => {
     if (status === "Finished") {
       return (
-        <div className="mt-4">
-          <label htmlFor="review" className="block font-bold mb-2">
-            Your Review (+50 points):
+        <div>
+          <label htmlFor="review" className="mb-4">
+            <b>Your Review (+50 points):</b>
           </label>
           <textarea
             id="review"
-            className="textarea textarea-bordered w-full"
-            rows={4}
+            className="textarea textarea-bordered w-full h-auto mt-2"
             placeholder="Write your review here..."
             value={review}
             onChange={(e) => {
@@ -519,7 +518,7 @@ export default function BookListItem({
   return (
     <>
       <div className="card md:card-side bg-base-100 shadow-xl">
-        <figure className="p-10 md:w-1/4">
+        <figure className="p-10 md:w-1/5 mb-auto">
           <img
             src={book.imageLinks?.thumbnail || "/placeholder-book-cover.jpg"}
             alt={book.title || "Book cover"}
@@ -527,16 +526,34 @@ export default function BookListItem({
           />
         </figure>
         <div className="card-body md:w-2/3">
-          <h2 className="card-title">{book.title || "Untitled"}</h2>
+          <div className="grid grid-cols-2 grid-rows-1">
+            <h2 className="card-title">{book.title || "Untitled"}</h2>
+            <div className="float-right ml-auto">
+              {/* <label>
+                <b>Status:</b>{" "}
+              </label> */}
+              <select
+                value={status}
+                onChange={(e) =>
+                  updateBookStatus(e.target.value, book.pageCount)
+                }
+                className="select select-bordered w-auto max-w-xs "
+              >
+                <option value="To Read">To Read</option>
+                <option value="Reading">Reading</option>
+                <option value="Finished">Finished</option>
+              </select>
+            </div>
+          </div>
           <p>
             <b>Author:</b> {book.authors?.join(", ") || "Unknown"}
           </p>
           <p>
             <b>Page Count:</b> {book.pageCount || "Unknown"}
           </p>
-          <div className="description-container">
+          <div className="description-container max-w-lg">
             <b>Description:</b>{" "}
-            <div className="description-text text-justify">
+            <div className="description-text md:text-justify">
               {isExpanded ? description : truncatedDescription}
               {description && description.length > MAX_LENGTH && (
                 <button
@@ -549,69 +566,62 @@ export default function BookListItem({
               {!description && "No description available"}
             </div>
           </div>
-          <div>
-            <p className="mb-2">
-              <b>Tags:</b>{" "}
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {tags.map((tag) => (
-                <div key={tag} className="badge badge-primary gap-2">
-                  {tag}
-                  <button
-                    onClick={() => handleRemoveTag(tag)}
-                    className="btn btn-xs btn-circle btn-ghost"
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
-              <div className="badge badge-outline gap-2">
-                <input
-                  type="text"
-                  value={newTag}
-                  onChange={(e) => setNewTag(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && handleAddTag()}
-                  placeholder="Add tag..."
-                  className="bg-transparent border-none outline-none w-20"
-                />
-                <button
-                  onClick={handleAddTag}
-                  className="btn btn-xs btn-circle btn-ghost"
-                >
-                  +
-                </button>
-              </div>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 card-actions justify-start mt-4">
-            <div>
-              <label>
-                <b>Status:</b>{" "}
-              </label>
-              <select
-                value={status}
-                onChange={(e) =>
-                  updateBookStatus(e.target.value, book.pageCount)
-                }
-                className="select select-bordered w-auto max-w-xs"
-              >
-                <option value="To Read">To Read</option>
-                <option value="Reading">Reading</option>
-                <option value="Finished">Finished</option>
-              </select>
-            </div>
+          <div className="grid card-actions justify-start gap-y-4 max-w-2xl">
             {status === "Finished" && (
               <>
                 {renderRatingInput()}
                 {renderReviewInput()}
               </>
             )}
-            <button
-              className="btn btn-primary md:ml-auto my-5 flex"
-              onClick={removeBook}
-            >
-              Remove
-            </button>
+          </div>
+          <div className="grid grid-cols-2 grid-rows-1">
+            <div>
+              <p className="mb-2">
+                <b>Tags:</b>{" "}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                  <div
+                    key={tag}
+                    className="badge badge-secondary gap-2 p02 h-auto"
+                  >
+                    {tag}
+                    <button
+                      onClick={() => handleRemoveTag(tag)}
+                      className="btn btn-xs btn-circle btn-ghost"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+                <div className="badge badge-outline gap-2 h-auto flex">
+                  <div className="inline-flex">
+                    <input
+                      type="text"
+                      value={newTag}
+                      onChange={(e) => setNewTag(e.target.value)}
+                      onKeyPress={(e) => e.key === "Enter" && handleAddTag()}
+                      placeholder="Add tag"
+                      className="bg-transparent border-none outline-none w-20"
+                    />
+                    <button
+                      onClick={handleAddTag}
+                      className="btn btn-xs btn-circle btn-ghost"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="max-w-min ml-auto mt-auto">
+              <button
+                className="btn btn-primary my-5 md:my-0 flex max-w-min"
+                onClick={removeBook}
+              >
+                Remove
+              </button>
+            </div>
           </div>
         </div>
       </div>
