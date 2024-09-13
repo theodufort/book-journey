@@ -152,7 +152,7 @@ const features: {
 // Features component
 const FeaturesGrid = () => {
   return (
-    <section id="features">
+    <section id="features" className="bg-base-200">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8 max-w-6xl mx-auto">
         {features.map((feature) => (
           <div

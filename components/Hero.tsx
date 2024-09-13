@@ -25,7 +25,10 @@ const Hero = () => {
 
         <TestimonialsAvatars priority={true} />
       </div>
-      <div className="lg:w-full rounded-2xl shadow-lg shadow-indigo-500">
+      <div
+        className="lg:w-full rounded-2xl"
+        style={{ boxShadow: "0 0px 50px 0px #6366f1" }}
+      >
         <video className="w-full rounded-2xl" autoPlay={true} muted>
           <source src="/showcase.mp4" type="video/mp4" />
           Your browser does not support the video tag.
