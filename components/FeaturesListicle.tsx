@@ -21,7 +21,7 @@ const features: {
             "Get rewarded for reading your favorite books",
             "Earn points when you rate and review",
           ].map((item) => (
-            <li key={item} className="flex items-center gap-3">
+            <li key={item} className="flex items-center gap-3 text-left">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
@@ -67,7 +67,7 @@ const features: {
             "No recommendation bias",
             "Based on ratings, comments and personal preferences",
           ].map((item) => (
-            <li key={item} className="flex items-center gap-3">
+            <li key={item} className="flex items-center gap-3 text-left">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
@@ -110,7 +110,7 @@ const features: {
         <ul className="space-y-2">
           {["Take notes on books", "Keep your knowledge organized"].map(
             (item) => (
-              <li key={item} className="flex items-center gap-3">
+              <li key={item} className="flex items-center gap-3 text-left">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
