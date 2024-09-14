@@ -2,18 +2,12 @@
 export const dynamic = "force-dynamic";
 import { useEffect, useState } from "react";
 import HeaderDashboard from "@/components/DashboardHeader";
-import Image from "next/image";
-import PointsSection from "@/components/PointsSection";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
 import OnboardingPopup from "@/components/OnboardingPopup";
-import { BookAvatarNoDetails } from "@/components/BookAvatarNoDetails";
-import { DashboardFooter } from "@/components/DashboardFooter";
-import ContributionGraph from "@/components/ContributionGraph";
 import StreakRewardSystem from "@/components/StreakRewardSystem";
-
 export default function Dashboard() {
   const supabase = createClientComponentClient<Database>();
   const [currentlyReading, setCurrentlyReading] = useState([]);
@@ -43,7 +37,6 @@ export default function Dashboard() {
   }, [user]);
 
   async function fetchDashboardData() {
-    setLoading(true);
     try {
       const {
         data: { onboarded },
@@ -109,7 +102,7 @@ export default function Dashboard() {
       setStats({
         books_read: count || 0,
         pages_read: statsResponse.data?.pages_read || 0,
-        reading_time_minutes: statsResponse.data?.reading_time_minutes || 0,
+        reading_time_minutes: statsResponse.data?.pages_read * 1 || 0,
       });
     } catch (error) {
       console.error("Unexpected error fetching dashboard data:", error);
@@ -206,7 +199,7 @@ export default function Dashboard() {
                 </div>
                 <div className="stat-title">Reading Time</div>
                 <div className="stat-value">
-                  {Math.floor((stats?.reading_time_minutes || 0) / 60)} hours
+                  {Math.floor((stats?.reading_time_minutes || 0) / 60)} h
                 </div>
                 <div className="stat-desc">
                   {(stats?.reading_time_minutes || 0) % 60} minutes

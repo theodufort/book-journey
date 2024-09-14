@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import ButtonAccount from "@/components/ButtonAccount";
+import config from "@/config";
 import { useEffect, useState } from "react";
 import {
   createClientComponentClient,
@@ -107,10 +108,32 @@ const HeaderDashboard = () => {
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
+
           <ul
-            className={`menu bg-base-200 text-base-content min-h-full w-80 p-4 space-y-2 shadow-lg rounded-r-lg flex flex-col justify-between`}
+            className={`menu bg-base-200 text-base-content min-h-full w-80 p-4 space-y-2 shadow-lg rounded-r-lg flex flex-col`}
           >
-            <div>
+            <div className="flex">
+              <li>
+                <Link
+                  className="flex items-center gap-2 shrink-0 p-2"
+                  href="/"
+                  title={`${config.appName} homepage`}
+                >
+                  <Image
+                    src={"/logo.png"}
+                    alt={`${config.appName} logo`}
+                    className="w-8"
+                    priority={true}
+                    width={32}
+                    height={32}
+                  />
+                  <span className="font-extrabold text-lg">
+                    {config.appName}
+                  </span>
+                </Link>
+              </li>
+            </div>
+            <div className="mb-auto">
               <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
                 <Link
                   href="/dashboard"
@@ -229,7 +252,10 @@ const HeaderDashboard = () => {
               </li>
             </div>
             {/* Align these two items at the bottom */}
-            <div className="space-x-2 flex">
+            <div
+              className="space-x-2 flex mt-auto"
+              style={{ marginTop: "auto" }}
+            >
               <div className="flex mr-auto">
                 <button
                   onClick={toggleTheme}
