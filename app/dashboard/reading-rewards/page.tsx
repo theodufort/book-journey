@@ -8,6 +8,8 @@ import { UserPoints, Reward } from "@/interfaces/Dashboard";
 import { Database } from "@/types/supabase";
 import { DashboardFooter } from "@/components/DashboardFooter";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
 
 export default function ReadingRewards() {
   const supabase = createClientComponentClient<Database>();
@@ -166,27 +168,28 @@ export default function ReadingRewards() {
         <div className="z-50">
           <HeaderDashboard />
         </div>
+        <div className="flex">
+          <h1 className="text-2xl md:text-4xl font-extrabold">
+            Reading Rewards
+          </h1>
 
-        <h1 className="text-3xl md:text-4xl font-extrabold">Reading Rewards</h1>
-
-        {userPoints && (
-          <div className="stats stats-vertical md:stats-horizontal shadow">
-            <div className="stat bg-base-300">
-              <div className="stat-title">Available Points</div>
-              <div className="stat-value">
+          {userPoints && (
+            <div
+              className="bg-base-200 text-primary rounded-xl p-2 h-full flex items-center my-auto overflow-hidden ml-auto"
+              style={{ boxShadow: "0 0px 10px 0px #6366f1" }}
+            >
+              <Link
+                href="/dashboard/reading-rewards"
+                className="whitespace-nowrap overflow-hidden text-ellipsis mr-1"
+              >
                 {userPoints?.points_earned - userPoints?.points_redeemed}
+              </Link>
+              <div className="flex-shrink-0">
+                <Image src={"/coin.png"} height={25} width={25} alt="coin" />
               </div>
             </div>
-            <div className="stat bg-base-300">
-              <div className="stat-title">Total Points Earned</div>
-              <div className="stat-value">{userPoints.points_earned}</div>
-            </div>
-            <div className="stat bg-base-300">
-              <div className="stat-title">Total Points Redeemed</div>
-              <div className="stat-value">{userPoints.points_redeemed}</div>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {rewards.map((reward) => (

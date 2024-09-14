@@ -64,7 +64,7 @@ const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
       }
     >
       <div
-        className={`card w-auto bg-base-100 shadow-xl ${
+        className={`card w-auto bg-base-200 shadow-xl h-full ${
           isBlurred ? "blur-md" : ""
         }`}
       >
@@ -164,7 +164,7 @@ const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
               </button>
             )}
           </h5>
-          <div>
+          <div className="flex gap-4">
             {/* <a
               href={createAffLink(
                 vol.volumeInfo.industryIdentifiers?.find(
@@ -185,6 +185,28 @@ const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
                 </svg>
               </button>
             </a> */}
+            {allowAdd ? (
+              <div className="card-actions justify-end ml-auto">
+                <select
+                  className="select select-bordered"
+                  onChange={(e) =>
+                    addToReadingList(
+                      vol.volumeInfo.industryIdentifiers?.find(
+                        (id) => id.type === "ISBN_13"
+                      )?.identifier,
+                      e.target.value
+                    )
+                  }
+                >
+                  <option disabled selected>
+                    Add to reading list
+                  </option>
+                  <option value="To Read">To Read</option>
+                  <option value="Reading">Currently Reading</option>
+                  <option value="Finished">Finished</option>
+                </select>
+              </div>
+            ) : null}
             <a
               href={`https://www.anrdoezrs.net/click-101259626-15734439?url=https://booksamillion.com/search2?query=${
                 vol.volumeInfo.industryIdentifiers?.find(
@@ -207,28 +229,6 @@ const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
               </button>
             </a>
           </div>
-          {allowAdd ? (
-            <div className="card-actions justify-end">
-              <select
-                className="select select-bordered"
-                onChange={(e) =>
-                  addToReadingList(
-                    vol.volumeInfo.industryIdentifiers?.find(
-                      (id) => id.type === "ISBN_13"
-                    )?.identifier,
-                    e.target.value
-                  )
-                }
-              >
-                <option disabled selected>
-                  Add to Reading List
-                </option>
-                <option value="To Read">To Read</option>
-                <option value="Reading">Currently Reading</option>
-                <option value="Finished">Finished</option>
-              </select>
-            </div>
-          ) : null}
         </div>
       </div>
       {isBlurred && (

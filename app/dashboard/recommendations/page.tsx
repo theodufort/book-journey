@@ -99,7 +99,7 @@ export default function Recommendations() {
                 No recommendations available at the moment.
               </p>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 ">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 ">
                 {bookSuggestions.map((x, index) => (
                   <div
                     key={`book-suggestion-${x.id}-${index}`}
