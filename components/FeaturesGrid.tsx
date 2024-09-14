@@ -117,7 +117,7 @@ const features = [
             },
             {
               buttonStyles: "bg-base-100 text-base-content",
-              css: "rotate-[6deg] bg-base-200 text-base-content w-72 h-72 -ml-10 -z-10 rounded-xl p-4 opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300",
+              css: "rotate-[6deg] bg-base-200 text-base-content w-72 h-72 -ml-10  rounded-xl p-4 opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300",
             },
           ].map((theme, i) => (
             <div className={theme.css} key={i}>

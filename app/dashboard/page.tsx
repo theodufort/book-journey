@@ -137,7 +137,7 @@ export default function Dashboard() {
         <h1 className="text-3xl md:text-4xl font-extrabold">My Dashboard</h1>
 
         {/* Reading Stats */}
-        <div className="card bg-base-200 shadow-xl -z-10">
+        <div className="card bg-base-200 shadow-xl ">
           <div className="card-body">
             <h2 className="card-title text-xl md:text-2xl font-bold">
               Reading Stats
@@ -208,7 +208,7 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-        <div className="card bg-base-200 shadow-xl -z-10">
+        <div className="card bg-base-200 shadow-xl ">
           <div className="card-body">
             {/* <h2 className="card-title text-xl md:text-2xl font-bold">
               Point Streak{" "}

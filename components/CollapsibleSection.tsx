@@ -29,7 +29,7 @@ export default function CollapsibleSection({
 
   return (
     <div
-      className={`collapse -z-10 ${
+      className={`collapse  ${
         isExpanded ? "collapse-open" : "collapse-close"
       } bg-base-200 mx-0`}
     >

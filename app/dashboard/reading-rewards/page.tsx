@@ -193,7 +193,7 @@ export default function ReadingRewards() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {rewards.map((reward) => (
-            <div key={reward.id} className="card bg-base-300 shadow-xl -z-10">
+            <div key={reward.id} className="card bg-base-300 shadow-xl ">
               <div className="card-body">
                 <div>
                   <h2 className="card-title inline-block">{reward.name}</h2>{" "}
