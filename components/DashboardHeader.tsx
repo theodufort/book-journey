@@ -102,7 +102,7 @@ const HeaderDashboard = () => {
             </svg>
           </label>
         </div>
-        <div className="drawer-side z-100">
+        <div className="drawer-side" style={{ zIndex: 1000 }}>
           <label
             htmlFor="my-drawer"
             aria-label="close sidebar"
@@ -320,7 +320,7 @@ const HeaderDashboard = () => {
           </button>
         </div> */}
 
-        <div className="-z-10">
+        <div className="">
           <ButtonAccount />
         </div>
       </div>
