@@ -313,6 +313,26 @@ const HeaderDashboard = () => {
           </ul>
         </div>
       </div>
+      <div>
+        <Link
+          className="flex items-center gap-2 shrink-0"
+          href="/"
+          title={`${config.appName} homepage`}
+        >
+          {" "}
+          <Image
+            src={"/logo.png"}
+            alt={`${config.appName} logo`}
+            className="h-full"
+            priority={true}
+            width={32}
+            height={32}
+          />
+          <span className="font-extrabold text-lg hidden md:block">
+            {config.appName}
+          </span>
+        </Link>
+      </div>
       <div className="mb-auto md:mt-auto flex">
         {/* <div className="mr-5 hidden md:block">
           <button onClick={() => setShowHowToEarnPoints(true)}>
