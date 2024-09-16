@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import CongratulationsModal from "./CongratulationsModal";
 import { User } from "@supabase/supabase-js";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import Image from "next/image";
 import { Database } from "@/types/supabase";
 import { Volume } from "@/interfaces/GoogleAPI";
 export default function BookListItem({
@@ -443,7 +444,17 @@ export default function BookListItem({
   const renderRatingInput = () => (
     <div className="rating rating-md rating-half inline-block ">
       <label>
-        <b>Your Rating (+25 points):</b>{" "}
+        <b>
+          Your Rating (+25{" "}
+          <Image
+            className="inline-flex"
+            src={"/coin.png"}
+            height={15}
+            width={15}
+            alt="coin"
+          />
+          ):
+        </b>{" "}
       </label>
       <div className="flex mt-2">
         <input
@@ -493,7 +504,17 @@ export default function BookListItem({
       return (
         <div>
           <label htmlFor="review" className="mb-4">
-            <b>Your Review (+50 points):</b>
+            <b>
+              Your Review (+50{" "}
+              <Image
+                className="inline-flex"
+                src={"/coin.png"}
+                height={15}
+                width={15}
+                alt="coin"
+              />
+              ):
+            </b>
           </label>
           <textarea
             id="review"
