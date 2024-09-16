@@ -21,7 +21,6 @@ export interface UserPoints {
 }
 
 export interface Reward {
-  id: number;
   type: string;
   name: string;
   merchant: string;
