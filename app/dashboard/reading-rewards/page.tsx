@@ -10,6 +10,7 @@ import { DashboardFooter } from "@/components/DashboardFooter";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { randomUUID } from "crypto";
 
 export default function ReadingRewards() {
   const supabase = createClientComponentClient<Database>();
@@ -57,7 +58,6 @@ export default function ReadingRewards() {
     // In a real application, you would fetch this from an API or database
     setRewards([
       {
-        id: 1,
         name: "Coupon: 10% off $25",
         type: "coupon",
         merchant: "BOOKSAMILLION",
@@ -67,7 +67,6 @@ export default function ReadingRewards() {
         link: "https://www.kqzyfj.com/click-101259626-13986197",
       },
       {
-        id: 2,
         name: "Coupon: 15% off $35",
         type: "coupon",
         merchant: "BOOKSAMILLION",
@@ -77,7 +76,6 @@ export default function ReadingRewards() {
         link: "https://www.jdoqocy.com/click-101259626-13986208",
       },
       {
-        id: 3,
         name: "Coupon: 20% off $100",
         type: "coupon",
         merchant: "BOOKSAMILLION",
@@ -87,7 +85,6 @@ export default function ReadingRewards() {
         link: "https://www.jdoqocy.com/click-101259626-13986212",
       },
       {
-        id: 4,
         name: "Coupon: 10% off $25",
         type: "coupon",
         merchant: "2NDANDCHARLES",
@@ -97,7 +94,6 @@ export default function ReadingRewards() {
         link: "https://www.tkqlhce.com/click-101259626-15658770",
       },
       {
-        id: 5,
         name: "Coupon: 15% off $35",
         type: "coupon",
         merchant: "2NDANDCHARLES",
@@ -107,7 +103,6 @@ export default function ReadingRewards() {
         link: "https://www.dpbolvw.net/click-101259626-15658774",
       },
       {
-        id: 6,
         name: "Coupon: 20% off $100",
         type: "coupon",
         merchant: "2NDANDCHARLES",
@@ -115,6 +110,15 @@ export default function ReadingRewards() {
           "Get a coupon to buy any book on a trusted book selling website!",
         cost: 300,
         link: "https://www.anrdoezrs.net/click-101259626-15658777",
+      },
+      {
+        name: "Get 3 audio books for FREE",
+        type: "coupon",
+        merchant: "AUDIOBOOKS.COM",
+        description:
+          "Get 3 free audio books on a trusted audio book subscription website!",
+        cost: 300,
+        link: "https://www.kqzyfj.com/click-101259626-11785732",
       },
     ]);
   }
@@ -193,7 +197,7 @@ export default function ReadingRewards() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {rewards.map((reward) => (
-            <div key={reward.id} className="card bg-base-300 shadow-xl ">
+            <div key={randomUUID()} className="card bg-base-300 shadow-xl ">
               <div className="card-body">
                 <div>
                   <h2 className="card-title inline-block">{reward.name}</h2>{" "}
