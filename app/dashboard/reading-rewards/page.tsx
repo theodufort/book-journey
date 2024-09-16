@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import HeaderDashboard from "@/components/DashboardHeader";
 import { User } from "@supabase/supabase-js";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -10,7 +11,6 @@ import { DashboardFooter } from "@/components/DashboardFooter";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { randomUUID } from "crypto";
 
 export default function ReadingRewards() {
   const supabase = createClientComponentClient<Database>();
@@ -197,7 +197,7 @@ export default function ReadingRewards() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {rewards.map((reward) => (
-            <div key={randomUUID()} className="card bg-base-300 shadow-xl ">
+            <div key={uuidv4()} className="card bg-base-300 shadow-xl ">
               <div className="card-body">
                 <div>
                   <h2 className="card-title inline-block">{reward.name}</h2>{" "}
