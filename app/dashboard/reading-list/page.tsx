@@ -304,7 +304,7 @@ export default function ReadingList() {
                 <>
                   <CollapsibleSection
                     status="To Read"
-                    title={`To Read (${toReadBooks.length})`}
+                    title={`To Read (${toReadBooks.length}📘)`}
                     isExpanded={expandedSections["To Read"]}
                     onToggle={() => toggleSection("To Read")}
                     books={toReadBooks}
@@ -312,7 +312,7 @@ export default function ReadingList() {
                   />
                   <CollapsibleSection
                     status="Reading"
-                    title={`Currently Reading (${readingBooks.length})`}
+                    title={`Currently Reading (${readingBooks.length}📘)`}
                     isExpanded={expandedSections["Reading"]}
                     onToggle={() => toggleSection("Reading")}
                     books={readingBooks}
@@ -320,7 +320,7 @@ export default function ReadingList() {
                   />
                   <CollapsibleSection
                     status="Finished"
-                    title={`Finished (${finishedBooks.length})`}
+                    title={`Finished (${finishedBooks.length}📘)`}
                     isExpanded={expandedSections["Finished"]}
                     onToggle={() => toggleSection("Finished")}
                     books={finishedBooks}

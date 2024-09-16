@@ -177,7 +177,7 @@ export default function Profile() {
         <div className="flex">
           <h1 className="text-3xl md:text-4xl font-extrabold">My Profile</h1>
           {user ? (
-            <button className="btn btn-info ml-5">
+            <button className="btn btn-primary ml-5">
               <Link href={"/profile/" + user.id} target="_blank" passHref>
                 View public profile
               </Link>
@@ -185,14 +185,14 @@ export default function Profile() {
           ) : null}
         </div>
         {user ? <CategorySelection userId={user.id} /> : null}
-        {user ? (
+        {/* {user ? (
           <div>
             <h2 className="text-2xl font-bold mb-4">Share Your User ID</h2>
             <p>Your user ID: {user.id}</p>
           </div>
-        ) : null}
-        <AddFriend user={user} onFriendAdded={fetchFriends} />
-        <div>
+        ) : null} */}
+        {/* <AddFriend user={user} onFriendAdded={fetchFriends} /> */}
+        {/* <div>
           <h2 className="text-2xl font-bold mb-4">Friend Requests</h2>
           {friendRequests.length > 0 ? (
             <ul>
@@ -231,8 +231,8 @@ export default function Profile() {
           ) : (
             <p>No pending friend requests.</p>
           )}
-        </div>
-        <div>
+        </div> */}
+        {/* <div>
           <h2 className="text-2xl font-bold mb-4">My Friends</h2>
 
           {friends.length > 0 ? (
@@ -262,7 +262,7 @@ export default function Profile() {
           ) : (
             <p>You haven&apos;t added any friends yet.</p>
           )}
-        </div>
+        </div> */}
       </section>
     </main>
   );

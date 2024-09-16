@@ -140,21 +140,7 @@ const HeaderDashboard = () => {
                   className="flex items-center space-x-3 p-2 align-middle"
                 >
                   {/* Pointier Home Icon */}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-blue-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 3l8 8-1.5 1.5L18 11V20a1 1 0 01-1 1h-4a1 1 0 01-1-1v-6H8v6a1 1 0 01-1 1H4a1 1 0 01-1-1V11L1.5 12.5 12 3z"
-                    />
-                  </svg>
-                  Dashboard
+                  📊 Dashboard
                 </Link>
               </li>
 
@@ -164,21 +150,7 @@ const HeaderDashboard = () => {
                   className="flex items-center space-x-3 p-2 align-middle"
                 >
                   {/* Bookmark Icon */}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-blue-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M5 3v16l7-7 7 7V3z"
-                    />
-                  </svg>
-                  Reading List
+                  📚 Reading List
                 </Link>
               </li>
               <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
@@ -187,21 +159,7 @@ const HeaderDashboard = () => {
                   className="flex items-center space-x-3 p-2 align-middle"
                 >
                   {/* Notebook Icon */}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-blue-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M3 7h18M3 7v13a2 2 0 002 2h14a2 2 0 002-2V7M3 7l9 5 9-5"
-                    />
-                  </svg>
-                  Reading Notes
+                  ✍️ Reading Notes
                 </Link>
               </li>
               <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
@@ -210,21 +168,7 @@ const HeaderDashboard = () => {
                   className="flex items-center space-x-3 p-2 align-middle"
                 >
                   {/* Star Icon */}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-blue-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 3l2.09 6.26L21 9.27l-5 3.65 2 6.08L12 15.27l-6 3.65 2-6.08-5-3.65 6.91-1.01L12 3z"
-                    />
-                  </svg>
-                  Reading Recommendations
+                  🔮 Reading Recommendations
                 </Link>
               </li>
               <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
@@ -233,21 +177,7 @@ const HeaderDashboard = () => {
                   className="flex items-center space-x-3 p-2 align-middle"
                 >
                   {/* Trophy Icon */}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-blue-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M16 4V2H8v2H5a1 1 0 00-1 1v3a5 5 0 004 4.9V14a5 5 0 004 4.9V20H9v2h6v-2h-3v-1.1a5 5 0 004-4.9v-1.1a5 5 0 004-4.9V5a1 1 0 00-1-1h-3z"
-                    />
-                  </svg>
-                  Reading Rewards
+                  🏆 Reading Rewards
                 </Link>
               </li>
             </div>
