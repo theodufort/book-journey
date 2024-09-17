@@ -41,7 +41,11 @@ export default function Dashboard() {
       const {
         data: { onboarded },
         error,
-      } = await supabase.from("user_preferences").select("onboarded").single();
+      } = await supabase
+        .from("user_preferences")
+        .select("onboarded")
+        .eq("user_id", user.id)
+        .single();
       if (onboarded != true) {
         setShowUnboard(false);
       }
