@@ -20,6 +20,8 @@ export default function BooksLike({ params }: { params: { id: string[] } }) {
     async function fetchBooksLike() {
       setLoading(true);
 
+      console.log("Fetching books like for ISBN:", isbn);
+
       const { data: booksLikeData, error: booksLikeError } = await supabase
         .from("books_like")
         .select("books")
@@ -27,21 +29,23 @@ export default function BooksLike({ params }: { params: { id: string[] } }) {
         .single();
 
       if (booksLikeError) {
-        console.error(booksLikeError);
+        console.error("Error fetching books_like:", booksLikeError);
         setError("Error loading similar books. Please try again later.");
         setLoading(false);
         return;
       }
+
+      console.log("Books like data:", booksLikeData);
 
       if (booksLikeData && booksLikeData.books.length > 0) {
         const { data: mainBookData, error: mainBookError } = await supabase
           .from("books")
           .select("isbn_13, data")
           .eq("isbn_13", isbn);
-        console.log(mainBookData);
+        console.log("Main book data:", mainBookData);
 
         if (mainBookError) {
-          console.error(mainBookError);
+          console.error("Error fetching main book:", mainBookError);
           setError("Error loading main book details. Please try again later.");
           setLoading(false);
           return;
@@ -56,15 +60,18 @@ export default function BooksLike({ params }: { params: { id: string[] } }) {
             .in("isbn_13", booksLikeData.books);
 
           if (booksError) {
-            console.error(booksError);
+            console.error("Error fetching similar books:", booksError);
             setError("Error loading book details. Please try again later.");
           } else if (booksData) {
+            console.log("Similar books data:", booksData);
             setBooks(booksData);
           }
         } else {
+          console.error("Main book not found");
           setError("Main book not found.");
         }
       } else {
+        console.log("No similar books found");
         setError("No similar books found.");
       }
       setLoading(false);
@@ -86,11 +93,15 @@ export default function BooksLike({ params }: { params: { id: string[] } }) {
   return (
     <div className="space-y-8">
       <h1 className="text-3xl font-bold">Books Like {mainBookTitle}</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {books.map((book) => (
-          <BookCard key={book.isbn_13} book={book} />
-        ))}
-      </div>
+      {books.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {books.map((book) => (
+            <BookCard key={book.isbn_13} book={book} />
+          ))}
+        </div>
+      ) : (
+        <p>No similar books found.</p>
+      )}
       <Link href="/books-like" className="btn btn-primary">
         Back to Search
       </Link>
