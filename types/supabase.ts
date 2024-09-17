@@ -1156,8 +1156,8 @@ export type Database = {
           day5: string | null
           day6: string | null
           day7: string | null
-          id: string
           reward_awarded: boolean[] | null
+          user_id: string
         }
         Insert: {
           day1?: string | null
@@ -1167,8 +1167,8 @@ export type Database = {
           day5?: string | null
           day6?: string | null
           day7?: string | null
-          id?: string
           reward_awarded?: boolean[] | null
+          user_id?: string
         }
         Update: {
           day1?: string | null
@@ -1178,13 +1178,13 @@ export type Database = {
           day5?: string | null
           day6?: string | null
           day7?: string | null
-          id?: string
           reward_awarded?: boolean[] | null
+          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "user_point_streak_id_fkey"
-            columns: ["id"]
+            foreignKeyName: "user_point_streak_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: true
             referencedRelation: "users"
             referencedColumns: ["id"]
