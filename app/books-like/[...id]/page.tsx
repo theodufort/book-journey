@@ -38,37 +38,30 @@ export default function BooksLike({ params }: { params: { id: string[] } }) {
       console.log("Books like data:", booksLikeData);
 
       if (booksLikeData && booksLikeData.books.length > 0) {
-        const { data: mainBookData, error: mainBookError } = await supabase
-          .from("books")
-          .select("isbn_13, data")
-          .eq("isbn_13", isbn);
-        console.log("Main book data:", mainBookData);
-
-        if (mainBookError) {
-          console.error("Error fetching main book:", mainBookError);
-          setError("Error loading main book details. Please try again later.");
-          setLoading(false);
-          return;
-        }
-
-        if (mainBookData && mainBookData.length > 0) {
-          setMainBook(mainBookData[0]);
-
-          const { data: booksData, error: booksError } = await supabase
-            .from("books")
-            .select("isbn_13, data")
-            .in(
-              "isbn_13",
-              booksLikeData.books.map((x) => x.trim())
-            );
-          console.log(booksLikeData.books.map((x) => x.trim()));
-          if (booksError) {
-            console.error("Error fetching similar books:", booksError);
-            setError("Error loading book details. Please try again later.");
-          } else if (booksData) {
-            console.log("Similar books data:", booksData);
-            setBooks(booksData);
+        try {
+          const mainBookResponse = await fetch(`/api/books/${isbn}`);
+          if (!mainBookResponse.ok) {
+            throw new Error('Failed to fetch main book');
           }
+          const mainBookData = await mainBookResponse.json();
+          console.log("Main book data:", mainBookData);
+          setMainBook(mainBookData);
+
+          const similarBooksPromises = booksLikeData.books.map(async (bookIsbn) => {
+            const response = await fetch(`/api/books/${bookIsbn.trim()}`);
+            if (!response.ok) {
+              throw new Error(`Failed to fetch book with ISBN ${bookIsbn}`);
+            }
+            return response.json();
+          });
+
+          const similarBooksData = await Promise.all(similarBooksPromises);
+          console.log("Similar books data:", similarBooksData);
+          setBooks(similarBooksData);
+        } catch (error) {
+          console.error("Error fetching book details:", error);
+          setError("Error loading book details. Please try again later.");
+        }
         } else {
           console.error("Main book not found");
           setError("Main book not found.");
