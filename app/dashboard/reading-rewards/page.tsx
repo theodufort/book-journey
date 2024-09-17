@@ -19,7 +19,6 @@ export default function ReadingRewards() {
   const [rewards, setRewards] = useState<Reward[]>([]);
   const [filterMerchant, setFilterMerchant] = useState<string>('');
   const [filterCost, setFilterCost] = useState<string>('');
-  const [filterCategory, setFilterCategory] = useState<string>('');
   const router = useRouter();
   useEffect(() => {
     const getUser = async () => {
@@ -142,10 +141,10 @@ export default function ReadingRewards() {
           (filterCost === '201-300' && reward.cost > 200 && reward.cost <= 300) ||
           (filterCost === '301+' && reward.cost > 300)
         )) &&
-        (!filterCategory || reward.category === filterCategory)
+        true
       );
     });
-  }, [rewards, filterMerchant, filterCost, filterCategory]);
+  }, [rewards, filterMerchant, filterCost]);
 
   async function redeemReward(reward: Reward) {
     if (
@@ -239,18 +238,6 @@ export default function ReadingRewards() {
             <option value="101-200">101 - 200 points</option>
             <option value="201-300">201 - 300 points</option>
             <option value="301+">301+ points</option>
-          </select>
-          <select
-            className="select select-bordered w-full max-w-xs"
-            onChange={(e) => setFilterCategory(e.target.value)}
-            value={filterCategory}
-          >
-            <option value="">All Categories</option>
-            {Array.from(new Set(rewards.map((r) => r.category))).map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
           </select>
         </div>
 
