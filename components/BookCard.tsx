@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { FC } from "react";
 
 interface BookCardProps {
   book: {
@@ -16,10 +17,13 @@ interface BookCardProps {
   };
 }
 
-const BookCard: React.FC<BookCardProps> = ({ book }) => {
+const BookCard: FC<BookCardProps> = ({ book }) => {
   const title = book.data?.volumeInfo?.title || "Unknown Title";
-  const authors = book.data?.volumeInfo?.authors?.join(", ") || "Unknown Author";
-  const thumbnailUrl = book.data?.volumeInfo?.imageLinks?.thumbnail || "/placeholder-book-cover.jpg";
+  const authors =
+    book.data?.volumeInfo?.authors?.join(", ") || "Unknown Author";
+  const thumbnailUrl =
+    book.data?.volumeInfo?.imageLinks?.thumbnail ||
+    "/placeholder-book-cover.jpg";
 
   return (
     <div className="card bg-base-100 shadow-xl">
@@ -37,7 +41,10 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
         <p>{authors}</p>
         <div className="card-actions justify-end">
           <Link
-            href={`/books-like/${encodeURIComponent(title).replace(/%20/g, '-')}-${book.isbn_13}`}
+            href={`/books-like/${encodeURIComponent(title).replace(
+              /%20/g,
+              "-"
+            )}-${book.isbn_13}`}
             className="btn btn-primary"
           >
             Find Similar
