@@ -41,19 +41,23 @@ export default function BooksLike({ params }: { params: { id: string[] } }) {
         try {
           const mainBookResponse = await fetch(`/api/books/${isbn}`);
           if (!mainBookResponse.ok) {
-            throw new Error('Failed to fetch main book');
+            throw new Error("Failed to fetch main book");
           }
           const mainBookData = await mainBookResponse.json();
           console.log("Main book data:", mainBookData);
           setMainBook(mainBookData);
 
-          const similarBooksPromises = booksLikeData.books.map(async (bookIsbn) => {
-            const response = await fetch(`/api/books/${bookIsbn.trim()}`);
-            if (!response.ok) {
-              throw new Error(`Failed to fetch book with ISBN ${bookIsbn}`);
+          const similarBooksPromises = booksLikeData.books.map(
+            async (bookIsbn) => {
+              const response = await fetch(
+                `/api/books/${bookIsbn.trim()}?useProxy=true`
+              );
+              if (!response.ok) {
+                throw new Error(`Failed to fetch book with ISBN ${bookIsbn}`);
+              }
+              return response.json();
             }
-            return response.json();
-          });
+          );
 
           const similarBooksData = await Promise.all(similarBooksPromises);
           console.log("Similar books data:", similarBooksData);
