@@ -62,11 +62,11 @@ const HeaderDashboard = () => {
       const { data: checkExistStreak } = await supabase
         .from("user_point_streak")
         .select("*")
-        .eq("id", user.id)
+        .eq("user_id", user.id)
         .single();
 
       if (checkExistStreak == null) {
-        await supabase.from("user_point_streak").insert({ id: user.id });
+        await supabase.from("user_point_streak").insert({ user_id: user.id });
       }
       if (error) {
         console.error("Error fetching points:", error);
