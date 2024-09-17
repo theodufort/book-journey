@@ -62,10 +62,6 @@ export default function BooksLike({ params }: { params: { id: string[] } }) {
           console.error("Error fetching book details:", error);
           setError("Error loading book details. Please try again later.");
         }
-        } else {
-          console.error("Main book not found");
-          setError("Main book not found.");
-        }
       } else {
         console.log("No similar books found");
         setError("No similar books found.");
