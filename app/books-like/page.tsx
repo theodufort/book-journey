@@ -25,6 +25,7 @@ interface Book {
 }
 
 export default function BooksLikeDirectory() {
+  const [loading, setLoading] = useState(false);
   const [booksLike, setBooksLike] = useState<BookLike[]>([]);
   const [books, setBooks] = useState<{ [key: string]: Book }>({});
 
@@ -37,7 +38,9 @@ export default function BooksLikeDirectory() {
           .limit(10);
 
         if (booksLikeError) {
-          throw new Error(`Error fetching books_like: ${booksLikeError.message}`);
+          throw new Error(
+            `Error fetching books_like: ${booksLikeError.message}`
+          );
         }
 
         if (!booksLikeData || booksLikeData.length === 0) {
@@ -85,7 +88,6 @@ export default function BooksLikeDirectory() {
         setBooks(bookMap);
       } catch (error) {
         console.error("Error in fetchBooksLike:", error);
-        setError((error as Error).message);
       } finally {
         setLoading(false);
       }
