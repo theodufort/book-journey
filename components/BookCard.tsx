@@ -23,9 +23,9 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
         <Image
           src={book.data.volumeInfo.imageLinks?.thumbnail || "/placeholder-book-cover.jpg"}
           alt={`Cover of ${book.data.volumeInfo.title}`}
-          width={200}
-          height={300}
-          className="w-full h-64 object-cover"
+          width={150}
+          height={225}
+          className="w-full h-48 object-cover"
         />
       </figure>
       <div className="card-body">
