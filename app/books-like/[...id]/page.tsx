@@ -7,9 +7,9 @@ import BookCard from "@/components/BookCard";
 
 const supabase = createClientComponentClient<Database>();
 
-export default function BooksLike({ params }: { params: { id: string[], isbn: string } }) {
-  const isbn = params.isbn;
-  const decodedId = decodeURIComponent(params.id.join('/'));
+export default function BooksLike({ params }: { params: { id: string[] } }) {
+  const isbn = params.id[params.id.length - 1];
+  const decodedId = decodeURIComponent(params.id.slice(0, -1).join('/'));
   const [books, setBooks] = useState<any[]>([]);
   const [mainBook, setMainBook] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
