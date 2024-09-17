@@ -7,39 +7,31 @@ import { WelcomeEmail } from "@/components/WelcomeTemplate";
 
 export const dynamic = "force-dynamic";
 
+// This route is called after a successful login. It exchanges the code for a session and redirects to the callback URL (see config.js).
 export async function GET(req: NextRequest) {
   const requestUrl = new URL(req.url);
   const code = requestUrl.searchParams.get("code");
-  const supabase = createRouteHandlerClient({ cookies });
-
+  var userLoggedIn: any = [];
   if (code) {
-    // Exchange the code for a session
+    const supabase = createRouteHandlerClient({ cookies });
     await supabase.auth.exchangeCodeForSession(code);
-
-    // Retrieve the current user
     const {
       data: { user },
     } = await supabase.auth.getUser();
-
-    if (user) {
-      // Check if this is a new sign-up
-      if (user.aud === "authenticated") {
-        // New user sign-up detected, send a welcome email
-        const resend = new Resend(process.env.RESEND_API_KEY);
-        const { data, error } = await resend.emails.send({
-          from: "welcome@mybookquest.com",
-          to: user.email,
-          subject: "Welcome to MyBookQuest!",
-          react: WelcomeEmail(),
-        });
-
-        if (error) {
-          return NextResponse.json({ error });
-        }
-      }
+    userLoggedIn = user;
+  } else {
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const { data, error } = await resend.emails.send({
+      from: "welcome@mybookquest.com",
+      to: userLoggedIn == null ? "theodufort05@gmail.com" : userLoggedIn.email,
+      subject: "Welcome to MyBookQuest!",
+      react: WelcomeEmail(),
+    });
+    if (error) {
+      return Response.json({ error });
     }
   }
 
-  // Redirect to the callback URL after the sign-in/sign-up process
+  // URL to redirect to after sign in process completes
   return NextResponse.redirect(requestUrl.origin + config.auth.callbackUrl);
 }
