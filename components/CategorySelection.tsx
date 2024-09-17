@@ -7,21 +7,46 @@ interface CategorySelectionProps {
 }
 
 const categories = [
-  "Fiction",
-  "Non-Fiction",
-  "Mystery",
-  "Science Fiction",
   "Fantasy",
-  "Romance",
-  "Thriller",
-  "Biography",
   "History",
-  "Self-Help",
-  "Business",
-  "Science",
-  "Technology",
+  "Music",
   "Art",
+  "Biography",
+  "Business",
+  "Chick Lit",
+  "Children's",
+  "Christian",
+  "Classics",
+  "Comics",
+  "Contemporary",
+  "Cookbooks",
+  "Crime",
+  "Ebooks",
+  "Fiction",
+  "Gay and Lesbian",
+  "Graphic Novels",
+  "Historical Fiction",
+  "Horror",
+  "Humor and Comedy",
+  "Manga",
+  "Memoir",
+  "Mystery",
+  "Nonfiction",
+  "Paranormal",
+  "Philosophy",
+  "Poetry",
+  "Psychology",
+  "Religion",
+  "Romance",
+  "Science",
+  "Science Fiction",
+  "Self-Help",
+  "Suspense",
+  "Spirituality",
+  "Sports",
+  "Thriller",
   "Travel",
+  "Technology",
 ];
 
 const CategorySelection: React.FC<CategorySelectionProps> = ({ userId }) => {
@@ -77,7 +102,7 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({ userId }) => {
           return prev;
         }
         newSelectedCategories = prev.filter((cat) => cat !== category);
-      } else if (prev.length < 5) {
+      } else if (prev.length < 10) {
         newSelectedCategories = [...prev, category];
       } else {
         newSelectedCategories = prev;
@@ -94,7 +119,7 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({ userId }) => {
 
   return (
     <div>
-      <p className="mb-2">Select up to 5 categories:</p>
+      <p className="mb-2">Select up to 10 categories:</p>
       <div className="grid grid-cols-2 gap-2">
         {categories.map((category) => (
           <label key={category} className="flex items-center">
@@ -104,7 +129,7 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({ userId }) => {
               checked={selectedCategories.includes(category)}
               onChange={() => handleCategoryChange(category)}
               disabled={
-                selectedCategories.length >= 5 &&
+                selectedCategories.length >= 10 &&
                 !selectedCategories.includes(category)
               }
             />
