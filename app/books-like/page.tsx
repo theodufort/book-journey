@@ -15,8 +15,12 @@ interface BookLike {
 interface Book {
   isbn_13: string;
   data: {
-    title: string;
-    cover_image: string;
+    volumeInfo: {
+      title: string;
+      imageLinks?: {
+        thumbnail?: string;
+      };
+    };
   };
 }
 
@@ -69,19 +73,19 @@ export default function BooksLikeDirectory() {
           <div key={item.id} className="card bg-base-100 shadow-xl">
             <figure>
               <Image
-                src={books[item.id]?.data.cover_image || "/placeholder-book-cover.jpg"}
-                alt={`Cover of ${books[item.id]?.data.title}`}
+                src={books[item.id]?.data.volumeInfo.imageLinks?.thumbnail || "/placeholder-book-cover.jpg"}
+                alt={`Cover of ${books[item.id]?.data.volumeInfo.title}`}
                 width={200}
                 height={300}
                 className="w-full h-64 object-cover"
               />
             </figure>
             <div className="card-body">
-              <h2 className="card-title">{books[item.id]?.data.title}</h2>
+              <h2 className="card-title">{books[item.id]?.data.volumeInfo.title}</h2>
               <p>Similar books:</p>
               <ul className="list-disc list-inside">
                 {item.books.slice(0, 3).map((isbn) => (
-                  <li key={isbn}>{books[isbn]?.data.title}</li>
+                  <li key={isbn}>{books[isbn]?.data.volumeInfo.title}</li>
                 ))}
               </ul>
               <div className="card-actions justify-end">
