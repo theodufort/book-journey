@@ -15,21 +15,31 @@ export default function BooksLike({ params }: { params: { id: string } }) {
   useEffect(() => {
     async function fetchBooksLike() {
       setLoading(true);
-      const { data, error } = await supabase
+      const { data: booksLikeData, error: booksLikeError } = await supabase
         .from("books_like")
         .select("books")
         .eq("id", params.id)
         .single();
 
-      if (error) {
-        console.error(error);
+      if (booksLikeError) {
+        console.error(booksLikeError);
         setError("Error loading similar books. Please try again later.");
-      } else if (data) {
-        const bookPromises = data.books.map((isbn: string) =>
-          fetch(`/api/book/${isbn}`).then((res) => res.json())
-        );
-        const bookData = await Promise.all(bookPromises);
-        setBooks(bookData);
+        setLoading(false);
+        return;
+      }
+
+      if (booksLikeData) {
+        const { data: booksData, error: booksError } = await supabase
+          .from("books")
+          .select("isbn_13, data")
+          .in("isbn_13", booksLikeData.books);
+
+        if (booksError) {
+          console.error(booksError);
+          setError("Error loading book details. Please try again later.");
+        } else if (booksData) {
+          setBooks(booksData);
+        }
       }
       setLoading(false);
     }
