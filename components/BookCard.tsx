@@ -36,7 +36,7 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
         <p>{book.data.volumeInfo.authors?.join(", ") || "Unknown Author"}</p>
         <div className="card-actions justify-end">
           <Link
-            href={`/books-like/${encodeURIComponent(book.data.volumeInfo.title)}-${book.isbn_13}`}
+            href={`/books-like/${encodeURIComponent(book.data.volumeInfo.title).replace(/%20/g, '-')}-${book.isbn_13}`}
             className="btn btn-primary"
           >
             Find Similar
