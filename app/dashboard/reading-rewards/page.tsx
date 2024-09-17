@@ -17,8 +17,8 @@ export default function ReadingRewards() {
   const [userPoints, setUserPoints] = useState<UserPoints | null>(null);
   const [loading, setLoading] = useState(true);
   const [rewards, setRewards] = useState<Reward[]>([]);
-  const [filterMerchant, setFilterMerchant] = useState<string>('');
-  const [filterCost, setFilterCost] = useState<string>('');
+  const [filterMerchant, setFilterMerchant] = useState<string>("");
+  const [filterCost, setFilterCost] = useState<string>("");
   const router = useRouter();
   useEffect(() => {
     const getUser = async () => {
@@ -66,7 +66,7 @@ export default function ReadingRewards() {
           "Get a coupon to buy any book on a trusted book selling website!",
         cost: 100,
         link: "https://www.kqzyfj.com/click-101259626-13986197",
-        category: "discount",
+        category: "books",
       },
       {
         name: "Coupon: 15% off $35",
@@ -76,7 +76,7 @@ export default function ReadingRewards() {
           "Get a coupon to buy any book on a trusted book selling website!",
         cost: 200,
         link: "https://www.jdoqocy.com/click-101259626-13986208",
-        category: "discount",
+        category: "books",
       },
       {
         name: "Coupon: 20% off $100",
@@ -86,7 +86,7 @@ export default function ReadingRewards() {
           "Get a coupon to buy any book on a trusted book selling website!",
         cost: 300,
         link: "https://www.jdoqocy.com/click-101259626-13986212",
-        category: "discount",
+        category: "books",
       },
       {
         name: "Coupon: 10% off $25",
@@ -96,7 +96,7 @@ export default function ReadingRewards() {
           "Get a coupon to buy any book on a trusted book selling website!",
         cost: 100,
         link: "https://www.tkqlhce.com/click-101259626-15658770",
-        category: "discount",
+        category: "books",
       },
       {
         name: "Coupon: 15% off $35",
@@ -106,7 +106,7 @@ export default function ReadingRewards() {
           "Get a coupon to buy any book on a trusted book selling website!",
         cost: 200,
         link: "https://www.dpbolvw.net/click-101259626-15658774",
-        category: "discount",
+        category: "books",
       },
       {
         name: "Coupon: 20% off $100",
@@ -116,7 +116,7 @@ export default function ReadingRewards() {
           "Get a coupon to buy any book on a trusted book selling website!",
         cost: 300,
         link: "https://www.anrdoezrs.net/click-101259626-15658777",
-        category: "discount",
+        category: "books",
       },
       {
         name: "Get 3 audio books for FREE",
@@ -126,7 +126,7 @@ export default function ReadingRewards() {
           "Get 3 free audio books on a trusted audio book subscription website!",
         cost: 300,
         link: "https://www.kqzyfj.com/click-101259626-11785732",
-        category: "free",
+        category: "audio books",
       },
     ]);
   }
@@ -135,12 +135,15 @@ export default function ReadingRewards() {
     return rewards.filter((reward) => {
       return (
         (!filterMerchant || reward.merchant === filterMerchant) &&
-        (!filterCost || (
-          (filterCost === '0-100' && reward.cost <= 100) ||
-          (filterCost === '101-200' && reward.cost > 100 && reward.cost <= 200) ||
-          (filterCost === '201-300' && reward.cost > 200 && reward.cost <= 300) ||
-          (filterCost === '301+' && reward.cost > 300)
-        )) &&
+        (!filterCost ||
+          (filterCost === "0-100" && reward.cost <= 100) ||
+          (filterCost === "101-200" &&
+            reward.cost > 100 &&
+            reward.cost <= 200) ||
+          (filterCost === "201-300" &&
+            reward.cost > 200 &&
+            reward.cost <= 300) ||
+          (filterCost === "301+" && reward.cost > 300)) &&
         true
       );
     });
@@ -208,7 +211,9 @@ export default function ReadingRewards() {
                 href="/dashboard/reading-rewards"
                 className="whitespace-nowrap overflow-hidden text-ellipsis mr-1 flex items-center"
               >
-                <span className="mr-1">{userPoints?.points_earned - userPoints?.points_redeemed}</span>
+                <span className="mr-1">
+                  {userPoints?.points_earned - userPoints?.points_redeemed}
+                </span>
                 <Image src={"/coin.png"} height={20} width={20} alt="coin" />
               </Link>
             </div>
@@ -222,11 +227,13 @@ export default function ReadingRewards() {
             value={filterMerchant}
           >
             <option value="">All Merchants</option>
-            {Array.from(new Set(rewards.map((r) => r.merchant))).map((merchant) => (
-              <option key={merchant} value={merchant}>
-                {merchant}
-              </option>
-            ))}
+            {Array.from(new Set(rewards.map((r) => r.merchant))).map(
+              (merchant) => (
+                <option key={merchant} value={merchant}>
+                  {merchant}
+                </option>
+              )
+            )}
           </select>
           <select
             className="select select-bordered w-full max-w-xs"
@@ -250,7 +257,13 @@ export default function ReadingRewards() {
                 <div className="card-actions justify-between items-center mt-2">
                   <span className="text-xs font-bold flex items-center">
                     {reward.cost}
-                    <Image src={"/coin.png"} height={16} width={16} alt="coin" className="ml-1" />
+                    <Image
+                      src={"/coin.png"}
+                      height={16}
+                      width={16}
+                      alt="coin"
+                      className="ml-1"
+                    />
                   </span>
                   <button
                     className="btn btn-primary btn-xs"
