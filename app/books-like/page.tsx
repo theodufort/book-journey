@@ -75,7 +75,7 @@ export default function BooksLikeDirectory() {
 
         console.log("Books Data:", booksData);
 
-        const bookMap = booksData.reduce((acc, book) => {
+        const bookMap = booksData.reduce((acc, book: any) => {
           if (book.isbn_13 && book.data) {
             acc[book.isbn_13] = book;
           } else {
@@ -137,7 +137,7 @@ export default function BooksLikeDirectory() {
                   <Link
                     href={`/books-like/${encodeURIComponent(
                       mainBook?.data?.volumeInfo?.title || "Unknown"
-                    ).replace(/%20/g, '-')}-${item.id}`}
+                    ).replace(/%20/g, "-")}-${item.id}`}
                     className="btn btn-primary"
                   >
                     View More
