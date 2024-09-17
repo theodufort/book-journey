@@ -10,10 +10,10 @@ const supabase = createClientComponentClient<Database>();
 export default function BooksLike({
   params,
 }: {
-  params: { id: string[]; isbn: string };
+  params: { id: string };
 }) {
-  const isbn = params.isbn;
-  const decodedId = decodeURIComponent(params.id.join("/"));
+  const [title, isbn] = params.id.split('-');
+  const decodedTitle = decodeURIComponent(title);
   const [books, setBooks] = useState<any[]>([]);
   const [mainBook, setMainBook] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
