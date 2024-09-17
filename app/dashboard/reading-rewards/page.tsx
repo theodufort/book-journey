@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
 import HeaderDashboard from "@/components/DashboardHeader";
 import { User } from "@supabase/supabase-js";
@@ -7,7 +7,6 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 import { UserPoints, Reward } from "@/interfaces/Dashboard";
 import { Database } from "@/types/supabase";
-import { DashboardFooter } from "@/components/DashboardFooter";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -18,6 +17,9 @@ export default function ReadingRewards() {
   const [userPoints, setUserPoints] = useState<UserPoints | null>(null);
   const [loading, setLoading] = useState(true);
   const [rewards, setRewards] = useState<Reward[]>([]);
+  const [filterMerchant, setFilterMerchant] = useState<string>('');
+  const [filterCost, setFilterCost] = useState<number>(0);
+  const [filterCategory, setFilterCategory] = useState<string>('');
   const router = useRouter();
   useEffect(() => {
     const getUser = async () => {
@@ -65,6 +67,7 @@ export default function ReadingRewards() {
           "Get a coupon to buy any book on a trusted book selling website!",
         cost: 100,
         link: "https://www.kqzyfj.com/click-101259626-13986197",
+        category: "discount",
       },
       {
         name: "Coupon: 15% off $35",
@@ -74,6 +77,7 @@ export default function ReadingRewards() {
           "Get a coupon to buy any book on a trusted book selling website!",
         cost: 200,
         link: "https://www.jdoqocy.com/click-101259626-13986208",
+        category: "discount",
       },
       {
         name: "Coupon: 20% off $100",
@@ -83,6 +87,7 @@ export default function ReadingRewards() {
           "Get a coupon to buy any book on a trusted book selling website!",
         cost: 300,
         link: "https://www.jdoqocy.com/click-101259626-13986212",
+        category: "discount",
       },
       {
         name: "Coupon: 10% off $25",
@@ -92,6 +97,7 @@ export default function ReadingRewards() {
           "Get a coupon to buy any book on a trusted book selling website!",
         cost: 100,
         link: "https://www.tkqlhce.com/click-101259626-15658770",
+        category: "discount",
       },
       {
         name: "Coupon: 15% off $35",
@@ -101,6 +107,7 @@ export default function ReadingRewards() {
           "Get a coupon to buy any book on a trusted book selling website!",
         cost: 200,
         link: "https://www.dpbolvw.net/click-101259626-15658774",
+        category: "discount",
       },
       {
         name: "Coupon: 20% off $100",
@@ -110,6 +117,7 @@ export default function ReadingRewards() {
           "Get a coupon to buy any book on a trusted book selling website!",
         cost: 300,
         link: "https://www.anrdoezrs.net/click-101259626-15658777",
+        category: "discount",
       },
       {
         name: "Get 3 audio books for FREE",
@@ -119,9 +127,20 @@ export default function ReadingRewards() {
           "Get 3 free audio books on a trusted audio book subscription website!",
         cost: 300,
         link: "https://www.kqzyfj.com/click-101259626-11785732",
+        category: "free",
       },
     ]);
   }
+
+  const filteredRewards = useMemo(() => {
+    return rewards.filter((reward) => {
+      return (
+        (!filterMerchant || reward.merchant === filterMerchant) &&
+        (!filterCost || reward.cost <= filterCost) &&
+        (!filterCategory || reward.category === filterCategory)
+      );
+    });
+  }, [rewards, filterMerchant, filterCost, filterCategory]);
 
   async function redeemReward(reward: Reward) {
     if (
@@ -167,19 +186,18 @@ export default function ReadingRewards() {
   }
 
   return (
-    <main className="min-h-screen p-8 pb-24">
-      <section className="max-w-6xl mx-auto space-y-8">
+    <main className="min-h-screen p-4 pb-24">
+      <section className="max-w-6xl mx-auto space-y-4">
         <div className="z-50">
           <HeaderDashboard />
         </div>
-        <div className="flex">
-          <h1 className="text-2xl md:text-4xl font-extrabold">
+        <div className="flex flex-wrap items-center justify-between">
+          <h1 className="text-2xl md:text-3xl font-extrabold">
             Reading Rewards
           </h1>
-
           {userPoints && (
             <div
-              className="bg-base-200 text-primary rounded-xl p-2 h-full flex items-center my-auto overflow-hidden ml-auto"
+              className="bg-base-200 text-primary rounded-xl p-2 flex items-center overflow-hidden"
               style={{ boxShadow: "0 0px 10px 0px #6366f1" }}
             >
               <Link
@@ -189,29 +207,59 @@ export default function ReadingRewards() {
                 {userPoints?.points_earned - userPoints?.points_redeemed}
               </Link>
               <div className="flex-shrink-0">
-                <Image src={"/coin.png"} height={25} width={25} alt="coin" />
+                <Image src={"/coin.png"} height={20} width={20} alt="coin" />
               </div>
             </div>
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {rewards.map((reward) => (
-            <div key={uuidv4()} className="card bg-base-300 shadow-xl ">
-              <div className="card-body">
-                <div>
-                  <h2 className="card-title inline-block">{reward.name}</h2>{" "}
-                  <div className="float-right">
-                    <p className="text-2xl">
-                      {reward.type == "coupon" ? "🏷️" : null}
-                    </p>
-                  </div>
-                </div>
-                <p>{reward.merchant}</p>
-                {/* <p>{reward.description}</p> */}
-                <div className="card-actions justify-end mt-5">
+        <div className="flex flex-wrap gap-2 mb-4">
+          <select
+            className="select select-bordered w-full max-w-xs"
+            onChange={(e) => setFilterMerchant(e.target.value)}
+            value={filterMerchant}
+          >
+            <option value="">All Merchants</option>
+            {Array.from(new Set(rewards.map((r) => r.merchant))).map((merchant) => (
+              <option key={merchant} value={merchant}>
+                {merchant}
+              </option>
+            ))}
+          </select>
+          <select
+            className="select select-bordered w-full max-w-xs"
+            onChange={(e) => setFilterCost(Number(e.target.value))}
+            value={filterCost}
+          >
+            <option value={0}>All Costs</option>
+            <option value={100}>100 points or less</option>
+            <option value={200}>200 points or less</option>
+            <option value={300}>300 points or less</option>
+          </select>
+          <select
+            className="select select-bordered w-full max-w-xs"
+            onChange={(e) => setFilterCategory(e.target.value)}
+            value={filterCategory}
+          >
+            <option value="">All Categories</option>
+            {Array.from(new Set(rewards.map((r) => r.category))).map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {filteredRewards.map((reward) => (
+            <div key={uuidv4()} className="card bg-base-300 shadow-xl">
+              <div className="card-body p-4">
+                <h2 className="card-title text-sm">{reward.name}</h2>
+                <p className="text-xs">{reward.merchant}</p>
+                <div className="card-actions justify-between items-center mt-2">
+                  <span className="text-xs font-bold">{reward.cost} points</span>
                   <button
-                    className="btn btn-primary"
+                    className="btn btn-primary btn-xs"
                     onClick={() => redeemReward(reward)}
                     disabled={
                       !userPoints ||
@@ -219,13 +267,12 @@ export default function ReadingRewards() {
                         reward.cost
                     }
                   >
-                    Redeem for {reward.cost} points
+                    Redeem
                   </button>
                 </div>
               </div>
             </div>
           ))}
-          {/* <div>Rewards coming soon! Stay tuned!</div> */}
         </div>
       </section>
     </main>
