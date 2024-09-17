@@ -858,6 +858,29 @@ export type Database = {
         }
         Relationships: []
       }
+      books_like: {
+        Row: {
+          books: string[]
+          id: string
+        }
+        Insert: {
+          books: string[]
+          id: string
+        }
+        Update: {
+          books?: string[]
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "books_like_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "books"
+            referencedColumns: ["isbn_13"]
+          },
+        ]
+      }
       friends: {
         Row: {
           created_at: string | null

@@ -352,3 +352,11 @@ create table
     constraint user_point_streak_pkey primary key (id),
     constraint user_point_streak_id_fkey foreign key (id) references auth.users (id) on update cascade on delete cascade
   ) tablespace pg_default;
+
+  create table
+  public.books_like (
+    id text not null,
+    books text[] not null,
+    constraint books_like_pkey primary key (id),
+    constraint books_like_id_fkey foreign key (id) references books (isbn_13) on update cascade on delete cascade
+  ) tablespace pg_default;
