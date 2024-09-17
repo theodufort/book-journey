@@ -4,9 +4,9 @@ import Link from "next/link";
 interface BookCardProps {
   book: {
     isbn_13: string;
-    data: {
-      volumeInfo: {
-        title: string;
+    data?: {
+      volumeInfo?: {
+        title?: string;
         authors?: string[];
         imageLinks?: {
           thumbnail?: string;
@@ -17,26 +17,27 @@ interface BookCardProps {
 }
 
 const BookCard: React.FC<BookCardProps> = ({ book }) => {
+  const title = book.data?.volumeInfo?.title || "Unknown Title";
+  const authors = book.data?.volumeInfo?.authors?.join(", ") || "Unknown Author";
+  const thumbnailUrl = book.data?.volumeInfo?.imageLinks?.thumbnail || "/placeholder-book-cover.jpg";
+
   return (
     <div className="card bg-base-100 shadow-xl">
       <figure>
         <Image
-          src={
-            book.data.volumeInfo.imageLinks?.thumbnail ||
-            "/placeholder-book-cover.jpg"
-          }
-          alt={`Cover of ${book.data.volumeInfo.title}`}
+          src={thumbnailUrl}
+          alt={`Cover of ${title}`}
           width={150}
           height={225}
           className="w-full h-48 object-cover"
         />
       </figure>
       <div className="card-body">
-        <h2 className="card-title">{book.data.volumeInfo.title}</h2>
-        <p>{book.data.volumeInfo.authors?.join(", ") || "Unknown Author"}</p>
+        <h2 className="card-title">{title}</h2>
+        <p>{authors}</p>
         <div className="card-actions justify-end">
           <Link
-            href={`/books-like/${encodeURIComponent(book.data.volumeInfo.title).replace(/%20/g, '-')}-${book.isbn_13}`}
+            href={`/books-like/${encodeURIComponent(title).replace(/%20/g, '-')}-${book.isbn_13}`}
             className="btn btn-primary"
           >
             Find Similar
