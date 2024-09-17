@@ -8,6 +8,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
 import OnboardingPopup from "@/components/OnboardingPopup";
 import StreakRewardSystem from "@/components/StreakRewardSystem";
+import GamifiedLibrary from "@/components/GamifiedLibrary";
 export default function Dashboard() {
   const supabase = createClientComponentClient<Database>();
   const [currentlyReading, setCurrentlyReading] = useState([]);

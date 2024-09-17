@@ -14,7 +14,7 @@ const StreakRewardSystem = ({ onUpdate }: { onUpdate: () => void }) => {
     const { data: userStreak, error } = await supabase
       .from("user_point_streak")
       .select("*")
-      .eq("id", user.id)
+      .eq("user_id", user.id)
       .single();
     setStreak(userStreak);
 
@@ -75,7 +75,7 @@ const StreakRewardSystem = ({ onUpdate }: { onUpdate: () => void }) => {
             day7: null,
             reward_awarded: [false, false, false, false, false, false, false], // Reset reward tracking
           })
-          .eq("id", user.id)
+          .eq("user_id", user.id)
           .select()
           .single();
         setStreak(userStreak);
@@ -96,7 +96,7 @@ const StreakRewardSystem = ({ onUpdate }: { onUpdate: () => void }) => {
           day1: today.toISOString(),
           reward_awarded: [true, false, false, false, false, false, false], // Award points for day 1
         })
-        .eq("id", user.id)
+        .eq("user_id", user.id)
         .select()
         .single();
       setStreak(userStreak);
@@ -131,7 +131,7 @@ const StreakRewardSystem = ({ onUpdate }: { onUpdate: () => void }) => {
         const { data: userStreak } = await supabase
           .from("user_point_streak")
           .update(updateData)
-          .eq("id", user.id)
+          .eq("user_id", user.id)
           .select()
           .single();
         setStreak(userStreak);
@@ -164,7 +164,7 @@ const StreakRewardSystem = ({ onUpdate }: { onUpdate: () => void }) => {
             day7: null,
             reward_awarded: [true, false, false, false, false, false, false], // Reset and award points for new start
           })
-          .eq("id", user.id)
+          .eq("user_id", user.id)
           .select()
           .single();
         setStreak(userStreak);

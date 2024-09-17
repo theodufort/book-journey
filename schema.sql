@@ -340,7 +340,7 @@ create table
 
  create table
   public.user_point_streak (
-    id uuid not null default gen_random_uuid (),
+    user_id uuid not null default gen_random_uuid (),
     day1 timestamp with time zone null,
     day2 timestamp with time zone null,
     day3 timestamp with time zone null,
