@@ -82,25 +82,34 @@ export default function BooksLikeDirectory() {
                     mainBook?.data?.volumeInfo?.imageLinks?.thumbnail ||
                     "/placeholder-book-cover.jpg"
                   }
-                  alt={`Cover of ${mainBook?.data?.volumeInfo?.title || 'Unknown Book'}`}
+                  alt={`Cover of ${
+                    mainBook?.data?.volumeInfo?.title || "Unknown Book"
+                  }`}
                   width={150}
                   height={225}
-                  className="w-full h-48 object-cover"
+                  className="h-48"
                 />
               </figure>
               <div className="card-body">
                 <h2 className="card-title">
-                  {mainBook?.data?.volumeInfo?.title || 'Unknown Title'}
+                  {mainBook?.data?.volumeInfo?.title || "Unknown Title"}
                 </h2>
                 <p>Similar books:</p>
                 <ul className="list-disc list-inside">
-                  {item.books.slice(0, 3).map((isbn) => (
-                    <li key={isbn}>{books[isbn]?.data?.volumeInfo?.title || 'Unknown Book'}</li>
-                  ))}
+                  {item.books.slice(0, 3).map((isbn) => {
+                    console.log(books);
+                    return (
+                      <li key={isbn}>
+                        {books[isbn]?.data?.volumeInfo?.title || "Unknown Book"}
+                      </li>
+                    );
+                  })}
                 </ul>
                 <div className="card-actions justify-end">
                   <Link
-                    href={`/books-like/${encodeURIComponent(mainBook?.data?.volumeInfo?.title || item.id)}`}
+                    href={`/books-like/${encodeURIComponent(
+                      mainBook?.data?.volumeInfo?.title || item.id
+                    )}`}
                     className="btn btn-primary"
                   >
                     View More
