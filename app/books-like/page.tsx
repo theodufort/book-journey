@@ -83,9 +83,9 @@ export default function BooksLikeDirectory() {
                     "/placeholder-book-cover.jpg"
                   }
                   alt={`Cover of ${mainBook?.data?.volumeInfo?.title || 'Unknown Book'}`}
-                  width={200}
-                  height={300}
-                  className="w-full h-64 object-cover"
+                  width={150}
+                  height={225}
+                  className="w-full h-48 object-cover"
                 />
               </figure>
               <div className="card-body">
