@@ -37,8 +37,7 @@ export default function BooksLike({ params }: { params: { id: string } }) {
       const { data: booksLikeData, error: booksLikeError } = await supabase
         .from("books_like")
         .select("books")
-        .eq("id", isbn)
-        .single();
+        .eq("id", isbn);
 
       if (booksLikeError) {
         console.error(booksLikeError);
@@ -47,12 +46,11 @@ export default function BooksLike({ params }: { params: { id: string } }) {
         return;
       }
 
-      if (booksLikeData) {
+      if (booksLikeData && booksLikeData.length > 0) {
         const { data: mainBookData, error: mainBookError } = await supabase
           .from("books")
           .select("isbn_13, data")
-          .eq("isbn_13", params.id)
-          .single();
+          .eq("isbn_13", isbn);
 
         if (mainBookError) {
           console.error(mainBookError);
@@ -61,19 +59,25 @@ export default function BooksLike({ params }: { params: { id: string } }) {
           return;
         }
 
-        setMainBook(mainBookData);
+        if (mainBookData && mainBookData.length > 0) {
+          setMainBook(mainBookData[0]);
 
-        const { data: booksData, error: booksError } = await supabase
-          .from("books")
-          .select("isbn_13, data")
-          .in("isbn_13", booksLikeData.books);
+          const { data: booksData, error: booksError } = await supabase
+            .from("books")
+            .select("isbn_13, data")
+            .in("isbn_13", booksLikeData[0].books);
 
-        if (booksError) {
-          console.error(booksError);
-          setError("Error loading book details. Please try again later.");
-        } else if (booksData) {
-          setBooks(booksData);
+          if (booksError) {
+            console.error(booksError);
+            setError("Error loading book details. Please try again later.");
+          } else if (booksData) {
+            setBooks(booksData);
+          }
+        } else {
+          setError("Main book not found.");
         }
+      } else {
+        setError("No similar books found.");
       }
       setLoading(false);
     }
