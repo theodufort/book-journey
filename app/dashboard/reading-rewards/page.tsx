@@ -18,7 +18,7 @@ export default function ReadingRewards() {
   const [loading, setLoading] = useState(true);
   const [rewards, setRewards] = useState<Reward[]>([]);
   const [filterMerchant, setFilterMerchant] = useState<string>('');
-  const [filterCost, setFilterCost] = useState<number>(0);
+  const [filterCost, setFilterCost] = useState<string>('');
   const [filterCategory, setFilterCategory] = useState<string>('');
   const router = useRouter();
   useEffect(() => {
@@ -136,7 +136,12 @@ export default function ReadingRewards() {
     return rewards.filter((reward) => {
       return (
         (!filterMerchant || reward.merchant === filterMerchant) &&
-        (!filterCost || reward.cost <= filterCost) &&
+        (!filterCost || (
+          (filterCost === '0-100' && reward.cost <= 100) ||
+          (filterCost === '101-200' && reward.cost > 100 && reward.cost <= 200) ||
+          (filterCost === '201-300' && reward.cost > 200 && reward.cost <= 300) ||
+          (filterCost === '301+' && reward.cost > 300)
+        )) &&
         (!filterCategory || reward.category === filterCategory)
       );
     });
@@ -228,13 +233,14 @@ export default function ReadingRewards() {
           </select>
           <select
             className="select select-bordered w-full max-w-xs"
-            onChange={(e) => setFilterCost(Number(e.target.value))}
+            onChange={(e) => setFilterCost(e.target.value)}
             value={filterCost}
           >
-            <option value={0}>All Costs</option>
-            <option value={100}>100 points or less</option>
-            <option value={200}>200 points or less</option>
-            <option value={300}>300 points or less</option>
+            <option value="">All Costs</option>
+            <option value="0-100">0 - 100 points</option>
+            <option value="101-200">101 - 200 points</option>
+            <option value="201-300">201 - 300 points</option>
+            <option value="301+">301+ points</option>
           </select>
           <select
             className="select select-bordered w-full max-w-xs"
