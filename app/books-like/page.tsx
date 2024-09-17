@@ -136,7 +136,7 @@ export default function BooksLikeDirectory() {
                 <div className="card-actions justify-end">
                   <Link
                     href={`/books-like/${encodeURIComponent(
-                      mainBook?.data?.volumeInfo?.title || item.id
+                      mainBook?.data?.volumeInfo?.title || "Unknown"
                     )}/${item.id}`}
                     className="btn btn-primary"
                   >
