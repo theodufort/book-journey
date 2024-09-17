@@ -37,7 +37,10 @@ const OnboardingPopup: React.FC<OnboardingPopupProps> = ({
     },
   ];
   async function handleFinishOnboarding() {
-    await supabase.from("user_preferences").update({ onboarded: true });
+    await supabase
+      .from("user_preferences")
+      .update({ onboarded: true })
+      .eq("user_id", userId);
   }
   const handleNext = () => {
     if (step < steps.length) {
