@@ -18,7 +18,7 @@ export default function Dashboard() {
   } | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showOnboard, setShowUnboard] = useState(false);
+  const [showOnboard, setShowOnboard] = useState(false);
   const router = useRouter();
   const getUser = async () => {
     const { data } = await supabase.auth.getUser();
@@ -47,7 +47,7 @@ export default function Dashboard() {
         .eq("user_id", user.id)
         .single();
       if (onboarded != true) {
-        setShowUnboard(false);
+        setShowOnboard(true);
       }
     } catch {
       console.log("error checking onboarded");
@@ -133,7 +133,7 @@ export default function Dashboard() {
           <OnboardingPopup
             isOpen={true}
             onClose={function (): void {
-              setShowUnboard(false);
+              setShowOnboard(false);
             }}
             userId={user.id}
           />
