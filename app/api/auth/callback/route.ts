@@ -20,16 +20,16 @@ export async function GET(req: NextRequest) {
     } = await supabase.auth.getUser();
     userLoggedIn = user;
   } else {
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    const { data, error } = await resend.emails.send({
-      from: "welcome@mybookquest.com",
-      to: userLoggedIn == null ? "theodufort05@gmail.com" : userLoggedIn.email,
-      subject: "Welcome to MyBookQuest!",
-      react: WelcomeEmail(),
-    });
-    if (error) {
-      return Response.json({ error });
-    }
+    // const resend = new Resend(process.env.RESEND_API_KEY);
+    // const { data, error } = await resend.emails.send({
+    //   from: "welcome@mybookquest.com",
+    //   to: userLoggedIn == null ? "theodufort05@gmail.com" : userLoggedIn.email,
+    //   subject: "Welcome to MyBookQuest!",
+    //   react: WelcomeEmail(),
+    // });
+    // if (error) {
+    //   return Response.json({ error });
+    // }
   }
 
   // URL to redirect to after sign in process completes
