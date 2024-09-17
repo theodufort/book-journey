@@ -7,7 +7,11 @@ import BookCard from "@/components/BookCard";
 
 const supabase = createClientComponentClient<Database>();
 
-export default function BooksLikeClient({ params }: { params: { id: string[] } }) {
+export default function BooksLikeClient({
+  params,
+}: {
+  params: { id: string[] };
+}) {
   const fullSlug = params.id.join("/");
   const isbn = fullSlug.split("-").pop() || "";
   const decodedTitle = fullSlug.slice(0, -isbn.length - 1).replace(/-/g, " ");
@@ -34,8 +38,6 @@ export default function BooksLikeClient({ params }: { params: { id: string[] } }
         setLoading(false);
         return;
       }
-
-      console.log("Books like data:", booksLikeData);
 
       if (booksLikeData && booksLikeData.books.length > 0) {
         try {
