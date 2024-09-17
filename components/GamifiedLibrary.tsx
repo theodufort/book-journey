@@ -6,7 +6,6 @@ const useDragToScroll = () => {
   const onMouseDown = (e: any) => {
     ref.current.isDown = true;
     ref.current.startX = e.pageX - ref.current.offsetLeft;
-    ref.current.scrollLeft = ref.current.scrollLeft;
   };
 
   const onMouseLeave = () => {
