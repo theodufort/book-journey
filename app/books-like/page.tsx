@@ -16,7 +16,6 @@ interface Book {
   isbn_13: string;
   data: {
     title: string;
-    author: string;
     cover_image: string;
   };
 }
@@ -27,40 +26,40 @@ export default function BooksLikeDirectory() {
 
   useEffect(() => {
     async function fetchBooksLike() {
-      const { data, error } = await supabase
+      const { data: booksLikeData, error: booksLikeError } = await supabase
         .from("books_like")
         .select("*")
         .limit(10);
 
-      if (error) {
-        console.error("Error fetching books_like:", error);
-      } else if (data) {
-        setBooksLike(data);
-        const allBookIds = data.flatMap(item => [item.id, ...item.books]);
+      if (booksLikeError) {
+        console.error("Error fetching books_like:", booksLikeError);
+        return;
+      }
+
+      if (booksLikeData) {
+        setBooksLike(booksLikeData);
+        const allBookIds = booksLikeData.flatMap(item => [item.id, ...item.books]);
         const uniqueBookIds = [...new Set(allBookIds)];
-        fetchBooks(uniqueBookIds);
+
+        const { data: booksData, error: booksError } = await supabase
+          .from("books")
+          .select("isbn_13, data->title, data->cover_image")
+          .in("isbn_13", uniqueBookIds);
+
+        if (booksError) {
+          console.error("Error fetching books:", booksError);
+        } else if (booksData) {
+          const bookMap = booksData.reduce((acc, book) => {
+            acc[book.isbn_13] = book as Book;
+            return acc;
+          }, {} as { [key: string]: Book });
+          setBooks(bookMap);
+        }
       }
     }
 
     fetchBooksLike();
   }, []);
-
-  async function fetchBooks(bookIds: string[]) {
-    const { data, error } = await supabase
-      .from("books")
-      .select("*")
-      .in("isbn_13", bookIds);
-
-    if (error) {
-      console.error("Error fetching books:", error);
-    } else if (data) {
-      const bookMap = data.reduce((acc, book) => {
-        acc[book.isbn_13] = book;
-        return acc;
-      }, {} as { [key: string]: Book });
-      setBooks(bookMap);
-    }
-  }
 
   return (
     <div className="space-y-8">
@@ -79,7 +78,6 @@ export default function BooksLikeDirectory() {
             </figure>
             <div className="card-body">
               <h2 className="card-title">{books[item.id]?.data.title}</h2>
-              <p>{books[item.id]?.data.author}</p>
               <p>Similar books:</p>
               <ul className="list-disc list-inside">
                 {item.books.slice(0, 3).map((isbn) => (
