@@ -137,7 +137,7 @@ export default function BooksLikeDirectory() {
                   <Link
                     href={`/books-like/${encodeURIComponent(
                       mainBook?.data?.volumeInfo?.title || "Unknown"
-                    )}/${item.id}`}
+                    )}-${item.id}`}
                     className="btn btn-primary"
                   >
                     View More
