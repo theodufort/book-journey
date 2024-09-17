@@ -49,21 +49,26 @@ export default function BooksLikeClient({
           console.log("Main book data:", mainBookData);
           setMainBook(mainBookData);
 
-          const similarBooksPromises = booksLikeData.books.map(
-            async (bookIsbn) => {
-              const response = await fetch(
-                `/api/books/${bookIsbn.trim()}?useProxy=true`
-              );
-              if (!response.ok) {
-                throw new Error(`Failed to fetch book with ISBN ${bookIsbn}`);
+          const similarBooksData = await Promise.all(
+            booksLikeData.books.map(async (bookIsbn) => {
+              try {
+                const response = await fetch(
+                  `/api/books/${bookIsbn.trim()}?useProxy=true`
+                );
+                if (!response.ok) {
+                  console.error(`Failed to fetch book with ISBN ${bookIsbn}`);
+                  return null;
+                }
+                return response.json();
+              } catch (error) {
+                console.error(`Error fetching book with ISBN ${bookIsbn}:`, error);
+                return null;
               }
-              return response.json();
-            }
+            })
           );
-
-          const similarBooksData = await Promise.all(similarBooksPromises);
-          console.log("Similar books data:", similarBooksData);
-          setBooks(similarBooksData);
+          const validSimilarBooks = similarBooksData.filter(book => book !== null);
+          console.log("Similar books data:", validSimilarBooks);
+          setBooks(validSimilarBooks);
         } catch (error) {
           console.error("Error fetching book details:", error);
           setError("Error loading book details. Please try again later.");
