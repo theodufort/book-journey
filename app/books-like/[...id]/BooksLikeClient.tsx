@@ -68,7 +68,11 @@ export default function BooksLikeClient({
           );
           const validSimilarBooks = similarBooksData.filter(book => book !== null);
           console.log("Similar books data:", validSimilarBooks);
-          setBooks(validSimilarBooks);
+          const formattedBooks = validSimilarBooks.map(book => ({
+            isbn_13: book.id,
+            data: book
+          }));
+          setBooks(formattedBooks);
         } catch (error) {
           console.error("Error fetching book details:", error);
           setError("Error loading book details. Please try again later.");
