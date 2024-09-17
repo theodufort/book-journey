@@ -4,10 +4,13 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
 import Link from "next/link";
 import BookCard from "@/components/BookCard";
+import { useSearchParams } from "next/navigation";
 
 const supabase = createClientComponentClient<Database>();
 
 export default function BooksLike({ params }: { params: { id: string } }) {
+  const searchParams = useSearchParams();
+  const isbn = searchParams.get("isbn") || params.id;
   const decodedId = decodeURIComponent(params.id);
   const [books, setBooks] = useState<any[]>([]);
   const [mainBook, setMainBook] = useState<any>(null);
@@ -21,8 +24,8 @@ export default function BooksLike({ params }: { params: { id: string } }) {
       const { data: booksLikeData, error: booksLikeError } = await supabase
         .from("books_like")
         .select("books")
-        .eq("id", params.id);
-      console.log(params.id);
+        .eq("id", isbn);
+      console.log(isbn);
       console.log(booksLikeData);
       console.log(booksLikeError);
 
@@ -37,7 +40,7 @@ export default function BooksLike({ params }: { params: { id: string } }) {
         const { data: mainBookData, error: mainBookError } = await supabase
           .from("books")
           .select("isbn_13, data")
-          .eq("isbn_13", params.id);
+          .eq("isbn_13", isbn);
         console.log(mainBookData);
 
         if (mainBookError) {
@@ -71,7 +74,7 @@ export default function BooksLike({ params }: { params: { id: string } }) {
     }
 
     fetchBooksLike();
-  }, [params.id]);
+  }, [isbn]);
 
   if (loading) {
     return <div>Loading...</div>;
