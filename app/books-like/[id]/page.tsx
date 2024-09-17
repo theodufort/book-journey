@@ -7,9 +7,13 @@ import BookCard from "@/components/BookCard";
 
 const supabase = createClientComponentClient<Database>();
 
-export default function BooksLike({ params }: { params: { id: string[], isbn: string } }) {
+export default function BooksLike({
+  params,
+}: {
+  params: { id: string[]; isbn: string };
+}) {
   const isbn = params.isbn;
-  const decodedId = decodeURIComponent(params.id.join('/'));
+  const decodedId = decodeURIComponent(params.id.join("/"));
   const [books, setBooks] = useState<any[]>([]);
   const [mainBook, setMainBook] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
@@ -37,7 +41,6 @@ export default function BooksLike({ params }: { params: { id: string[], isbn: st
           .from("books")
           .select("isbn_13, data")
           .eq("isbn_13", isbn);
-        console.log(mainBookData);
 
         if (mainBookError) {
           console.error(mainBookError);
@@ -86,9 +89,10 @@ export default function BooksLike({ params }: { params: { id: string[], isbn: st
     <div className="space-y-8">
       <h1 className="text-3xl font-bold">Books Like {mainBookTitle}</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {books.map((book) => (
-          <BookCard key={book.isbn_13} book={book} />
-        ))}
+        {books.map((book) => {
+          console.log(book);
+          return <BookCard key={book.isbn_13} book={book} />;
+        })}
       </div>
       <Link href="/books-like" className="btn btn-primary">
         Back to Search
