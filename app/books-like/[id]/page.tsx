@@ -24,10 +24,8 @@ export default function BooksLike({ params }: { params: { id: string } }) {
       const { data: booksLikeData, error: booksLikeError } = await supabase
         .from("books_like")
         .select("books")
-        .eq("id", isbn);
-      console.log(isbn);
-      console.log(booksLikeData);
-      console.log(booksLikeError);
+        .eq("id", isbn)
+        .single();
 
       if (booksLikeError) {
         console.error(booksLikeError);
@@ -36,7 +34,7 @@ export default function BooksLike({ params }: { params: { id: string } }) {
         return;
       }
 
-      if (booksLikeData && booksLikeData.length > 0) {
+      if (booksLikeData && booksLikeData.books.length > 0) {
         const { data: mainBookData, error: mainBookError } = await supabase
           .from("books")
           .select("isbn_13, data")
@@ -56,7 +54,7 @@ export default function BooksLike({ params }: { params: { id: string } }) {
           const { data: booksData, error: booksError } = await supabase
             .from("books")
             .select("isbn_13, data")
-            .in("isbn_13", booksLikeData[0].books);
+            .in("isbn_13", booksLikeData.books);
 
           if (booksError) {
             console.error(booksError);
