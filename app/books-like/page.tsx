@@ -15,8 +15,8 @@ interface BookLike {
 interface Book {
   isbn_13: string;
   data: {
-    volumeInfo: {
-      title: string;
+    volumeInfo?: {
+      title?: string;
       imageLinks?: {
         thumbnail?: string;
       };
@@ -50,16 +50,14 @@ export default function BooksLikeDirectory() {
 
         const { data: booksData, error: booksError } = await supabase
           .from("books")
-          .select(
-            "isbn_13, data->volumeInfo->title, data->volumeInfo->cover_image"
-          )
+          .select("isbn_13, data")
           .in("isbn_13", uniqueBookIds);
 
         if (booksError) {
           console.error("Error fetching books:", booksError);
         } else if (booksData) {
           const bookMap = booksData.reduce((acc, book) => {
-            acc[book.isbn_13] = book as Book;
+            acc[book.isbn_13] = book;
             return acc;
           }, {} as { [key: string]: Book });
           setBooks(bookMap);
@@ -79,10 +77,10 @@ export default function BooksLikeDirectory() {
             <figure>
               <Image
                 src={
-                  books[item.id]?.data.volumeInfo.imageLinks?.thumbnail ||
+                  books[item.id]?.data?.volumeInfo?.imageLinks?.thumbnail ||
                   "/placeholder-book-cover.jpg"
                 }
-                alt={`Cover of ${books[item.id]?.data.volumeInfo.title}`}
+                alt={`Cover of ${books[item.id]?.data?.volumeInfo?.title || 'Unknown Book'}`}
                 width={200}
                 height={300}
                 className="w-full h-64 object-cover"
@@ -90,12 +88,12 @@ export default function BooksLikeDirectory() {
             </figure>
             <div className="card-body">
               <h2 className="card-title">
-                {books[item.id]?.data.volumeInfo.title}
+                {books[item.id]?.data?.volumeInfo?.title || 'Unknown Title'}
               </h2>
               <p>Similar books:</p>
               <ul className="list-disc list-inside">
                 {item.books.slice(0, 3).map((isbn) => (
-                  <li key={isbn}>{books[isbn]?.data.volumeInfo.title}</li>
+                  <li key={isbn}>{books[isbn]?.data?.volumeInfo?.title || 'Unknown Book'}</li>
                 ))}
               </ul>
               <div className="card-actions justify-end">
