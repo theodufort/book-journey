@@ -72,41 +72,44 @@ export default function BooksLikeDirectory() {
     <div className="space-y-8">
       <h1 className="text-3xl font-bold">Books Like</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {booksLike.map((item) => (
-          <div key={item.id} className="card bg-base-100 shadow-xl">
-            <figure>
-              <Image
-                src={
-                  books[item.id]?.data?.volumeInfo?.imageLinks?.thumbnail ||
-                  "/placeholder-book-cover.jpg"
-                }
-                alt={`Cover of ${books[item.id]?.data?.volumeInfo?.title || 'Unknown Book'}`}
-                width={200}
-                height={300}
-                className="w-full h-64 object-cover"
-              />
-            </figure>
-            <div className="card-body">
-              <h2 className="card-title">
-                {books[item.id]?.data?.volumeInfo?.title || 'Unknown Title'}
-              </h2>
-              <p>Similar books:</p>
-              <ul className="list-disc list-inside">
-                {item.books.slice(0, 3).map((isbn) => (
-                  <li key={isbn}>{books[isbn]?.data?.volumeInfo?.title || 'Unknown Book'}</li>
-                ))}
-              </ul>
-              <div className="card-actions justify-end">
-                <Link
-                  href={`/books-like/${encodeURIComponent(books[item.id]?.data?.volumeInfo?.title || item.id)}`}
-                  className="btn btn-primary"
-                >
-                  View More
-                </Link>
+        {booksLike.map((item) => {
+          const mainBook = books[item.id];
+          return (
+            <div key={item.id} className="card bg-base-100 shadow-xl">
+              <figure>
+                <Image
+                  src={
+                    mainBook?.data?.volumeInfo?.imageLinks?.thumbnail ||
+                    "/placeholder-book-cover.jpg"
+                  }
+                  alt={`Cover of ${mainBook?.data?.volumeInfo?.title || 'Unknown Book'}`}
+                  width={200}
+                  height={300}
+                  className="w-full h-64 object-cover"
+                />
+              </figure>
+              <div className="card-body">
+                <h2 className="card-title">
+                  {mainBook?.data?.volumeInfo?.title || 'Unknown Title'}
+                </h2>
+                <p>Similar books:</p>
+                <ul className="list-disc list-inside">
+                  {item.books.slice(0, 3).map((isbn) => (
+                    <li key={isbn}>{books[isbn]?.data?.volumeInfo?.title || 'Unknown Book'}</li>
+                  ))}
+                </ul>
+                <div className="card-actions justify-end">
+                  <Link
+                    href={`/books-like/${encodeURIComponent(mainBook?.data?.volumeInfo?.title || item.id)}`}
+                    className="btn btn-primary"
+                  >
+                    View More
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
