@@ -42,12 +42,17 @@ export default function BooksLikeDirectory() {
 
       if (booksLikeData) {
         setBooksLike(booksLikeData);
-        const allBookIds = booksLikeData.flatMap(item => [item.id, ...item.books]);
+        const allBookIds = booksLikeData.flatMap((item) => [
+          item.id,
+          ...item.books,
+        ]);
         const uniqueBookIds = [...new Set(allBookIds)];
 
         const { data: booksData, error: booksError } = await supabase
           .from("books")
-          .select("isbn_13, data->title, data->cover_image")
+          .select(
+            "isbn_13, data->volumeInfo->title, data->volumeInfo->cover_image"
+          )
           .in("isbn_13", uniqueBookIds);
 
         if (booksError) {
@@ -73,7 +78,10 @@ export default function BooksLikeDirectory() {
           <div key={item.id} className="card bg-base-100 shadow-xl">
             <figure>
               <Image
-                src={books[item.id]?.data.volumeInfo.imageLinks?.thumbnail || "/placeholder-book-cover.jpg"}
+                src={
+                  books[item.id]?.data.volumeInfo.imageLinks?.thumbnail ||
+                  "/placeholder-book-cover.jpg"
+                }
                 alt={`Cover of ${books[item.id]?.data.volumeInfo.title}`}
                 width={200}
                 height={300}
@@ -81,7 +89,9 @@ export default function BooksLikeDirectory() {
               />
             </figure>
             <div className="card-body">
-              <h2 className="card-title">{books[item.id]?.data.volumeInfo.title}</h2>
+              <h2 className="card-title">
+                {books[item.id]?.data.volumeInfo.title}
+              </h2>
               <p>Similar books:</p>
               <ul className="list-disc list-inside">
                 {item.books.slice(0, 3).map((isbn) => (
@@ -89,7 +99,10 @@ export default function BooksLikeDirectory() {
                 ))}
               </ul>
               <div className="card-actions justify-end">
-                <Link href={`/books-like/${item.id}`} className="btn btn-primary">
+                <Link
+                  href={`/books-like/${item.id}`}
+                  className="btn btn-primary"
+                >
                   View More
                 </Link>
               </div>
