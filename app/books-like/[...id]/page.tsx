@@ -8,9 +8,9 @@ import BookCard from "@/components/BookCard";
 const supabase = createClientComponentClient<Database>();
 
 export default function BooksLike({ params }: { params: { id: string[] } }) {
-  const fullSlug = params.id.join('/');
-  const isbn = fullSlug.split('-').pop() || '';
-  const decodedTitle = fullSlug.slice(0, -isbn.length - 1).replace(/-/g, ' ');
+  const fullSlug = params.id.join("/");
+  const isbn = fullSlug.split("-").pop() || "";
+  const decodedTitle = fullSlug.slice(0, -isbn.length - 1).replace(/-/g, " ");
   const [books, setBooks] = useState<any[]>([]);
   const [mainBook, setMainBook] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
@@ -57,8 +57,11 @@ export default function BooksLike({ params }: { params: { id: string[] } }) {
           const { data: booksData, error: booksError } = await supabase
             .from("books")
             .select("isbn_13, data")
-            .in("isbn_13", booksLikeData.books);
-
+            .in(
+              "isbn_13",
+              booksLikeData.books.map((x) => x.trim())
+            );
+          console.log(booksLikeData.books.map((x) => x.trim()));
           if (booksError) {
             console.error("Error fetching similar books:", booksError);
             setError("Error loading book details. Please try again later.");
