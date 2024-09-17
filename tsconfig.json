@@ -27,14 +27,17 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "target": "es2015",
+    "downlevelIteration": true
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
-, "libs/sitemap.js"  ],
+    ".next/types/**/*.ts",
+    "libs/sitemap.js"
+  ],
   "exclude": [
     "node_modules"
   ]
