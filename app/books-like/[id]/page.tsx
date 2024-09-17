@@ -8,17 +8,36 @@ import BookCard from "@/components/BookCard";
 const supabase = createClientComponentClient<Database>();
 
 export default function BooksLike({ params }: { params: { id: string } }) {
+  const decodedId = decodeURIComponent(params.id);
+  const [isbn, setIsbn] = useState<string | null>(null);
   const [books, setBooks] = useState<any[]>([]);
+  const [mainBook, setMainBook] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     async function fetchBooksLike() {
       setLoading(true);
+      // First, try to find the book by title
+      const { data: bookData, error: bookError } = await supabase
+        .from("books")
+        .select("isbn_13")
+        .ilike("data->>title", decodedId)
+        .single();
+
+      if (bookError) {
+        // If not found by title, assume the id is an ISBN
+        setIsbn(decodedId);
+      } else {
+        setIsbn(bookData.isbn_13);
+      }
+
+      if (!isbn) return;
+
       const { data: booksLikeData, error: booksLikeError } = await supabase
         .from("books_like")
         .select("books")
-        .eq("id", params.id)
+        .eq("id", isbn)
         .single();
 
       if (booksLikeError) {
@@ -29,6 +48,21 @@ export default function BooksLike({ params }: { params: { id: string } }) {
       }
 
       if (booksLikeData) {
+        const { data: mainBookData, error: mainBookError } = await supabase
+          .from("books")
+          .select("isbn_13, data")
+          .eq("isbn_13", params.id)
+          .single();
+
+        if (mainBookError) {
+          console.error(mainBookError);
+          setError("Error loading main book details. Please try again later.");
+          setLoading(false);
+          return;
+        }
+
+        setMainBook(mainBookData);
+
         const { data: booksData, error: booksError } = await supabase
           .from("books")
           .select("isbn_13, data")
@@ -55,12 +89,14 @@ export default function BooksLike({ params }: { params: { id: string } }) {
     return <div>{error}</div>;
   }
 
+  const mainBookTitle = mainBook?.data?.volumeInfo?.title || "Unknown Book";
+
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold">Books Like {params.id}</h1>
+      <h1 className="text-3xl font-bold">Books Like {mainBookTitle}</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {books.map((book) => (
-          <BookCard key={book.isbn} book={book} />
+          <BookCard key={book.isbn_13} book={book} />
         ))}
       </div>
       <Link href="/books-like" className="btn btn-primary">
