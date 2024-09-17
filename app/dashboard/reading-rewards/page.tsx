@@ -207,13 +207,11 @@ export default function ReadingRewards() {
             >
               <Link
                 href="/dashboard/reading-rewards"
-                className="whitespace-nowrap overflow-hidden text-ellipsis mr-1"
+                className="whitespace-nowrap overflow-hidden text-ellipsis mr-1 flex items-center"
               >
-                {userPoints?.points_earned - userPoints?.points_redeemed}
-              </Link>
-              <div className="flex-shrink-0">
+                <span className="mr-1">{userPoints?.points_earned - userPoints?.points_redeemed}</span>
                 <Image src={"/coin.png"} height={20} width={20} alt="coin" />
-              </div>
+              </Link>
             </div>
           )}
         </div>
@@ -263,7 +261,10 @@ export default function ReadingRewards() {
                 <h2 className="card-title text-sm">{reward.name}</h2>
                 <p className="text-xs">{reward.merchant}</p>
                 <div className="card-actions justify-between items-center mt-2">
-                  <span className="text-xs font-bold">{reward.cost} points</span>
+                  <span className="text-xs font-bold flex items-center">
+                    {reward.cost}
+                    <Image src={"/coin.png"} height={16} width={16} alt="coin" className="ml-1" />
+                  </span>
                   <button
                     className="btn btn-primary btn-xs"
                     onClick={() => redeemReward(reward)}
