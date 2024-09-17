@@ -9,7 +9,6 @@ const supabase = createClientComponentClient<Database>();
 
 export default function BooksLike({ params }: { params: { id: string } }) {
   const decodedId = decodeURIComponent(params.id);
-  const [isbn, setIsbn] = useState<string | null>(null);
   const [books, setBooks] = useState<any[]>([]);
   const [mainBook, setMainBook] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
@@ -18,26 +17,14 @@ export default function BooksLike({ params }: { params: { id: string } }) {
   useEffect(() => {
     async function fetchBooksLike() {
       setLoading(true);
-      // First, try to find the book by title
-      const { data: bookData, error: bookError } = await supabase
-        .from("books")
-        .select("isbn_13")
-        .ilike("data->>title", decodedId)
-        .single();
-
-      if (bookError) {
-        // If not found by title, assume the id is an ISBN
-        setIsbn(decodedId);
-      } else {
-        setIsbn(bookData.isbn_13);
-      }
-
-      if (!isbn) return;
 
       const { data: booksLikeData, error: booksLikeError } = await supabase
         .from("books_like")
         .select("books")
-        .eq("id", isbn);
+        .eq("id", params.id);
+      console.log(params.id);
+      console.log(booksLikeData);
+      console.log(booksLikeError);
 
       if (booksLikeError) {
         console.error(booksLikeError);
@@ -50,7 +37,8 @@ export default function BooksLike({ params }: { params: { id: string } }) {
         const { data: mainBookData, error: mainBookError } = await supabase
           .from("books")
           .select("isbn_13, data")
-          .eq("isbn_13", isbn);
+          .eq("isbn_13", params.id);
+        console.log(mainBookData);
 
         if (mainBookError) {
           console.error(mainBookError);
