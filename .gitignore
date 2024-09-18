@@ -55,3 +55,9 @@ bun.lockb
 tools/isbn_list.txt
 /app/books-like
 bun.lockb
+public/sitemap-1.xml
+public/sitemap-2.xml
+public/sitemap-3.xml
+public/sitemap-4.xml
+public/sitemap-5.xml
+bun.lockb

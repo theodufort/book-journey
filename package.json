@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "CI=false next build",
+    "build": "next build",
     "postbuild": "next-sitemap",
     "start": "next start",
     "lint": "next lint",
@@ -47,6 +47,7 @@
     "react-syntax-highlighter": "^15.5.0",
     "react-tooltip": "^5.26.3",
     "resend": "^4.0.0",
+    "sharp": "^0.33.5",
     "stripe": "^13.11.0",
     "uuid": "^10.0.0",
     "zod": "^3.22.4"
