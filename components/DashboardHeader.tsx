@@ -119,6 +119,9 @@ const HeaderDashboard = () => {
                   href="/"
                   title={`${config.appName} homepage`}
                 >
+                  <span className="font-extrabold text-lg">
+                    {config.appName}
+                  </span>
                   <Image
                     src={"/logo.png"}
                     alt={`${config.appName} logo`}
@@ -127,9 +130,6 @@ const HeaderDashboard = () => {
                     width={32}
                     height={32}
                   />
-                  <span className="font-extrabold text-lg">
-                    {config.appName}
-                  </span>
                 </Link>
               </li>
             </div>
@@ -245,11 +245,14 @@ const HeaderDashboard = () => {
       </div>
       <div>
         <Link
-          className="flex items-center gap-2 shrink-0"
+          className="flex items-center gap-2 shrink-0 ml-12"
           href="/"
           title={`${config.appName} homepage`}
         >
           {" "}
+          <span className="font-extrabold text-lg hidden md:block">
+            {config.appName}
+          </span>{" "}
           <Image
             src={"/logo.png"}
             alt={`${config.appName} logo`}
@@ -258,9 +261,6 @@ const HeaderDashboard = () => {
             width={32}
             height={32}
           />
-          <span className="font-extrabold text-lg hidden md:block">
-            {config.appName}
-          </span>
         </Link>
       </div>
       <div className="mb-auto md:mt-auto flex">
