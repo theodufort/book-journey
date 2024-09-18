@@ -75,9 +75,9 @@ const ButtonAccount = () => {
             )}
 
             <div className="hidden md:block">
-              {user?.user_metadata?.name ||
+              {/* {user?.user_metadata?.name ||
                 user?.email?.split("@")[0] ||
-                "Account"}
+                "Account"} */}
             </div>
 
             {isLoading ? (

@@ -32,9 +32,7 @@ export default function Dashboard() {
   return (
     <main className="min-h-screen p-8 pb-24">
       <button>Back to dashboard</button>
-      <div>
-        <GamifiedLibrary />
-      </div>
+      <div className="w-full h-full"></div>
     </main>
   );
 }
