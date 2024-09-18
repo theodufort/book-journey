@@ -32,6 +32,8 @@ create policy "books are viewable"
 on books for select
 to anon         
 using ( true ); 
+create policy "books are insertable only by their user"
+on books for insert to anon with check (true);
 
 alter table "books_like" enable row level security;
 create policy "books like are viewable"
