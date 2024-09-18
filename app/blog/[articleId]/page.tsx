@@ -2,7 +2,6 @@ import { getSEOTags } from "@/libs/seo";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
 import ArticleClientContent from "./ArticleClientContent";
-export const dynamic = "force-dynamic";
 const supabase = createClientComponentClient<Database>();
 
 export async function generateMetadata({
