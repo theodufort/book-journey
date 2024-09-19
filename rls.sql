@@ -1,19 +1,19 @@
 alter table "article_categories" enable row level security;
 create policy "article categories are viewable"
 on article_categories for select
-to anon         
+to anon, authenticated         
 using ( true ); 
 
 alter table "blog_articles" enable row level security;
 create policy "blog articles are viewable"
 on blog_articles for select
-to anon         
+to anon, authenticated         
 using ( true ); 
 
 alter table "blog_categories" enable row level security;
 create policy "blog categories are viewable"
 on blog_categories for select
-to anon         
+to anon, authenticated         
 using ( true ); 
 
 alter table "book_notes" enable row level security;
@@ -30,15 +30,15 @@ on book_notes for insert with check ( (select auth.uid()) = user_id );
 alter table "books" enable row level security;
 create policy "books are viewable"
 on books for select
-to anon         
+to anon, authenticated         
 using ( true ); 
-create policy "books are insertable only by their user"
-on books for insert to anon with check (true);
+create policy "books are insertable"
+on books for insert to anon, authenticated with check (true);
 
 alter table "books_like" enable row level security;
 create policy "books like are viewable"
 on books_like for select
-to anon         
+to anon, authenticated         
 using ( true ); 
 
 alter table "friends" enable row level security;
@@ -46,7 +46,7 @@ alter table "friends" enable row level security;
 alter table "libraries" enable row level security;
 create policy "libraries are viewable"
 on libraries for select
-to anon         
+to anon, authenticated         
 using ( true );
 
 alter table "messages" enable row level security;
