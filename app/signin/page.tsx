@@ -29,7 +29,8 @@ export default function Login() {
 
     try {
       const { type, provider } = options;
-      const redirectURL = window.location.origin + "/api/auth/callback";
+      // const redirectURL = window.location.origin + "/api/auth/callback";
+      const redirectURL = "https://techworkshop.ca/api/auth/callback";
 
       if (type === "oauth") {
         await supabase.auth.signInWithOAuth({
