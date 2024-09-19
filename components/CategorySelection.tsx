@@ -111,7 +111,10 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({ userId }) => {
       // Update user preferences in the database immediately
       supabase
         .from("user_preferences")
-        .upsert({ user_id: userId, preferred_categories: newSelectedCategories })
+        .upsert({
+          user_id: userId,
+          preferred_categories: newSelectedCategories,
+        })
         .select()
         .then(({ error }) => {
           if (error) {
