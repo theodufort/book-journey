@@ -93,9 +93,9 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({ userId }) => {
   }, [userId]);
 
   const handleCategoryChange = async (category: string) => {
-    let newSelectedCategories: string[];
-
     setSelectedCategories((prev) => {
+      let newSelectedCategories: string[];
+
       if (prev.includes(category)) {
         // Prevent deselecting if it's the last category
         if (prev.length === 1) {
@@ -105,16 +105,23 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({ userId }) => {
       } else if (prev.length < 10) {
         newSelectedCategories = [...prev, category];
       } else {
-        newSelectedCategories = prev;
+        return prev; // No change if already at 10 categories
       }
+
+      // Update user preferences in the database immediately
+      supabase
+        .from("user_preferences")
+        .upsert({ user_id: userId, preferred_categories: newSelectedCategories })
+        .select()
+        .then(({ error }) => {
+          if (error) {
+            console.error("Error updating user preferences:", error);
+            // Optionally, you could revert the state change here if the database update fails
+          }
+        });
+
       return newSelectedCategories;
     });
-
-    // Update user preferences in the database
-    await supabase
-      .from("user_preferences")
-      .upsert({ user_id: userId, preferred_categories: newSelectedCategories })
-      .select();
   };
 
   return (
