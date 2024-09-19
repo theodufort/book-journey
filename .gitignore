@@ -61,3 +61,6 @@ public/sitemap-3.xml
 public/sitemap-4.xml
 public/sitemap-5.xml
 bun.lockb
+dump/schema.sql
+dump/roles.sql
+dump/data.sql
