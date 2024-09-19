@@ -12,6 +12,7 @@ export async function GET(req: NextRequest) {
   const requestUrl = new URL(req.url);
   const code = requestUrl.searchParams.get("code");
   var userLoggedIn: any = [];
+
   if (code) {
     const supabase = createRouteHandlerClient({ cookies });
     await supabase.auth.exchangeCodeForSession(code);
@@ -32,9 +33,12 @@ export async function GET(req: NextRequest) {
     // }
   }
 
+  // Determine the origin based on the environment
+  const origin =
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : `https://${config.domainName}`;
+
   // URL to redirect to after sign in process completes
-  return NextResponse.redirect(
-    "https://techworkshop.ca" + config.auth.callbackUrl
-  );
-  // return NextResponse.redirect(requestUrl.origin + config.auth.callbackUrl);
+  return NextResponse.redirect(origin + config.auth.callbackUrl);
 }
