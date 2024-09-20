@@ -20,12 +20,27 @@ export default function CollapsibleSection({
   onUpdate: (bookId: string, newStatus: string) => void;
 }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchType, setSearchType] = useState("title");
 
   if (books.length === 0) return null;
 
-  const filteredBooks = books.filter((item) =>
-    item.data.volumeInfo.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredBooks = books.filter((item) => {
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    switch (searchType) {
+      case "title":
+        return item.data.volumeInfo.title.toLowerCase().includes(lowerSearchTerm);
+      case "author":
+        return item.data.volumeInfo.authors?.some(author => 
+          author.toLowerCase().includes(lowerSearchTerm)
+        ) || false;
+      case "tag":
+        return item.tags?.some(tag => 
+          tag.toLowerCase().includes(lowerSearchTerm)
+        ) || false;
+      default:
+        return false;
+    }
+  });
 
   return (
     <div
@@ -58,30 +73,38 @@ export default function CollapsibleSection({
             </svg>
           </div>
         </div>
-        <label
-          className="input input-bordered flex items-center gap-2 mt-4 md:mt-0 md:ml-5 w-full md:w-auto"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <input
-            type="text"
-            className="grow"
-            placeholder="Search for a book..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 16 16"
-            fill="currentColor"
-            className="h-4 w-4 opacity-70"
-          >
-            <path
-              fillRule="evenodd"
-              d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-              clipRule="evenodd"
+        <div className="flex items-center gap-2 mt-4 md:mt-0 md:ml-5 w-full md:w-auto" onClick={(e) => e.stopPropagation()}>
+          <label className="input input-bordered flex items-center gap-2 flex-grow">
+            <input
+              type="text"
+              className="grow"
+              placeholder="Search for a book..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
-          </svg>
-        </label>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              className="h-4 w-4 opacity-70"
+            >
+              <path
+                fillRule="evenodd"
+                d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </label>
+          <select
+            className="select select-bordered w-full max-w-xs"
+            value={searchType}
+            onChange={(e) => setSearchType(e.target.value)}
+          >
+            <option value="title">Title</option>
+            <option value="author">Author</option>
+            <option value="tag">Tag</option>
+          </select>
+        </div>
       </div>
       <div className="collapse-content sm:px-4">
         <div className="grid grid-cols-1 gap-4">
