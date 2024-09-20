@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { User } from "@supabase/supabase-js";
 import BookListItem from "./BookListItem";
 import { Volume } from "@/interfaces/GoogleAPI";
 import { ReadingListItem } from "@/interfaces/ReadingList";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Database } from "@/types/supabase";
 
 export default function CollapsibleSection({
   status,
@@ -22,8 +24,95 @@ export default function CollapsibleSection({
   const [bookTags, setBookTags] = useState<{ [key: string]: string[] }>({});
   const [searchTerm, setSearchTerm] = useState("");
   const [searchType, setSearchType] = useState("title");
+  const [newTag, setNewTag] = useState("");
+  const supabase = createClientComponentClient<Database>();
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUser(data.user);
+    };
+    getUser();
+  }, [supabase]);
+
+  useEffect(() => {
+    if (user) {
+      fetchAllTags();
+    }
+  }, [user, books]);
 
   if (books.length === 0) return null;
+
+  async function fetchAllTags() {
+    for (const book of books) {
+      await fetchTags(book);
+    }
+  }
+
+  async function fetchTags(book: ReadingListItem) {
+    if (!user) {
+      console.error("User not authenticated");
+      return;
+    }
+    const { data, error } = await supabase
+      .from("reading_list")
+      .select("tags")
+      .eq("user_id", user.id)
+      .eq(
+        "book_id",
+        book.data.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
+          ?.identifier
+      )
+      .maybeSingle();
+
+    if (error) {
+      console.error("Error fetching tags:", error);
+    } else {
+      setBookTags(prevTags => ({
+        ...prevTags,
+        [book.book_id]: data?.tags || []
+      }));
+    }
+  }
+
+  async function updateTags(book: ReadingListItem, newTags: string[]) {
+    if (!user) {
+      console.error("User not authenticated");
+      return;
+    }
+    const { error } = await supabase
+      .from("reading_list")
+      .update({ tags: newTags })
+      .eq("user_id", user.id)
+      .eq(
+        "book_id",
+        book.data.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
+          ?.identifier
+      );
+
+    if (error) {
+      console.error("Error updating tags:", error);
+    } else {
+      setBookTags(prevTags => ({
+        ...prevTags,
+        [book.book_id]: newTags
+      }));
+    }
+  }
+
+  function handleAddTag(book: ReadingListItem) {
+    if (newTag.trim() && !bookTags[book.book_id]?.includes(newTag.trim())) {
+      const updatedTags = [...(bookTags[book.book_id] || []), newTag.trim()];
+      updateTags(book, updatedTags);
+      setNewTag("");
+    }
+  }
+
+  function handleRemoveTag(book: ReadingListItem, tagToRemove: string) {
+    const updatedTags = bookTags[book.book_id]?.filter((tag) => tag !== tagToRemove) || [];
+    updateTags(book, updatedTags);
+  }
 
   const filteredBooks = books.filter((item) => {
     const lowerSearchTerm = searchTerm.toLowerCase();
@@ -35,10 +124,7 @@ export default function CollapsibleSection({
           author.toLowerCase().includes(lowerSearchTerm)
         ) || false;
       case "tag":
-        const bookId = item.data.volumeInfo.industryIdentifiers?.find(
-          (id) => id.type === "ISBN_13"
-        )?.identifier || item.data.id;
-        const tags = bookTags[bookId] || [];
+        const tags = bookTags[item.book_id] || [];
         return tags.some(tag => 
           tag.toLowerCase().includes(lowerSearchTerm)
         );
@@ -117,27 +203,53 @@ export default function CollapsibleSection({
         <div className="grid grid-cols-1 gap-4">
           {filteredBooks.length > 0 ? (
             filteredBooks.map((item) => (
-              <BookListItem
-                key={
-                  item.data.volumeInfo.industryIdentifiers?.find(
-                    (id) => id.type === "ISBN_13"
-                  )?.identifier ||
-                  item.data.id ||
-                  Math.random().toString()
-                }
-                status={status}
-                item={item.data}
-                onUpdate={() => onUpdate(item.book_id, status)}
-                onTagsUpdate={(tags) => {
-                  const bookId = item.data.volumeInfo.industryIdentifiers?.find(
-                    (id) => id.type === "ISBN_13"
-                  )?.identifier || item.data.id;
-                  setBookTags(prevTags => ({
-                    ...prevTags,
-                    [bookId]: tags
-                  }));
-                }}
-              />
+              <div key={item.book_id}>
+                <BookListItem
+                  key={item.book_id}
+                  status={status}
+                  item={item.data}
+                  onUpdate={() => onUpdate(item.book_id, status)}
+                />
+                <div>
+                  <p className="mb-2">
+                    <b>Tags:</b>{" "}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {bookTags[item.book_id]?.map((tag) => (
+                      <div
+                        key={tag}
+                        className="badge badge-secondary gap-2 p02 h-auto"
+                      >
+                        {tag}
+                        <button
+                          onClick={() => handleRemoveTag(item, tag)}
+                          className="btn btn-xs btn-circle btn-ghost"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                    <div className="badge badge-outline gap-2 h-auto flex">
+                      <div className="inline-flex">
+                        <input
+                          type="text"
+                          value={newTag}
+                          onChange={(e) => setNewTag(e.target.value)}
+                          onKeyPress={(e) => e.key === "Enter" && handleAddTag(item)}
+                          placeholder="Add tag"
+                          className="bg-transparent border-none outline-none w-20"
+                        />
+                        <button
+                          onClick={() => handleAddTag(item)}
+                          className="btn btn-xs btn-circle btn-ghost"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             ))
           ) : (
             <p className="col-span-full">
