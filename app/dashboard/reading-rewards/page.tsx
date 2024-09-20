@@ -1,15 +1,15 @@
 "use client";
-import { useEffect, useState, useMemo } from "react";
-import { v4 as uuidv4 } from "uuid";
 import HeaderDashboard from "@/components/DashboardHeader";
-import { User } from "@supabase/supabase-js";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { User } from "@supabase/supabase-js";
+import { useEffect, useMemo, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
-import { UserPoints, Reward } from "@/interfaces/Dashboard";
+import { Reward, UserPoints } from "@/interfaces/Dashboard";
 import { Database } from "@/types/supabase";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function ReadingRewards() {
   const supabase = createClientComponentClient<Database>();
@@ -253,11 +253,13 @@ export default function ReadingRewards() {
             value={filterCategory}
           >
             <option value="">All Categories</option>
-            {Array.from(new Set(rewards.map((r) => r.category))).map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
+            {Array.from(new Set(rewards.map((r) => r.category))).map(
+              (category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              )
+            )}
           </select>
         </div>
 

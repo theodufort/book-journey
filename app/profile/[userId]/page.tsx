@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Database, Json } from "@/types/supabase";
-import Image from "next/image";
-import { checkBookExists } from "@/libs/supabase-helpers";
-import { Volume } from "@/interfaces/GoogleAPI";
 import { BookAvatarNoDetails } from "@/components/BookAvatarNoDetails";
 import { BookAvatarPublic } from "@/components/BookAvatarPublic";
+import { Volume } from "@/interfaces/GoogleAPI";
+import { Database } from "@/types/supabase";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export default function UserProfile({
   params,

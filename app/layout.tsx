@@ -1,13 +1,12 @@
-import { ReactNode } from "react";
-import { Inter } from "next/font/google";
-import { Viewport } from "next";
-import PlausibleProvider from "next-plausible";
-import { getSEOTags } from "@/libs/seo";
 import ClientLayout from "@/components/LayoutClient";
 import config from "@/config";
-import { Analytics } from "@vercel/analytics/react";
-import "./globals.css";
+import { getSEOTags } from "@/libs/seo";
+import { Viewport } from "next";
+import PlausibleProvider from "next-plausible";
 import { ThemeProvider } from "next-themes";
+import { Inter } from "next/font/google";
+import { ReactNode } from "react";
+import "./globals.css";
 
 const font = Inter({ subsets: ["latin"] });
 export const viewport: Viewport = {
@@ -28,7 +27,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <head>
           <meta name="impact-site-verification" data-value="369738092" />
           <PlausibleProvider domain={config.domainName} />
-          <Analytics />
         </head>
       )}
       <body className={font.className}>

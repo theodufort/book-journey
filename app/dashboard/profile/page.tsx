@@ -1,14 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
-import HeaderDashboard from "@/components/DashboardHeader";
-import { User } from "@supabase/supabase-js";
-import { useRouter } from "next/navigation";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import AddFriend from "@/components/AddFriend";
-import { Database } from "@/types/supabase";
 import CategorySelection from "@/components/CategorySelection";
+import HeaderDashboard from "@/components/DashboardHeader";
+import { Database } from "@/types/supabase";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { User } from "@supabase/supabase-js";
 import Link from "next/link";
-import { DashboardFooter } from "@/components/DashboardFooter";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 type Friend = {
   id: string;
   name: string;

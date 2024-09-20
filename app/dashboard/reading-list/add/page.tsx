@@ -1,17 +1,16 @@
 // app/dashboard/add-book.tsx
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
-import { User } from "@supabase/supabase-js";
-import { useRouter } from "next/navigation";
 import HeaderDashboard from "@/components/DashboardHeader";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { User } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
+import { FormEvent, useEffect, useState } from "react";
 
+import { FirstBookTemplate } from "@/components/FirstBookTemplate";
 import { BookSearchResult } from "@/interfaces/BookSearch";
 import { Database } from "@/types/supabase";
-import { DashboardFooter } from "@/components/DashboardFooter";
 import { Resend } from "resend";
-import { FirstBookTemplate } from "@/components/FirstBookTemplate";
 
 export default function AddBook() {
   const supabase = createClientComponentClient<Database>();
