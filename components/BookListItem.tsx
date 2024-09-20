@@ -1,11 +1,10 @@
-import { useBookDetails } from "@/hooks/useBookDetails";
-import { useState, useEffect } from "react";
-import CongratulationsModal from "./CongratulationsModal";
-import { User } from "@supabase/supabase-js";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import Image from "next/image";
-import { Database } from "@/types/supabase";
 import { Volume } from "@/interfaces/GoogleAPI";
+import { Database } from "@/types/supabase";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { User } from "@supabase/supabase-js";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import CongratulationsModal from "./CongratulationsModal";
 export default function BookListItem({
   status,
   item,
@@ -563,6 +562,7 @@ export default function BookListItem({
                 <option value="To Read">To Read</option>
                 <option value="Reading">Reading</option>
                 <option value="Finished">Finished</option>
+                <option value="DNF">Did Not Finish</option>
               </select>
             </div>
           </div>
