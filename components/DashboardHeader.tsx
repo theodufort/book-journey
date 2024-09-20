@@ -1,17 +1,17 @@
 // components/HeaderDashboard.tsx
 
-import Link from "next/link";
-import Image from "next/image";
 import ButtonAccount from "@/components/ButtonAccount";
 import config from "@/config";
-import { useEffect, useState } from "react";
+import { Database } from "@/types/supabase";
 import {
   createClientComponentClient,
   User,
 } from "@supabase/auth-helpers-nextjs";
-import { Database } from "@/types/supabase";
-import { HowToEarnPointsPopup } from "./HowToEarnPointsPopup";
 import { useTheme } from "next-themes";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { HowToEarnPointsPopup } from "./HowToEarnPointsPopup";
 
 const HeaderDashboard = () => {
   const [points, setPoints] = useState<number | null>(null);
@@ -245,7 +245,7 @@ const HeaderDashboard = () => {
       </div>
       <div>
         <Link
-          className="flex items-center gap-2 shrink-0 ml-12"
+          className="flex items-center gap-2 shrink-0 md:ml-12"
           href="/"
           title={`${config.appName} homepage`}
         >
