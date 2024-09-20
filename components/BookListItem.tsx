@@ -539,12 +539,6 @@ export default function BookListItem({
               <p>
                 <b>Tags:</b>{" "}
               </p>
-              <button
-                className="btn btn-sm btn-outline btn-error"
-                onClick={removeBook}
-              >
-                Remove Book
-              </button>
             </div>
             <div className="flex flex-wrap gap-2">
               {tags.map((tag) => (
@@ -596,6 +590,16 @@ export default function BookListItem({
                 {renderReviewInput()}
               </>
             )}
+          </div>
+          <div className="grid grid-cols-1 grid-rows-1">
+            <div className="max-w-min ml-auto mt-auto">
+              <button
+                className="btn btn-primary my-5 md:my-0 flex max-w-min"
+                onClick={removeBook}
+              >
+                Remove
+              </button>
+            </div>
           </div>
         </div>
       </div>
