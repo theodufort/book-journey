@@ -52,28 +52,10 @@ export default function CollapsibleSection({
         className="collapse-title text-xl font-medium flex flex-col md:flex-row items-start md:items-center cursor-pointer"
         onClick={onToggle}
       >
-        <div className="flex items-center w-full md:w-auto">
+        <div className="flex items-center w-full">
           <div className="mr-2">{title}</div>
-          <div className="ml-auto">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className={`h-6 w-6 transition-transform ${
-                isExpanded ? "rotate-180" : ""
-              }`}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </div>
         </div>
-        <div className="flex items-center gap-2 mt-4 md:mt-0 md:ml-5 w-full md:w-auto" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-2 mt-4 md:mt-0 md:ml-5 w-full md:flex-grow" onClick={(e) => e.stopPropagation()}>
           <label className="input input-bordered flex items-center gap-2 flex-grow">
             <input
               type="text"
@@ -104,6 +86,24 @@ export default function CollapsibleSection({
             <option value="author">Author</option>
             <option value="tag">Tag</option>
           </select>
+        </div>
+        <div className="ml-auto md:ml-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className={`h-6 w-6 transition-transform ${
+              isExpanded ? "rotate-180" : ""
+            }`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
         </div>
       </div>
       <div className="collapse-content sm:px-4">
