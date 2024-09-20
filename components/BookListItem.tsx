@@ -9,10 +9,12 @@ export default function BookListItem({
   status,
   item,
   onUpdate,
+  onTagsUpdate,
 }: {
   item: Volume;
   status: string;
   onUpdate: () => void;
+  onTagsUpdate: (tags: string[]) => void;
 }) {
   const [review, setReview] = useState("");
   const [tags, setTags] = useState<string[]>([]);
@@ -230,6 +232,7 @@ export default function BookListItem({
       console.error("Error updating tags:", error);
     } else {
       setTags(newTags);
+      onTagsUpdate(newTags); // Call the new prop function
     }
   }
 
