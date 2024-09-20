@@ -64,5 +64,5 @@ bun.lockb
 dump/schema.sql
 dump/roles.sql
 dump/data.sql
-
+.env.local
 certificates
