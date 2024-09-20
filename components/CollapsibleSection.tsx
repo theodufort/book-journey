@@ -203,53 +203,15 @@ export default function CollapsibleSection({
         <div className="grid grid-cols-1 gap-4">
           {filteredBooks.length > 0 ? (
             filteredBooks.map((item) => (
-              <div key={item.book_id}>
-                <BookListItem
-                  key={item.book_id}
-                  status={status}
-                  item={item.data}
-                  onUpdate={() => onUpdate(item.book_id, status)}
-                />
-                <div>
-                  <p className="mb-2">
-                    <b>Tags:</b>{" "}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {bookTags[item.book_id]?.map((tag) => (
-                      <div
-                        key={tag}
-                        className="badge badge-secondary gap-2 p02 h-auto"
-                      >
-                        {tag}
-                        <button
-                          onClick={() => handleRemoveTag(item, tag)}
-                          className="btn btn-xs btn-circle btn-ghost"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    ))}
-                    <div className="badge badge-outline gap-2 h-auto flex">
-                      <div className="inline-flex">
-                        <input
-                          type="text"
-                          value={newTag}
-                          onChange={(e) => setNewTag(e.target.value)}
-                          onKeyPress={(e) => e.key === "Enter" && handleAddTag(item)}
-                          placeholder="Add tag"
-                          className="bg-transparent border-none outline-none w-20"
-                        />
-                        <button
-                          onClick={() => handleAddTag(item)}
-                          className="btn btn-xs btn-circle btn-ghost"
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <BookListItem
+                key={item.book_id}
+                status={status}
+                item={item.data}
+                onUpdate={() => onUpdate(item.book_id, status)}
+                tags={bookTags[item.book_id] || []}
+                onAddTag={(tag) => handleAddTag(item, tag)}
+                onRemoveTag={(tag) => handleRemoveTag(item, tag)}
+              />
             ))
           ) : (
             <p className="col-span-full">

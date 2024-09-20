@@ -9,10 +9,16 @@ export default function BookListItem({
   status,
   item,
   onUpdate,
+  tags,
+  onAddTag,
+  onRemoveTag,
 }: {
   item: Volume;
   status: string;
   onUpdate: () => void;
+  tags: string[];
+  onAddTag: (tag: string) => void;
+  onRemoveTag: (tag: string) => void;
 }) {
   const [review, setReview] = useState("");
   // Truncate the description if it's too long and not expanded
@@ -542,6 +548,45 @@ export default function BookListItem({
                 onClick={removeBook}
               >
                 Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="mt-4">
+        <p className="mb-2">
+          <b>Tags:</b>{" "}
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <div
+              key={tag}
+              className="badge badge-secondary gap-2 p-2 h-auto"
+            >
+              {tag}
+              <button
+                onClick={() => onRemoveTag(tag)}
+                className="btn btn-xs btn-circle btn-ghost"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+          <div className="badge badge-outline gap-2 h-auto flex">
+            <div className="inline-flex">
+              <input
+                type="text"
+                value={newTag}
+                onChange={(e) => setNewTag(e.target.value)}
+                onKeyPress={(e) => e.key === "Enter" && onAddTag(newTag)}
+                placeholder="Add tag"
+                className="bg-transparent border-none outline-none w-20"
+              />
+              <button
+                onClick={() => onAddTag(newTag)}
+                className="btn btn-xs btn-circle btn-ghost"
+              >
+                +
               </button>
             </div>
           </div>
