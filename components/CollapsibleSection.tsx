@@ -101,11 +101,10 @@ export default function CollapsibleSection({
     }
   }
 
-  function handleAddTag(book: ReadingListItem) {
-    if (newTag.trim() && !bookTags[book.book_id]?.includes(newTag.trim())) {
-      const updatedTags = [...(bookTags[book.book_id] || []), newTag.trim()];
+  function handleAddTag(book: ReadingListItem, tagToAdd: string) {
+    if (tagToAdd.trim() && !bookTags[book.book_id]?.includes(tagToAdd.trim())) {
+      const updatedTags = [...(bookTags[book.book_id] || []), tagToAdd.trim()];
       updateTags(book, updatedTags);
-      setNewTag("");
     }
   }
 
