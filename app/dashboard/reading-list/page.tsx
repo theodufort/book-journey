@@ -1,17 +1,13 @@
 "use client";
-import { useEffect, useState } from "react";
+import CollapsibleSection from "@/components/CollapsibleSection";
 import HeaderDashboard from "@/components/DashboardHeader";
-import { useRouter } from "next/navigation";
-import { User } from "@supabase/supabase-js";
 import { Volume } from "@/interfaces/GoogleAPI";
 import { ReadingListItem } from "@/interfaces/ReadingList";
-import CollapsibleSection from "@/components/CollapsibleSection";
+import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import PointsSection from "@/components/PointsSection";
-import RecentActivitySection from "@/components/RecentActivitySection";
-import { Database, Json } from "@/types/supabase";
-import { checkBookExists } from "@/libs/supabase-helpers";
-import { DashboardFooter } from "@/components/DashboardFooter";
+import { User } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function ReadingList() {
   const supabase = createClientComponentClient<Database>();

@@ -22,12 +22,12 @@
     "@supabase/supabase-js": "^2.44.3",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/uuid": "^10.0.0",
-    "@vercel/analytics": "^1.3.1",
     "axios": "^1.7.2",
     "axios-retry": "^4.5.0",
     "crisp-sdk-web": "^1.0.22",
-    "eslint": "8.47.0",
+    "eslint": "^9.10.0",
     "eslint-config-next": "13.4.19",
+    "eslint-plugin-unused-imports": "^4.1.4",
     "form-data": "^4.0.0",
     "fs": "^0.0.1-security",
     "https-proxy-agent": "^7.0.5",
@@ -53,6 +53,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@eslint/js": "^9.10.0",
     "@types/jest": "^29.5.12",
     "@types/mdx": "^2.0.12",
     "@types/mongoose": "^5.11.97",
@@ -62,9 +63,12 @@
     "@types/react-syntax-highlighter": "^15.5.11",
     "autoprefixer": "^10.4.19",
     "daisyui": "^4.10.1",
+    "eslint-plugin-react": "^7.36.1",
+    "globals": "^15.9.0",
     "postcss": "^8.4.38",
     "supabase": "^1.192.5",
     "tailwindcss": "^3.4.3",
-    "typescript": "^5.4.3"
+    "typescript": "^5.4.3",
+    "typescript-eslint": "^8.6.0"
   }
 }

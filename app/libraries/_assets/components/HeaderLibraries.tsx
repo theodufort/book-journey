@@ -1,16 +1,15 @@
 "use client";
 
-import type { JSX } from "react";
-import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
-import { Popover, Transition } from "@headlessui/react";
-import Link from "next/link";
-import Image from "next/image";
 import logo from "@/app/icon.png";
-import config from "@/config";
 import ButtonSignin from "@/components/ButtonSignin";
+import config from "@/config";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import Image from "next/image";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import type { JSX } from "react";
+import { useEffect, useState } from "react";
 const supabase = createClientComponentClient<Database>();
 const links: {
   href: string;

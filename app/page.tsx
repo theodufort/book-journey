@@ -1,24 +1,18 @@
 "use client";
-import Link from "next/link";
-import Header from "@/components/Header";
-import CTA from "@/components/CTA";
 import FeaturesListicle from "@/components/FeaturesListicle";
+import Header from "@/components/Header";
 
 import FAQ from "@/components/FAQ";
-import FeaturesAccordion from "@/components/FeaturesAccordion";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
-import Pricing from "@/components/Pricing";
 import Problem from "@/components/Problem";
-import { Suspense, useEffect, useState } from "react";
-import BookFinder from "@/components/BookFinder";
 import { Database } from "@/types/supabase";
 import {
   createClientComponentClient,
   User,
 } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
-import { CalendlyFooter } from "@/components/CalendlyFooter";
+import { Suspense, useEffect, useState } from "react";
 
 export default function Page() {
   const router = useRouter();

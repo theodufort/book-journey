@@ -1,14 +1,13 @@
 "use client";
 export const dynamic = "force-dynamic";
-import { useEffect, useState } from "react";
 import HeaderDashboard from "@/components/DashboardHeader";
-import { User } from "@supabase/supabase-js";
-import { useRouter } from "next/navigation";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Database } from "@/types/supabase";
 import OnboardingPopup from "@/components/OnboardingPopup";
 import StreakRewardSystem from "@/components/StreakRewardSystem";
-import GamifiedLibrary from "@/components/GamifiedLibrary";
+import { Database } from "@/types/supabase";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { User } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 export default function Dashboard() {
   const supabase = createClientComponentClient<Database>();
   const [currentlyReading, setCurrentlyReading] = useState([]);

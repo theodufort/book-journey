@@ -1,12 +1,11 @@
 "use client";
 import HeaderDashboard from "@/components/DashboardHeader";
 import { ReadingListItem } from "@/interfaces/Dashboard";
+import { Volume } from "@/interfaces/GoogleAPI";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
-import { useEffect, useState, useRef, useMemo } from "react";
-import { Volume } from "@/interfaces/GoogleAPI";
-import { DashboardFooter } from "@/components/DashboardFooter";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 export default function BookNotes() {
   const supabase = createClientComponentClient<Database>();

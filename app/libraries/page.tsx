@@ -1,9 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
-import { getSEOTags } from "@/libs/seo";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const supabase = createClientComponentClient<Database>();
 

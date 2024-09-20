@@ -1,7 +1,6 @@
 import { getSEOTags } from "@/libs/seo";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
-import Link from "next/link";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 const supabase = createClientComponentClient<Database>();
 

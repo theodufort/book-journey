@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import BookAvatar from "@/components/BookAvatar";
 import HeaderDashboard from "@/components/DashboardHeader";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Volume } from "@/interfaces/GoogleAPI";
 import { Database } from "@/types/supabase";
-import BookAvatar from "@/components/BookAvatar";
-import { DashboardFooter } from "@/components/DashboardFooter";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useEffect, useState } from "react";
 
 export default function Recommendations() {
   const [isLoading, setIsLoading] = useState(true);
