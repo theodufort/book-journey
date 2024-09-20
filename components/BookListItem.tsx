@@ -534,19 +534,11 @@ export default function BookListItem({
               {!description && "No description available"}
             </div>
           </div>
-          <div className="mt-4">
-            <div className="flex justify-between items-start mb-2">
-              <p>
-                <b>Tags:</b>{" "}
-              </p>
-              <button
-                className="btn btn-sm btn-outline btn-error"
-                onClick={removeBook}
-              >
-                Remove Book
-              </button>
-            </div>
-            <div className="flex flex-wrap gap-2">
+          <div className="mt-4 relative pb-12">
+            <p className="mb-2">
+              <b>Tags:</b>{" "}
+            </p>
+            <div className="flex flex-wrap gap-2 mb-2">
               {tags.map((tag) => (
                 <div
                   key={tag}
@@ -589,6 +581,12 @@ export default function BookListItem({
               </div>
             </div>
           </div>
+          <button
+            className="btn btn-sm btn-outline btn-error absolute bottom-0 right-0"
+            onClick={removeBook}
+          >
+            Remove Book
+          </button>
           <div className="grid card-actions justify-start gap-y-4 max-w-2xl">
             {status === "Finished" && (
               <>
