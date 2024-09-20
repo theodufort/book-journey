@@ -67,12 +67,12 @@ export default function AddBook() {
         react: FirstBookTemplate(),
       });
     }
-    const { error } = await supabase.from("reading_list").insert({
+    const { error } = await supabase.from("reading_list").upsert({
       user_id: user.id,
       book_id: isbn,
       status: status,
     });
-
+    console.log(error);
     if (error) {
       setError("Failed to add book to reading list");
       console.error(error);

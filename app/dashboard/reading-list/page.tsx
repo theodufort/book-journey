@@ -234,6 +234,7 @@ export default function ReadingList() {
   const finishedBooks = readingList.filter(
     (item) => item.status === "Finished"
   );
+  const dnfBooks = readingList.filter((item) => item.status === "DNF");
 
   const toggleSection = (section: any) => {
     setExpandedSections((prev: any) => ({
@@ -325,10 +326,10 @@ export default function ReadingList() {
                   />
                   <CollapsibleSection
                     status="DNF"
-                    title={`Did Not Finish (${finishedBooks.length}📘)`}
+                    title={`Did Not Finish (${dnfBooks.length}📘)`}
                     isExpanded={expandedSections["DNF"]}
                     onToggle={() => toggleSection("DNF")}
-                    books={finishedBooks}
+                    books={dnfBooks}
                     onUpdate={updateBookProgress}
                   />
                 </>
