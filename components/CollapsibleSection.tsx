@@ -34,13 +34,16 @@ export default function CollapsibleSection({
           author.toLowerCase().includes(lowerSearchTerm)
         ) || false;
       case "tag":
+        console.log("Item tags:", item.tags); // Add this line for debugging
         return item.tags?.some(tag => 
           tag.toLowerCase().includes(lowerSearchTerm)
         ) || false;
       default:
-        return false;
+        return true;
     }
   });
+
+  console.log("Filtered Books:", filteredBooks);
 
   return (
     <div
