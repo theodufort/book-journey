@@ -37,6 +37,7 @@ export default function BookListItem({
   const [pendingUpdate, setPendingUpdate] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [rating, setRating] = useState(0);
+  const [newTag, setNewTag] = useState("");
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
@@ -578,12 +579,20 @@ export default function BookListItem({
                 type="text"
                 value={newTag}
                 onChange={(e) => setNewTag(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && onAddTag(newTag)}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    onAddTag(newTag);
+                    setNewTag("");
+                  }
+                }}
                 placeholder="Add tag"
                 className="bg-transparent border-none outline-none w-20"
               />
               <button
-                onClick={() => onAddTag(newTag)}
+                onClick={() => {
+                  onAddTag(newTag);
+                  setNewTag("");
+                }}
                 className="btn btn-xs btn-circle btn-ghost"
               >
                 +
