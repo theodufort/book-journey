@@ -19,6 +19,7 @@ export default function CollapsibleSection({
   books: ReadingListItem[];
   onUpdate: (bookId: string, newStatus: string) => void;
 }) {
+  const [bookTags, setBookTags] = useState<{ [key: string]: string[] }>({});
   const [searchTerm, setSearchTerm] = useState("");
   const [searchType, setSearchType] = useState("title");
 
@@ -34,10 +35,13 @@ export default function CollapsibleSection({
           author.toLowerCase().includes(lowerSearchTerm)
         ) || false;
       case "tag":
-        console.log("Item tags:", item.tags); // Add this line for debugging
-        return item.tags?.some(tag => 
+        const bookId = item.data.volumeInfo.industryIdentifiers?.find(
+          (id) => id.type === "ISBN_13"
+        )?.identifier || item.data.id;
+        const tags = bookTags[bookId] || [];
+        return tags.some(tag => 
           tag.toLowerCase().includes(lowerSearchTerm)
-        ) || false;
+        );
       default:
         return true;
     }
@@ -124,6 +128,15 @@ export default function CollapsibleSection({
                 status={status}
                 item={item.data}
                 onUpdate={() => onUpdate(item.book_id, status)}
+                onTagsUpdate={(tags) => {
+                  const bookId = item.data.volumeInfo.industryIdentifiers?.find(
+                    (id) => id.type === "ISBN_13"
+                  )?.identifier || item.data.id;
+                  setBookTags(prevTags => ({
+                    ...prevTags,
+                    [bookId]: tags
+                  }));
+                }}
               />
             ))
           ) : (
