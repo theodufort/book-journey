@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
-import { User } from "@supabase/supabase-js";
-import BookListItem from "./BookListItem";
-import { Volume } from "@/interfaces/GoogleAPI";
 import { ReadingListItem } from "@/interfaces/ReadingList";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { User } from "@supabase/supabase-js";
+import { useEffect, useState } from "react";
+import BookListItem from "./BookListItem";
 
 export default function CollapsibleSection({
   status,
@@ -61,17 +60,18 @@ export default function CollapsibleSection({
       .eq("user_id", user.id)
       .eq(
         "book_id",
-        book.data.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
-          ?.identifier
+        book.data.volumeInfo.industryIdentifiers?.find(
+          (id) => id.type === "ISBN_13"
+        )?.identifier
       )
       .maybeSingle();
 
     if (error) {
       console.error("Error fetching tags:", error);
     } else {
-      setBookTags(prevTags => ({
+      setBookTags((prevTags) => ({
         ...prevTags,
-        [book.book_id]: data?.tags || []
+        [book.book_id]: data?.tags || [],
       }));
     }
   }
@@ -87,16 +87,17 @@ export default function CollapsibleSection({
       .eq("user_id", user.id)
       .eq(
         "book_id",
-        book.data.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
-          ?.identifier
+        book.data.volumeInfo.industryIdentifiers?.find(
+          (id) => id.type === "ISBN_13"
+        )?.identifier
       );
 
     if (error) {
       console.error("Error updating tags:", error);
     } else {
-      setBookTags(prevTags => ({
+      setBookTags((prevTags) => ({
         ...prevTags,
-        [book.book_id]: newTags
+        [book.book_id]: newTags,
       }));
     }
   }
@@ -109,7 +110,8 @@ export default function CollapsibleSection({
   }
 
   function handleRemoveTag(book: ReadingListItem, tagToRemove: string) {
-    const updatedTags = bookTags[book.book_id]?.filter((tag) => tag !== tagToRemove) || [];
+    const updatedTags =
+      bookTags[book.book_id]?.filter((tag) => tag !== tagToRemove) || [];
     updateTags(book, updatedTags);
   }
 
@@ -120,22 +122,22 @@ export default function CollapsibleSection({
     const lowerSearchTerm = searchTerm.toLowerCase();
     switch (searchType) {
       case "title":
-        return item.data.volumeInfo.title.toLowerCase().includes(lowerSearchTerm);
+        return item.data.volumeInfo.title
+          .toLowerCase()
+          .includes(lowerSearchTerm);
       case "author":
-        return item.data.volumeInfo.authors?.some(author => 
-          author.toLowerCase().includes(lowerSearchTerm)
-        ) || false;
+        return (
+          item.data.volumeInfo.authors?.some((author) =>
+            author.toLowerCase().includes(lowerSearchTerm)
+          ) || false
+        );
       case "tag":
         const tags = bookTags[item.book_id] || [];
-        return tags.some(tag => 
-          tag.toLowerCase().includes(lowerSearchTerm)
-        );
+        return tags.some((tag) => tag.toLowerCase().includes(lowerSearchTerm));
       default:
         return true;
     }
   });
-
-  console.log("Filtered Books:", filteredBooks);
 
   return (
     <div
@@ -150,7 +152,10 @@ export default function CollapsibleSection({
         <div className="flex items-center w-full">
           <div className="mr-2">{title}</div>
         </div>
-        <div className="flex items-center gap-2 mt-4 md:mt-0 md:ml-5 w-full md:flex-grow" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="flex items-center gap-2 mt-4 md:mt-0 md:ml-5 w-full md:flex-grow"
+          onClick={(e) => e.stopPropagation()}
+        >
           <label className="input input-bordered flex items-center gap-2 flex-grow">
             <input
               type="text"
