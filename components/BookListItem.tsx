@@ -534,6 +534,53 @@ export default function BookListItem({
               {!description && "No description available"}
             </div>
           </div>
+          <div className="mt-4">
+            <p className="mb-2">
+              <b>Tags:</b>{" "}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {tags.map((tag) => (
+                <div
+                  key={tag}
+                  className="badge badge-secondary gap-2 p-2 h-auto"
+                >
+                  {tag}
+                  <button
+                    onClick={() => onRemoveTag(tag)}
+                    className="btn btn-xs btn-circle btn-ghost"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+              <div className="badge badge-outline gap-2 h-auto flex">
+                <div className="inline-flex">
+                  <input
+                    type="text"
+                    value={newTag}
+                    onChange={(e) => setNewTag(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === "Enter") {
+                        onAddTag(newTag);
+                        setNewTag("");
+                      }
+                    }}
+                    placeholder="Add tag"
+                    className="bg-transparent border-none outline-none w-20"
+                  />
+                  <button
+                    onClick={() => {
+                      onAddTag(newTag);
+                      setNewTag("");
+                    }}
+                    className="btn btn-xs btn-circle btn-ghost"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
           <div className="grid card-actions justify-start gap-y-4 max-w-2xl">
             {status === "Finished" && (
               <>
@@ -549,53 +596,6 @@ export default function BookListItem({
                 onClick={removeBook}
               >
                 Remove
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="mt-4">
-        <p className="mb-2">
-          <b>Tags:</b>{" "}
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {tags.map((tag) => (
-            <div
-              key={tag}
-              className="badge badge-secondary gap-2 p-2 h-auto"
-            >
-              {tag}
-              <button
-                onClick={() => onRemoveTag(tag)}
-                className="btn btn-xs btn-circle btn-ghost"
-              >
-                ✕
-              </button>
-            </div>
-          ))}
-          <div className="badge badge-outline gap-2 h-auto flex">
-            <div className="inline-flex">
-              <input
-                type="text"
-                value={newTag}
-                onChange={(e) => setNewTag(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === "Enter") {
-                    onAddTag(newTag);
-                    setNewTag("");
-                  }
-                }}
-                placeholder="Add tag"
-                className="bg-transparent border-none outline-none w-20"
-              />
-              <button
-                onClick={() => {
-                  onAddTag(newTag);
-                  setNewTag("");
-                }}
-                className="btn btn-xs btn-circle btn-ghost"
-              >
-                +
               </button>
             </div>
           </div>
