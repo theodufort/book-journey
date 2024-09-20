@@ -114,6 +114,9 @@ export default function CollapsibleSection({
   }
 
   const filteredBooks = books.filter((item) => {
+    if (item.status !== status) {
+      return false;
+    }
     const lowerSearchTerm = searchTerm.toLowerCase();
     switch (searchType) {
       case "title":
