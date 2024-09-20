@@ -12,9 +12,7 @@ export async function GET(req: NextRequest) {
 
   if (code) {
     const supabase = createRouteHandlerClient({ cookies });
-    console.log(code);
     await supabase.auth.exchangeCodeForSession(code);
-    console.log(code);
   } else {
     // const resend = new Resend(process.env.RESEND_API_KEY);
     // const { data, error } = await resend.emails.send({
@@ -29,6 +27,7 @@ export async function GET(req: NextRequest) {
   }
 
   // URL to redirect to after sign in process completes
-
-  return NextResponse.redirect(requestUrl.origin + config.auth.callbackUrl);
+  return NextResponse.redirect(
+    "https://mybookquest.com" + config.auth.callbackUrl
+  );
 }
