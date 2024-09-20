@@ -19,6 +19,7 @@ export default function ReadingList() {
     "To Read": true,
     Reading: true,
     Finished: true,
+    DNF: false,
   });
 
   async function updateBookProgress(bookId: string, status: string) {
@@ -319,6 +320,14 @@ export default function ReadingList() {
                     title={`Finished (${finishedBooks.length}📘)`}
                     isExpanded={expandedSections["Finished"]}
                     onToggle={() => toggleSection("Finished")}
+                    books={finishedBooks}
+                    onUpdate={updateBookProgress}
+                  />
+                  <CollapsibleSection
+                    status="DNF"
+                    title={`Did Not Finish (${finishedBooks.length}📘)`}
+                    isExpanded={expandedSections["DNF"]}
+                    onToggle={() => toggleSection("DNF")}
                     books={finishedBooks}
                     onUpdate={updateBookProgress}
                   />
