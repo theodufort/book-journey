@@ -534,55 +534,6 @@ export default function BookListItem({
               {!description && "No description available"}
             </div>
           </div>
-          <div className="mt-4">
-            <div className="flex justify-between items-center mb-2">
-              <p>
-                <b>Tags:</b>{" "}
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {tags.map((tag) => (
-                <div
-                  key={tag}
-                  className="badge badge-secondary gap-2 p-2 h-auto"
-                >
-                  {tag}
-                  <button
-                    onClick={() => onRemoveTag(tag)}
-                    className="btn btn-xs btn-circle btn-ghost"
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
-              <div className="badge badge-outline gap-2 h-auto flex">
-                <div className="inline-flex">
-                  <input
-                    type="text"
-                    value={newTag}
-                    onChange={(e) => setNewTag(e.target.value)}
-                    onKeyPress={(e) => {
-                      if (e.key === "Enter") {
-                        onAddTag(newTag);
-                        setNewTag("");
-                      }
-                    }}
-                    placeholder="Add tag"
-                    className="bg-transparent border-none outline-none w-20"
-                  />
-                  <button
-                    onClick={() => {
-                      onAddTag(newTag);
-                      setNewTag("");
-                    }}
-                    className="btn btn-xs btn-circle btn-ghost"
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
           <div className="grid card-actions justify-start gap-y-4 max-w-2xl">
             {status === "Finished" && (
               <>
@@ -591,7 +542,54 @@ export default function BookListItem({
               </>
             )}
           </div>
-          <div className="grid grid-cols-1 grid-rows-1">
+          <div className="grid grid-cols-2 grid-rows-1">
+            <div>
+              <p className="mb-2">
+                <b>Tags:</b>{" "}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                  <div
+                    key={tag}
+                    className="badge badge-secondary gap-2 p02 h-auto"
+                  >
+                    {tag}
+                    <button
+                      onClick={() => onRemoveTag(tag)}
+                      className="btn btn-xs btn-circle btn-ghost"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+                <div className="badge badge-outline gap-2 h-auto flex">
+                  <div className="inline-flex">
+                    <input
+                      type="text"
+                      value={newTag}
+                      onChange={(e) => setNewTag(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter") {
+                          onAddTag(newTag);
+                          setNewTag("");
+                        }
+                      }}
+                      placeholder="Add tag"
+                      className="bg-transparent border-none outline-none w-20"
+                    />
+                    <button
+                      onClick={() => {
+                        onAddTag(newTag);
+                        setNewTag("");
+                      }}
+                      className="btn btn-xs btn-circle btn-ghost"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div className="max-w-min ml-auto mt-auto">
               <button
                 className="btn btn-primary my-5 md:my-0 flex max-w-min"

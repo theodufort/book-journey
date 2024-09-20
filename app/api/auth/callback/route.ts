@@ -1,9 +1,7 @@
-import { NextResponse, NextRequest } from "next/server";
+import config from "@/config";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import config from "@/config";
-import { Resend } from "resend";
-import { WelcomeEmail } from "@/components/WelcomeTemplate";
+import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
@@ -11,15 +9,12 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   const requestUrl = new URL(req.url);
   const code = requestUrl.searchParams.get("code");
-  var userLoggedIn: any = [];
 
   if (code) {
     const supabase = createRouteHandlerClient({ cookies });
+    console.log(code);
     await supabase.auth.exchangeCodeForSession(code);
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    userLoggedIn = user;
+    console.log(code);
   } else {
     // const resend = new Resend(process.env.RESEND_API_KEY);
     // const { data, error } = await resend.emails.send({
@@ -33,12 +28,7 @@ export async function GET(req: NextRequest) {
     // }
   }
 
-  // Determine the origin based on the environment
-  const origin =
-    process.env.NODE_ENV === "development"
-      ? "http://localhost:3000"
-      : `https://${config.domainName}`;
-
   // URL to redirect to after sign in process completes
-  return NextResponse.redirect(origin + config.auth.callbackUrl);
+
+  return NextResponse.redirect(requestUrl.origin + config.auth.callbackUrl);
 }
