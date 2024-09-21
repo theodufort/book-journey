@@ -230,3 +230,101 @@ export default function CollapsibleSection({
     </div>
   );
 }
+import React, { useState } from 'react';
+import { ReadingListItem } from "@/interfaces/ReadingList";
+import BookAvatar from './BookAvatar';
+
+interface CollapsibleSectionProps {
+  status: string;
+  title: string;
+  isExpanded: boolean;
+  onToggle: () => void;
+  books: ReadingListItem[];
+  onUpdate: (bookId: string, status: string) => void;
+}
+
+const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
+  status,
+  title,
+  isExpanded,
+  onToggle,
+  books,
+  onUpdate,
+}) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortCriteria, setSortCriteria] = useState('title');
+
+  const filteredBooks = books.filter((book) =>
+    book.data.volumeInfo.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const sortedBooks = [...filteredBooks].sort((a, b) => {
+    if (sortCriteria === 'title') {
+      return a.data.volumeInfo.title.localeCompare(b.data.volumeInfo.title);
+    } else if (sortCriteria === 'author') {
+      return (a.data.volumeInfo.authors?.[0] || '').localeCompare(b.data.volumeInfo.authors?.[0] || '');
+    }
+    return 0;
+  });
+
+  return (
+    <div className="bg-base-200 rounded-box p-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+        <h2 className="text-xl font-bold mb-2 sm:mb-0">{title}</h2>
+        <button
+          onClick={onToggle}
+          className="btn btn-ghost btn-sm p-0 h-auto min-h-0"
+        >
+          <svg
+            className={`w-6 h-6 transition-transform ${
+              isExpanded ? 'transform rotate-180' : ''
+            }`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </button>
+      </div>
+      {isExpanded && (
+        <div className="space-y-4">
+          <div className="flex flex-col space-y-2">
+            <input
+              type="text"
+              placeholder="Search books..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="input input-bordered w-full"
+            />
+            <select
+              value={sortCriteria}
+              onChange={(e) => setSortCriteria(e.target.value)}
+              className="select select-bordered w-full"
+            >
+              <option value="title">Sort by Title</option>
+              <option value="author">Sort by Author</option>
+            </select>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {sortedBooks.map((book) => (
+              <BookAvatar
+                key={book.book_id}
+                book={book}
+                onUpdate={onUpdate}
+                currentStatus={status}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default CollapsibleSection;

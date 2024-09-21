@@ -1,5 +1,6 @@
 "use client";
 import CollapsibleSection from "@/components/CollapsibleSection";
+import BookAvatar from "@/components/BookAvatar";
 import HeaderDashboard from "@/components/DashboardHeader";
 import { Volume } from "@/interfaces/GoogleAPI";
 import { ReadingListItem } from "@/interfaces/ReadingList";
