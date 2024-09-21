@@ -65,3 +65,4 @@ dump/schema.sql
 dump/roles.sql
 dump/data.sql
 certificates
+bun.lockb

@@ -493,9 +493,9 @@ export default function BookListItem({
           />
         </figure>
         <div className="card-body md:w-2/3">
-          <div className="grid grid-cols-2 grid-rows-1">
+          <div className="grid md:grid-cols-2 md:grid-rows-1">
             <h2 className="card-title">{book.title || "Untitled"}</h2>
-            <div className="float-right ml-auto">
+            <div className="md:float-right md:ml-auto mr-auto my-2 md:my-0">
               {/* <label>
                 <b>Status:</b>{" "}
               </label> */}
