@@ -151,12 +151,30 @@ export default function CollapsibleSection({
       >
         <div className="flex items-center w-full">
           <div className="mr-2">{title}</div>
+          <div className="ml-auto md:ml-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className={`h-6 w-6 transition-transform ${
+                isExpanded ? "rotate-180" : ""
+              }`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </div>
         </div>
         <div
-          className="flex items-center gap-2 mt-4 md:mt-0 md:ml-5 w-full md:flex-grow"
+          className="grid md:grid-rows-1 md:grid-cols-2 md:mt-0 mt-4 grid-rows-2 grid-cols-1 w-full gap-2"
           onClick={(e) => e.stopPropagation()}
         >
-          <label className="input input-bordered flex items-center gap-2 flex-grow">
+          <label className="input input-bordered flex items-center gap-2 flex-grow ">
             <input
               type="text"
               className="grow"
@@ -178,7 +196,7 @@ export default function CollapsibleSection({
             </svg>
           </label>
           <select
-            className="select select-bordered w-full max-w-xs"
+            className="select select-bordered "
             value={searchType}
             onChange={(e) => setSearchType(e.target.value)}
           >
@@ -186,24 +204,6 @@ export default function CollapsibleSection({
             <option value="author">Author</option>
             <option value="tag">Tag</option>
           </select>
-        </div>
-        <div className="ml-auto md:ml-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className={`h-6 w-6 transition-transform ${
-              isExpanded ? "rotate-180" : ""
-            }`}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
         </div>
       </div>
       <div className="collapse-content sm:px-4">
@@ -230,101 +230,3 @@ export default function CollapsibleSection({
     </div>
   );
 }
-import React, { useState } from 'react';
-import { ReadingListItem } from "@/interfaces/ReadingList";
-import BookAvatar from './BookAvatar';
-
-interface CollapsibleSectionProps {
-  status: string;
-  title: string;
-  isExpanded: boolean;
-  onToggle: () => void;
-  books: ReadingListItem[];
-  onUpdate: (bookId: string, status: string) => void;
-}
-
-const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
-  status,
-  title,
-  isExpanded,
-  onToggle,
-  books,
-  onUpdate,
-}) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortCriteria, setSortCriteria] = useState('title');
-
-  const filteredBooks = books.filter((book) =>
-    book.data.volumeInfo.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const sortedBooks = [...filteredBooks].sort((a, b) => {
-    if (sortCriteria === 'title') {
-      return a.data.volumeInfo.title.localeCompare(b.data.volumeInfo.title);
-    } else if (sortCriteria === 'author') {
-      return (a.data.volumeInfo.authors?.[0] || '').localeCompare(b.data.volumeInfo.authors?.[0] || '');
-    }
-    return 0;
-  });
-
-  return (
-    <div className="bg-base-200 rounded-box p-4">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-        <h2 className="text-xl font-bold mb-2 sm:mb-0">{title}</h2>
-        <button
-          onClick={onToggle}
-          className="btn btn-ghost btn-sm p-0 h-auto min-h-0"
-        >
-          <svg
-            className={`w-6 h-6 transition-transform ${
-              isExpanded ? 'transform rotate-180' : ''
-            }`}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </button>
-      </div>
-      {isExpanded && (
-        <div className="space-y-4">
-          <div className="flex flex-col space-y-2">
-            <input
-              type="text"
-              placeholder="Search books..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="input input-bordered w-full"
-            />
-            <select
-              value={sortCriteria}
-              onChange={(e) => setSortCriteria(e.target.value)}
-              className="select select-bordered w-full"
-            >
-              <option value="title">Sort by Title</option>
-              <option value="author">Sort by Author</option>
-            </select>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {sortedBooks.map((book) => (
-              <BookAvatar
-                key={book.book_id}
-                book={book}
-                onUpdate={onUpdate}
-                currentStatus={status}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default CollapsibleSection;

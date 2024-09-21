@@ -215,7 +215,7 @@ export default function BookNotes() {
               <div className="w-2/3 p-6">
                 {selectedBook ? (
                   <>
-                    <div className="flex justify-between items-center mb-4">
+                    <div className="mb-4 block">
                       <div>
                         <h2 className="text-2xl font-semibold">
                           {selectedBook.data.volumeInfo.title}
@@ -233,7 +233,7 @@ export default function BookNotes() {
                         </p>
                       </div>
                       <button
-                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                        className="px-4 py-2 my-2 btn-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                         onClick={() => {
                           if (isEditMode) {
                             saveNote();
