@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File;
-    const userId = formData.get("userId");
+    const userId = formData.get("userId") as string;
 
     if (!file) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
@@ -78,7 +78,6 @@ export async function POST(req: NextRequest) {
     if (cant_import.length == 0) {
       return NextResponse.json(
         {
-          data: null,
           message: `Successfully imported ${imported.length} books`,
         },
         { status: 200 }
@@ -86,8 +85,7 @@ export async function POST(req: NextRequest) {
     } else {
       return NextResponse.json(
         {
-          data: JSON.stringify(records),
-          message: `Successfully imported ${imported.length} books`,
+          message: `Successfully imported ${imported.length} books. ${cant_import.length} books couldn't be imported.`,
         },
         { status: 200 }
       );
