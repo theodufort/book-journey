@@ -62,15 +62,16 @@ export async function POST(req: NextRequest) {
               record["Exclusive Shelf"] == "to-read"
                 ? "To Read"
                 : record["Exclusive Shelf"] == "currently-reading"
-                ? "currently-reading"
-                : "read",
+                ? "Reading"
+                : "Finished",
             toread_at: new Date(record.Date_Added),
             reading_at: record.Date_Read ? new Date(record.Date_Read) : null,
             finished_at: record.Date_Read ? new Date(record.Date_Read) : null,
             review: record["My Review"] || null,
-            rating: record["My Rating"]
-              ? Math.round(parseFloat(record["My Rating"]) * 2) / 2
-              : null,
+            rating:
+              record["My Rating"] && record["My Rating"] != "0"
+                ? Math.round(parseFloat(record["My Rating"]) * 2) / 2
+                : null,
             tags: record.Bookshelves
               ? record.Bookshelves.split(",")
                   .filter((x: string) => {
