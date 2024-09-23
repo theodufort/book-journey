@@ -30,42 +30,68 @@ export async function POST(req: NextRequest) {
       skip_empty_lines: true,
     });
 
-    let importedCount = 0;
-
+    var imported = [];
+    var cant_import = [];
     for (const record of records) {
-      const book = {
-        title: record.Title,
-        author: record.Author,
-        isbn: record.ISBN13 || record.ISBN,
-        publishYear: parseInt(record.Year_Published) || null,
-        pageCount: parseInt(record.Number_of_Pages) || null,
-        goodreadsId: record.Book_Id,
-        goodreadsRating: parseFloat(record.Average_Rating) || null,
-        userRating: parseInt(record.My_Rating) || null,
-        dateRead: record.Date_Read ? new Date(record.Date_Read) : null,
-        dateAdded: new Date(record.Date_Added),
-        shelf: record.Exclusive_Shelf,
-        review: record.My_Review || null,
-      };
-      const { data, error } = await supabase
-        .from("reading_list")
-        .upsert({
-          user_id: userId,
-          book_id: record.ISBN13,
-          toread_at: new Date(record.Date_Added),
-          reading_at: record.Date_Read ? new Date(record.Date_Read) : null,
-          finished_at: record.Date_Read ? new Date(record.Date_Read) : null,
+      if (record.ISBN13) {
+        const book = {
+          title: record.Title,
+          author: record.Author,
+          isbn: record.ISBN13 || record.ISBN,
+          publishYear: parseInt(record.Year_Published) || null,
+          pageCount: parseInt(record.Number_of_Pages) || null,
+          goodreadsId: record.Book_Id,
+          goodreadsRating: parseFloat(record.Average_Rating) || null,
+          userRating: parseInt(record.My_Rating) || null,
+          dateRead: record.Date_Read ? new Date(record.Date_Read) : null,
+          dateAdded: new Date(record.Date_Added),
+          shelves: record.Bookshelves,
           review: record.My_Review || null,
-          rating: record.My_Rating ? Math.round(parseFloat(record.My_Rating) * 2) / 2 : null,
-        })
-        .eq("user_id", userId);
-      importedCount++;
+        };
+        imported.push(book);
+        const { data: importData, error: importError } = await supabase
+          .from("reading_list")
+          .upsert({
+            user_id: userId,
+            book_id: record.ISBN13,
+            toread_at: new Date(record.Date_Added),
+            reading_at: record.Date_Read ? new Date(record.Date_Read) : null,
+            finished_at: record.Date_Read ? new Date(record.Date_Read) : null,
+            review: record.My_Review || null,
+            rating: record.My_Rating
+              ? Math.round(parseFloat(record.My_Rating) * 2) / 2
+              : null,
+            tags: record.Bookshelves
+              ? record.Bookshelves.split(",").filter((x: any) => {
+                  return (
+                    x != "read" && x != "to-read" && x != "currently-reading"
+                  );
+                })
+              : null,
+          })
+          .eq("user_id", userId);
+        //convert bookshelves to tags
+      } else {
+        cant_import.push(record);
+      }
     }
-
-    return NextResponse.json(
-      { message: `Successfully imported ${importedCount} books` },
-      { status: 200 }
-    );
+    if (cant_import.length == 0) {
+      return NextResponse.json(
+        {
+          data: null,
+          message: `Successfully imported ${imported.length} books`,
+        },
+        { status: 200 }
+      );
+    } else {
+      return NextResponse.json(
+        {
+          data: JSON.stringify(records),
+          message: `Successfully imported ${imported.length} books`,
+        },
+        { status: 200 }
+      );
+    }
   } catch (error) {
     console.error("Error importing Goodreads data:", error);
     return NextResponse.json(
