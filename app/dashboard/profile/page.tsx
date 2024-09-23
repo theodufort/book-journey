@@ -190,6 +190,25 @@ export default function Profile() {
           </h2>{" "}
           <div className="py-2">
             <h4 className="text-lg md:text-xl font-extrabold">
+              How to access my data?
+            </h4>
+            <ul className="list-decimal list-inside">
+              <li>Log In to your Goodreads account.</li>
+              <li>
+                Go to the{" "}
+                <a
+                  href="https://www.goodreads.com/review/import"
+                  target="_blank"
+                >
+                  export page
+                </a>
+              </li>
+              <li>Click "Export Library" at the top of the page.</li>
+              <li>Wait for the file to be ready and click on the link.</li>
+            </ul>
+          </div>
+          <div className="py-2">
+            <h4 className="text-lg md:text-xl font-extrabold">
               What will be imported?
             </h4>
             <ul className="list-disc list-inside">
