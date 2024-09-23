@@ -147,7 +147,6 @@ export default function BookNotes() {
     if (error) {
       console.error("Error saving note:", error);
     } else {
-      console.log("Note saved successfully");
       // Update the last updated time in the local state
       setNotes((prev) => ({
         ...prev,

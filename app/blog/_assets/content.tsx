@@ -1,11 +1,7 @@
 "use client";
-import type { JSX } from "react";
-import { StaticImageData } from "next/image";
-import theoImg from "@/app/blog/_assets/images/authors/theo.png";
-import { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useEffect, useState } from "react";
 
 // ... (keep the existing code for categories, authors, and styles)
 const supabase = createClientComponentClient<Database>();
@@ -26,7 +22,6 @@ export type FullArticleContent = {
 };
 
 export const useArticles = () => {
-  console.log("ok");
   const [articles, setArticles] = useState<BasicArticleInfo[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -50,7 +45,6 @@ export const useArticles = () => {
       setLoading(false);
     }
   };
-  console.log(articles);
   return { articles, loading };
 };
 

@@ -1,6 +1,6 @@
 import { getSEOTags } from "@/libs/seo";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import ArticleClientContent from "./ArticleClientContent";
 const supabase = createClientComponentClient<Database>();
 
@@ -52,7 +52,6 @@ export default async function Article({
     .select("*")
     .eq("slug", params.articleId)
     .single();
-  console.log(article);
   if (article != null)
     return (
       <ArticleClientContent

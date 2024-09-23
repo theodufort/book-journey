@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
 
     var imported = [];
     var cant_import = [];
+    var error;
     for (const record of records) {
       const isbn13 = record.ISBN13 ? record.ISBN13.replace(/[="]/g, "") : null;
       if (isbn13) {
@@ -81,6 +82,7 @@ export async function POST(req: NextRequest) {
               : null,
           })
           .eq("user_id", userId);
+        error = importError;
       } else {
         cant_import.push(record);
       }
@@ -89,6 +91,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           message: `Successfully imported ${imported.length} books`,
+          error: error,
         },
         { status: 200 }
       );
@@ -97,6 +100,7 @@ export async function POST(req: NextRequest) {
         {
           message: `Successfully imported ${imported.length} books. ${cant_import.length} books couldn't be imported.`,
           failedRecords: cant_import,
+          error: error,
         },
         { status: 200 }
       );

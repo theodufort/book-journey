@@ -3,7 +3,7 @@ import {
   createClientComponentClient,
   User,
 } from "@supabase/auth-helpers-nextjs";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 const rewards = [1, 1, 3, 3, 5, 5, 10, 10];
 const StreakRewardSystem = ({ onUpdate }: { onUpdate: () => void }) => {
   const supabase = createClientComponentClient<Database>();
@@ -147,9 +147,6 @@ const StreakRewardSystem = ({ onUpdate }: { onUpdate: () => void }) => {
           console.log("Points incremented successfully:", dataUpdatePoints);
           onUpdate();
         }
-        console.log(
-          `Streak updated to day ${nextDayIndex} and awarded points.`
-        );
       } else if (diffInDays > 1) {
         // If more than one day has passed, reset the streak
         const { data: userStreak } = await supabase
@@ -168,7 +165,6 @@ const StreakRewardSystem = ({ onUpdate }: { onUpdate: () => void }) => {
           .select()
           .single();
         setStreak(userStreak);
-        console.log("Streak reset and awarded points for day 1.");
       }
     }
   }
