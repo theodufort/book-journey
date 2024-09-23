@@ -33,11 +33,12 @@ export async function POST(req: NextRequest) {
     var imported = [];
     var cant_import = [];
     for (const record of records) {
-      if (record.ISBN13) {
+      const isbn13 = record.ISBN13 ? record.ISBN13.replace(/[="]/g, '') : null;
+      if (isbn13) {
         const book = {
           title: record.Title,
           author: record.Author,
-          isbn: record.ISBN13 || record.ISBN,
+          isbn: isbn13 || record.ISBN,
           publishYear: parseInt(record.Year_Published) || null,
           pageCount: parseInt(record.Number_of_Pages) || null,
           goodreadsId: record.Book_Id,
@@ -53,7 +54,7 @@ export async function POST(req: NextRequest) {
           .from("reading_list")
           .upsert({
             user_id: userId,
-            book_id: record.ISBN13,
+            book_id: isbn13,
             toread_at: new Date(record.Date_Added),
             reading_at: record.Date_Read ? new Date(record.Date_Read) : null,
             finished_at: record.Date_Read ? new Date(record.Date_Read) : null,
