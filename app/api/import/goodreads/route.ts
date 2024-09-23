@@ -62,15 +62,19 @@ export async function POST(req: NextRequest) {
               ? Math.round(parseFloat(record.My_Rating) * 2) / 2
               : null,
             tags: record.Bookshelves
-              ? record.Bookshelves.split(",").filter((x: any) => {
-                  return (
-                    x != "read" && x != "to-read" && x != "currently-reading"
-                  );
-                })
+              ? record.Bookshelves.split(",")
+                  .filter((x: string) => {
+                    return (
+                      x != "read" && x != "to-read" && x != "currently-reading"
+                    );
+                  })
+                  .map((x: string) => x.trim())
               : null,
           })
           .eq("user_id", userId);
-        //convert bookshelves to tags
+
+        console.log(importData);
+        console.log(importError);
       } else {
         cant_import.push(record);
       }
