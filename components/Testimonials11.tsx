@@ -1,9 +1,8 @@
 "use client";
 
-import { JSX, useState, useEffect, useRef } from "react";
-import Image from "next/image";
-import { StaticImageData } from "next/image";
 import config from "@/config";
+import Image, { StaticImageData } from "next/image";
+import { JSX, useEffect, useRef, useState } from "react";
 
 // Use this object to add an icon to the testimonial (optional) like the Product Hunt logo for instance.
 // Only change the values if you add more referrings sites (currently Twitter & Product Hunt)
@@ -269,7 +268,6 @@ const VideoTestimonial = ({ i }: { i: number }) => {
           width={testimonial.videoWidth}
           height={testimonial.videoHeight}
           onLoadedData={() => {
-            console.log("Video is loaded!");
             setIsLoading(false);
           }}
         >

@@ -4,9 +4,7 @@ import { useEffect } from "react";
 export const ButtonTheme = () => {
   const { theme, setTheme } = useTheme();
   const toggleTheme = () => {
-    console.log("Current theme:", theme);
     const newTheme = theme === "light" ? "dark" : "light";
-    console.log("Switching to:", newTheme);
     setTheme(newTheme);
   };
 

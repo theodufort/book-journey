@@ -1,14 +1,11 @@
 "use client";
 
-import { useArticles } from "./_assets/content";
-import CardArticle from "./_assets/components/CardArticle";
-import CardCategory from "./_assets/components/CardCategory";
 import config from "@/config";
-import { getSEOTags } from "@/libs/seo";
+import CardArticle from "./_assets/components/CardArticle";
+import { useArticles } from "./_assets/content";
 
 export default function Blog() {
   const { articles, loading } = useArticles();
-  console.log(articles);
   if (loading) {
     return <div>Loading...</div>;
   }

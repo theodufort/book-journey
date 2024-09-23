@@ -25,7 +25,6 @@ export async function GET(req: NextRequest) {
     //   return Response.json({ error });
     // }
   }
-  console.log(process.env.NEXT_PUBLIC_BASE_URL);
   // URL to redirect to after sign in process completes
   return NextResponse.redirect(
     "https://mybookquest.com" + config.auth.callbackUrl

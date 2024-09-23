@@ -74,7 +74,6 @@ export default function AddBook() {
       book_id: isbn,
       status: status,
     });
-    console.log(error);
     if (error) {
       setError("Failed to add book to reading list");
       console.error(error);

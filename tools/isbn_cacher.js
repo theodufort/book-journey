@@ -13,7 +13,6 @@ async function main() {
     const lines = data.trim().split("\n");
 
     for (const line of lines) {
-      console.log(line);
       try {
         await axios.get(
           `http://localhost:3000/api/books/${line.trim()}?useProxy=true`

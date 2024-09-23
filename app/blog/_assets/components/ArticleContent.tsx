@@ -1,12 +1,10 @@
 "use client";
 
+import config from "@/config";
 import Link from "next/link";
 import Script from "next/script";
-import BadgeCategory from "./BadgeCategory";
-import Avatar from "./Avatar";
-import image from "../images/authors/theo.png";
-import config from "@/config";
 import { BasicArticleInfo } from "../content";
+import Avatar from "./Avatar";
 // These styles are used in the content of the articles. When you update them, all articles will be updated.
 const styles: {
   [key: string]: string;
@@ -28,7 +26,6 @@ export default function ArticleContent({
   article: any;
   articlesRelated: BasicArticleInfo[];
 }) {
-  console.log(article);
   if (!article) {
     return <div>Article not found</div>;
   }
