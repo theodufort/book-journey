@@ -1,3 +1,5 @@
+// pages/api/import/goodreads.ts
+
 import { Database } from "@/types/supabase";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { parse } from "csv-parse/sync";
@@ -33,7 +35,7 @@ export async function POST(req: NextRequest) {
     var imported = [];
     var cant_import = [];
     for (const record of records) {
-      const isbn13 = record.ISBN13 ? record.ISBN13.replace(/[="]/g, '') : null;
+      const isbn13 = record.ISBN13 ? record.ISBN13.replace(/[="]/g, "") : null;
       if (isbn13) {
         const book = {
           title: record.Title,
@@ -55,12 +57,18 @@ export async function POST(req: NextRequest) {
           .upsert({
             user_id: userId,
             book_id: isbn13,
+            status:
+              record["Exclusive Shelf"] == "to-read"
+                ? "To Read"
+                : record["Exclusive Shelf"] == "currently-reading"
+                ? "currently-reading"
+                : "read",
             toread_at: new Date(record.Date_Added),
             reading_at: record.Date_Read ? new Date(record.Date_Read) : null,
             finished_at: record.Date_Read ? new Date(record.Date_Read) : null,
-            review: record.My_Review || null,
-            rating: record.My_Rating
-              ? Math.round(parseFloat(record.My_Rating) * 2) / 2
+            review: record["My Review"] || null,
+            rating: record["My Rating"]
+              ? Math.round(parseFloat(record["My Rating"]) * 2) / 2
               : null,
             tags: record.Bookshelves
               ? record.Bookshelves.split(",")
@@ -73,9 +81,6 @@ export async function POST(req: NextRequest) {
               : null,
           })
           .eq("user_id", userId);
-
-        console.log(importData);
-        console.log(importError);
       } else {
         cant_import.push(record);
       }
@@ -91,6 +96,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           message: `Successfully imported ${imported.length} books. ${cant_import.length} books couldn't be imported.`,
+          failedRecords: cant_import,
         },
         { status: 200 }
       );

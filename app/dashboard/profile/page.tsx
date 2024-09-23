@@ -1,6 +1,7 @@
 "use client";
 import CategorySelection from "@/components/CategorySelection";
 import HeaderDashboard from "@/components/DashboardHeader";
+import ImportGoodreads from "@/components/ImportGoodreads";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
@@ -183,6 +184,22 @@ export default function Profile() {
           ) : null}
         </div>
         {user ? <CategorySelection userId={user.id} /> : null}
+        <div>
+          <h2 className="text-2xl md:text-3xl font-extrabold py-2">
+            Import Data
+          </h2>{" "}
+          <div className="py-2">
+            <h4 className="text-lg md:text-xl font-extrabold">
+              What will be imported?
+            </h4>
+            <ul className="list-disc list-inside">
+              <li>All books from your profile.</li>
+              <li>All bookshelves with their associated books in them.</li>
+              <li>The text review and rating for each book. (if any)</li>
+            </ul>
+          </div>
+          <ImportGoodreads />
+        </div>
         {/* {user ? (
           <div>
             <h2 className="text-2xl font-bold mb-4">Share Your User ID</h2>

@@ -57,7 +57,7 @@ export default function Recommendations() {
       data: { user },
     } = await supabase.auth.getUser();
     if (user) {
-      const { error } = await supabase.from("reading_list").insert({
+      const { error } = await supabase.from("reading_list").upsert({
         user_id: user.id,
         book_id: book.id,
         status: "To Read",
