@@ -1,35 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
-import path from 'path';
-import { IncomingForm } from 'formidable';
 import { parse } from 'csv-parse/sync';
 import AdmZip from 'adm-zip';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 export async function POST(req: NextRequest) {
-  try {
-    const form = new IncomingForm();
-    const [fields, files] = await new Promise((resolve, reject) => {
-      form.parse(req, (err, fields, files) => {
-        if (err) reject(err);
-        resolve([fields, files]);
-      });
-    });
+  if (!req.body) {
+    return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
+  }
 
-    if (!files.file || Array.isArray(files.file)) {
+  try {
+    const formData = await req.formData();
+    const file = formData.get('file') as File;
+
+    if (!file) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
     }
 
-    const file = files.file;
-    const zip = new AdmZip(file.filepath);
+    const buffer = await file.arrayBuffer();
+    const zip = new AdmZip(Buffer.from(buffer));
     const csvEntry = zip.getEntries().find(entry => entry.entryName.endsWith('.csv'));
 
     if (!csvEntry) {
@@ -54,8 +45,6 @@ export async function POST(req: NextRequest) {
         },
       });
     }
-
-    await fs.unlink(file.filepath);
 
     return NextResponse.json({ message: 'Import successful' }, { status: 200 });
   } catch (error) {
