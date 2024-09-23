@@ -22,6 +22,11 @@ const nextConfig = {
       "mybookquest.com",
     ],
   },
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
 };
 
 module.exports = withPwa(nextConfig);
