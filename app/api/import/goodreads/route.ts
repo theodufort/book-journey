@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
           reading_at: record.Date_Read ? new Date(record.Date_Read) : null,
           finished_at: record.Date_Read ? new Date(record.Date_Read) : null,
           review: record.My_Review || null,
-          rating: parseFloat(record.My_Rating) || null,
+          rating: record.My_Rating ? Math.round(parseFloat(record.My_Rating) * 2) / 2 : null,
         })
         .eq("user_id", userId);
       importedCount++;
