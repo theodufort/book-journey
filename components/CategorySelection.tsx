@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import React, { useEffect, useState } from "react";
 
 interface CategorySelectionProps {
   userId: string;
@@ -130,12 +130,12 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({ userId }) => {
   return (
     <div>
       <p className="mb-2">Select up to 10 categories:</p>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="flex flex-wrap gap-1">
         {categories.map((category) => (
-          <label key={category} className="flex items-center">
+          <label key={category} className="flex items-center mr-1 mb-1">
             <input
               type="checkbox"
-              className="checkbox checkbox-primary mr-2"
+              className="checkbox checkbox-primary mr-1"
               checked={selectedCategories.includes(category)}
               onChange={() => handleCategoryChange(category)}
               disabled={
