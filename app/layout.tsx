@@ -1,7 +1,9 @@
 import ClientLayout from "@/components/LayoutClient";
 import config from "@/config";
 import { getSEOTags } from "@/libs/seo";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Viewport } from "next";
+
 import PlausibleProvider from "next-plausible";
 import { ThemeProvider } from "next-themes";
 import { Inter } from "next/font/google";
@@ -25,6 +27,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" suppressHydrationWarning>
       {config.domainName && (
         <head>
+          {" "}
+          <GoogleAnalytics gaId="G-1LDR3284GW" />
           <meta name="impact-site-verification" data-value="369738092" />
           <PlausibleProvider domain={config.domainName} />
         </head>
