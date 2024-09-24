@@ -7,10 +7,8 @@ import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 
-import { FirstBookTemplate } from "@/app/api/email/templates/FirstBookTemplate";
 import { BookSearchResult } from "@/interfaces/BookSearch";
 import { Database } from "@/types/supabase";
-import { Resend } from "resend";
 
 export default function AddBook() {
   const supabase = createClientComponentClient<Database>();
@@ -20,15 +18,16 @@ export default function AddBook() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
+
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
-
       setUser(data.user);
     };
 
     getUser();
   }, [supabase]);
+
   const searchBooks = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -58,26 +57,37 @@ export default function AddBook() {
     const { count } = await supabase
       .from("reading_list")
       .select("*", { count: "exact", head: true });
-    if (count == 0) {
-      try {
-        const resend = new Resend(process.env.RESEND_API_KEY);
-        const { data, error } = await resend.emails.send({
-          from: "welcome@mybookquest.com",
-          to: user == null ? "theodufort05@gmail.com" : user.email,
-          subject: "Congrats on adding your first book!",
-          react: FirstBookTemplate(),
-        });
-      } catch {}
-    }
+    
     const { error } = await supabase.from("reading_list").upsert({
       user_id: user.id,
       book_id: isbn,
       status: status,
     });
+
     if (error) {
       setError("Failed to add book to reading list");
       console.error(error);
     } else {
+      if (count === 0) {
+        try {
+          const response = await fetch('/api/email', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              user: { email: user?.email || "theodufort05@gmail.com" },
+              emailType: "firstBook"
+            }),
+          });
+
+          if (!response.ok) {
+            console.error('Failed to send email');
+          }
+        } catch (emailError) {
+          console.error('Error sending email:', emailError);
+        }
+      }
       router.push("/dashboard/reading-list");
     }
   };
