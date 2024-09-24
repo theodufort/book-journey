@@ -1,5 +1,3 @@
-import * as React from "react";
-
 export const WelcomeEmail = () => (
   <div>
     <h1>Welcome to MyBookQuest!</h1>
