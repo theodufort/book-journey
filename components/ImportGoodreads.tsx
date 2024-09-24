@@ -69,9 +69,9 @@ const ImportGoodreads: React.FC = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className="py-4 inline-block">
       <select
-        className="select select-bordered w-full max-w-xs mb-2"
+        className="select select-bordered w-full max-w-xs mb-2 inline-block"
         value={importType}
         onChange={(e) =>
           setImportType(e.target.value as "goodreads" | "storygraph")

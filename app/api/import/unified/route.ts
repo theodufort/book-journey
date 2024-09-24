@@ -2,6 +2,9 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import Papa from "papaparse";
+function roundToHalf(rating: number): number {
+  return Math.round(rating * 2) / 2;
+}
 
 export async function POST(request: Request) {
   const formData = await request.formData();
@@ -10,11 +13,17 @@ export async function POST(request: Request) {
   const importType = formData.get("importType") as "goodreads" | "storygraph";
 
   if (!file || !userId || !importType) {
-    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Missing required fields" },
+      { status: 400 }
+    );
   }
 
   const fileContent = await file.text();
-  const parsedData = Papa.parse(fileContent, { header: true, skipEmptyLines: true });
+  const parsedData = Papa.parse(fileContent, {
+    header: true,
+    skipEmptyLines: true,
+  });
 
   const supabase = createRouteHandlerClient({ cookies });
 
@@ -23,15 +32,26 @@ export async function POST(request: Request) {
 
   for (const row of parsedData.data) {
     const bookData = parseBookData(row, importType);
-
-    if (bookData.isbn) {
+    // Skip records with invalid or missing status
+    if (bookData.isbn && bookData.read_status) {
       const { error } = await supabase
         .from("reading_list")
         .upsert({
           user_id: userId,
-          ...bookData,
-        });
-
+          book_id: bookData.isbn, // Use book_id for upsert
+          status: bookData.read_status,
+          rating: bookData.rating ? bookData.rating : null, // Ensure rating is a number
+          review: bookData.review,
+          tags: bookData.tags,
+          reading_at: bookData.date_started
+            ? new Date(bookData.date_started)
+            : null,
+          finished_at: bookData.date_finished
+            ? new Date(bookData.date_finished)
+            : null,
+        })
+        .eq("user_id", userId)
+        .eq("book_id", bookData.isbn); // Ensure uniqueness constraint matches
       if (error) {
         failedRecords.push(row);
       } else {
@@ -50,17 +70,27 @@ export async function POST(request: Request) {
 
 function parseBookData(row: any, importType: "goodreads" | "storygraph") {
   if (importType === "goodreads") {
+    const isbn13 = row["ISBN13"] ? row["ISBN13"].replace(/[="]/g, "") : null;
     return {
-      isbn: row["ISBN13"] || row["ISBN"],
+      isbn: isbn13,
       title: row["Title"],
       author: row["Author"],
       format: row["Binding"],
-      read_status: row["Exclusive Shelf"],
+      read_status: mapStatus(row["Exclusive Shelf"]), // Map status to match the constraint
       date_started: row["Date Started"],
       date_finished: row["Date Read"],
-      rating: row["My Rating"],
+      rating: row["My Rating"]
+        ? roundToHalf(parseFloat(row["My Rating"]))
+        : null, // Round rating to nearest 0.5
       review: row["My Review"],
-      tags: row["Bookshelves"],
+      tags: row["Bookshelves"]
+        ? row["Bookshelves"]
+            .split(",")
+            .filter((x: string) => {
+              return x != "read" && x != "to-read" && x != "currently-reading";
+            })
+            .map((x: string) => x.trim())
+        : null,
     };
   } else {
     return {
@@ -68,12 +98,30 @@ function parseBookData(row: any, importType: "goodreads" | "storygraph") {
       title: row["Title"],
       author: row["Authors"],
       format: row["Format"],
-      read_status: row["Read Status"],
+      read_status: mapStatus(row["Read Status"]), // Map status to match the constraint
       date_started: row["Date Started"],
       date_finished: row["Date Finished"],
-      rating: row["Rating"],
-      review: row["Review"],
+      rating: row["Star Rating"]
+        ? roundToHalf(parseFloat(row["Star Rating"]))
+        : null, // Round rating to nearest 0.5
+      review: row["Review"].replace("<div>", "").replace("</div>", ""),
       tags: row["Tags"],
     };
   }
+}
+
+function mapStatus(status: string): string | null {
+  // Define valid statuses based on your schema
+  const validStatuses: any = {
+    "to-read": "To Read",
+    "currently-reading": "Reading",
+    read: "Finished",
+    DNF: "DNF", // Did Not Finish
+  };
+
+  // Map StoryGraph statuses to your valid statuses
+  const mappedStatus = validStatuses[status];
+
+  // Return valid status or null if it doesn't match
+  return mappedStatus || null;
 }
