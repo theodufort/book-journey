@@ -129,6 +129,7 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({ userId }) => {
 
   return (
     <div>
+      <h2 className="text-2xl md:text-3xl font-extrabold py-2">Categories</h2>
       <p className="mb-2">Select up to 10 categories:</p>
       <div className="flex flex-wrap gap-1">
         {categories.map((category) => (
