@@ -7,7 +7,7 @@ import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 
-import { FirstBookTemplate } from "@/components/FirstBookTemplate";
+import { FirstBookTemplate } from "@/app/api/email/templates/FirstBookTemplate";
 import { BookSearchResult } from "@/interfaces/BookSearch";
 import { Database } from "@/types/supabase";
 import { Resend } from "resend";
