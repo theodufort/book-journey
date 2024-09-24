@@ -14,7 +14,9 @@ const ImportGoodreads: React.FC = () => {
   const [importing, setImporting] = useState(false);
   const [message, setMessage] = useState("");
   const [failedRecords, setFailedRecords] = useState<any[]>([]);
-  const [importType, setImportType] = useState<"goodreads" | "storygraph">("goodreads");
+  const [importType, setImportType] = useState<"goodreads" | "storygraph">(
+    "goodreads"
+  );
 
   useEffect(() => {
     const getUser = async () => {
@@ -44,7 +46,7 @@ const ImportGoodreads: React.FC = () => {
     formData.append("importType", importType);
 
     try {
-      const response = await fetch("/api/import/goodreads", {
+      const response = await fetch("/api/import", {
         method: "POST",
         body: formData,
       });
@@ -71,7 +73,9 @@ const ImportGoodreads: React.FC = () => {
       <select
         className="select select-bordered w-full max-w-xs mb-2"
         value={importType}
-        onChange={(e) => setImportType(e.target.value as "goodreads" | "storygraph")}
+        onChange={(e) =>
+          setImportType(e.target.value as "goodreads" | "storygraph")
+        }
       >
         <option value="goodreads">Goodreads</option>
         <option value="storygraph">StoryGraph</option>
@@ -87,7 +91,11 @@ const ImportGoodreads: React.FC = () => {
         onClick={handleImport}
         disabled={!file || importing}
       >
-        {importing ? "Importing..." : `Import ${importType === "goodreads" ? "Goodreads" : "StoryGraph"} Data`}
+        {importing
+          ? "Importing..."
+          : `Import ${
+              importType === "goodreads" ? "Goodreads" : "StoryGraph"
+            } Data`}
       </button>
       {message && (
         <div className="alert alert-info shadow-lg mt-4">
@@ -104,7 +112,8 @@ const ImportGoodreads: React.FC = () => {
               <ul className="list-disc pl-5">
                 {failedRecords.map((record, index) => (
                   <li key={index}>
-                    {record.Title} by {record.Authors || record.Author} (ISBN: {record["ISBN/UID"] || record.ISBN13})
+                    {record.Title} by {record.Authors || record.Author} (ISBN:{" "}
+                    {record["ISBN/UID"] || record.ISBN13})
                   </li>
                 ))}
               </ul>
