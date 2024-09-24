@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import CategorySelection from "./CategorySelection";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import React, { useState } from "react";
+import CategorySelection from "./CategorySelection";
 
 interface OnboardingPopupProps {
   isOpen: boolean;
@@ -18,6 +18,10 @@ const OnboardingPopup: React.FC<OnboardingPopupProps> = ({
   const [step, setStep] = useState(1);
 
   const steps = [
+    {
+      title: "Are you coming from Goodreads or Storygraph?",
+      content: "Go to the profile page to import your data!",
+    },
     {
       title: "Choose Your Preferred Categories",
       content: "Select the book categories you're most interested in.",
