@@ -16,6 +16,7 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData();
     const file = formData.get("file") as File;
     const userId = formData.get("userId") as string;
+    const importType = formData.get("importType") as string;
 
     if (!file) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
@@ -26,6 +27,13 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+    if (!importType) {
+      return NextResponse.json(
+        { error: "No import type specified" },
+        { status: 400 }
+      );
+    }
+
     const csvContent = await file.text();
     const records = parse(csvContent, {
       columns: true,
@@ -35,59 +43,101 @@ export async function POST(req: NextRequest) {
     var imported = [];
     var cant_import = [];
     var error;
+
     for (const record of records) {
-      const isbn13 = record.ISBN13 ? record.ISBN13.replace(/[="]/g, "") : null;
-      if (isbn13) {
-        const book = {
-          title: record.Title,
-          author: record.Author,
-          isbn: isbn13 || record.ISBN,
-          publishYear: parseInt(record.Year_Published) || null,
-          pageCount: parseInt(record.Number_of_Pages) || null,
-          goodreadsId: record.Book_Id,
-          goodreadsRating: parseFloat(record.Average_Rating) || null,
-          userRating: parseInt(record.My_Rating) || null,
-          dateRead: record.Date_Read ? new Date(record.Date_Read) : null,
-          dateAdded: new Date(record.Date_Added),
-          shelves: record.Bookshelves,
-          review: record.My_Review || null,
-        };
-        imported.push(book);
-        const { data: importData, error: importError } = await supabase
-          .from("reading_list")
-          .upsert({
-            user_id: userId,
-            book_id: isbn13,
-            status:
-              record["Exclusive Shelf"] == "to-read"
-                ? "To Read"
-                : record["Exclusive Shelf"] == "currently-reading"
-                ? "Reading"
-                : "Finished",
-            toread_at: new Date(record.Date_Added),
-            reading_at: record.Date_Read ? new Date(record.Date_Read) : null,
-            finished_at: record.Date_Read ? new Date(record.Date_Read) : null,
-            review: record["My Review"] || null,
-            rating:
-              record["My Rating"] && record["My Rating"] != "0"
-                ? Math.round(parseFloat(record["My Rating"]) * 2) / 2
+      if (importType === "goodreads") {
+        const isbn13 = record.ISBN13 ? record.ISBN13.replace(/[="]/g, "") : null;
+        if (isbn13) {
+          const book = {
+            title: record.Title,
+            author: record.Author,
+            isbn: isbn13 || record.ISBN,
+            publishYear: parseInt(record.Year_Published) || null,
+            pageCount: parseInt(record.Number_of_Pages) || null,
+            goodreadsId: record.Book_Id,
+            goodreadsRating: parseFloat(record.Average_Rating) || null,
+            userRating: parseInt(record.My_Rating) || null,
+            dateRead: record.Date_Read ? new Date(record.Date_Read) : null,
+            dateAdded: new Date(record.Date_Added),
+            shelves: record.Bookshelves,
+            review: record.My_Review || null,
+          };
+          imported.push(book);
+          const { data: importData, error: importError } = await supabase
+            .from("reading_list")
+            .upsert({
+              user_id: userId,
+              book_id: isbn13,
+              status:
+                record["Exclusive Shelf"] == "to-read"
+                  ? "To Read"
+                  : record["Exclusive Shelf"] == "currently-reading"
+                  ? "Reading"
+                  : "Finished",
+              toread_at: new Date(record.Date_Added),
+              reading_at: record.Date_Read ? new Date(record.Date_Read) : null,
+              finished_at: record.Date_Read ? new Date(record.Date_Read) : null,
+              review: record["My Review"] || null,
+              rating:
+                record["My Rating"] && record["My Rating"] != "0"
+                  ? Math.round(parseFloat(record["My Rating"]) * 2) / 2
+                  : null,
+              tags: record.Bookshelves
+                ? record.Bookshelves.split(",")
+                    .filter((x: string) => {
+                      return (
+                        x != "read" && x != "to-read" && x != "currently-reading"
+                      );
+                    })
+                    .map((x: string) => x.trim())
                 : null,
-            tags: record.Bookshelves
-              ? record.Bookshelves.split(",")
-                  .filter((x: string) => {
-                    return (
-                      x != "read" && x != "to-read" && x != "currently-reading"
-                    );
-                  })
-                  .map((x: string) => x.trim())
-              : null,
-          })
-          .eq("user_id", userId);
-        error = importError;
-      } else {
-        cant_import.push(record);
+            })
+            .eq("user_id", userId);
+          error = importError;
+        } else {
+          cant_import.push(record);
+        }
+      } else if (importType === "storygraph") {
+        const isbn = record["ISBN/UID"] ? record["ISBN/UID"].replace(/[="]/g, "") : null;
+        if (isbn) {
+          const book = {
+            title: record.Title,
+            author: record.Authors,
+            isbn: isbn,
+            format: record.Format,
+            dateAdded: new Date(record["Date Added"]),
+            dateRead: record["Last Date Read"] ? new Date(record["Last Date Read"]) : null,
+            userRating: parseFloat(record["Star Rating"]) || null,
+            review: record.Review || null,
+            tags: record.Tags ? record.Tags.split(",").map((tag: string) => tag.trim()) : null,
+          };
+          imported.push(book);
+          const { data: importData, error: importError } = await supabase
+            .from("reading_list")
+            .upsert({
+              user_id: userId,
+              book_id: isbn,
+              status:
+                record["Read Status"] == "to-read"
+                  ? "To Read"
+                  : record["Read Status"] == "currently-reading"
+                  ? "Reading"
+                  : "Finished",
+              toread_at: new Date(record["Date Added"]),
+              reading_at: record["Last Date Read"] ? new Date(record["Last Date Read"]) : null,
+              finished_at: record["Last Date Read"] ? new Date(record["Last Date Read"]) : null,
+              review: record.Review || null,
+              rating: record["Star Rating"] ? Math.round(parseFloat(record["Star Rating"]) * 2) / 2 : null,
+              tags: record.Tags ? record.Tags.split(",").map((tag: string) => tag.trim()) : null,
+            })
+            .eq("user_id", userId);
+          error = importError;
+        } else {
+          cant_import.push(record);
+        }
       }
     }
+
     if (cant_import.length == 0) {
       return NextResponse.json(
         {
@@ -107,7 +157,7 @@ export async function POST(req: NextRequest) {
       );
     }
   } catch (error) {
-    console.error("Error importing Goodreads data:", error);
+    console.error("Error importing data:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
