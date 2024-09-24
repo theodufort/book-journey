@@ -46,7 +46,7 @@ const ImportGoodreads: React.FC = () => {
     formData.append("importType", importType);
 
     try {
-      const response = await fetch("/api/import", {
+      const response = await fetch("/api/import/unified", {
         method: "POST",
         body: formData,
       });
