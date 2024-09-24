@@ -1,4 +1,4 @@
-// components/ImportGoodreads.tsx
+// components/ImportFromApps.tsx
 
 import { Database } from "@/types/supabase";
 import {
@@ -7,7 +7,7 @@ import {
 } from "@supabase/auth-helpers-nextjs";
 import React, { useEffect, useState } from "react";
 
-const ImportGoodreads: React.FC = () => {
+const ImportFromApps: React.FC = () => {
   const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -70,6 +70,72 @@ const ImportGoodreads: React.FC = () => {
 
   return (
     <div className="py-4 inline-block">
+      <h2 className="text-2xl md:text-3xl font-extrabold py-2">Import Data</h2>
+      {importType == "storygraph" ? (
+        <div>
+          <div className="py-2">
+            <h4 className="text-lg md:text-xl font-extrabold">
+              How to access my data?
+            </h4>
+            <ul className="list-decimal list-inside">
+              <li>Log In to your Storygraph account.</li>
+              <li>
+                Go to the{" "}
+                <a
+                  href="https://app.thestorygraph.com/user-export"
+                  target="_blank"
+                >
+                  export page
+                </a>
+              </li>
+              <li>Click "Generate Export" button.</li>
+              <li>Wait for the file to be ready and click on Download.</li>
+            </ul>
+          </div>
+          <div className="py-2">
+            <h4 className="text-lg md:text-xl font-extrabold">
+              What will be imported?
+            </h4>
+            <ul className="list-disc list-inside">
+              <li>All books from your profile.</li>
+              <li>All bookshelves with their associated books in them.</li>
+              <li>The text review and rating for each book. (if any)</li>
+            </ul>
+          </div>
+        </div>
+      ) : (
+        <div>
+          <div className="py-2">
+            <h4 className="text-lg md:text-xl font-extrabold">
+              How to access my data?
+            </h4>
+            <ul className="list-decimal list-inside">
+              <li>Log In to your Goodreads account.</li>
+              <li>
+                Go to the{" "}
+                <a
+                  href="https://www.goodreads.com/review/import"
+                  target="_blank"
+                >
+                  export page
+                </a>
+              </li>
+              <li>Click "Export Library" at the top of the page.</li>
+              <li>Wait for the file to be ready and click on the link.</li>
+            </ul>
+          </div>
+          <div className="py-2">
+            <h4 className="text-lg md:text-xl font-extrabold">
+              What will be imported?
+            </h4>
+            <ul className="list-disc list-inside">
+              <li>All books from your profile.</li>
+              <li>All bookshelves with their associated books in them.</li>
+              <li>The text review and rating for each book. (if any)</li>
+            </ul>
+          </div>
+        </div>
+      )}
       <select
         className="select select-bordered w-full max-w-xs mb-2 inline-block"
         value={importType}
@@ -81,7 +147,7 @@ const ImportGoodreads: React.FC = () => {
         <option value="storygraph">StoryGraph</option>
       </select>
       <input
-        className="file-input w-full max-w-xs"
+        className="file-input w-full max-w-xs flex"
         type="file"
         accept=".csv"
         onChange={handleFileChange}
@@ -125,4 +191,4 @@ const ImportGoodreads: React.FC = () => {
   );
 };
 
-export default ImportGoodreads;
+export default ImportFromApps;

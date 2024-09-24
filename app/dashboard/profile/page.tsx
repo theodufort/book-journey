@@ -1,7 +1,7 @@
 "use client";
 import CategorySelection from "@/components/CategorySelection";
 import HeaderDashboard from "@/components/DashboardHeader";
-import ImportGoodreads from "@/components/ImportGoodreads";
+import ImportFromApps from "@/components/ImportFromApps";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
@@ -185,39 +185,7 @@ export default function Profile() {
         </div>
         {user ? <CategorySelection userId={user.id} /> : null}
         <div>
-          <h2 className="text-2xl md:text-3xl font-extrabold py-2">
-            Import Data
-          </h2>{" "}
-          <div className="py-2">
-            <h4 className="text-lg md:text-xl font-extrabold">
-              How to access my data?
-            </h4>
-            <ul className="list-decimal list-inside">
-              <li>Log In to your Goodreads account.</li>
-              <li>
-                Go to the{" "}
-                <a
-                  href="https://www.goodreads.com/review/import"
-                  target="_blank"
-                >
-                  export page
-                </a>
-              </li>
-              <li>Click "Export Library" at the top of the page.</li>
-              <li>Wait for the file to be ready and click on the link.</li>
-            </ul>
-          </div>
-          <div className="py-2">
-            <h4 className="text-lg md:text-xl font-extrabold">
-              What will be imported?
-            </h4>
-            <ul className="list-disc list-inside">
-              <li>All books from your profile.</li>
-              <li>All bookshelves with their associated books in them.</li>
-              <li>The text review and rating for each book. (if any)</li>
-            </ul>
-          </div>
-          <ImportGoodreads />
+          <ImportFromApps />
         </div>
         {/* {user ? (
           <div>
