@@ -14,6 +14,7 @@ const ImportGoodreads: React.FC = () => {
   const [importing, setImporting] = useState(false);
   const [message, setMessage] = useState("");
   const [failedRecords, setFailedRecords] = useState<any[]>([]);
+  const [importType, setImportType] = useState<"goodreads" | "storygraph">("goodreads");
 
   useEffect(() => {
     const getUser = async () => {
@@ -40,6 +41,7 @@ const ImportGoodreads: React.FC = () => {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("userId", user.id);
+    formData.append("importType", importType);
 
     try {
       const response = await fetch("/api/import/goodreads", {
@@ -66,6 +68,14 @@ const ImportGoodreads: React.FC = () => {
 
   return (
     <div className="p-4">
+      <select
+        className="select select-bordered w-full max-w-xs mb-2"
+        value={importType}
+        onChange={(e) => setImportType(e.target.value as "goodreads" | "storygraph")}
+      >
+        <option value="goodreads">Goodreads</option>
+        <option value="storygraph">StoryGraph</option>
+      </select>
       <input
         className="file-input w-full max-w-xs"
         type="file"
@@ -77,7 +87,7 @@ const ImportGoodreads: React.FC = () => {
         onClick={handleImport}
         disabled={!file || importing}
       >
-        {importing ? "Importing..." : "Import Goodreads Data"}
+        {importing ? "Importing..." : `Import ${importType === "goodreads" ? "Goodreads" : "StoryGraph"} Data`}
       </button>
       {message && (
         <div className="alert alert-info shadow-lg mt-4">
@@ -94,7 +104,7 @@ const ImportGoodreads: React.FC = () => {
               <ul className="list-disc pl-5">
                 {failedRecords.map((record, index) => (
                   <li key={index}>
-                    {record.Title} by {record.Author} (ISBN13: {record.ISBN13})
+                    {record.Title} by {record.Authors || record.Author} (ISBN: {record["ISBN/UID"] || record.ISBN13})
                   </li>
                 ))}
               </ul>
