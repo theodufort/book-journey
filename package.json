@@ -27,7 +27,7 @@
     "@types/uuid": "^10.0.0",
     "axios": "^1.7.2",
     "axios-retry": "^4.5.0",
-    "caniuse-lite": "",
+    "caniuse-lite": "^1.0.30001663",
     "crisp-sdk-web": "^1.0.22",
     "csv-parse": "^5.5.6",
     "form-data": "^4.0.0",

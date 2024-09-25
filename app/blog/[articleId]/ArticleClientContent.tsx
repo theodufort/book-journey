@@ -1,8 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useArticles, useArticleContent, BasicArticleInfo } from "../_assets/content";
 import ArticleContent from "../_assets/components/ArticleContent";
+import {
+  BasicArticleInfo,
+  useArticleContent,
+  useArticles,
+} from "../_assets/content";
 
 export default function ArticleClientContent({
   articleId,
@@ -11,7 +15,9 @@ export default function ArticleClientContent({
   articleId: string;
   initialArticle: BasicArticleInfo | null;
 }) {
-  const [article, setArticle] = useState<BasicArticleInfo | null>(initialArticle);
+  const [article, setArticle] = useState<BasicArticleInfo | null>(
+    initialArticle
+  );
   const { content, loading: contentLoading } = useArticleContent(articleId);
   const { articles, loading: articlesLoading } = useArticles();
 
@@ -22,7 +28,11 @@ export default function ArticleClientContent({
   }, [content]);
 
   if (contentLoading || articlesLoading) {
-    return <div>Loading...</div>;
+    return (
+      <main className="min-h-screen p-8 pb-24 flex items-center justify-center">
+        <span className="loading loading-spinner loading-lg"></span>
+      </main>
+    );
   }
 
   const articlesRelated = articles

@@ -7,7 +7,11 @@ import { useArticles } from "./_assets/content";
 export default function Blog() {
   const { articles, loading } = useArticles();
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <main className="min-h-screen p-8 pb-24 flex items-center justify-center">
+        <span className="loading loading-spinner loading-lg"></span>
+      </main>
+    );
   }
 
   const articlesToDisplay = articles

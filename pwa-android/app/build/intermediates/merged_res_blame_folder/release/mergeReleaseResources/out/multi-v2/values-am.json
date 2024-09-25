@@ -4,7 +4,7 @@
             "outputFile": "com.mybookquest.twa.app-mergeReleaseResources-5:/values-am/values-am.xml",
             "map": [
                 {
-                    "source": "/home/theod/.gradle/caches/8.8/transforms/2144911bb09dce3a07f407e3b390637e/transformed/core-1.1.0/res/values-am/values-am.xml",
+                    "source": "C:\\Users\\theod\\.gradle\\caches\\8.8\\transforms\\2144911bb09dce3a07f407e3b390637e\\transformed\\core-1.1.0\\res\\values-am\\values-am.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -21,7 +21,7 @@
                     }
                 },
                 {
-                    "source": "/home/theod/.gradle/caches/8.8/transforms/b511174c15fdde7dea3e957094b4390b/transformed/browser-1.4.0/res/values-am/values-am.xml",
+                    "source": "C:\\Users\\theod\\.gradle\\caches\\8.8\\transforms\\b511174c15fdde7dea3e957094b4390b\\transformed\\browser-1.4.0\\res\\values-am\\values-am.xml",
                     "from": {
                         "startLines": "2,3,4,5",
                         "startColumns": "4,4,4,4",

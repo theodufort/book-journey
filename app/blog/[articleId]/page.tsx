@@ -2,13 +2,39 @@ import { getSEOTags } from "@/libs/seo";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import ArticleClientContent from "./ArticleClientContent";
-const supabase = createClientComponentClient<Database>();
+export async function generateStaticParams() {
+  const supabase = createClientComponentClient<Database>();
+  const { data: articles, error } = await supabase
+    .from("blog_articles")
+    .select(
+      "id, slug, title, description, isbn_13, image_url, image_alt, published_at"
+    );
+
+  // Handle the case where no articles are returned or there's an error
+  if (error) {
+    console.error("Error fetching articles:", error.message);
+    return [];
+  }
+
+  if (!articles) {
+    console.error("No articles found.");
+    return [];
+  }
+
+  const paths = articles.map((x) => ({
+    articleId: x.slug,
+  }));
+
+  console.log(paths);
+  return paths;
+}
 
 export async function generateMetadata({
   params,
 }: {
   params: { articleId: string };
 }) {
+  const supabase = createClientComponentClient<Database>();
   const { data: article } = await supabase
     .from("blog_articles")
     .select("*")
@@ -47,6 +73,7 @@ export default async function Article({
 }: {
   params: { articleId: string };
 }) {
+  const supabase = createClientComponentClient<Database>();
   const { data: article } = await supabase
     .from("blog_articles")
     .select("*")
