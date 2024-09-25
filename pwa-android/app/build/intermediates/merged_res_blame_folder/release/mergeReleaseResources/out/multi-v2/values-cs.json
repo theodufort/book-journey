@@ -4,17 +4,7 @@
             "outputFile": "com.mybookquest.twa.app-mergeReleaseResources-5:/values-cs/values-cs.xml",
             "map": [
                 {
-                    "source": "/home/theod/.gradle/caches/8.8/transforms/b511174c15fdde7dea3e957094b4390b/transformed/browser-1.4.0/res/values-cs/values-cs.xml",
-                    "from": {
-                        "startLines": "2,3,4,5",
-                        "startColumns": "4,4,4,4",
-                        "startOffsets": "55,157,260,374",
-                        "endColumns": "101,102,113,100",
-                        "endOffsets": "152,255,369,470"
-                    }
-                },
-                {
-                    "source": "/home/theod/.gradle/caches/8.8/transforms/2144911bb09dce3a07f407e3b390637e/transformed/core-1.1.0/res/values-cs/values-cs.xml",
+                    "source": "C:\\Users\\theod\\.gradle\\caches\\8.8\\transforms\\2144911bb09dce3a07f407e3b390637e\\transformed\\core-1.1.0\\res\\values-cs\\values-cs.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -28,6 +18,16 @@
                         "startOffsets": "475",
                         "endColumns": "100",
                         "endOffsets": "571"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\theod\\.gradle\\caches\\8.8\\transforms\\b511174c15fdde7dea3e957094b4390b\\transformed\\browser-1.4.0\\res\\values-cs\\values-cs.xml",
+                    "from": {
+                        "startLines": "2,3,4,5",
+                        "startColumns": "4,4,4,4",
+                        "startOffsets": "55,157,260,374",
+                        "endColumns": "101,102,113,100",
+                        "endOffsets": "152,255,369,470"
                     }
                 }
             ]

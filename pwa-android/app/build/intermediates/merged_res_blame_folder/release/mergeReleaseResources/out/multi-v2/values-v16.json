@@ -4,7 +4,7 @@
             "outputFile": "com.mybookquest.twa.app-mergeReleaseResources-5:/values-v16/values-v16.xml",
             "map": [
                 {
-                    "source": "/home/theod/.gradle/caches/8.8/transforms/2144911bb09dce3a07f407e3b390637e/transformed/core-1.1.0/res/values-v16/values-v16.xml",
+                    "source": "C:\\Users\\theod\\.gradle\\caches\\8.8\\transforms\\2144911bb09dce3a07f407e3b390637e\\transformed\\core-1.1.0\\res\\values-v16\\values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

@@ -17,11 +17,11 @@
   "maskableIconUrl": "https://mybookquest.com/icon512_maskable.png",
   "splashScreenFadeOutDuration": 300,
   "signingKey": {
-    "path": "/media/disk1/Clones/book-journey/pwa-android/android.keystore",
+    "path": "C:\\Users\\theod\\Documents\\repos\\book-journey\\pwa-android\\android.keystore",
     "alias": "android"
   },
-  "appVersionName": "4",
-  "appVersionCode": 4,
+  "appVersionName": "5",
+  "appVersionCode": 5,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://mybookquest.com/manifest.json",
@@ -39,5 +39,5 @@
   "fingerprints": [],
   "additionalTrustedOrigins": [],
   "retainedBundles": [],
-  "appVersion": "4"
+  "appVersion": "5"
 }

@@ -1,15 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useEffect, useState } from "react";
 import CardArticle from "../../_assets/components/CardArticle";
 import CardCategory from "../../_assets/components/CardCategory";
-import config from "@/config";
 
 const supabase = createClientComponentClient<Database>();
 
-export default function Category({ params }: { params: { categoryId: string } }) {
+export default function Category({
+  params,
+}: {
+  params: { categoryId: string };
+}) {
   const [category, setCategory] = useState<any>(null);
   const [articlesInCategory, setArticlesInCategory] = useState<any[]>([]);
   const [otherCategories, setOtherCategories] = useState<any[]>([]);
@@ -50,7 +53,11 @@ export default function Category({ params }: { params: { categoryId: string } })
   }, [params.categoryId]);
 
   if (!category) {
-    return <div>Loading...</div>;
+    return (
+      <main className="min-h-screen p-8 pb-24 flex items-center justify-center">
+        <span className="loading loading-spinner loading-lg"></span>
+      </main>
+    );
   }
 
   return (
@@ -88,7 +95,11 @@ export default function Category({ params }: { params: { categoryId: string } })
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {otherCategories.map((otherCategory) => (
-            <CardCategory key={otherCategory.slug} category={otherCategory} tag="h3" />
+            <CardCategory
+              key={otherCategory.slug}
+              category={otherCategory}
+              tag="h3"
+            />
           ))}
         </div>
       </section>
