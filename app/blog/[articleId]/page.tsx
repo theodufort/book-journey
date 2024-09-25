@@ -25,7 +25,6 @@ export async function generateStaticParams() {
     articleId: x.slug,
   }));
 
-  console.log(paths);
   return paths;
 }
 
