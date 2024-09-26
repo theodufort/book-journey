@@ -1,31 +1,35 @@
-import { parseSlug } from "@/app/libraries/_assets/generateSlug";
+import { parseSlug, generateSlug } from "@/app/libraries/_assets/generateSlug";
 import { getSEOTags } from "@/libs/seo";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 const supabase = createClientComponentClient<Database>();
+
 export async function generateStaticParams() {
-  const supabase = createClientComponentClient<Database>();
   const { data: libraries, error } = await supabase
     .from("libraries")
-    .select("*");
+    .select("city_ascii, state_id")
+    .order("city_ascii", { ascending: true })
+    .order("state_id", { ascending: true });
 
-  // Handle the case where no articles are returned or there's an error
   if (error) {
     console.error("Error fetching libraries:", error.message);
     return [];
   }
 
-  if (!libraries) {
+  if (!libraries || libraries.length === 0) {
     console.error("No libraries found.");
     return [];
   }
 
-  const paths = libraries.map((x) => ({
-    libraryLocationId: x.slug,
-  }));
+  const uniqueLocations = Array.from(new Set(libraries.map(lib => `${lib.city_ascii}-${lib.state_id}`)));
 
-  return paths;
+  return uniqueLocations.map(location => {
+    const [city, stateId] = location.split('-');
+    return {
+      libraryLocationId: generateSlug(city, stateId),
+    };
+  });
 }
 export async function generateMetadata({
   params,
