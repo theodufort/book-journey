@@ -1,6 +1,7 @@
 import { getSEOTags } from "@/libs/seo";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { parseSlug } from "@/generateSlug";
 
 const supabase = createClientComponentClient<Database>();
 export async function generateStaticParams() {
@@ -33,16 +34,15 @@ export async function generateMetadata({
 }: {
   params: { libraryLocationId: string };
 }) {
-  const match = params.libraryLocationId.match(/libraries-in-(.+)-(.+)/);
-  if (!match) {
+  const slugData = parseSlug(params.libraryLocationId);
+  if (!slugData) {
     throw new Error("Invalid URL format");
   }
-  const [, city, stateAbbr] = match;
-  const cityName = city.replace(/-/g, " ");
+  const { city, stateAbbr } = slugData;
 
   return getSEOTags({
-    title: `Libraries in ${cityName}, ${stateAbbr.toUpperCase()}`,
-    description: `List of libraries located in ${cityName}, ${stateAbbr.toUpperCase()}.`,
+    title: `Libraries in ${city}, ${stateAbbr}`,
+    description: `List of libraries located in ${city}, ${stateAbbr}.`,
     canonicalUrlRelative: `/libraries/${params.libraryLocationId}`,
   });
 }
@@ -52,18 +52,19 @@ export default async function LibraryLocationPage({
 }: {
   params: { libraryLocationId: string };
 }) {
-  const match = params.libraryLocationId.match(/libraries-in-(.+)-(.+)/);
-  if (!match) {
+  const slugData = parseSlug(params.libraryLocationId);
+  if (!slugData) {
     throw new Error("Invalid URL format");
   }
-  const [, city, stateAbbr] = match;
-  const cityName = city.replace(/-/g, " ");
+  const { city, stateAbbr } = slugData;
+
   const { data: libraries, error } = await supabase
     .from("libraries")
     .select("*")
-    .ilike("city_ascii", cityName)
+    .ilike("city_ascii", city)
     .ilike("state_id", stateAbbr)
     .order("display_name", { ascending: true });
+
   if (error) {
     console.error(error);
     return <div>Error loading libraries. Please try again later.</div>;
@@ -78,7 +79,7 @@ export default async function LibraryLocationPage({
   return (
     <div className="space-y-4">
       <h1 className="text-3xl font-bold">
-        Libraries in {cityName}, {stateAbbr.toUpperCase()}
+        Libraries in {city}, {stateAbbr}
       </h1>
       <ul className="space-y-2">
         {libraries.map((library) => (
