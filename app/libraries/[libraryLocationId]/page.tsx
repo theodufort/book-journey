@@ -1,16 +1,14 @@
+import { parseSlug } from "@/app/libraries/_assets/generateSlug";
 import { getSEOTags } from "@/libs/seo";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { parseSlug } from "@/generateSlug";
 
 const supabase = createClientComponentClient<Database>();
 export async function generateStaticParams() {
   const supabase = createClientComponentClient<Database>();
   const { data: libraries, error } = await supabase
     .from("libraries")
-    .select(
-      "id, slug, title, description, isbn_13, image_url, image_alt, published_at"
-    );
+    .select("*");
 
   // Handle the case where no articles are returned or there's an error
   if (error) {
