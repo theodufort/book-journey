@@ -3,7 +3,31 @@ import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 const supabase = createClientComponentClient<Database>();
+export async function generateStaticParams() {
+  const supabase = createClientComponentClient<Database>();
+  const { data: libraries, error } = await supabase
+    .from("libraries")
+    .select(
+      "id, slug, title, description, isbn_13, image_url, image_alt, published_at"
+    );
 
+  // Handle the case where no articles are returned or there's an error
+  if (error) {
+    console.error("Error fetching libraries:", error.message);
+    return [];
+  }
+
+  if (!libraries) {
+    console.error("No libraries found.");
+    return [];
+  }
+
+  const paths = libraries.map((x) => ({
+    libraryLocationId: x.slug,
+  }));
+
+  return paths;
+}
 export async function generateMetadata({
   params,
 }: {
