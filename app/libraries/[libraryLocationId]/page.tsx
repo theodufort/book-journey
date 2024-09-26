@@ -1,4 +1,4 @@
-import { parseSlug, generateSlug } from "@/app/libraries/_assets/generateSlug";
+import { generateSlug, parseSlug } from "@/app/libraries/_assets/generateSlug";
 import { getSEOTags } from "@/libs/seo";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -22,10 +22,12 @@ export async function generateStaticParams() {
     return [];
   }
 
-  const uniqueLocations = Array.from(new Set(libraries.map(lib => `${lib.city_ascii}-${lib.state_id}`)));
+  const uniqueLocations = Array.from(
+    new Set(libraries.map((lib) => `${lib.city_ascii}-${lib.state_id}`))
+  );
 
-  return uniqueLocations.map(location => {
-    const [city, stateId] = location.split('-');
+  return uniqueLocations.map((location) => {
+    const [city, stateId] = location.split("-");
     return {
       libraryLocationId: generateSlug(city, stateId),
     };
