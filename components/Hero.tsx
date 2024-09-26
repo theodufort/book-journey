@@ -1,8 +1,6 @@
 "use client";
-import Image from "next/image";
-import TestimonialsAvatars from "./TestimonialsAvatars";
-import config from "@/config";
 import { useRouter } from "next/navigation";
+import TestimonialsAvatars from "./TestimonialsAvatars";
 
 const Hero = () => {
   const router = useRouter();
@@ -29,7 +27,12 @@ const Hero = () => {
         className="lg:w-full rounded-2xl"
         style={{ boxShadow: "0 0px 50px 0px #6366f1" }}
       >
-        <video className="w-full rounded-2xl" autoPlay={true} muted>
+        <video
+          className="w-full rounded-2xl"
+          autoPlay={true}
+          muted
+          preload="none"
+        >
           <source src="/showcase.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
