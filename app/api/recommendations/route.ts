@@ -62,6 +62,17 @@ async function getBookDetails(bookId: string) {
     description: volume.volumeInfo.description,
   };
 }
+function getRandomCategories(set: Set<string>, count: number): string[] {
+  const array = Array.from(set);
+
+  // Shuffle the array to randomize the order
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  // Return only 'count' categories, up to the number of elements available
+  return array.slice(0, count);
+}
 
 async function getRecommendations(
   supabase: SupabaseClient<any, "public", any>,
@@ -73,24 +84,48 @@ async function getRecommendations(
   );
 
   const categories = new Set<string>();
+  var readCategories = new Set<string>();
   if (bookDetails.length == 0) {
     const userPrefs = await getUserCategories(supabase, userId);
-    userPrefs.forEach((cat) => categories.add(cat.preferred_categories));
+    userPrefs.forEach((cat) =>
+      cat.preferred_categories.forEach((y: any) => categories.add(y))
+    );
   }
 
   bookDetails.forEach((book, index) => {
     if (book && book.categories) {
       book.categories.forEach((category: string) => {
-        if (index < 2) {
-          categories.add(category);
-        }
+        readCategories.add(category);
       });
     }
   });
+  var searchQuery;
+  //add categories to query if no categories from read books
+  if (readCategories.size === 0) {
+    // If no read categories, use categories (even if there's only 1)
+    const selectedCategories = getRandomCategories(categories, 1);
+    if (selectedCategories.length > 0) {
+      searchQuery = encodeURIComponent(selectedCategories.join("+subject:"));
+    } else {
+      // Fallback in case no categories at all
+      searchQuery = "default+category";
+    }
+  } else {
+    // If readCategories exist, pick 2 random ones
+    const selectedReadCategories = getRandomCategories(readCategories, 1);
+    if (selectedReadCategories.length > 0) {
+      searchQuery = encodeURIComponent(
+        selectedReadCategories.join("+subject:")
+      );
+    } else {
+      // Fallback if no read categories available
+      searchQuery = "default+category";
+    }
+  }
 
-  const searchQuery = encodeURIComponent(
-    Array.from(categories).join("+subject:")
-  );
+  console.log("read books count = " + readBooks.length);
+  console.log("categories count = " + categories.size);
+  console.log("searchQuery = " + searchQuery);
   const url = `https://www.googleapis.com/books/v1/volumes?q=subject:${searchQuery}&maxResults=40&langRestrict=en&key=${process.env.GOOGLE_API_KEY}&orderBy=newest`;
   const searchResponse = await fetch(url);
   if (!searchResponse.ok) {

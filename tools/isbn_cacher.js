@@ -9,13 +9,22 @@ axiosRetry(axios, {
 });
 async function main() {
   try {
-    const data = fs.readFileSync("./tools/isbn_list.txt", "utf-8");
-    const lines = data.trim().split("\n");
-
+    const data = fs.readFileSync("./isbn_list.txt", "utf-8");
+    const lines = data
+      .trim()
+      .split("\n")
+      .map((x) => x.replace("\r", ""))
+      .reverse();
+    console.log(lines);
     for (const line of lines) {
       try {
         await axios.get(
-          `http://localhost:3000/api/books/${line.trim()}?useProxy=true`
+          `https://mybookquest.com/api/books/${line.trim()}?useProxy=true`,
+          {
+            headers: {
+              "Accept-Encoding": "gzip, deflate", // Exclude 'br' (Brotli)
+            },
+          }
         );
       } catch {}
     }
