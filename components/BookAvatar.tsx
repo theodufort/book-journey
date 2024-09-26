@@ -1,4 +1,3 @@
-import { BookSearchResult } from "@/interfaces/BookSearch";
 import { Volume } from "@/interfaces/GoogleAPI";
 import { createAffLink } from "@/libs/amazon-aff";
 import { Database } from "@/types/supabase";
@@ -8,7 +7,7 @@ import {
 } from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
   vol: Volume;
@@ -70,7 +69,10 @@ const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
       >
         <figure>
           <img
-            src={vol.volumeInfo.imageLinks.thumbnail}
+            src={
+              vol.volumeInfo.imageLinks?.thumbnail ||
+              "https://mybookquest.com/default-book-cover.png"
+            }
             alt="Book Thumbnail"
             className="pt-5"
           />

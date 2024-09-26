@@ -23,7 +23,6 @@ export default function Recommendations() {
     try {
       const response = await fetch("/api/recommendations");
       const data = await response.json();
-
       if (!response.ok) {
         throw new Error(
           `HTTP error! status: ${response.status}, message: ${
