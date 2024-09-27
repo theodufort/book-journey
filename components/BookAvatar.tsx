@@ -235,6 +235,14 @@ const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
                 </li>
                 <li>
                   <a
+                    href={`https://www.tkqlhce.com/click-101259626-15734795?url=https%3A%2F%2Fwww.barnesandnoble.com%2Fb%2F${vol.volumeInfo.title}%2F_%2FN-1p38`}
+                    target="_blank"
+                  >
+                    Barnes and Nobles
+                  </a>
+                </li>
+                <li>
+                  <a
                     href={`https://www.tkqlhce.com/click-101259626-15733690?url=https%3A%2F%2Fwww.audiobooks.com%2Fsearch%2Fbook%2F${vol.volumeInfo.title}`}
                     target="_blank"
                   >

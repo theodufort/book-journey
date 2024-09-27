@@ -120,6 +120,56 @@ export default function ReadingRewards() {
         category: "books",
       },
       {
+        name: "Coupon: Buy One, Get One 50% Off Fiction",
+        type: "coupon",
+        merchant: "BARNESANDNOBLES",
+        description:
+          "Get a coupon to get a fiction book 50% OFF when you buy another one!",
+        cost: 500,
+        link: "https://www.anrdoezrs.net/click-101259626-15777883",
+        category: "books",
+      },
+      {
+        name: "Coupon: Buy One, Get One 50% Off Nonfiction",
+        type: "coupon",
+        merchant: "BARNESANDNOBLES",
+        description:
+          "Get a coupon to get a nonfiction book 50% OFF when you buy another one!",
+        cost: 500,
+        link: "https://www.kqzyfj.com/click-101259626-15777885",
+        category: "books",
+      },
+      {
+        name: "Buy One, Get One 50% Off Picture Books",
+        type: "coupon",
+        merchant: "BARNESANDNOBLES",
+        description:
+          "Get a coupon to get a picture book 50% OFF when you buy another one!",
+        cost: 500,
+        link: "https://www.kqzyfj.com/click-101259626-15777886",
+        category: "books",
+      },
+      {
+        name: "Buy One, Get One 50% Off Mystery & Thrillers",
+        type: "coupon",
+        merchant: "BARNESANDNOBLES",
+        description:
+          "Get a coupon to get a mystery & thrillers book 50% OFF when you buy another one!",
+        cost: 500,
+        link: "https://www.tkqlhce.com/click-101259626-15777884",
+        category: "books",
+      },
+      {
+        name: "Buy One, Get One 50% Off Audiobooks",
+        type: "coupon",
+        merchant: "BARNESANDNOBLES",
+        description:
+          "Get a coupon to get an audiobook 50% OFF when you buy another one!",
+        cost: 500,
+        link: "https://www.tkqlhce.com/click-101259626-15777888",
+        category: "audio books",
+      },
+      {
         name: "Get 3 audio books for FREE",
         type: "coupon",
         merchant: "AUDIOBOOKS.COM",
