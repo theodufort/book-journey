@@ -35,7 +35,7 @@ export default function AddBook() {
 
     try {
       const response = await fetch(
-        `/api/books/search?q=${encodeURIComponent(searchQuery)}`
+        `/api/books/search/v2?q=${encodeURIComponent(searchQuery)}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch books");
@@ -57,7 +57,7 @@ export default function AddBook() {
     const { count } = await supabase
       .from("reading_list")
       .select("*", { count: "exact", head: true });
-    
+
     const { error } = await supabase.from("reading_list").upsert({
       user_id: user.id,
       book_id: isbn,
@@ -70,22 +70,22 @@ export default function AddBook() {
     } else {
       if (count === 0) {
         try {
-          const response = await fetch('/api/email', {
-            method: 'POST',
+          const response = await fetch("/api/email", {
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({
               user: { email: user?.email || "theodufort05@gmail.com" },
-              emailType: "firstBook"
+              emailType: "firstBook",
             }),
           });
 
           if (!response.ok) {
-            console.error('Failed to send email');
+            console.error("Failed to send email");
           }
         } catch (emailError) {
-          console.error('Error sending email:', emailError);
+          console.error("Error sending email:", emailError);
         }
       }
       router.push("/dashboard/reading-list");
