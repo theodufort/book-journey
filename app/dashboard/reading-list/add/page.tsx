@@ -35,7 +35,7 @@ export default function AddBook() {
 
     try {
       const response = await fetch(
-        `/api/books/search/v2?q=${encodeURIComponent(searchQuery)}`
+        `/api/books/search?q=${encodeURIComponent(searchQuery)}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch books");
@@ -138,9 +138,10 @@ export default function AddBook() {
                 <h2 className="card-title">{book.volumeInfo.title}</h2>
                 <p>{book.volumeInfo.authors?.join(", ")}</p>
                 <p>{book.volumeInfo.publishedDate}</p>
-                <p>{typeof book.volumeInfo.description === 'string' 
-                    ? book.volumeInfo.description.substring(0, 200) + '...'
-                    : 'No description available'}
+                <p>
+                  {typeof book.volumeInfo.description === "string"
+                    ? book.volumeInfo.description.substring(0, 200) + "..."
+                    : "No description available"}
                 </p>
                 <div className="card-actions justify-end">
                   <select
