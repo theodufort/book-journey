@@ -219,7 +219,10 @@ function HelperUI({ editable, mode, conversationId }: Props) {
                 <button
                   className="absolute bottom-2 right-2 text-gray-500 hover:text-gray-700 contents"
                   onClick={() => {
-                    navigator.clipboard.writeText(message.messageContent);
+                    const tempElement = document.createElement('div');
+                    tempElement.innerHTML = message.messageContent;
+                    const plainText = tempElement.textContent || tempElement.innerText || "";
+                    navigator.clipboard.writeText(plainText);
                     alert("Message copied to clipboard!");
                   }}
                 >
