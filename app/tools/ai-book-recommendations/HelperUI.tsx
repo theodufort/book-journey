@@ -34,9 +34,21 @@ function HelperUI({ editable, mode, conversationId }: Props) {
         setChatMessages(data.messages);
       } else {
         console.error("Error fetching conversation:", data.error);
+        setChatMessages([
+          {
+            role: "ai",
+            messageContent: "Sorry, this conversation doesn't exist or couldn't be loaded.",
+          },
+        ]);
       }
     } catch (error) {
       console.error("Error fetching conversation:", error);
+      setChatMessages([
+        {
+          role: "ai",
+          messageContent: "An error occurred while trying to load the conversation.",
+        },
+      ]);
     }
   }
 
@@ -149,8 +161,12 @@ function HelperUI({ editable, mode, conversationId }: Props) {
   useEffect(() => {
     if (mode === "view" && conversationId) {
       fetchConversationById(conversationId);
-    } else if (mode === "chat" && !savedConversationId) {
-      addInitialMessageIfNeeded();
+    } else if (mode === "chat") {
+      if (!savedConversationId) {
+        addInitialMessageIfNeeded();
+      } else {
+        fetchConversationById(savedConversationId);
+      }
     }
   }, [mode, conversationId, savedConversationId]);
 
