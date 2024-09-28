@@ -245,6 +245,11 @@ function HelperUI({ editable, mode, conversationId }: Props) {
                   className="input input-bordered w-full m-auto"
                   disabled={chatLoading}
                   onChange={(e) => setChatInputText(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter' && !chatLoading && chatInputText.trim() !== '') {
+                      handleSend();
+                    }
+                  }}
                 />
               </label>
               <div className="md:flex m-auto">
