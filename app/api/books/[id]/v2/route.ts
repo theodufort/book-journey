@@ -33,115 +33,89 @@ export async function GET(
 
   // If not in cache, fetch from Open Library API
   try {
-    const response = await axios.get(`https://openlibrary.org/isbn/${id}.json`);
+    // Step 1: Call /isbn/[isbn]
+    const isbnResponse = await axios.get(`https://openlibrary.org/isbn/${id}.json`);
 
-    if (response.status !== 200) {
-      throw new Error(
-        `Open Library API responded with status ${response.status}`
-      );
+    if (isbnResponse.status !== 200) {
+      throw new Error(`Open Library API responded with status ${isbnResponse.status}`);
     }
 
-    const bookData = await response.data;
+    const isbnData = isbnResponse.data;
+
+    // Step 2: Get the corresponding /books/[key]
+    const bookKey = isbnData.key;
+    const bookResponse = await axios.get(`https://openlibrary.org${bookKey}.json`);
+
+    if (bookResponse.status !== 200) {
+      throw new Error(`Open Library API responded with status ${bookResponse.status}`);
+    }
+
+    const bookData = bookResponse.data;
+
+    // Step 3: If a works key exists, ping /works/[workkey]
+    let worksData = null;
+    if (bookData.works && bookData.works.length > 0) {
+      const worksKey = bookData.works[0].key;
+      const worksResponse = await axios.get(`https://openlibrary.org${worksKey}.json`);
+
+      if (worksResponse.status === 200) {
+        worksData = worksResponse.data;
+      } else {
+        console.error(`Error fetching works data: ${worksResponse.status}`);
+      }
+    }
+
+    // Combine data from all sources
+    const combinedData = {
+      ...isbnData,
+      ...bookData,
+      works: worksData,
+    };
 
     // Transform the Open Library data to match our previous API structure
     const transformedBookData = {
-      id: bookData.key,
+      id: combinedData.key,
       volumeInfo: {
-        title: bookData.full_title || bookData.title,
-        authors: ["Unknown"], // Default value, will be updated later
-        publishedDate: bookData.publish_date,
-        description: bookData.description
-          ? typeof bookData.description === "string"
-            ? bookData.description
-            : bookData.description.value || ""
+        title: combinedData.title,
+        subtitle: combinedData.subtitle || null,
+        authors: combinedData.authors ? combinedData.authors.map((author: any) => author.name) : ["Unknown Author"],
+        publishedDate: combinedData.publish_date,
+        description: combinedData.description
+          ? typeof combinedData.description === "string"
+            ? combinedData.description
+            : combinedData.description.value || ""
           : "",
         industryIdentifiers: [
           { type: "ISBN_13", identifier: id },
-          ...(bookData.isbn_10
-            ? [{ type: "ISBN_10", identifier: bookData.isbn_10[0] }]
-            : []),
+          ...(combinedData.isbn_10 ? [{ type: "ISBN_10", identifier: combinedData.isbn_10[0] }] : []),
         ],
         imageLinks: {
-          thumbnail: bookData.covers
-            ? `https://covers.openlibrary.org/b/id/${bookData.covers[0]}-M.jpg`
+          thumbnail: combinedData.covers
+            ? `https://covers.openlibrary.org/b/id/${combinedData.covers[0]}-M.jpg`
             : null,
         },
-        pageCount: bookData.number_of_pages || 0,
-        categories: bookData.subjects || [],
-        language: bookData.languages
-          ? Array.isArray(bookData.languages)
-            ? bookData.languages
-                .map((lang: any) => {
-                  if (typeof lang === "string") {
-                    return lang.toLowerCase();
-                  } else if (typeof lang === "object" && lang.key) {
-                    return lang.key.split("/").pop().toLowerCase();
-                  }
-                  return "unknown";
-                })
-                .join(", ")
-            : typeof bookData.languages === "object" && bookData.languages.key
-            ? bookData.languages.key.split("/").pop().toLowerCase()
-            : "unknown"
-          : "unknown",
-        publisher: bookData.publishers
-          ? bookData.publishers[0]
-          : "Unknown Publisher",
-        publishPlace: bookData.publish_places
-          ? bookData.publish_places[0]
-          : null,
-        physicalFormat: bookData.physical_format || null,
-        pagination: bookData.pagination || null,
+        pageCount: combinedData.number_of_pages || 0,
+        categories: combinedData.subjects || [],
+        language: combinedData.language ? combinedData.language.key.split('/').pop() : "unknown",
+        publisher: combinedData.publishers ? combinedData.publishers[0] : "Unknown Publisher",
+        publishPlace: combinedData.publish_places ? combinedData.publish_places[0] : null,
+        physicalFormat: combinedData.physical_format || null,
+        pagination: combinedData.pagination || null,
         identifiers: {
-          goodreads: bookData.identifiers?.goodreads || [],
-          lccn: bookData.lccn || [],
-          oclc: bookData.oclc_numbers || [],
+          goodreads: combinedData.identifiers?.goodreads || [],
+          lccn: combinedData.lccn || [],
+          oclc: combinedData.oclc_numbers || [],
         },
+        works: worksData ? {
+          key: worksData.key,
+          title: worksData.title,
+          description: worksData.description || null,
+          subjects: worksData.subjects || [],
+          subjectPlaces: worksData.subject_places || [],
+          subjectTimes: worksData.subject_times || [],
+        } : null,
       },
     };
-
-    // Fetch author details
-    if (bookData.authors) {
-      console.log(bookData.authors);
-      const authorPromises = bookData.authors.map(async (author: any) => {
-        try {
-          const authorResponse = await axios.get(
-            `https://openlibrary.org${author.key}.json`
-          );
-          return authorResponse.data.name;
-        } catch (error) {
-          // console.error(`Error fetching author data: ${error}`);
-          return "Unknown Author";
-        }
-      });
-      transformedBookData.volumeInfo.authors = await Promise.all(
-        authorPromises
-      );
-    } else {
-      transformedBookData.volumeInfo.authors = ["Unknown Author"];
-    }
-
-    // Fetch author details
-    if (bookData.authors && bookData.authors.length > 0) {
-      const authorPromises = bookData.authors.map(async (author: any) => {
-        try {
-          const authorResponse = await axios.get(
-            `https://openlibrary.org${author.key}.json`
-          );
-          return (
-            authorResponse.data.name ||
-            authorResponse.data.personal_name ||
-            "Unknown Author"
-          );
-        } catch (error) {
-          console.error(`Error fetching author data: ${error}`);
-          return "Unknown Author";
-        }
-      });
-      transformedBookData.volumeInfo.authors = await Promise.all(
-        authorPromises
-      );
-    }
 
     // Cache the book data
     const { error: insertError } = await supabase
