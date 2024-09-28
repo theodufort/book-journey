@@ -42,14 +42,17 @@ export async function GET(
     }
 
     const bookData = response.data;
-    console.log(bookData);
+
     // Transform the Open Library data to match our previous API structure
     const transformedBookData = {
       id: bookData.key,
       volumeInfo: {
-        title: bookData.title,
+        title: bookData.full_title || bookData.title,
         authors: bookData.authors
-          ? bookData.authors.map((author: any) => author.name)
+          ? await Promise.all(bookData.authors.map(async (author: any) => {
+              const authorResponse = await axios.get(`https://openlibrary.org${author.key}.json`);
+              return authorResponse.data.name;
+            }))
           : [],
         publishedDate: bookData.publish_date,
         description: bookData.description
@@ -57,7 +60,10 @@ export async function GET(
             ? bookData.description
             : bookData.description.value
           : "",
-        industryIdentifiers: [{ type: "ISBN_13", identifier: id }],
+        industryIdentifiers: [
+          { type: "ISBN_13", identifier: id },
+          ...(bookData.isbn_10 ? [{ type: "ISBN_10", identifier: bookData.isbn_10[0] }] : []),
+        ],
         imageLinks: {
           thumbnail: bookData.covers
             ? `https://covers.openlibrary.org/b/id/${bookData.covers[0]}-M.jpg`
@@ -65,9 +71,11 @@ export async function GET(
         },
         pageCount: bookData.number_of_pages,
         categories: bookData.subjects,
-        language: bookData.language
-          ? bookData.language.key.split("/").pop()
+        language: bookData.languages
+          ? bookData.languages[0].key.split("/").pop()
           : null,
+        publisher: bookData.publishers ? bookData.publishers[0] : null,
+        publishedDate: bookData.publish_date,
       },
     };
 
