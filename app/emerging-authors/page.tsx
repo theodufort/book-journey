@@ -1,18 +1,18 @@
 import { getSEOTags } from "@/libs/seo";
-import FindMovieBookTool from "./Tool";
+import EmergingAuthors from "./EmergingAuthors";
 
 export async function generateMetadata() {
   return getSEOTags({
-    title: "Find Movies/Books based on Books/Movies",
+    title: "Find Emerging Authors",
     description:
-      "Find movie or book adaptations of your favorite movie or book.",
-    canonicalUrlRelative: `/tools/movie-based-on-book`,
+      "Discover new and exciting emerging authors across various genres and languages.",
+    canonicalUrlRelative: `/emerging-authors`,
     extraTags: {
       openGraph: {
-        title: "Find Movies/Books based on Books/Movies",
+        title: "Find Emerging Authors",
         description:
-          "Find movie or book adaptations of your favorite movie or book.",
-        url: `/tools/movie-based-on-book`,
+          "Discover new and exciting emerging authors across various genres and languages.",
+        url: `/emerging-authors`,
         images: [
           {
             url: "",
@@ -26,6 +26,7 @@ export async function generateMetadata() {
     },
   });
 }
-export default function Tool() {
-  return <FindMovieBookTool />;
+
+export default function EmergingAuthorsPage() {
+  return <EmergingAuthors />;
 }
