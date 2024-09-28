@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
+import { useRouter } from "next/navigation";
 
 interface Props {
   editable: boolean;
@@ -20,6 +21,8 @@ function HelperUI({ editable, mode, conversationId }: Props) {
   const [savedConversationId, setSavedConversationId] = useState<string | null>(
     null
   );
+  const [isConversationSaved, setIsConversationSaved] = useState(false);
+  const router = useRouter();
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
@@ -137,7 +140,7 @@ function HelperUI({ editable, mode, conversationId }: Props) {
         savedConversationId || conversationId
       );
       setSavedConversationId(updatedConversationId);
-
+      setIsConversationSaved(true);
       setChatLoading(false);
     } catch (error) {
       console.error("Error fetching AI response:", error);
@@ -216,29 +219,45 @@ function HelperUI({ editable, mode, conversationId }: Props) {
         </div>
 
         {mode === "chat" && (
-          <div
-            className={`card-actions m-2 mt-5 p-5 flex items-end justify-between max-h-max ${
-              editable ? "block" : "hidden"
-            }`}
-          >
-            <label className="form-control flex-grow md:mr-5">
-              <input
-                type="text"
-                value={chatInputText}
-                placeholder="Ask the AI for book recommendations"
-                className="input input-bordered w-full m-auto"
-                disabled={chatLoading}
-                onChange={(e) => setChatInputText(e.target.value)}
-              />
-            </label>
-            <button
-              className="btn btn-primary md:m-0 m-auto"
-              disabled={chatLoading || chatInputText === ""}
-              onClick={handleSend}
+          <>
+            <div
+              className={`card-actions m-2 mt-5 p-5 flex items-end justify-between max-h-max ${
+                editable ? "block" : "hidden"
+              }`}
             >
-              {chatLoading ? "Loading..." : "Send"}
-            </button>
-          </div>
+              <label className="form-control flex-grow md:mr-5">
+                <input
+                  type="text"
+                  value={chatInputText}
+                  placeholder="Ask the AI for book recommendations"
+                  className="input input-bordered w-full m-auto"
+                  disabled={chatLoading}
+                  onChange={(e) => setChatInputText(e.target.value)}
+                />
+              </label>
+              <button
+                className="btn btn-primary md:m-0 m-auto"
+                disabled={chatLoading || chatInputText === ""}
+                onClick={handleSend}
+              >
+                {chatLoading ? "Loading..." : "Send"}
+              </button>
+            </div>
+            {isConversationSaved && savedConversationId && (
+              <div className="flex justify-center mt-4">
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => {
+                    const url = `${window.location.origin}/tools/ai-book-recommendations/${savedConversationId}`;
+                    navigator.clipboard.writeText(url);
+                    alert("Conversation link copied to clipboard!");
+                  }}
+                >
+                  Share Conversation
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </section>
