@@ -138,7 +138,10 @@ export default function AddBook() {
                 <h2 className="card-title">{book.volumeInfo.title}</h2>
                 <p>{book.volumeInfo.authors?.join(", ")}</p>
                 <p>{book.volumeInfo.publishedDate}</p>
-                <p>{book.volumeInfo.description?.substring(0, 200)}...</p>
+                <p>{typeof book.volumeInfo.description === 'string' 
+                    ? book.volumeInfo.description.substring(0, 200) + '...'
+                    : 'No description available'}
+                </p>
                 <div className="card-actions justify-end">
                   <select
                     className="select select-bordered"
