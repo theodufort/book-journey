@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import { getSEOTags } from "@/libs/seo";
+import Link from "next/link";
 
 export async function generateMetadata() {
   return getSEOTags({
@@ -15,13 +15,20 @@ const tools = [
     description: "Get personalized book recommendations from our AI assistant",
     path: "/tools/ai-book-recommendations",
   },
-  // Add more tools here as they become available
+  {
+    name: "Movies/Books Finder",
+    description:
+      "Find movie or book adaptations of your favorite movie or book",
+    path: "/tools/movie-based-on-book",
+  },
 ];
 
 export default function ToolsPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-4xl font-extrabold text-center mb-10">MyBookQuest Tools</h1>
+      <h1 className="text-4xl font-extrabold text-center mb-10">
+        MyBookQuest Tools
+      </h1>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {tools.map((tool, index) => (
           <Link href={tool.path} key={index} className="block">
