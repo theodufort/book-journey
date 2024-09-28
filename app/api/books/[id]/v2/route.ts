@@ -6,7 +6,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 async function getAuthorDetails(authorKey: string) {
   try {
-    const response = await axios.get(`https://openlibrary.org${authorKey}.json`);
+    const response = await axios.get(
+      `https://openlibrary.org${authorKey}.json`
+    );
     if (response.status === 200) {
       const authorData = response.data;
       return {
@@ -53,20 +55,28 @@ export async function GET(
   // If not in cache, fetch from Open Library API
   try {
     // Step 1: Call /isbn/[isbn]
-    const isbnResponse = await axios.get(`https://openlibrary.org/isbn/${id}.json`);
+    const isbnResponse = await axios.get(
+      `https://openlibrary.org/isbn/${id}.json`
+    );
 
     if (isbnResponse.status !== 200) {
-      throw new Error(`Open Library API responded with status ${isbnResponse.status}`);
+      throw new Error(
+        `Open Library API responded with status ${isbnResponse.status}`
+      );
     }
 
     const isbnData = isbnResponse.data;
 
     // Step 2: Get the corresponding /books/[key]
     const bookKey = isbnData.key;
-    const bookResponse = await axios.get(`https://openlibrary.org${bookKey}.json`);
+    const bookResponse = await axios.get(
+      `https://openlibrary.org${bookKey}.json`
+    );
 
     if (bookResponse.status !== 200) {
-      throw new Error(`Open Library API responded with status ${bookResponse.status}`);
+      throw new Error(
+        `Open Library API responded with status ${bookResponse.status}`
+      );
     }
 
     const bookData = bookResponse.data;
@@ -75,7 +85,9 @@ export async function GET(
     let worksData = null;
     if (bookData.works && bookData.works.length > 0) {
       const worksKey = bookData.works[0].key;
-      const worksResponse = await axios.get(`https://openlibrary.org${worksKey}.json`);
+      const worksResponse = await axios.get(
+        `https://openlibrary.org${worksKey}.json`
+      );
 
       if (worksResponse.status === 200) {
         worksData = worksResponse.data;
@@ -101,7 +113,7 @@ export async function GET(
           if (combinedData.authors && Array.isArray(combinedData.authors)) {
             const authorDetails = await Promise.all(
               combinedData.authors.map(async (author: any) => {
-                if (typeof author === 'string') return { name: author };
+                if (typeof author === "string") return { name: author };
                 if (author.key) {
                   const details = await getAuthorDetails(author.key);
                   return details || { name: author.name || "Unknown Author" };
@@ -112,25 +124,40 @@ export async function GET(
             return authorDetails.filter(Boolean);
           }
           if (combinedData.author_name) {
-            const authorSearchResponse = await axios.get(`https://openlibrary.org/search/authors.json?q=${encodeURIComponent(combinedData.author_name[0])}`);
-            if (authorSearchResponse.status === 200 && authorSearchResponse.data.docs.length > 0) {
+            const authorSearchResponse = await axios.get(
+              `https://openlibrary.org/search/authors.json?q=${encodeURIComponent(
+                combinedData.author_name[0]
+              )}`
+            );
+            if (
+              authorSearchResponse.status === 200 &&
+              authorSearchResponse.data.docs.length > 0
+            ) {
               const authorKey = authorSearchResponse.data.docs[0].key;
               const details = await getAuthorDetails(authorKey);
-              return details ? [details] : [{ name: combinedData.author_name[0] }];
+              return details
+                ? [details]
+                : [{ name: combinedData.author_name[0] }];
             }
             return combinedData.author_name.map((name: string) => ({ name }));
           }
           return [{ name: "Unknown Author" }];
         })(),
-        publishedDate: combinedData.publish_date || combinedData.first_publish_date || "Unknown",
+        publishedDate:
+          combinedData.publish_date ||
+          combinedData.first_publish_date ||
+          "Unknown",
         description: combinedData.description
           ? typeof combinedData.description === "string"
             ? combinedData.description
             : combinedData.description?.value || ""
-          : combinedData.works?.description?.value || "No description available",
+          : combinedData.works?.description?.value ||
+            "No description available",
         industryIdentifiers: [
           { type: "ISBN_13", identifier: id },
-          ...(combinedData.isbn_10 ? [{ type: "ISBN_10", identifier: combinedData.isbn_10[0] }] : []),
+          ...(combinedData.isbn_10
+            ? [{ type: "ISBN_10", identifier: combinedData.isbn_10[0] }]
+            : []),
         ],
         imageLinks: {
           thumbnail: combinedData.cover_i
@@ -149,16 +176,23 @@ export async function GET(
         pageCount: combinedData.number_of_pages || 0,
         categories: combinedData.subjects || combinedData.works?.subjects || [],
         language: combinedData.language
-          ? (typeof combinedData.language === 'string'
+          ? typeof combinedData.language === "string"
             ? combinedData.language
-            : combinedData.language.key?.split('/').pop()?.slice(0, 3).toLowerCase())
+            : combinedData.language.key
+                ?.split("/")
+                .pop()
+                ?.slice(0, 3)
+                .toLowerCase()
           : "und",
-        publisher: combinedData.publishers && combinedData.publishers.length > 0
-          ? combinedData.publishers[0].name || combinedData.publishers[0]
-          : "Unknown Publisher",
-        publishPlace: combinedData.publish_places && combinedData.publish_places.length > 0
-          ? combinedData.publish_places[0].name || combinedData.publish_places[0]
-          : "Unknown",
+        publisher:
+          combinedData.publishers && combinedData.publishers.length > 0
+            ? combinedData.publishers[0].name || combinedData.publishers[0]
+            : "Unknown Publisher",
+        publishPlace:
+          combinedData.publish_places && combinedData.publish_places.length > 0
+            ? combinedData.publish_places[0].name ||
+              combinedData.publish_places[0]
+            : "Unknown",
         physicalFormat: combinedData.physical_format || null,
         pagination: combinedData.pagination || null,
         weight: combinedData.weight || null,
@@ -174,20 +208,56 @@ export async function GET(
           dewey_decimal_class: combinedData.dewey_decimal_class || [],
         },
         subjects: combinedData.subjects
-          ? combinedData.subjects.map((subject: string | { name: string, url: string }) => 
-              typeof subject === 'string' ? { name: subject, url: `https://openlibrary.org/subjects/${encodeURIComponent(subject.toLowerCase().replace(/\s+/g, '_'))}` } : subject)
+          ? combinedData.subjects.map(
+              (subject: string | { name: string; url: string }) =>
+                typeof subject === "string"
+                  ? {
+                      name: subject,
+                      url: `https://openlibrary.org/subjects/${encodeURIComponent(
+                        subject.toLowerCase().replace(/\s+/g, "_")
+                      )}`,
+                    }
+                  : subject
+            )
           : [],
         subject_places: combinedData.subject_places
-          ? combinedData.subject_places.map((place: string | { name: string, url: string }) => 
-              typeof place === 'string' ? { name: place, url: `https://openlibrary.org/subjects/place:${encodeURIComponent(place.toLowerCase().replace(/\s+/g, '_'))}` } : place)
+          ? combinedData.subject_places.map(
+              (place: string | { name: string; url: string }) =>
+                typeof place === "string"
+                  ? {
+                      name: place,
+                      url: `https://openlibrary.org/subjects/place:${encodeURIComponent(
+                        place.toLowerCase().replace(/\s+/g, "_")
+                      )}`,
+                    }
+                  : place
+            )
           : [],
         subject_people: combinedData.subject_people
-          ? combinedData.subject_people.map((person: string | { name: string, url: string }) => 
-              typeof person === 'string' ? { name: person, url: `https://openlibrary.org/subjects/person:${encodeURIComponent(person.toLowerCase().replace(/\s+/g, '_'))}` } : person)
+          ? combinedData.subject_people.map(
+              (person: string | { name: string; url: string }) =>
+                typeof person === "string"
+                  ? {
+                      name: person,
+                      url: `https://openlibrary.org/subjects/person:${encodeURIComponent(
+                        person.toLowerCase().replace(/\s+/g, "_")
+                      )}`,
+                    }
+                  : person
+            )
           : [],
         subject_times: combinedData.subject_times
-          ? combinedData.subject_times.map((time: string | { name: string, url: string }) => 
-              typeof time === 'string' ? { name: time, url: `https://openlibrary.org/subjects/time:${encodeURIComponent(time.toLowerCase().replace(/\s+/g, '_'))}` } : time)
+          ? combinedData.subject_times.map(
+              (time: string | { name: string; url: string }) =>
+                typeof time === "string"
+                  ? {
+                      name: time,
+                      url: `https://openlibrary.org/subjects/time:${encodeURIComponent(
+                        time.toLowerCase().replace(/\s+/g, "_")
+                      )}`,
+                    }
+                  : time
+            )
           : [],
         excerpts: combinedData.excerpts || [],
         links: combinedData.links
@@ -201,14 +271,16 @@ export async function GET(
               preview_url: ebook.preview_url,
             }))
           : [],
-        works: worksData ? {
-          key: worksData.key,
-          title: worksData.title,
-          description: worksData.description || null,
-          subjects: worksData.subjects || [],
-          subjectPlaces: worksData.subject_places || [],
-          subjectTimes: worksData.subject_times || [],
-        } : null,
+        works: worksData
+          ? {
+              key: worksData.key,
+              title: worksData.title,
+              description: worksData.description || null,
+              subjects: worksData.subjects || [],
+              subjectPlaces: worksData.subject_places || [],
+              subjectTimes: worksData.subject_times || [],
+            }
+          : null,
       },
     };
 
