@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
 import { Database } from "@/types/supabase";
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import axios from "axios";
+import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
@@ -36,28 +36,38 @@ export async function GET(
     const response = await axios.get(`https://openlibrary.org/isbn/${id}.json`);
 
     if (response.status !== 200) {
-      throw new Error(`Open Library API responded with status ${response.status}`);
+      throw new Error(
+        `Open Library API responded with status ${response.status}`
+      );
     }
 
     const bookData = response.data;
-
+    console.log(bookData);
     // Transform the Open Library data to match our previous API structure
     const transformedBookData = {
       id: bookData.key,
       volumeInfo: {
         title: bookData.title,
-        authors: bookData.authors ? bookData.authors.map((author: any) => author.name) : [],
+        authors: bookData.authors
+          ? bookData.authors.map((author: any) => author.name)
+          : [],
         publishedDate: bookData.publish_date,
-        description: bookData.description ? (typeof bookData.description === 'string' ? bookData.description : bookData.description.value) : '',
-        industryIdentifiers: [
-          { type: "ISBN_13", identifier: id },
-        ],
+        description: bookData.description
+          ? typeof bookData.description === "string"
+            ? bookData.description
+            : bookData.description.value
+          : "",
+        industryIdentifiers: [{ type: "ISBN_13", identifier: id }],
         imageLinks: {
-          thumbnail: bookData.covers ? `https://covers.openlibrary.org/b/id/${bookData.covers[0]}-M.jpg` : null,
+          thumbnail: bookData.covers
+            ? `https://covers.openlibrary.org/b/id/${bookData.covers[0]}-M.jpg`
+            : null,
         },
         pageCount: bookData.number_of_pages,
         categories: bookData.subjects,
-        language: bookData.language ? bookData.language.key.split('/').pop() : null,
+        language: bookData.language
+          ? bookData.language.key.split("/").pop()
+          : null,
       },
     };
 
