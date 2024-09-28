@@ -78,13 +78,15 @@ export async function GET(
       volumeInfo: {
         title: combinedData.title,
         subtitle: combinedData.subtitle || null,
-        authors: combinedData.authors ? combinedData.authors.map((author: any) => author.name) : ["Unknown Author"],
+        authors: combinedData.authors && Array.isArray(combinedData.authors)
+          ? combinedData.authors.map((author: any) => author.name || "Unknown Author").filter(Boolean)
+          : ["Unknown Author"],
         publishedDate: combinedData.publish_date,
         description: combinedData.description
           ? typeof combinedData.description === "string"
             ? combinedData.description
-            : combinedData.description.value || ""
-          : "",
+            : combinedData.description?.value || ""
+          : combinedData.works?.description?.value || "No description available",
         industryIdentifiers: [
           { type: "ISBN_13", identifier: id },
           ...(combinedData.isbn_10 ? [{ type: "ISBN_10", identifier: combinedData.isbn_10[0] }] : []),
@@ -95,7 +97,7 @@ export async function GET(
             : null,
         },
         pageCount: combinedData.number_of_pages || 0,
-        categories: combinedData.subjects || [],
+        categories: combinedData.subjects || combinedData.works?.subjects || [],
         language: combinedData.language ? combinedData.language.key.split('/').pop().slice(0, 3).toLowerCase() : "und",
         publisher: combinedData.publishers ? combinedData.publishers[0] : "Unknown Publisher",
         publishPlace: combinedData.publish_places ? combinedData.publish_places[0] : null,
