@@ -1,15 +1,16 @@
 import { getSEOTags } from "@/libs/seo";
+import HelperUI from "../HelperUI";
 
 export async function generateMetadata() {
   return getSEOTags({
-    title: "Get Book Recommendations from our AI Assistant",
+    title: "AI Book Recommendations",
     description: "Get Book Recommendations from our AI Assistant",
-    canonicalUrlRelative: `/tools/ai-helper`,
+    canonicalUrlRelative: `/tools/ai-book-recommendations`,
     extraTags: {
       openGraph: {
-        title: "Get Book Recommendations from our AI Assistant",
+        title: "AI Book Recommendations",
         description: "Get Book Recommendations from our AI Assistant",
-        url: `/tools/ai-helper`,
+        url: `/tools/ai-book-recommendations`,
         images: [
           {
             url: "",
@@ -23,6 +24,8 @@ export async function generateMetadata() {
     },
   });
 }
-export default function AiHelper() {
-  return;
+export default function AiHelper({ params }: { params: { chatId: string } }) {
+  return (
+    <HelperUI editable={false} mode={"view"} conversationId={params.chatId} />
+  );
 }
