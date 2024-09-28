@@ -235,28 +235,28 @@ function HelperUI({ editable, mode, conversationId }: Props) {
                   onChange={(e) => setChatInputText(e.target.value)}
                 />
               </label>
-              <button
-                className="btn btn-primary md:m-0 m-auto"
-                disabled={chatLoading || chatInputText === ""}
-                onClick={handleSend}
-              >
-                {chatLoading ? "Loading..." : "Send"}
-              </button>
-            </div>
-            {isConversationSaved && savedConversationId && (
-              <div className="flex justify-center mt-4">
+              <div className="flex">
+                {isConversationSaved && savedConversationId && (
+                  <button
+                    className="btn btn-secondary mr-2"
+                    onClick={() => {
+                      const url = `${window.location.origin}/tools/ai-book-recommendations/${savedConversationId}`;
+                      navigator.clipboard.writeText(url);
+                      alert("Conversation link copied to clipboard!");
+                    }}
+                  >
+                    Share
+                  </button>
+                )}
                 <button
-                  className="btn btn-secondary"
-                  onClick={() => {
-                    const url = `${window.location.origin}/tools/ai-book-recommendations/${savedConversationId}`;
-                    navigator.clipboard.writeText(url);
-                    alert("Conversation link copied to clipboard!");
-                  }}
+                  className="btn btn-primary"
+                  disabled={chatLoading || chatInputText === ""}
+                  onClick={handleSend}
                 >
-                  Share Conversation
+                  {chatLoading ? "Loading..." : "Send"}
                 </button>
               </div>
-            )}
+            </div>
           </>
         )}
       </div>
