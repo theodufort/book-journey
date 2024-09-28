@@ -48,22 +48,7 @@ export async function GET(
       id: bookData.key,
       volumeInfo: {
         title: bookData.full_title || bookData.title,
-        authors: bookData.authors
-          ? await Promise.all(
-              bookData.authors.map(async (author: any) => {
-                try {
-                  const authorResponse = await axios.get(
-                    `https://openlibrary.org${author.key}.json`
-                  );
-                  console.log(`https://openlibrary.org${author.key}.json`);
-                  return await authorResponse.data.personal_name;
-                } catch (error) {
-                  console.error(`Error fetching author data: ${error}`);
-                  return author.name || "Unknown Author";
-                }
-              })
-            )
-          : ["Unknown Author"],
+        authors: ["Unknown Author"], // Default value, will be updated later
         publishedDate: bookData.publish_date,
         description: bookData.description
           ? typeof bookData.description === "string"
@@ -133,6 +118,22 @@ export async function GET(
       );
     } else {
       transformedBookData.volumeInfo.authors = ["Unknown Author"];
+    }
+
+    // Fetch author details
+    if (bookData.authors && bookData.authors.length > 0) {
+      const authorPromises = bookData.authors.map(async (author: any) => {
+        try {
+          const authorResponse = await axios.get(
+            `https://openlibrary.org${author.key}.json`
+          );
+          return authorResponse.data.name || authorResponse.data.personal_name || "Unknown Author";
+        } catch (error) {
+          console.error(`Error fetching author data: ${error}`);
+          return "Unknown Author";
+        }
+      });
+      transformedBookData.volumeInfo.authors = await Promise.all(authorPromises);
     }
 
     // Cache the book data
