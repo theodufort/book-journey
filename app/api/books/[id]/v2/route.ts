@@ -96,7 +96,7 @@ export async function GET(
         },
         pageCount: combinedData.number_of_pages || 0,
         categories: combinedData.subjects || [],
-        language: combinedData.language ? combinedData.language.key.split('/').pop() : "unknown",
+        language: combinedData.language ? combinedData.language.key.split('/').pop().slice(0, 3).toLowerCase() : "und",
         publisher: combinedData.publishers ? combinedData.publishers[0] : "Unknown Publisher",
         publishPlace: combinedData.publish_places ? combinedData.publish_places[0] : null,
         physicalFormat: combinedData.physical_format || null,
