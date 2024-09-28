@@ -1,12 +1,14 @@
-import { NextRequest, NextResponse } from "next/server";
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
 import { Database } from "@/types/supabase";
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import axios from "axios";
+import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 
 async function getAuthorDetails(authorKey: string) {
   try {
-    const response = await axios.get(`https://openlibrary.org${authorKey}.json`);
+    const response = await axios.get(
+      `https://openlibrary.org${authorKey}.json`
+    );
     if (response.status === 200) {
       const authorData = response.data;
       return {
@@ -21,7 +23,7 @@ async function getAuthorDetails(authorKey: string) {
     console.error(`Error fetching author details for ${authorKey}:`, error);
   }
   // Return an object with at least a name property, even if the API call fails
-  return { name: authorKey.split('/').pop() || "Unknown Author" };
+  return { name: authorKey.split("/").pop() || "Unknown Author" };
 }
 
 export async function GET(request: NextRequest) {
@@ -55,7 +57,9 @@ export async function GET(request: NextRequest) {
 
     // If not in cache, fetch from Open Library API
     const response = await axios.get(
-      `https://openlibrary.org/search.json?title=${encodeURIComponent(query)}&limit=40&language=eng`
+      `https://openlibrary.org/search.json?title=${encodeURIComponent(
+        query
+      )}&limit=40&language=eng`
     );
 
     if (response.status !== 200) {
@@ -70,45 +74,60 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform the Open Library results to match the structure of our previous API
-    const transformedItems = await Promise.all(data.docs.map(async (book: any) => {
-      const authors = book.author_key
-        ? await Promise.all(book.author_key.map((key: string) => getAuthorDetails(`/authors/${key}`)))
-        : book.author_name?.map((name: string) => ({ name })) || [{ name: "Unknown Author" }];
+    const transformedItems = await Promise.all(
+      data.docs.map(async (book: any) => {
+        const authors = book.author_key
+          ? await Promise.all(
+              book.author_key.map((key: string) =>
+                getAuthorDetails(`/authors/${key}`)
+              )
+            )
+          : book.author_name?.map((name: string) => ({ name })) || [
+              { name: "Unknown Author" },
+            ];
 
-      return {
-        id: book.key,
-        volumeInfo: {
-          title: book.title,
-          subtitle: book.subtitle || null,
-          authors: authors.filter(Boolean).map(author => author.name),
-          publishedDate: book.first_publish_year?.toString() || "Unknown",
-          description: book.description || book.first_sentence || "No description available",
-          industryIdentifiers: [
-            ...(book.isbn ? [{ type: "ISBN_13", identifier: book.isbn[0] }] : []),
-            ...(book.isbn ? [{ type: "ISBN_10", identifier: book.isbn[0].slice(-10) }] : []),
-          ],
-          imageLinks: {
-            thumbnail: book.cover_i
-              ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`
-              : null,
-            small: book.cover_i
-              ? `https://covers.openlibrary.org/b/id/${book.cover_i}-S.jpg`
-              : null,
-            medium: book.cover_i
-              ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`
-              : null,
-            large: book.cover_i
-              ? `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`
-              : null,
+        return {
+          id: book.key,
+          volumeInfo: {
+            title: book.title,
+            subtitle: book.subtitle || null,
+            authors: authors.filter(Boolean).map((author: any) => author.name),
+            publishedDate: book.first_publish_year?.toString() || "Unknown",
+            description:
+              book.description ||
+              book.first_sentence ||
+              "No description available",
+            industryIdentifiers: [
+              ...(book.isbn
+                ? [{ type: "ISBN_13", identifier: book.isbn[0] }]
+                : []),
+              ...(book.isbn
+                ? [{ type: "ISBN_10", identifier: book.isbn[0].slice(-10) }]
+                : []),
+            ],
+            imageLinks: {
+              thumbnail: book.cover_i
+                ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`
+                : null,
+              small: book.cover_i
+                ? `https://covers.openlibrary.org/b/id/${book.cover_i}-S.jpg`
+                : null,
+              medium: book.cover_i
+                ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`
+                : null,
+              large: book.cover_i
+                ? `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`
+                : null,
+            },
+            pageCount: book.number_of_pages_median || 0,
+            categories: book.subject || [],
+            language: book.language?.[0] || "und",
+            publisher: book.publisher?.[0] || "Unknown Publisher",
+            publishPlace: book.publish_place?.[0] || "Unknown",
           },
-          pageCount: book.number_of_pages_median || 0,
-          categories: book.subject || [],
-          language: book.language?.[0] || "und",
-          publisher: book.publisher?.[0] || "Unknown Publisher",
-          publishPlace: book.publish_place?.[0] || "Unknown",
-        },
-      };
-    }));
+        };
+      })
+    );
 
     const result = {
       items: transformedItems,
