@@ -108,7 +108,7 @@ function HelperUI({ editable, mode, conversationId }: Props) {
           const lastMessageIndex = updatedMessages.length - 1;
 
           if (updatedMessages[lastMessageIndex]?.role === "ai") {
-            updatedMessages[lastMessageIndex].messageContent += chunk;
+            updatedMessages[lastMessageIndex].messageContent = aiResponse;
           }
 
           return updatedMessages;
