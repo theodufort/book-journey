@@ -79,11 +79,35 @@ export async function GET(
         pageCount: bookData.number_of_pages || 0,
         categories: bookData.subjects || [],
         language: bookData.languages
-          ? bookData.languages[0].key.split("/").pop() || "unknown"
+          ? bookData.languages.map((lang: string) => lang.toLowerCase()).join(", ")
           : "unknown",
         publisher: bookData.publishers ? bookData.publishers[0] : "Unknown Publisher",
+        publishPlace: bookData.publish_places ? bookData.publish_places[0] : null,
+        physicalFormat: bookData.physical_format || null,
+        pagination: bookData.pagination || null,
+        identifiers: {
+          goodreads: bookData.identifiers?.goodreads || [],
+          lccn: bookData.lccn || [],
+          oclc: bookData.oclc_numbers || [],
+        },
       },
     };
+
+    // Fetch author details
+    if (bookData.authors) {
+      const authorPromises = bookData.authors.map(async (author: any) => {
+        try {
+          const authorResponse = await axios.get(`https://openlibrary.org${author.key}.json`);
+          return authorResponse.data.name;
+        } catch (error) {
+          console.error(`Error fetching author data: ${error}`);
+          return "Unknown Author";
+        }
+      });
+      transformedBookData.volumeInfo.authors = await Promise.all(authorPromises);
+    } else {
+      transformedBookData.volumeInfo.authors = ["Unknown Author"];
+    }
 
     // Cache the book data
     const { error: insertError } = await supabase
