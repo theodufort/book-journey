@@ -78,9 +78,22 @@ export async function GET(
       volumeInfo: {
         title: combinedData.title,
         subtitle: combinedData.subtitle || null,
-        authors: combinedData.authors && Array.isArray(combinedData.authors)
-          ? combinedData.authors.map((author: any) => author.name || "Unknown Author").filter(Boolean)
-          : ["Unknown Author"],
+        authors: (() => {
+          if (combinedData.authors && Array.isArray(combinedData.authors)) {
+            return combinedData.authors
+              .map((author: any) => {
+                if (typeof author === 'string') return author;
+                if (author.name) return author.name;
+                if (author.key) {
+                  const authorName = author.key.split('/').pop();
+                  return authorName ? authorName.replace(/_/g, ' ') : null;
+                }
+                return null;
+              })
+              .filter(Boolean);
+          }
+          return combinedData.author_name || ["Unknown Author"];
+        })(),
         publishedDate: combinedData.publish_date || combinedData.first_publish_date || "Unknown",
         description: combinedData.description
           ? typeof combinedData.description === "string"
