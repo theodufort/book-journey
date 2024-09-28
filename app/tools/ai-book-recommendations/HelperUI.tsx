@@ -1,7 +1,7 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { useRouter } from "next/navigation";
 
 interface Props {
   editable: boolean;
@@ -40,7 +40,8 @@ function HelperUI({ editable, mode, conversationId }: Props) {
         setChatMessages([
           {
             role: "ai",
-            messageContent: "Sorry, this conversation doesn't exist or couldn't be loaded.",
+            messageContent:
+              "Sorry, this conversation doesn't exist or couldn't be loaded.",
           },
         ]);
       }
@@ -49,7 +50,8 @@ function HelperUI({ editable, mode, conversationId }: Props) {
       setChatMessages([
         {
           role: "ai",
-          messageContent: "An error occurred while trying to load the conversation.",
+          messageContent:
+            "An error occurred while trying to load the conversation.",
         },
       ]);
     }
@@ -130,7 +132,7 @@ function HelperUI({ editable, mode, conversationId }: Props) {
         });
       }
 
-      const newConversation = [
+      const newConversation: any = [
         ...chatMessages,
         userMessage,
         { role: "ai", messageContent: aiResponse },
@@ -235,12 +237,12 @@ function HelperUI({ editable, mode, conversationId }: Props) {
                   onChange={(e) => setChatInputText(e.target.value)}
                 />
               </label>
-              <div className="flex">
+              <div className="md:flex m-auto">
                 {isConversationSaved && savedConversationId && (
                   <button
                     className="btn btn-secondary mr-2"
                     onClick={() => {
-                      const url = `${window.location.origin}/tools/ai-book-recommendations/${savedConversationId}`;
+                      const url = `https://mybookquest.com/tools/ai-book-recommendations/${savedConversationId}`;
                       navigator.clipboard.writeText(url);
                       alert("Conversation link copied to clipboard!");
                     }}
