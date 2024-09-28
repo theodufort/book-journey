@@ -20,7 +20,8 @@ async function getAuthorDetails(authorKey: string) {
   } catch (error) {
     console.error(`Error fetching author details for ${authorKey}:`, error);
   }
-  return null;
+  // Return an object with at least a name property, even if the API call fails
+  return { name: authorKey.split('/').pop() || "Unknown Author" };
 }
 
 export async function GET(request: NextRequest) {
@@ -79,9 +80,9 @@ export async function GET(request: NextRequest) {
         volumeInfo: {
           title: book.title,
           subtitle: book.subtitle || null,
-          authors: authors.filter(Boolean),
+          authors: authors.filter(Boolean).map(author => author.name),
           publishedDate: book.first_publish_year?.toString() || "Unknown",
-          description: book.description || "No description available",
+          description: book.description || book.first_sentence || "No description available",
           industryIdentifiers: [
             ...(book.isbn ? [{ type: "ISBN_13", identifier: book.isbn[0] }] : []),
             ...(book.isbn ? [{ type: "ISBN_10", identifier: book.isbn[0].slice(-10) }] : []),
