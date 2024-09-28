@@ -56,7 +56,7 @@ export async function GET(
                     `https://openlibrary.org${author.key}.json`
                   );
                   console.log(`https://openlibrary.org${author.key}.json`);
-                  return authorResponse.data.personal_name;
+                  return await authorResponse.data.personal_name;
                 } catch (error) {
                   console.error(`Error fetching author data: ${error}`);
                   return author.name || "Unknown Author";
@@ -87,17 +87,17 @@ export async function GET(
           ? Array.isArray(bookData.languages)
             ? bookData.languages
                 .map((lang: any) => {
-                  if (typeof lang === 'string') {
+                  if (typeof lang === "string") {
                     return lang.toLowerCase();
-                  } else if (typeof lang === 'object' && lang.key) {
-                    return lang.key.split('/').pop().toLowerCase();
+                  } else if (typeof lang === "object" && lang.key) {
+                    return lang.key.split("/").pop().toLowerCase();
                   }
-                  return 'unknown';
+                  return "unknown";
                 })
                 .join(", ")
-            : typeof bookData.languages === 'object' && bookData.languages.key
-              ? bookData.languages.key.split('/').pop().toLowerCase()
-              : "unknown"
+            : typeof bookData.languages === "object" && bookData.languages.key
+            ? bookData.languages.key.split("/").pop().toLowerCase()
+            : "unknown"
           : "unknown",
         publisher: bookData.publishers
           ? bookData.publishers[0]
