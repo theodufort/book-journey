@@ -81,7 +81,7 @@ export async function GET(
         authors: combinedData.authors && Array.isArray(combinedData.authors)
           ? combinedData.authors.map((author: any) => author.name || "Unknown Author").filter(Boolean)
           : ["Unknown Author"],
-        publishedDate: combinedData.publish_date,
+        publishedDate: combinedData.publish_date || combinedData.first_publish_date || "Unknown",
         description: combinedData.description
           ? typeof combinedData.description === "string"
             ? combinedData.description
@@ -92,22 +92,74 @@ export async function GET(
           ...(combinedData.isbn_10 ? [{ type: "ISBN_10", identifier: combinedData.isbn_10[0] }] : []),
         ],
         imageLinks: {
-          thumbnail: combinedData.covers
-            ? `https://covers.openlibrary.org/b/id/${combinedData.covers[0]}-M.jpg`
+          thumbnail: combinedData.cover_i
+            ? `https://covers.openlibrary.org/b/id/${combinedData.cover_i}-M.jpg`
+            : null,
+          small: combinedData.cover_i
+            ? `https://covers.openlibrary.org/b/id/${combinedData.cover_i}-S.jpg`
+            : null,
+          medium: combinedData.cover_i
+            ? `https://covers.openlibrary.org/b/id/${combinedData.cover_i}-M.jpg`
+            : null,
+          large: combinedData.cover_i
+            ? `https://covers.openlibrary.org/b/id/${combinedData.cover_i}-L.jpg`
             : null,
         },
         pageCount: combinedData.number_of_pages || 0,
         categories: combinedData.subjects || combinedData.works?.subjects || [],
-        language: combinedData.language ? combinedData.language.key.split('/').pop().slice(0, 3).toLowerCase() : "und",
-        publisher: combinedData.publishers ? combinedData.publishers[0] : "Unknown Publisher",
-        publishPlace: combinedData.publish_places ? combinedData.publish_places[0] : null,
+        language: combinedData.language
+          ? (typeof combinedData.language === 'string'
+            ? combinedData.language
+            : combinedData.language.key?.split('/').pop()?.slice(0, 3).toLowerCase())
+          : "und",
+        publisher: combinedData.publishers && combinedData.publishers.length > 0
+          ? combinedData.publishers[0].name || combinedData.publishers[0]
+          : "Unknown Publisher",
+        publishPlace: combinedData.publish_places && combinedData.publish_places.length > 0
+          ? combinedData.publish_places[0].name || combinedData.publish_places[0]
+          : "Unknown",
         physicalFormat: combinedData.physical_format || null,
         pagination: combinedData.pagination || null,
+        weight: combinedData.weight || null,
         identifiers: {
           goodreads: combinedData.identifiers?.goodreads || [],
           lccn: combinedData.lccn || [],
           oclc: combinedData.oclc_numbers || [],
+          isbn_10: combinedData.isbn_10 || [],
+          isbn_13: combinedData.isbn_13 || [],
         },
+        classifications: {
+          lc_classifications: combinedData.lc_classifications || [],
+          dewey_decimal_class: combinedData.dewey_decimal_class || [],
+        },
+        subjects: combinedData.subjects
+          ? combinedData.subjects.map((subject: string | { name: string, url: string }) => 
+              typeof subject === 'string' ? { name: subject, url: `https://openlibrary.org/subjects/${encodeURIComponent(subject.toLowerCase().replace(/\s+/g, '_'))}` } : subject)
+          : [],
+        subject_places: combinedData.subject_places
+          ? combinedData.subject_places.map((place: string | { name: string, url: string }) => 
+              typeof place === 'string' ? { name: place, url: `https://openlibrary.org/subjects/place:${encodeURIComponent(place.toLowerCase().replace(/\s+/g, '_'))}` } : place)
+          : [],
+        subject_people: combinedData.subject_people
+          ? combinedData.subject_people.map((person: string | { name: string, url: string }) => 
+              typeof person === 'string' ? { name: person, url: `https://openlibrary.org/subjects/person:${encodeURIComponent(person.toLowerCase().replace(/\s+/g, '_'))}` } : person)
+          : [],
+        subject_times: combinedData.subject_times
+          ? combinedData.subject_times.map((time: string | { name: string, url: string }) => 
+              typeof time === 'string' ? { name: time, url: `https://openlibrary.org/subjects/time:${encodeURIComponent(time.toLowerCase().replace(/\s+/g, '_'))}` } : time)
+          : [],
+        excerpts: combinedData.excerpts || [],
+        links: combinedData.links
+          ? combinedData.links.map((link: any) => ({
+              url: link.url,
+              title: link.title,
+            }))
+          : [],
+        ebooks: combinedData.ebooks
+          ? combinedData.ebooks.map((ebook: any) => ({
+              preview_url: ebook.preview_url,
+            }))
+          : [],
         works: worksData ? {
           key: worksData.key,
           title: worksData.title,
