@@ -49,16 +49,23 @@ export async function GET(
       volumeInfo: {
         title: bookData.full_title || bookData.title,
         authors: bookData.authors
-          ? await Promise.all(bookData.authors.map(async (author: any) => {
-              const authorResponse = await axios.get(`https://openlibrary.org${author.key}.json`);
-              return authorResponse.data.name;
-            }))
-          : [],
+          ? await Promise.all(
+              bookData.authors.map(async (author: any) => {
+                try {
+                  const authorResponse = await axios.get(`https://openlibrary.org${author.key}.json`);
+                  return authorResponse.data.name;
+                } catch (error) {
+                  console.error(`Error fetching author data: ${error}`);
+                  return author.name || "Unknown Author";
+                }
+              })
+            )
+          : ["Unknown Author"],
         publishedDate: bookData.publish_date,
         description: bookData.description
           ? typeof bookData.description === "string"
             ? bookData.description
-            : bookData.description.value
+            : bookData.description.value || ""
           : "",
         industryIdentifiers: [
           { type: "ISBN_13", identifier: id },
@@ -69,13 +76,12 @@ export async function GET(
             ? `https://covers.openlibrary.org/b/id/${bookData.covers[0]}-M.jpg`
             : null,
         },
-        pageCount: bookData.number_of_pages,
-        categories: bookData.subjects,
+        pageCount: bookData.number_of_pages || 0,
+        categories: bookData.subjects || [],
         language: bookData.languages
-          ? bookData.languages[0].key.split("/").pop()
-          : null,
-        publisher: bookData.publishers ? bookData.publishers[0] : null,
-        publishedDate: bookData.publish_date,
+          ? bookData.languages[0].key.split("/").pop() || "unknown"
+          : "unknown",
+        publisher: bookData.publishers ? bookData.publishers[0] : "Unknown Publisher",
       },
     };
 
