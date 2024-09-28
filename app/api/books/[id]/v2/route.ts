@@ -52,8 +52,11 @@ export async function GET(
           ? await Promise.all(
               bookData.authors.map(async (author: any) => {
                 try {
-                  const authorResponse = await axios.get(`https://openlibrary.org${author.key}.json`);
-                  return authorResponse.data.name;
+                  const authorResponse = await axios.get(
+                    `https://openlibrary.org${author.key}.json`
+                  );
+                  console.log(`https://openlibrary.org${author.key}.json`);
+                  return authorResponse.data.personal_name;
                 } catch (error) {
                   console.error(`Error fetching author data: ${error}`);
                   return author.name || "Unknown Author";
@@ -69,7 +72,9 @@ export async function GET(
           : "",
         industryIdentifiers: [
           { type: "ISBN_13", identifier: id },
-          ...(bookData.isbn_10 ? [{ type: "ISBN_10", identifier: bookData.isbn_10[0] }] : []),
+          ...(bookData.isbn_10
+            ? [{ type: "ISBN_10", identifier: bookData.isbn_10[0] }]
+            : []),
         ],
         imageLinks: {
           thumbnail: bookData.covers
@@ -79,10 +84,16 @@ export async function GET(
         pageCount: bookData.number_of_pages || 0,
         categories: bookData.subjects || [],
         language: bookData.languages
-          ? bookData.languages.map((lang: string) => lang.toLowerCase()).join(", ")
+          ? bookData.languages
+              .map((lang: string) => lang.toLowerCase())
+              .join(", ")
           : "unknown",
-        publisher: bookData.publishers ? bookData.publishers[0] : "Unknown Publisher",
-        publishPlace: bookData.publish_places ? bookData.publish_places[0] : null,
+        publisher: bookData.publishers
+          ? bookData.publishers[0]
+          : "Unknown Publisher",
+        publishPlace: bookData.publish_places
+          ? bookData.publish_places[0]
+          : null,
         physicalFormat: bookData.physical_format || null,
         pagination: bookData.pagination || null,
         identifiers: {
@@ -97,14 +108,18 @@ export async function GET(
     if (bookData.authors) {
       const authorPromises = bookData.authors.map(async (author: any) => {
         try {
-          const authorResponse = await axios.get(`https://openlibrary.org${author.key}.json`);
+          const authorResponse = await axios.get(
+            `https://openlibrary.org${author.key}.json`
+          );
           return authorResponse.data.name;
         } catch (error) {
           console.error(`Error fetching author data: ${error}`);
           return "Unknown Author";
         }
       });
-      transformedBookData.volumeInfo.authors = await Promise.all(authorPromises);
+      transformedBookData.volumeInfo.authors = await Promise.all(
+        authorPromises
+      );
     } else {
       transformedBookData.volumeInfo.authors = ["Unknown Author"];
     }
