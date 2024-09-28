@@ -11,7 +11,8 @@ const supabase = createClient(
 // Function to save or update the conversation
 async function saveOrUpdateConversation(
   conversation: any,
-  conversationId?: string
+  conversationId?: string,
+  replace: boolean = false
 ) {
   if (conversationId) {
     // Check if conversation with the given ID exists
@@ -26,11 +27,8 @@ async function saveOrUpdateConversation(
     }
 
     if (existingConversation) {
-      // Update the existing conversation by appending the new messages
-      const updatedMessages = [
-        ...existingConversation.messages,
-        ...conversation,
-      ];
+      // Update the existing conversation
+      const updatedMessages = replace ? conversation : [...existingConversation.messages, ...conversation];
       const { error: updateError } = await supabase
         .from("ai_conversations")
         .update({
@@ -64,7 +62,7 @@ async function saveOrUpdateConversation(
 export async function POST(request: Request) {
   try {
     // Parse the incoming request body
-    const { conversation, conversationId } = await request.json();
+    const { conversation, conversationId, replace } = await request.json();
 
     // Validate that the conversation data is present
     if (!conversation || !Array.isArray(conversation)) {
@@ -77,7 +75,8 @@ export async function POST(request: Request) {
     // Save or update the conversation in Supabase
     const finalConversationId = await saveOrUpdateConversation(
       conversation,
-      conversationId
+      conversationId,
+      replace
     );
 
     // Respond with the UUID of the saved/updated conversation

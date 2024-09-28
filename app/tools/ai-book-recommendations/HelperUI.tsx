@@ -48,7 +48,7 @@ function HelperUI({ editable, mode, conversationId }: Props) {
       const response = await fetch("/api/ai/recommendations/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ conversation, conversationId }),
+        body: JSON.stringify({ conversation, conversationId, replace: true }),
       });
 
       const data = await response.json();
