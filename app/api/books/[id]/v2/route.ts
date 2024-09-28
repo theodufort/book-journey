@@ -4,6 +4,25 @@ import axios from "axios";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
+async function getAuthorDetails(authorKey: string) {
+  try {
+    const response = await axios.get(`https://openlibrary.org${authorKey}.json`);
+    if (response.status === 200) {
+      const authorData = response.data;
+      return {
+        key: authorData.key,
+        name: authorData.name,
+        birth_date: authorData.birth_date,
+        death_date: authorData.death_date,
+        bio: authorData.bio?.value || authorData.bio,
+      };
+    }
+  } catch (error) {
+    console.error(`Error fetching author details for ${authorKey}:`, error);
+  }
+  return null;
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -78,21 +97,30 @@ export async function GET(
       volumeInfo: {
         title: combinedData.title,
         subtitle: combinedData.subtitle || null,
-        authors: (() => {
+        authors: await (async () => {
           if (combinedData.authors && Array.isArray(combinedData.authors)) {
-            return combinedData.authors
-              .map((author: any) => {
-                if (typeof author === 'string') return author;
-                if (author.name) return author.name;
+            const authorDetails = await Promise.all(
+              combinedData.authors.map(async (author: any) => {
+                if (typeof author === 'string') return { name: author };
                 if (author.key) {
-                  const authorName = author.key.split('/').pop();
-                  return authorName ? authorName.replace(/_/g, ' ') : null;
+                  const details = await getAuthorDetails(author.key);
+                  return details || { name: author.name || "Unknown Author" };
                 }
-                return null;
+                return { name: author.name || "Unknown Author" };
               })
-              .filter(Boolean);
+            );
+            return authorDetails.filter(Boolean);
           }
-          return combinedData.author_name || ["Unknown Author"];
+          if (combinedData.author_name) {
+            const authorSearchResponse = await axios.get(`https://openlibrary.org/search/authors.json?q=${encodeURIComponent(combinedData.author_name[0])}`);
+            if (authorSearchResponse.status === 200 && authorSearchResponse.data.docs.length > 0) {
+              const authorKey = authorSearchResponse.data.docs[0].key;
+              const details = await getAuthorDetails(authorKey);
+              return details ? [details] : [{ name: combinedData.author_name[0] }];
+            }
+            return combinedData.author_name.map((name: string) => ({ name }));
+          }
+          return [{ name: "Unknown Author" }];
         })(),
         publishedDate: combinedData.publish_date || combinedData.first_publish_date || "Unknown",
         description: combinedData.description
