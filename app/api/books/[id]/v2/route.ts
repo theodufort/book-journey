@@ -84,9 +84,20 @@ export async function GET(
         pageCount: bookData.number_of_pages || 0,
         categories: bookData.subjects || [],
         language: bookData.languages
-          ? bookData.languages
-              .map((lang: string) => lang.toLowerCase())
-              .join(", ")
+          ? Array.isArray(bookData.languages)
+            ? bookData.languages
+                .map((lang: any) => {
+                  if (typeof lang === 'string') {
+                    return lang.toLowerCase();
+                  } else if (typeof lang === 'object' && lang.key) {
+                    return lang.key.split('/').pop().toLowerCase();
+                  }
+                  return 'unknown';
+                })
+                .join(", ")
+            : typeof bookData.languages === 'object' && bookData.languages.key
+              ? bookData.languages.key.split('/').pop().toLowerCase()
+              : "unknown"
           : "unknown",
         publisher: bookData.publishers
           ? bookData.publishers[0]
