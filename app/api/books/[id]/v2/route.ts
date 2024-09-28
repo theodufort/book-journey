@@ -41,14 +41,14 @@ export async function GET(
       );
     }
 
-    const bookData = response.data;
+    const bookData = await response.data;
 
     // Transform the Open Library data to match our previous API structure
     const transformedBookData = {
       id: bookData.key,
       volumeInfo: {
         title: bookData.full_title || bookData.title,
-        authors: ["Unknown Author"], // Default value, will be updated later
+        authors: ["Unknown"], // Default value, will be updated later
         publishedDate: bookData.publish_date,
         description: bookData.description
           ? typeof bookData.description === "string"
@@ -102,6 +102,7 @@ export async function GET(
 
     // Fetch author details
     if (bookData.authors) {
+      console.log(bookData.authors);
       const authorPromises = bookData.authors.map(async (author: any) => {
         try {
           const authorResponse = await axios.get(
@@ -109,7 +110,7 @@ export async function GET(
           );
           return authorResponse.data.name;
         } catch (error) {
-          console.error(`Error fetching author data: ${error}`);
+          // console.error(`Error fetching author data: ${error}`);
           return "Unknown Author";
         }
       });
@@ -127,13 +128,19 @@ export async function GET(
           const authorResponse = await axios.get(
             `https://openlibrary.org${author.key}.json`
           );
-          return authorResponse.data.name || authorResponse.data.personal_name || "Unknown Author";
+          return (
+            authorResponse.data.name ||
+            authorResponse.data.personal_name ||
+            "Unknown Author"
+          );
         } catch (error) {
           console.error(`Error fetching author data: ${error}`);
           return "Unknown Author";
         }
       });
-      transformedBookData.volumeInfo.authors = await Promise.all(authorPromises);
+      transformedBookData.volumeInfo.authors = await Promise.all(
+        authorPromises
+      );
     }
 
     // Cache the book data
