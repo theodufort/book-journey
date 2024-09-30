@@ -4,6 +4,12 @@
   },
   "HomePage":{
       "hero_tagline":"Get Rewarded for Reading.",
-      "hero_desc": "MyBookQuest is an all-in-one platform that helps you track, organize and fill your own personal library while being rewarded for it!"
-  }
+      "hero_desc": "MyBookQuest is an all-in-one platform that helps you track, organize and fill your own personal library while being rewarded for it!",
+      "featureslisticle_feat1":"Rewards",
+      "featureslisticle_feat2":"Recommendations",
+      "featureslisticle_feat3":"Notes",
+      "featureslisticle_feat1_sub1":"Get rewarded for reading your favorite books",
+      "featureslisticle_feat2_sub1":"Get tailored book recommendations",
+      "featureslisticle_feat3_sub1":"Take notes on books"
+    }
 }
