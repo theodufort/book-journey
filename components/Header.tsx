@@ -12,7 +12,6 @@ import type { JSX } from "react";
 import { useEffect, useState } from "react";
 import ButtonSignin from "./ButtonSignin";
 import { ButtonTheme } from "./ButtonTheme";
-import LocaleSwitcher from "./LocaleSwitcher";
 
 const DashboardButton = () => (
   <Link href="/dashboard" className="btn btn-primary">
@@ -80,7 +79,7 @@ const Header = () => {
         {user ? (
           <div className="flex justify-end flex-1">
             {" "}
-            <LocaleSwitcher />
+            {/* <LocaleSwitcher /> */}
             <ButtonTheme />
             <DashboardButton />
           </div>
@@ -89,7 +88,7 @@ const Header = () => {
             {/* Burger button to open menu on mobile */}
             <div className="flex lg:hidden">
               {" "}
-              <LocaleSwitcher />
+              {/* <LocaleSwitcher /> */}
               <ButtonTheme />
               <button
                 type="button"
@@ -131,7 +130,7 @@ const Header = () => {
             {/* CTA on large screens */}
             <div className="hidden lg:flex lg:justify-end lg:flex-1">
               {" "}
-              <LocaleSwitcher />
+              {/* <LocaleSwitcher /> */}
               <ButtonTheme />
               {cta}
             </div>
