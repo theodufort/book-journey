@@ -3,7 +3,8 @@ import config from "@/config";
 import { getSEOTags } from "@/libs/seo";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Viewport } from "next";
-
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import PlausibleProvider from "next-plausible";
 import { ThemeProvider } from "next-themes";
 import { Inter } from "next/font/google";
@@ -22,9 +23,15 @@ export const viewport: Viewport = {
 // You can override them in each page passing params to getSOTags() function.
 export const metadata = getSEOTags();
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const locale = await getLocale();
+  const messages = await getMessages();
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       {config.domainName && (
         <head>
           {" "}
@@ -39,8 +46,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           defaultTheme="system"
           enableSystem
         >
-          {/* ClientLayout contains all the client wrappers (Crisp chat support, toast messages, tooltips, etc.) */}
-          <ClientLayout>{children}</ClientLayout>
+          <NextIntlClientProvider messages={messages}>
+            <ClientLayout>{children}</ClientLayout>
+          </NextIntlClientProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -1,17 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import type { JSX } from "react";
-import { useSearchParams } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
-import ButtonSignin from "./ButtonSignin";
 import logo from "@/app/icon.png";
 import config from "@/config";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
+import Image from "next/image";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import type { JSX } from "react";
+import { useEffect, useState } from "react";
+import ButtonSignin from "./ButtonSignin";
 import { ButtonTheme } from "./ButtonTheme";
+import LocaleSwitcher from "./LocaleSwitcher";
 
 const DashboardButton = () => (
   <Link href="/dashboard" className="btn btn-primary">
@@ -79,6 +80,7 @@ const Header = () => {
         {user ? (
           <div className="flex justify-end flex-1">
             {" "}
+            <LocaleSwitcher />
             <ButtonTheme />
             <DashboardButton />
           </div>
@@ -87,6 +89,7 @@ const Header = () => {
             {/* Burger button to open menu on mobile */}
             <div className="flex lg:hidden">
               {" "}
+              <LocaleSwitcher />
               <ButtonTheme />
               <button
                 type="button"
@@ -128,6 +131,7 @@ const Header = () => {
             {/* CTA on large screens */}
             <div className="hidden lg:flex lg:justify-end lg:flex-1">
               {" "}
+              <LocaleSwitcher />
               <ButtonTheme />
               {cta}
             </div>
