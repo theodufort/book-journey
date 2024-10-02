@@ -7,11 +7,13 @@ import { v4 as uuidv4 } from "uuid";
 
 import { Reward, UserPoints } from "@/interfaces/Dashboard";
 import { Database } from "@/types/supabase";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function ReadingRewards() {
+  const t = useTranslations("ReadingRewards");
   const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
   const [userPoints, setUserPoints] = useState<UserPoints | null>(null);
@@ -60,124 +62,112 @@ export default function ReadingRewards() {
     // In a real application, you would fetch this from an API or database
     setRewards([
       {
-        name: "Coupon: 10% off $25",
+        name: t("reward_name_coupon") + ": 10% off $25",
         type: "coupon",
         merchant: "BOOKSAMILLION",
-        description:
-          "Get a coupon to buy any book on a trusted book selling website!",
+        description: t("base_reward_description"),
         cost: 100,
         link: "https://www.kqzyfj.com/click-101259626-13986197",
-        category: "books",
+        category: t("books_category"),
       },
       {
-        name: "Coupon: 15% off $35",
+        name: t("reward_name_coupon") + ": 15% off $35",
         type: "coupon",
         merchant: "BOOKSAMILLION",
-        description:
-          "Get a coupon to buy any book on a trusted book selling website!",
+        description: t("base_reward_description"),
         cost: 200,
         link: "https://www.jdoqocy.com/click-101259626-13986208",
-        category: "books",
+        category: t("books_category"),
       },
       {
-        name: "Coupon: 20% off $100",
+        name: t("reward_name_coupon") + ": 20% off $100",
         type: "coupon",
         merchant: "BOOKSAMILLION",
-        description:
-          "Get a coupon to buy any book on a trusted book selling website!",
+        description: t("base_reward_description"),
         cost: 300,
         link: "https://www.jdoqocy.com/click-101259626-13986212",
-        category: "books",
+        category: t("books_category"),
       },
       {
-        name: "Coupon: 10% off $25",
+        name: t("reward_name_coupon") + ": 10% off $25",
         type: "coupon",
         merchant: "2NDANDCHARLES",
-        description:
-          "Get a coupon to buy any book on a trusted book selling website!",
+        description: t("base_reward_description"),
         cost: 100,
         link: "https://www.tkqlhce.com/click-101259626-15658770",
-        category: "books",
+        category: t("books_category"),
       },
       {
-        name: "Coupon: 15% off $35",
+        name: t("reward_name_coupon") + ": 15% off $35",
         type: "coupon",
         merchant: "2NDANDCHARLES",
-        description:
-          "Get a coupon to buy any book on a trusted book selling website!",
+        description: t("base_reward_description"),
         cost: 200,
         link: "https://www.dpbolvw.net/click-101259626-15658774",
-        category: "books",
+        category: t("books_category"),
       },
       {
-        name: "Coupon: 20% off $100",
+        name: t("reward_name_coupon") + ": 20% off $100",
         type: "coupon",
         merchant: "2NDANDCHARLES",
-        description:
-          "Get a coupon to buy any book on a trusted book selling website!",
+        description: t("base_reward_description"),
         cost: 300,
         link: "https://www.anrdoezrs.net/click-101259626-15658777",
-        category: "books",
+        category: t("books_category"),
       },
       {
-        name: "Coupon: Buy One, Get One 50% Off Fiction",
+        name: t("50%deal1_name"),
         type: "coupon",
         merchant: "BARNESANDNOBLES",
-        description:
-          "Get a coupon to get a fiction book 50% OFF when you buy another one!",
+        description: t("50%deal1_desc"),
         cost: 500,
         link: "https://www.anrdoezrs.net/click-101259626-15777883",
-        category: "books",
+        category: t("books_category"),
       },
       {
-        name: "Coupon: Buy One, Get One 50% Off Nonfiction",
+        name: t("50%deal2_name"),
         type: "coupon",
         merchant: "BARNESANDNOBLES",
-        description:
-          "Get a coupon to get a nonfiction book 50% OFF when you buy another one!",
+        description: t("50%deal2_desc"),
         cost: 500,
         link: "https://www.kqzyfj.com/click-101259626-15777885",
-        category: "books",
+        category: t("books_category"),
       },
       {
-        name: "Buy One, Get One 50% Off Picture Books",
+        name: t("50%deal3_name"),
         type: "coupon",
         merchant: "BARNESANDNOBLES",
-        description:
-          "Get a coupon to get a picture book 50% OFF when you buy another one!",
+        description: t("50%deal3_desc"),
         cost: 500,
         link: "https://www.kqzyfj.com/click-101259626-15777886",
-        category: "books",
+        category: t("books_category"),
       },
       {
-        name: "Buy One, Get One 50% Off Mystery & Thrillers",
+        name: t("50%deal4_name"),
         type: "coupon",
         merchant: "BARNESANDNOBLES",
-        description:
-          "Get a coupon to get a mystery & thrillers book 50% OFF when you buy another one!",
+        description: t("50%deal4_desc"),
         cost: 500,
         link: "https://www.tkqlhce.com/click-101259626-15777884",
-        category: "books",
+        category: t("books_category"),
       },
       {
-        name: "Buy One, Get One 50% Off Audiobooks",
+        name: t("50%deal5_name"),
         type: "coupon",
         merchant: "BARNESANDNOBLES",
-        description:
-          "Get a coupon to get an audiobook 50% OFF when you buy another one!",
+        description: t("50%deal5_desc"),
         cost: 500,
         link: "https://www.tkqlhce.com/click-101259626-15777888",
-        category: "audio books",
+        category: t("audiobooks_category"),
       },
       {
-        name: "Get 3 audio books for FREE",
+        name: t("3audiobook1_name"),
         type: "coupon",
         merchant: "AUDIOBOOKS.COM",
-        description:
-          "Get 3 free audio books on a trusted audio book subscription website!",
+        description: t("3audiobook1_desc"),
         cost: 300,
         link: "https://www.kqzyfj.com/click-101259626-11785732",
-        category: "audio books",
+        category: t("audiobooks_category"),
       },
     ]);
   }
@@ -205,7 +195,7 @@ export default function ReadingRewards() {
       !userPoints ||
       userPoints?.points_earned - userPoints?.points_redeemed < reward.cost
     ) {
-      alert("Not enough points to redeem this reward.");
+      alert(t("not_enough_points_warning"));
       return;
     }
 
@@ -226,12 +216,11 @@ export default function ReadingRewards() {
         description: `Redeemed ${reward.name}`,
       });
 
-      alert(`Successfully redeemed ${reward.name}!`);
       router.push(reward.link);
       fetchUserPoints();
     } catch (error) {
       console.error("Error redeeming reward:", error);
-      alert("Failed to redeem reward. Please try again.");
+      alert(t("failed_redeem_warning"));
     }
   }
 
@@ -250,9 +239,7 @@ export default function ReadingRewards() {
           <HeaderDashboard />
         </div>
         <div className="flex flex-wrap items-center justify-between">
-          <h1 className="text-2xl md:text-3xl font-extrabold">
-            Reading Rewards
-          </h1>
+          <h1 className="text-2xl md:text-3xl font-extrabold">{t("title")}</h1>
           {userPoints && (
             <div
               className="bg-base-200 text-primary rounded-xl p-2 flex items-center overflow-hidden"
@@ -277,7 +264,7 @@ export default function ReadingRewards() {
             onChange={(e) => setFilterMerchant(e.target.value)}
             value={filterMerchant}
           >
-            <option value="">All Merchants</option>
+            <option value="">{t("merchants")}</option>
             {Array.from(new Set(rewards.map((r) => r.merchant))).map(
               (merchant) => (
                 <option key={merchant} value={merchant}>
@@ -291,18 +278,18 @@ export default function ReadingRewards() {
             onChange={(e) => setFilterCost(e.target.value)}
             value={filterCost}
           >
-            <option value="">All Costs</option>
-            <option value="0-100">0 - 100 points</option>
-            <option value="101-200">101 - 200 points</option>
-            <option value="201-300">201 - 300 points</option>
-            <option value="301+">301+ points</option>
+            <option value="">{t("costs")}</option>
+            <option value="0-100">0 - 100 {t("points")}</option>
+            <option value="101-200">101 - 200 {t("points")}</option>
+            <option value="201-300">201 - 300 {t("points")}</option>
+            <option value="301+">301+ {t("points")}</option>
           </select>
           <select
             className="select select-bordered w-full max-w-xs"
             onChange={(e) => setFilterCategory(e.target.value)}
             value={filterCategory}
           >
-            <option value="">All Categories</option>
+            <option value="">{t("categories")}</option>
             {Array.from(new Set(rewards.map((r) => r.category))).map(
               (category) => (
                 <option key={category} value={category}>
@@ -339,7 +326,7 @@ export default function ReadingRewards() {
                         reward.cost
                     }
                   >
-                    Redeem
+                    {t("redeem")}
                   </button>
                 </div>
               </div>

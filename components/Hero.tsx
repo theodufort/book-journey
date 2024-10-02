@@ -24,7 +24,7 @@ const Hero = () => {
           className="btn btn-primary"
           onClick={() => router.push("/signin")}
         >
-          Get Started
+          {t("hero_cta")}
         </button>
       </div>
       <div

@@ -5,9 +5,11 @@ import HeaderDashboard from "@/components/DashboardHeader";
 import { Volume } from "@/interfaces/GoogleAPI";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 export default function Recommendations() {
+  const t = useTranslations("BookRecommendations");
   const [isLoading, setIsLoading] = useState(true);
   const [booksLoaded, setBooksLoaded] = useState(false);
   const [bookSuggestions, setBookSuggestions] = useState([]);
@@ -77,9 +79,7 @@ export default function Recommendations() {
           <HeaderDashboard />
         </div>
 
-        <h1 className="text-3xl md:text-4xl font-extrabold">
-          Book Recommendations
-        </h1>
+        <h1 className="text-3xl md:text-4xl font-extrabold">{t("title")}</h1>
 
         {isLoading && (
           <div className="flex justify-center items-center">
@@ -93,9 +93,7 @@ export default function Recommendations() {
         {!isLoading && !error && (
           <>
             {bookSuggestions.length === 0 ? (
-              <p className="text-center">
-                No recommendations available at the moment.
-              </p>
+              <p className="text-center">{t("norecommendations_warning")}</p>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 ">
                 {bookSuggestions.map((x, index) => (

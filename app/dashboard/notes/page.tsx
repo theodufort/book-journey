@@ -5,9 +5,11 @@ import { Volume } from "@/interfaces/GoogleAPI";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
+import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 export default function BookNotes() {
+  const t = useTranslations("Notes");
   const supabase = createClientComponentClient<Database>();
   const [readingList, setReadingList] = useState<ReadingListItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -164,7 +166,7 @@ export default function BookNotes() {
           <HeaderDashboard />
         </div>
         <h1 className="text-2xl md:text-4xl font-extrabold  my-auto">
-          Book Notes
+          {t("title")}
         </h1>
         {loading ? (
           <main className="min-h-screen p-8 pb-24 flex items-center justify-center">
@@ -175,10 +177,12 @@ export default function BookNotes() {
             <div className="flex">
               <div className="w-1/3 border-r">
                 <div className="p-4 bg-base-200 border-b">
-                  <h2 className="text-xl font-semibold mb-2">Your Notes</h2>
+                  <h2 className="text-xl font-semibold mb-2">
+                    {t("subtitle")}
+                  </h2>
                   <input
                     type="text"
-                    placeholder="Search books..."
+                    placeholder={t("search_label")}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="input input-bordered w-full"
@@ -206,7 +210,7 @@ export default function BookNotes() {
                   {readingList.length > 0 &&
                     filteredReadingList.length === 0 && (
                       <li className="p-4 text-center text-gray-500">
-                        No books found matching your search.
+                        {t("no_books_found")}
                       </li>
                     )}
                 </ul>
@@ -223,12 +227,12 @@ export default function BookNotes() {
                           {selectedBook.data.volumeInfo.authors?.join(", ")}
                         </p>
                         <p className="text-sm text-gray-500 mt-1">
-                          Last Updated:{" "}
+                          {t("last_update_label")}:{" "}
                           {notes[selectedBook.book_id]?.lastUpdated
                             ? new Date(
                                 notes[selectedBook.book_id].lastUpdated
                               ).toLocaleString()
-                            : "Not saved yet"}
+                            : t("not_saved_warning")}
                         </p>
                       </div>
                       <button
@@ -240,7 +244,7 @@ export default function BookNotes() {
                           setIsEditMode(!isEditMode);
                         }}
                       >
-                        {isEditMode ? "Save & View" : "Edit"}
+                        {isEditMode ? t("save_view_label") : t("edit_label")}
                       </button>
                     </div>
                     <div
@@ -258,20 +262,20 @@ export default function BookNotes() {
                                 e.target.value
                               )
                             }
-                            placeholder="Enter your notes here..."
+                            placeholder={t("enter_notes_placeholder")}
                           />
                         </>
                       ) : (
                         <div className="flex-grow w-full p-3 rounded-md bg-base-200 overflow-y-auto whitespace-pre-wrap">
                           {notes[selectedBook.book_id]?.content ||
-                            "No notes yet."}
+                            t("no_notes_warning")}
                         </div>
                       )}
                     </div>
                   </>
                 ) : (
                   <p className="text-gray-500 text-center mt-8">
-                    Select a book to add notes
+                    {t("select_book")}
                   </p>
                 )}
               </div>

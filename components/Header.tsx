@@ -5,6 +5,7 @@ import config from "@/config";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -12,12 +13,7 @@ import type { JSX } from "react";
 import { useEffect, useState } from "react";
 import ButtonSignin from "./ButtonSignin";
 import { ButtonTheme } from "./ButtonTheme";
-
-const DashboardButton = () => (
-  <Link href="/dashboard" className="btn btn-primary">
-    Dashboard
-  </Link>
-);
+import LocaleSwitcher from "./LocaleSwitcher";
 
 const links: {
   href: string;
@@ -29,6 +25,12 @@ const cta: JSX.Element = <ButtonSignin extraStyle="btn-primary" />;
 // A header with a logo on the left, links in the center (like Pricing, etc...), and a CTA (like Get Started or Login) on the right.
 // The header is responsive, and on mobile, the links are hidden behind a burger button.
 const Header = () => {
+  const t = useTranslations();
+  const DashboardButton = () => (
+    <Link href="/dashboard" className="btn btn-primary">
+      {t("cta_btn")}
+    </Link>
+  );
   const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
   const searchParams = useSearchParams();
@@ -79,7 +81,7 @@ const Header = () => {
         {user ? (
           <div className="flex justify-end flex-1">
             {" "}
-            {/* <LocaleSwitcher /> */}
+            <LocaleSwitcher />
             <ButtonTheme />
             <DashboardButton />
           </div>
@@ -88,7 +90,7 @@ const Header = () => {
             {/* Burger button to open menu on mobile */}
             <div className="flex lg:hidden">
               {" "}
-              {/* <LocaleSwitcher /> */}
+              <LocaleSwitcher />
               <ButtonTheme />
               <button
                 type="button"
@@ -130,7 +132,7 @@ const Header = () => {
             {/* CTA on large screens */}
             <div className="hidden lg:flex lg:justify-end lg:flex-1">
               {" "}
-              {/* <LocaleSwitcher /> */}
+              <LocaleSwitcher />
               <ButtonTheme />
               {cta}
             </div>

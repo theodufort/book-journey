@@ -1,14 +1,16 @@
 "use client";
-export const dynamic = "force-dynamic";
 import HeaderDashboard from "@/components/DashboardHeader";
 import OnboardingPopup from "@/components/OnboardingPopup";
 import StreakRewardSystem from "@/components/StreakRewardSystem";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+
 export default function Dashboard() {
+  const t = useTranslations("Dashboard");
   const supabase = createClientComponentClient<Database>();
   const [currentlyReading, setCurrentlyReading] = useState([]);
   const [stats, setStats] = useState<{
@@ -138,39 +140,40 @@ export default function Dashboard() {
             userId={user.id}
           />
         ) : null}
-        <h1 className="text-3xl md:text-4xl font-extrabold">My Dashboard</h1>
+        <h1 className="text-3xl md:text-4xl font-extrabold">{t("title")}</h1>
 
         {/* Reading Stats */}
         <div className="card bg-base-200 shadow-xl ">
           <div className="card-body">
             <h2 className="card-title text-xl md:text-2xl font-bold">
-              Reading Stats
+              {t("subtitle1")}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="stat">
                 <div className="stat-figure text-primary">
                   <p className="text-2xl">📚</p>
                 </div>
-                <div className="stat-title">Books Read</div>
+                <div className="stat-title">{t("stat_title1")}</div>
                 <div className="stat-value">{stats?.books_read || 0}</div>
               </div>
               <div className="stat">
                 <div className="stat-figure text-primary">
                   <p className="text-2xl">📖</p>
                 </div>
-                <div className="stat-title">Pages Read</div>
+                <div className="stat-title">{t("stat_title2")}</div>
                 <div className="stat-value">{stats?.pages_read || 0}</div>
               </div>
               <div className="stat">
                 <div className="stat-figure text-primary">
                   <p className="text-2xl">⏳</p>
                 </div>
-                <div className="stat-title">Reading Time</div>
+                <div className="stat-title">{t("stat_title3")}</div>
                 <div className="stat-value">
-                  {Math.floor((stats?.reading_time_minutes || 0) / 60)} h
+                  {Math.floor((stats?.reading_time_minutes || 0) / 60)}{" "}
+                  {t("hour_unit")}
                 </div>
                 <div className="stat-desc">
-                  {(stats?.reading_time_minutes || 0) % 60} minutes
+                  {(stats?.reading_time_minutes || 0) % 60} {t("minute_unit")}
                 </div>
               </div>
             </div>
@@ -190,7 +193,7 @@ export default function Dashboard() {
                 }}
               />
               <p className="m-auto mt-5 block text-lg opacity-90 text-center">
-                Come back daily to earn points.
+                {t("points_catch")}
               </p>
             </div>
           </div>

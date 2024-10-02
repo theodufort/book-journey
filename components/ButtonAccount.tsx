@@ -1,12 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState, useEffect } from "react";
-import { Popover, Transition } from "@headlessui/react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import apiClient from "@/libs/api";
 import { Database } from "@/types/supabase";
+import { Popover, Transition } from "@headlessui/react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 // A button to show user some account actions
 //  1. Billing: open a Stripe Customer Portal to manage their billing (cancel subscription, update payment method, etc.).
@@ -15,6 +16,7 @@ import { useRouter } from "next/navigation";
 //  2. Logout: sign out and go back to homepage
 // See more at https://shipfa.st/docs/components/buttonAccount
 const ButtonAccount = () => {
+  const t = useTranslations("ButtonAccount");
   const supabase = createClientComponentClient<Database>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [user, setUser] = useState<any>(null);
@@ -114,13 +116,13 @@ const ButtonAccount = () => {
                     className="flex items-center gap-2 hover:bg-error/20 hover:text-error duration-200 py-1.5 px-4 w-full rounded-lg font-medium"
                     onClick={() => router.push("/dashboard/profile")}
                   >
-                    ⚙️ Profile
+                    ⚙️ {t("profile")}
                   </button>
                   <button
                     className="flex items-center gap-2 hover:bg-error/20 hover:text-error duration-200 py-1.5 px-4 w-full rounded-lg font-medium"
                     onClick={handleSignOut}
                   >
-                    🏃🏻‍♂️ Logout
+                    🏃🏻‍♂️ {t("logout")}
                   </button>
                 </div>
               </div>

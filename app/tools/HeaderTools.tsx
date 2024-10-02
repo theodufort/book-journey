@@ -1,14 +1,12 @@
 "use client";
-import Link from "next/link";
-import Image from "next/image";
 import logo from "@/app/icon.png";
-import config from "@/config";
-import { JSX } from "react";
-import { useState } from "react";
 import ButtonSignin from "@/components/ButtonSignin";
-const cta: JSX.Element = (
-  <ButtonSignin text="Signin" extraStyle="btn-primary md:btn-sm" />
-);
+import config from "@/config";
+import { useTranslations } from "next-intl";
+import Image from "next/image";
+import Link from "next/link";
+import { JSX, useState } from "react";
+
 const links: {
   href: string;
   label: string;
@@ -19,6 +17,10 @@ const links: {
   },
 ];
 export const HeaderTools = () => {
+  const t = useTranslations("HeaderTools");
+  const cta: JSX.Element = (
+    <ButtonSignin text={t("cta_btn")} extraStyle="btn-primary md:btn-sm" />
+  );
   const [isOpen, setIsOpen] = useState<boolean>(false);
   return (
     <header className="bg-base-200">

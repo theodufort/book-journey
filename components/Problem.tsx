@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { JSX } from "react";
 import ButtonSignin from "./ButtonSignin";
 
@@ -44,29 +45,29 @@ const Step = ({ emoji, text }: { emoji: string; text: string }) => {
 // - Features: "ShipFast has user auth, Stripe, emails all set up for you"
 const Problem = () => {
   const cta: JSX.Element = <ButtonSignin extraStyle="btn-primary" />;
+  const t = useTranslations("HomePage");
   return (
     <section>
       <div className="max-w-7xl mx-auto px-8 py-16 md:py-32 text-center">
         <h2 className="max-w-3xl mx-auto font-extrabold text-4xl md:text-5xl tracking-tight mb-6 md:mb-8">
-          Don't know what to read?
+          {t("problem_title")}
         </h2>
         <p className="max-w-xl mx-auto text-lg opacity-90 leading-relaxed mb-12 md:mb-20">
-          I love fantasy and romance books... what's the best book for me?
+          {t("problem_subtitle")}
         </p>
         <div className="flex flex-col md:flex-row justify-center items-center md:items-start gap-6">
-          <Step emoji="📕" text="Finished reading a book" />
+          <Step emoji="📕" text={t("problem_step1")} />
 
           <Arrow extraStyle="max-md:-scale-x-100 md:-rotate-90 " />
 
-          <Step emoji="🤔" text="Wondering what to read next..." />
+          <Step emoji="🤔" text={t("problem_step2")} />
 
           <Arrow extraStyle="md:-scale-x-100 md:-rotate-90" />
 
-          <Step emoji="🤩" text="Get personalised recommendations" />
+          <Step emoji="🤩" text={t("problem_step3")} />
         </div>
         <p className="max-w-xl mx-auto text-lg opacity-90 leading-relaxed mt-12 md:mt-20 mb-10">
-          Sign up to MyBookQuest for personalised recommendations. <br />
-          Free forever
+          {t("problem_tagline")}
         </p>
         {cta}
       </div>
