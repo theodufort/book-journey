@@ -26,10 +26,10 @@ export async function GET(req: NextRequest) {
     // }
   }
   // URL to redirect to after sign in process completes
-  // return NextResponse.redirect(
-  //   "https://mybookquest.com" + config.auth.callbackUrl
-  // );
   return NextResponse.redirect(
-    "https://localhost:3000" + config.auth.callbackUrl
+    "https://mybookquest.com" + config.auth.callbackUrl
   );
+  // return NextResponse.redirect(
+  //   "https://localhost:3000" + config.auth.callbackUrl
+  // );
 }
