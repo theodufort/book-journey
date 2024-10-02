@@ -9,6 +9,9 @@ module.exports = {
       ...librarySlugs,
       { loc: "/" },
       { loc: "/blog" },
+      { loc: "/tools" },
+      { loc: "/tools/ai-book-recommendations" },
+      { loc: "/tools/movie-based-on-book" },
       { loc: "/signin" },
       { loc: "/libraries" },
     ];
