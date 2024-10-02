@@ -91,10 +91,6 @@ export default function ArticleContent({
               image: article.image_url,
               datePublished: article.published_at,
               dateModified: article.published_at,
-              author: {
-                "@type": "Person",
-                name: "Article Author", // You may want to update this if you have author information
-              },
             }),
           }}
         />

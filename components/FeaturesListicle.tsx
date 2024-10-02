@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
 import type { JSX } from "react";
 
 // List of features to display:
