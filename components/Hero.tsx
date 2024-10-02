@@ -1,5 +1,6 @@
 "use client";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 const Hero = () => {
@@ -31,7 +32,7 @@ const Hero = () => {
         className="lg:w-full rounded-2xl"
         style={{ boxShadow: "0 0px 50px 0px #6366f1" }}
       >
-        <video
+        {/* <video
           className="w-full rounded-2xl"
           autoPlay={true}
           muted
@@ -39,16 +40,16 @@ const Hero = () => {
         >
           <source src="/showcase.mp4" type="video/mp4" />
           Your browser does not support the video tag.
-        </video>
+        </video> */}
 
-        {/* <Image
-          src="https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3540&q=80"
-          alt="Product Demo"
-          className="w-full"
+        <Image
+          src="/showcase.png"
+          alt="MyBookQuest Showcase"
+          className="w-full rounded-2xl"
           priority={true}
           width={500}
           height={500}
-        /> */}
+        />
       </div>
     </section>
   );

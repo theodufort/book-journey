@@ -183,5 +183,32 @@
       "50%deal5_desc":"Get a coupon to get an audiobook 50% OFF when you buy another one!",
       "3audiobook1_name":"Get 3 audio books for FREE",
       "3audiobook1_desc":"Get 3 free audio books on a trusted audio book subscription website!"
+    },
+    "Profile":{
+      "title":"Profile",
+      "public_profile":"View public profile"
+    },
+    "CategorySelection":{
+      "title":"Categories",
+      "prompt":"Select up to 10 categories:"
+    },
+    "ImportData":{
+      "title":"Import Data",
+      "how":"How to access my data?",
+      "storygraph_li1":"Log In to your Storygraph account.",
+      "storygraph_li2":"Access the export page at",
+      "storygraph_li3":"Click 'Generate Export' button.",
+      "storygraph_li4":"Wait for the file to be ready and click on Download.",
+      "whatimport":"What will be imported?",
+      "importinfo_li1":"All books from your profile.",
+      "importinfo_li2":"All bookshelves with their associated books in them.",
+      "importinfo_li3":"The text review and rating for each book. (if any)",
+      "goodreads_li1":"Log In to your Goodreads account.",
+      "goodreads_li2":"Access the export page at",
+      "goodreads_li3":"Click 'Export Library' at the top of the page.",
+      "goodreads_li4":"Wait for the file to be ready and click on the link.",
+      "import_message":"Importing...",
+      "import_from":"Import data from",
+      "import_error":"The following rows couldn't be imported:"
     }
 }

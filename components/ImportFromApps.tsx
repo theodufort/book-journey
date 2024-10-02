@@ -5,9 +5,11 @@ import {
   createClientComponentClient,
   User,
 } from "@supabase/auth-helpers-nextjs";
+import { useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
 
 const ImportFromApps: React.FC = () => {
+  const t = useTranslations("ImportData");
   const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -70,68 +72,65 @@ const ImportFromApps: React.FC = () => {
 
   return (
     <div className="py-4 inline-block">
-      <h2 className="text-2xl md:text-3xl font-extrabold py-2">Import Data</h2>
+      <h2 className="text-2xl md:text-3xl font-extrabold py-2">{t("title")}</h2>
       {importType == "storygraph" ? (
         <div>
           <div className="py-2">
-            <h4 className="text-lg md:text-xl font-extrabold">
-              How to access my data?
-            </h4>
+            <h4 className="text-lg md:text-xl font-extrabold">{t("how")}</h4>
             <ul className="list-decimal list-inside">
-              <li>Log In to your Storygraph account.</li>
+              <li>{t("storygraph_li1")}</li>
               <li>
-                Go to the{" "}
+                {t("storygraph_li2")}
                 <a
                   href="https://app.thestorygraph.com/user-export"
                   target="_blank"
                 >
-                  export page
+                  {" "}
+                  Storygraph
                 </a>
               </li>
-              <li>Click "Generate Export" button.</li>
-              <li>Wait for the file to be ready and click on Download.</li>
+              <li>{t("storygraph_li3")}</li>
+              <li>{t("storygraph_li4")}</li>
             </ul>
           </div>
           <div className="py-2">
             <h4 className="text-lg md:text-xl font-extrabold">
-              What will be imported?
+              {t("whatimport")}
             </h4>
             <ul className="list-disc list-inside">
-              <li>All books from your profile.</li>
-              <li>All bookshelves with their associated books in them.</li>
-              <li>The text review and rating for each book. (if any)</li>
+              <li>{t("importinfo_li1")}</li>
+              <li>{t("importinfo_li2")}</li>
+              <li>{t("importinfo_li3")}</li>
             </ul>
           </div>
         </div>
       ) : (
         <div>
           <div className="py-2">
-            <h4 className="text-lg md:text-xl font-extrabold">
-              How to access my data?
-            </h4>
+            <h4 className="text-lg md:text-xl font-extrabold">{t("how")}</h4>
             <ul className="list-decimal list-inside">
-              <li>Log In to your Goodreads account.</li>
+              <li>{t("goodreads_li1")}</li>
               <li>
-                Go to the{" "}
+                {t("goodreads_li2")}{" "}
                 <a
                   href="https://www.goodreads.com/review/import"
                   target="_blank"
                 >
-                  export page
+                  Goodreads
                 </a>
               </li>
-              <li>Click "Export Library" at the top of the page.</li>
-              <li>Wait for the file to be ready and click on the link.</li>
+              <li>{t("goodreads_li3")}</li>
+              <li>{t("goodreads_li4")}</li>
             </ul>
           </div>
           <div className="py-2">
             <h4 className="text-lg md:text-xl font-extrabold">
-              What will be imported?
+              {t("whatimport")}
             </h4>
             <ul className="list-disc list-inside">
-              <li>All books from your profile.</li>
-              <li>All bookshelves with their associated books in them.</li>
-              <li>The text review and rating for each book. (if any)</li>
+              <li>{t("importinfo_li1")}</li>
+              <li>{t("importinfo_li2")}</li>
+              <li>{t("importinfo_li3")}</li>
             </ul>
           </div>
         </div>
@@ -158,10 +157,10 @@ const ImportFromApps: React.FC = () => {
         disabled={!file || importing}
       >
         {importing
-          ? "Importing..."
-          : `Import ${
+          ? t("import_message")
+          : `${t("import_from")} ${
               importType === "goodreads" ? "Goodreads" : "StoryGraph"
-            } Data`}
+            }`}
       </button>
       {message && (
         <div className="alert alert-info shadow-lg mt-4">
@@ -174,7 +173,7 @@ const ImportFromApps: React.FC = () => {
         <div className="alert alert-warning shadow-lg mt-4">
           <div>
             <span>
-              The following rows couldn't be imported:
+              {t("import_error")}
               <ul className="list-disc pl-5">
                 {failedRecords.map((record, index) => (
                   <li key={index}>
