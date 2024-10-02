@@ -1,7 +1,6 @@
 "use client";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import TestimonialsAvatars from "./TestimonialsAvatars";
 
 const Hero = () => {
   const t = useTranslations("HomePage");
@@ -21,7 +20,12 @@ const Hero = () => {
           Use {config.appName} for Free!
         </button> */}
 
-        <TestimonialsAvatars priority={true} />
+        <button
+          className="btn btn-primary"
+          onClick={() => router.push("/signin")}
+        >
+          Get Started
+        </button>
       </div>
       <div
         className="lg:w-full rounded-2xl"
