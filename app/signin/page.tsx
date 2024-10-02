@@ -4,6 +4,7 @@ import config from "@/config";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Provider } from "@supabase/supabase-js";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -15,6 +16,7 @@ export default function Login() {
   const [email, setEmail] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
+  const t = useTranslations("Signin");
 
   const handleSignup = async (
     e: any,
@@ -75,11 +77,11 @@ export default function Login() {
               clipRule="evenodd"
             />
           </svg>
-          Home
+          {t("home")}
         </Link>
       </div>
       <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-center mb-12">
-        Welcome to {config.appName}{" "}
+        {t("title")}
       </h1>
 
       <div className="space-y-8 max-w-xl mx-auto bg-base-100 p-8 rounded-box shadow-lg">
@@ -116,11 +118,11 @@ export default function Login() {
               />
             </svg>
           )}
-          Sign-up with Google
+          {t("google")}
         </button>
 
         <div className="divider text-xs text-base-content/50 font-medium">
-          OR
+          {t("separator")}
         </div>
 
         <form
@@ -145,7 +147,7 @@ export default function Login() {
             {isLoading && (
               <span className="loading loading-spinner loading-xs"></span>
             )}
-            Send Magic Link
+            {t("magic_link_btn")}
           </button>
         </form>
       </div>

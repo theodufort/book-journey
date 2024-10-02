@@ -1,16 +1,17 @@
 "use client";
 import CollapsibleSection from "@/components/CollapsibleSection";
-import BookAvatar from "@/components/BookAvatar";
 import HeaderDashboard from "@/components/DashboardHeader";
 import { Volume } from "@/interfaces/GoogleAPI";
 import { ReadingListItem } from "@/interfaces/ReadingList";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function ReadingList() {
+  const t = useTranslations("ReadingList");
   const supabase = createClientComponentClient<Database>();
   const [readingList, setReadingList] = useState<ReadingListItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -260,13 +261,13 @@ export default function ReadingList() {
         </div>
         <div className="flex">
           <h1 className="text-2xl md:text-4xl font-extrabold  my-auto">
-            My Reading List
+            {t("title")}
           </h1>
           <button
             className="btn btn-primary float-end ml-auto mr-0 my-auto"
             onClick={() => router.push("/dashboard/reading-list/add")}
           >
-            <span className="hidden md:block">Add to Reading List</span>
+            <span className="hidden md:block">{t("add_to_list")}</span>
             <span className="block md:hidden text-2xl">+</span>
           </button>
         </div>
@@ -277,20 +278,15 @@ export default function ReadingList() {
           </div> */}
           {readingList.length === 0 ? (
             <div className="text-center p-8 bg-base-200 rounded-box">
-              <h2 className="text-2xl font-bold mb-4">
-                Your reading list is empty
-              </h2>
-              <p className="mb-4">
-                Start adding books to your reading list to keep track of what
-                you want to read!
-              </p>
+              <h2 className="text-2xl font-bold mb-4">{t("empty_list")}</h2>
+              <p className="mb-4">{t("empty_list_message")}</p>
               <button
                 className="btn btn-primary"
                 onClick={() => {
                   router.push("/dashboard/recommendations");
                 }}
               >
-                Find Books to Read
+                {t("find_books")}
               </button>
             </div>
           ) : (

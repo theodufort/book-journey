@@ -5,6 +5,7 @@ import {
   createClientComponentClient,
   User,
 } from "@supabase/auth-helpers-nextjs";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -16,6 +17,7 @@ interface Props {
 }
 
 const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
+  const t = useTranslations("BookAvatar");
   const router = useRouter();
   const supabase = createClientComponentClient<Database>();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -137,16 +139,16 @@ const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
             </div>
           </h5> */}
           <h5>
-            <b>Author:</b> {vol.volumeInfo.authors[0]}
+            <b>{t("author_label")}:</b> {vol.volumeInfo.authors[0]}
           </h5>
           <h5>
-            <b>Page count:</b>{" "}
+            <b>{t("page_label")}:</b>{" "}
             {vol.volumeInfo.pageCount != 0
               ? vol.volumeInfo.pageCount
-              : "Unknown"}
+              : t("unknown_label")}
           </h5>
           <h5>
-            <b>Categories: </b>
+            <b>{t("categories_label")}: </b>
             <ul>
               <li>{vol.volumeInfo.mainCategory}</li>
               {vol.volumeInfo.categories != null
@@ -155,7 +157,7 @@ const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
             </ul>
           </h5>
           <h5>
-            <b>Description: </b>
+            <b>{t("description_label")}: </b>
             {isExpanded ? description : truncatedDescription}
             {description.length > MAX_LENGTH && (
               <button
@@ -201,17 +203,17 @@ const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
                   }
                 >
                   <option disabled selected>
-                    Add to reading list
+                    {t("addtolist_label")}
                   </option>
-                  <option value="To Read">To Read</option>
-                  <option value="Reading">Currently Reading</option>
-                  <option value="Finished">Finished</option>
+                  <option value="To Read">{t("reading_status1")}</option>
+                  <option value="Reading">{t("reading_status2")}</option>
+                  <option value="Finished">{t("reading_status3")}</option>
                 </select>
               </div>
             ) : null}
             <div className="dropdown dropdown-top dropdown-end">
               <div tabIndex={0} role="button" className="btn btn-primary p-2">
-                View
+                {t("view_sellers")}
               </div>
               <ul
                 tabIndex={0}
@@ -269,7 +271,7 @@ const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
             >
               <path d="M400 224h-24v-72C376 68.5 307.5 0 224 0S72 68.5 72 152v72H48c-26.5 0-48 21.5-48 48v192c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V272c0-26.5-21.5-48-48-48zM224 32c66.2 0 120 53.8 120 120v72H104v-72C104 85.8 157.8 32 224 32zm152 400c0 8.8-7.2 16-16 16H88c-8.8 0-16-7.2-16-16V272c0-8.8 7.2-16 16-16h272c8.8 0 16 7.2 16 16v160z" />
             </svg>
-            <h4 className="text-black text-xl">Sign Up to find more!</h4>
+            <h4 className="text-black text-xl">{t("signup_cta")}</h4>
           </div>
         </Link>
       )}

@@ -1,5 +1,187 @@
 {
+  "LocaleSwitcher": {
+    "label": "Langues"
+  },
   "HomePage": {
-    "title": "Salut mon chum!"
+    "hero_tagline": "Soyez récompensé pour votre lecture.",
+    "hero_desc": "MyBookQuest est une plateforme tout-en-un qui vous aide à suivre, organiser et remplir votre propre bibliothèque personnelle tout en étant récompensé pour cela!",
+    "hero_cta":"Démarrer",
+    "featureslisticle_feat1": "Récompenses",
+    "featureslisticle_feat2": "Recommandations",
+    "featureslisticle_feat3": "Notes",
+    "featureslisticle_feat1_sub1": "Soyez récompensé pour la lecture de vos livres préférés",
+    "featureslisticle_feat1_sub2": "Gagnez des points lorsque vous évaluez et laissez des avis",
+    "featureslisticle_feat2_sub1": "Recevez des recommandations de livres personnalisées",
+    "featureslisticle_feat2_sub2": "Aucun biais de recommandation",
+    "featureslisticle_feat2_sub3": "Basé sur les notes, les commentaires et les préférences personnelles",
+    "featureslisticle_feat3_sub1": "Prenez des notes sur les livres",
+    "featureslisticle_feat3_sub2": "Gardez vos connaissances organisées",
+    "problem_title": "Vous ne savez pas quoi lire?",
+    "problem_subtitle": "J'adore les livres de fantaisie et de romance... quel est le meilleur livre pour moi?",
+    "problem_step1": "Vous avez fini de lire un livre",
+    "problem_step2": "Vous vous demandez quoi lire ensuite...",
+    "problem_step3": "Obtenez des recommandations personnalisées",
+    "problem_tagline": "Inscrivez-vous à MyBookQuest pour des recommandations personnalisées.",
+    "faq_title": "Questions Fréquemment Posées",
+    "faq_shorttitle": "Questions Fréquemment Posées",
+    "faq_question1": "Pourquoi devrais-je utiliser MyBookQuest au lieu de Goodreads?",
+    "faq_answer1": "Nous sommes une plateforme 100 % gratuite qui recommande des livres en fonction de VOS goûts. Nous ne vous poussons pas à acheter impulsivement des livres qui ne correspondent pas à vos besoins. Nous pensons que la transparence est essentielle.",
+    "faq_question2": "Quelles sont les principales fonctionnalités de MyBookQuest?",
+    "faq_answer2": "Notre objectif est de fournir une plateforme gratuite, simple d'utilisation et soignée pour rendre le processus de lecture et de choix de livres rapide et amusant, afin que vous puissiez passer votre temps à lire plutôt qu'à naviguer!"
+  },
+  "Signin": {
+    "title": "Bienvenue sur MyBookQuest",
+    "home": "Accueil",
+    "google": "Inscrivez-vous avec Google",
+    "separator": "OU",
+    "magic_link_btn": "Envoyer le lien magique"
+  },
+  "Dashboard": {
+    "title": "Mon Tableau de Bord",
+    "subtitle1": "Statistiques de Lecture",
+    "stat_title1": "Livres Lus",
+    "stat_title2": "Pages Lues",
+    "stat_title3": "Temps de Lecture",
+    "hour_unit": "h",
+    "minute_unit": "minutes",
+    "points_catch": "Revenez quotidiennement pour gagner des points."
+  },
+  "StreakRewardSystem": {
+    "day": "Jour"
+  },
+  "Header":{
+    "cta_btn":"Tableau de Bord"
+  },
+  "ButtonSignin":{
+    "cta_btn":"S'inscrire"
+  },
+  "HeaderBlog":{
+    "cta_btn":"S'inscrire"
+  },
+  "HeaderLibraries":{
+    "cta_btn":"S'inscrire"
+  },
+  "HeaderTools":{
+    "cta_btn":"S'inscrire"
+  },
+  "HeaderDashboard": {
+    "link1": "Tableau de Bord",
+    "link2": "Liste de Lecture",
+    "link3": "Notes de Lecture",
+    "link4": "Recommandations de Lecture",
+    "link5": "Récompenses de Lecture"
+  },
+  "ButtonAccount": {
+    "profile": "Profil",
+    "logout": "Déconnexion"
+  },
+  "ReadingList": {
+    "title": "Ma Liste de Lecture",
+    "add_to_list": "Ajouter à la Liste de Lecture",
+    "empty_list": "Votre liste de lecture est vide",
+    "empty_list_message": "Commencez à ajouter des livres à votre liste pour suivre ce que vous souhaitez lire!",
+    "find_books": "Trouver des Livres à Lire"
+  },
+  "CollapsibleSection": {
+    "filter_placeholder": "Rechercher un livre...",
+    "filter_choice1": "Titre",
+    "filter_choice2": "Auteur",
+    "filter_choice3": "Étiquette",
+    "no_books_found": "Aucun livre correspondant à votre recherche."
+  },
+  "BookListItem": {
+    "error_loading_book": "Erreur lors du chargement des détails du livre",
+    "rating_label": "Votre Évaluation",
+    "review_label": "Votre Avis",
+    "reading_status1": "À Lire",
+    "reading_status2": "En Cours",
+    "reading_status3": "Terminé",
+    "reading_status4": "Non Terminé",
+    "author_label": "Auteur",
+    "page_label": "Nombre de Pages",
+    "unknown_label": "Inconnu",
+    "description_label": "Description",
+    "nodescription_label": "Aucune description disponible",
+    "readless_label": "Lire Moins",
+    "readmore_label": "Lire Plus",
+    "tags_label": "Étiquettes",
+    "addtags_label": "Ajouter une étiquette",
+    "remove_btn": "Supprimer",
+    "untitled_label": "Sans Titre"
+  },
+  "CongratulationsModal": {
+    "title": "Félicitations!",
+    "started1": "Vous avez commencé à lire",
+    "started2": "Profitez de votre nouvelle aventure!",
+    "finished1": "Vous avez terminé de lire",
+    "finished2": "Que lirez-vous ensuite?",
+    "close_btn": "Fermer"
+  },
+  "Notes": {
+    "title": "Notes de Livre",
+    "subtitle": "Vos Notes",
+    "search_label": "Rechercher des livres...",
+    "no_books_found": "Aucun livre correspondant à votre recherche.",
+    "last_update_label": "Dernière Mise à Jour",
+    "save_view_label": "Enregistrer & Voir",
+    "edit_label": "Modifier",
+    "enter_notes_placeholder": "Entrez vos notes ici...",
+    "no_notes_warning": "Pas encore de notes.",
+    "select_book": "Sélectionnez un livre pour ajouter des notes",
+    "not_saved_warning": "Pas encore enregistré"
+  },
+  "BookRecommendations": {
+    "title": "Recommandations de Livres",
+    "norecommendations_warning": "Aucune recommandation disponible pour le moment."
+  },
+  "BookAvatar": {
+    "error_loading_book": "Erreur lors du chargement des détails du livre",
+    "rating_label": "Votre Évaluation",
+    "review_label": "Votre Avis",
+    "reading_status1": "À Lire",
+    "reading_status2": "En Cours",
+    "reading_status3": "Terminé",
+    "reading_status4": "Non Terminé",
+    "author_label": "Auteur",
+    "page_label": "Nombre de Pages",
+    "unknown_label": "Inconnu",
+    "categories_label": "Catégories",
+    "description_label": "Description",
+    "nodescription_label": "Aucune description disponible",
+    "addtolist_label": "Ajouter à la liste de lecture",
+    "readless_label": "Lire Moins",
+    "readmore_label": "Lire Plus",
+    "tags_label": "Étiquettes",
+    "addtags_label": "Ajouter une étiquette",
+    "remove_btn": "Supprimer",
+    "untitled_label": "Sans Titre",
+    "view_sellers": "Voir",
+    "signup_cta": "Inscrivez-vous pour en découvrir plus!"
+  },
+  "ReadingRewards": {
+    "title": "Récompenses de Lecture",
+    "merchants": "Tous les Marchands",
+    "reward_name_coupon": "Coupon",
+    "points": "points",
+    "costs": "Tous les Coûts",
+    "categories": "Toutes les Catégories",
+    "redeem": "Échanger",
+    "books_category": "livres",
+    "audiobooks_category": "livres audio",
+    "not_enough_points_warning": "Pas assez de points pour échanger cette récompense.",
+    "failed_redeem_warning": "Échec de l'échange de la récompense. Veuillez réessayer.",
+    "base_reward_description": "Obtenez un coupon pour acheter n'importe quel livre sur un site de vente de livres fiable!",
+    "50%deal1_name": "Un acheté, le deuxième à -50% sur les Fictions",
+    "50%deal1_desc": "Obtenez un coupon pour un livre de fiction à -50% lorsque vous en achetez un autre!",
+    "50%deal2_name": "Un acheté, le deuxième à -50% sur les Non-Fictions",
+    "50%deal2_desc": "Obtenez un coupon pour un livre de non-fiction à -50% lorsque vous en achetez un autre!",
+    "50%deal3_name": "Un acheté, le deuxième à -50% sur les Livres Illustrés",
+    "50%deal3_desc": "Obtenez un coupon pour un livre illustré à -50% lorsque vous en achetez un autre!",
+    "50%deal4_name": "Un acheté, le deuxième à -50% sur les Mystères & Thrillers",
+    "50%deal4_desc": "Obtenez un coupon pour un livre de mystère ou thriller à -50% lorsque vous en achetez un autre!",
+    "50%deal5_name": "Un acheté, le deuxième à -50% sur les Livres Audio",
+    "50%deal5_desc": "Obtenez un coupon pour un livre audio à -50% lorsque vous en achetez un autre!",
+    "3audiobook1_name": "Obtenez 3 livres audio GRATUITS",
+    "3audiobook1_desc": "Obtenez 3 livres audio gratuits sur un site d'abonnement de livres audio fiable!"
   }
 }

@@ -2,6 +2,7 @@ import { ReadingListItem } from "@/interfaces/ReadingList";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import BookListItem from "./BookListItem";
 
@@ -20,6 +21,7 @@ export default function CollapsibleSection({
   books: ReadingListItem[];
   onUpdate: (bookId: string, newStatus: string) => void;
 }) {
+  const t = useTranslations("CollapsibleSection");
   const [bookTags, setBookTags] = useState<{ [key: string]: string[] }>({});
   const [searchTerm, setSearchTerm] = useState("");
   const [searchType, setSearchType] = useState("title");
@@ -178,7 +180,7 @@ export default function CollapsibleSection({
             <input
               type="text"
               className="grow"
-              placeholder="Search for a book..."
+              placeholder={t("filter_placeholder")}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -200,9 +202,9 @@ export default function CollapsibleSection({
             value={searchType}
             onChange={(e) => setSearchType(e.target.value)}
           >
-            <option value="title">Title</option>
-            <option value="author">Author</option>
-            <option value="tag">Tag</option>
+            <option value="title">{t("filter_choice1")}</option>
+            <option value="author">{t("filter_choice2")}</option>
+            <option value="tag">{t("filter_choice3")}</option>
           </select>
         </div>
       </div>
@@ -221,9 +223,7 @@ export default function CollapsibleSection({
               />
             ))
           ) : (
-            <p className="col-span-full">
-              No books found matching your search.
-            </p>
+            <p className="col-span-full">{t("no_books_found")}</p>
           )}
         </div>
       </div>

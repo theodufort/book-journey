@@ -2,6 +2,7 @@ import { Volume } from "@/interfaces/GoogleAPI";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import CongratulationsModal from "./CongratulationsModal";
@@ -20,6 +21,7 @@ export default function BookListItem({
   onAddTag: (tag: string) => void;
   onRemoveTag: (tag: string) => void;
 }) {
+  const t = useTranslations("BookListItem");
   const [review, setReview] = useState("");
   // Truncate the description if it's too long and not expanded
   const MAX_LENGTH = 100;
@@ -228,7 +230,7 @@ export default function BookListItem({
     );
   if (error)
     return (
-      <div className="text-center text-error">Error loading book details</div>
+      <div className="text-center text-error">{t("error_loading_book")}</div>
     );
   if (!book) return null;
 
@@ -391,7 +393,7 @@ export default function BookListItem({
     <div className="rating rating-md rating-half inline-block ">
       <label>
         <b>
-          Your Rating (+25{" "}
+          {t("rating_label")} (+25{" "}
           <Image
             className="inline-flex"
             src={"/coin.png"}
@@ -451,7 +453,7 @@ export default function BookListItem({
         <div>
           <label htmlFor="review" className="mb-4">
             <b>
-              Your Review (+50{" "}
+              {t("review_label")} (+50{" "}
               <Image
                 className="inline-flex"
                 src={"/coin.png"}
@@ -506,21 +508,22 @@ export default function BookListItem({
                 }
                 className="select select-bordered w-auto max-w-xs "
               >
-                <option value="To Read">To Read</option>
-                <option value="Reading">Reading</option>
-                <option value="Finished">Finished</option>
-                <option value="DNF">Did Not Finish</option>
+                <option value="To Read">{t("reading_status1")}</option>
+                <option value="Reading">{t("reading_status2")}</option>
+                <option value="Finished">{t("reading_status3")}</option>
+                <option value="DNF">{t("reading_status4")}</option>
               </select>
             </div>
           </div>
           <p>
-            <b>Author:</b> {book.authors?.join(", ") || "Unknown"}
+            <b>{t("author_label")}:</b>{" "}
+            {book.authors?.join(", ") || t("unknown_label")}
           </p>
           <p>
-            <b>Page Count:</b> {book.pageCount || "Unknown"}
+            <b>{t("page_label")}:</b> {book.pageCount || t("unknown_label")}
           </p>
           <div className="description-container max-w-lg">
-            <b>Description:</b>{" "}
+            <b>{t("description_label")}:</b>{" "}
             <div className="description-text md:text-justify">
               {isExpanded ? description : truncatedDescription}
               {description && description.length > MAX_LENGTH && (
@@ -528,10 +531,10 @@ export default function BookListItem({
                   onClick={handleToggleExpand}
                   className="text-blue-500 ml-2"
                 >
-                  {isExpanded ? "Read Less" : "Read More"}
+                  {isExpanded ? t("readless_label") : t("readmore_label")}
                 </button>
               )}
-              {!description && "No description available"}
+              {!description && t("nodescription_label")}
             </div>
           </div>
           <div className="grid card-actions justify-start gap-y-4 max-w-2xl">
@@ -545,7 +548,7 @@ export default function BookListItem({
           <div className="grid grid-cols-2 grid-rows-1">
             <div>
               <p className="mb-2">
-                <b>Tags:</b>{" "}
+                <b>{t("tags_label")}:</b>{" "}
               </p>
               <div className="flex flex-wrap gap-2">
                 {tags.map((tag) => (
@@ -574,7 +577,7 @@ export default function BookListItem({
                           setNewTag("");
                         }
                       }}
-                      placeholder="Add tag"
+                      placeholder={t("addtags_label")}
                       className="bg-transparent border-none outline-none w-20"
                     />
                     <button
@@ -595,7 +598,7 @@ export default function BookListItem({
                 className="btn btn-primary my-5 md:my-0 flex max-w-min"
                 onClick={removeBook}
               >
-                Remove
+                {t("remove_btn")}
               </button>
             </div>
           </div>
@@ -605,7 +608,7 @@ export default function BookListItem({
         isOpen={showModal}
         onClose={handleModalClose}
         messageType={messageType}
-        bookTitle={book?.title || "Untitled"}
+        bookTitle={book?.title || t("untitled_label")}
       />
     </>
   );

@@ -5,10 +5,10 @@ import ButtonSignin from "@/components/ButtonSignin";
 import config from "@/config";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import type { JSX } from "react";
 import { useEffect, useState } from "react";
 const supabase = createClientComponentClient<Database>();
 const links: {
@@ -21,14 +21,14 @@ const links: {
   },
 ];
 
-const cta: JSX.Element = (
-  <ButtonSignin text="Signin" extraStyle="btn-primary md:btn-sm" />
-);
-
 // This is the header that appears on all pages in the /blog folder.
 // By default it shows the logo, the links, and the CTA.
 // In the links, there's a popover with the categories.
 const HeaderLibraries = () => {
+  const t = useTranslations("HeaderLibraries");
+  const cta: JSX.Element = (
+    <ButtonSignin text={t("cta_btn")} extraStyle="btn-primary md:btn-sm" />
+  );
   const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 

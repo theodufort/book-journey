@@ -3,9 +3,11 @@ import {
   createClientComponentClient,
   User,
 } from "@supabase/auth-helpers-nextjs";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 const rewards = [1, 1, 3, 3, 5, 5, 10, 10];
 const StreakRewardSystem = ({ onUpdate }: { onUpdate: () => void }) => {
+  const t = useTranslations("StreakRewardSystem");
   const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
   const [streak, setStreak] = useState(null);
@@ -191,43 +193,43 @@ const StreakRewardSystem = ({ onUpdate }: { onUpdate: () => void }) => {
             data-content={`+${rewards[0]}`}
             className={`step ${streak.day1 ? "step-primary" : null}`}
           >
-            <p>Day 1</p>
+            <p>{t("day")} 1</p>
           </li>
           <li
             data-content={`+${rewards[1]}`}
             className={`step ${streak.day2 ? "step-primary" : null}`}
           >
-            <p>Day 2</p>
+            <p>{t("day")} 2</p>
           </li>
           <li
             data-content={`+${rewards[2]}`}
             className={`step ${streak.day3 ? "step-primary" : null}`}
           >
-            <p>Day 3</p>
+            <p>{t("day")} 3</p>
           </li>
           <li
             data-content={`+${rewards[3]}`}
             className={`step ${streak.day4 ? "step-primary" : null}`}
           >
-            <p>Day 4</p>
+            <p>{t("day")} 4</p>
           </li>
           <li
             data-content={`+${rewards[4]}`}
             className={`step ${streak.day5 ? "step-primary" : null}`}
           >
-            <p>Day 5</p>
+            <p>{t("day")} 5</p>
           </li>
           <li
             data-content={`+${rewards[5]}`}
             className={`step ${streak.day6 ? "step-primary" : null}`}
           >
-            <p>Day 6</p>
+            <p>{t("day")} 6</p>
           </li>
           <li
             data-content={`+${rewards[6]}`}
             className={`step ${streak.day7 ? "step-primary" : null}`}
           >
-            <p>Day 7</p>
+            <p>{t("day")} 7</p>
           </li>
         </ul>
       ) : null}

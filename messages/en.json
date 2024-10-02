@@ -5,11 +5,183 @@
   "HomePage":{
       "hero_tagline":"Get Rewarded for Reading.",
       "hero_desc": "MyBookQuest is an all-in-one platform that helps you track, organize and fill your own personal library while being rewarded for it!",
+      "hero_cta":"Get Started",
       "featureslisticle_feat1":"Rewards",
       "featureslisticle_feat2":"Recommendations",
       "featureslisticle_feat3":"Notes",
       "featureslisticle_feat1_sub1":"Get rewarded for reading your favorite books",
+      "featureslisticle_feat1_sub2":"Earn points when you rate and review",
       "featureslisticle_feat2_sub1":"Get tailored book recommendations",
-      "featureslisticle_feat3_sub1":"Take notes on books"
+      "featureslisticle_feat2_sub2":"No recommendation bias",
+      "featureslisticle_feat2_sub3":"Based on ratings, comments and personal preferences",
+      "featureslisticle_feat3_sub1":"Take notes on books",
+      "featureslisticle_feat3_sub2":"Keep your knowledge organized",
+      "problem_title":"Don't know what to read?",
+      "problem_subtitle":"I love fantasy and romance books... what's the best book for me?",
+      "problem_step1":"Finished reading a book", 
+      "problem_step2":"Wondering what to read next...",
+      "problem_step3":"Get personalised recommendations",
+      "problem_tagline":"Sign up to MyBookQuest for personalised recommendations.",
+      "faq_title":"Frequently Asked Questions",
+      "faq_shorttitle":"Frequently Asked Questions",
+      "faq_question1":"Why should I use MyBookQuest instead of Goodreads?",
+      "faq_answer1":"We are a 100% Free platform that recommends books based on YOUR tastes, we don't overpush you to impuulse buy books that don't suit your needs. We think that transparency is key.",
+      "faq_question2":"What are the main features of MyBookQuest?",
+      "faq_answer2":"Our goal is to provide a free, simple to use, curated platform to make the book reading and choosing process fast and fun so that you can spend your time reading instead of browsing!"
+    },
+    "Signin":{
+      "title":"Welcome to MyBookQuest",
+      "home":"Home",
+      "google":"Sign-up with Google",
+      "separator":"OR",
+      "magic_link_btn":"Send Magic Link"
+    },
+    "Dashboard":{
+      "title":"My Dashboard",
+      "subtitle1":"Reading Stats",
+      "stat_title1":"Books Read",
+      "stat_title2":"Pages Read",
+      "stat_title3":"Reading Time",
+      "hour_unit": "h",
+      "minute_unit": "minutes",
+      "points_catch":"Come back daily to earn points."
+    },
+    "StreakRewardSystem":{
+      "day":"Day"
+    },
+    "Header":{
+      "cta_btn":"Dashboard"
+    },
+    "ButtonSignin":{
+      "cta_btn":"Sign Up"
+    },
+    "HeaderBlog":{
+      "cta_btn":"Sign Up"
+    },
+    "HeaderLibraries":{
+      "cta_btn":"Sign Up"
+    },
+    "HeaderTools":{
+      "cta_btn":"Sign Up"
+    },
+    "HeaderDashboard":{
+      "link1":"Dashboard",
+      "link2":"Reading List",
+      "link3":"Reading Notes",
+      "link4":"Reading Recommendations",
+      "link5":"Reading Rewards"
+    },
+    "ButtonAccount":{
+      "profile": "Profile",
+      "logout":"Logout"
+    },
+    "ReadingList":{
+      "title":"My Reading List",
+      "add_to_list":"Add to Reading List",
+      "empty_list":"Your reading list is empty",
+      "empty_list_message":"Start adding books to your reading list to keep track of what you want to read!",
+      "find_books":"Find Books to Read"
+    },
+    "CollapsibleSection":{
+      "filter_placeholder":"Search for a book...",
+      "filter_choice1":"Title",
+      "filter_choice2":"Author",
+      "filter_choice3":"Tag",
+      "no_books_found":"No books found matching your search."
+    },
+    "BookListItem":{
+      "error_loading_book":"Error loading book details",
+      "rating_label":"Your Rating",
+      "review_label":"Your Review",
+      "reading_status1":"To Read",
+      "reading_status2":"Reading",
+      "reading_status3":"Finished",
+      "reading_status4":"Did Not Finish",
+      "author_label":"Author",
+      "page_label":"Page Count",
+      "unknown_label":"Unknown",
+      "description_label":"Description",
+      "nodescription_label":"No description available",
+      "readless_label":"Read Less",
+      "readmore_label":"Read More",
+      "tags_label":"Tags",
+      "addtags_label":"Add tag",
+      "remove_btn":"Remove",
+      "untitled_label":"Untitled"
+    },
+    "CongratulationsModal":{
+      "title":"Congratulations!",
+      "started1":"You have started reading",
+      "started2":"Enjoy your new adventure!",
+      "finished1":"You have finished reading",
+      "finished2":"What will you read next?",
+      "close_btn":"Close"
+    },
+    "Notes":{
+      "title":"Book Notes",
+      "subtitle":"Your Notes",
+      "search_label":"Search books...",
+      "no_books_found":"No books found matching your search.",
+      "last_update_label":"Last Updated",
+      "save_view_label":"Save & View",
+      "edit_label":"Edit",
+      "enter_notes_placeholder":"Enter your notes here...",
+      "no_notes_warning":"No notes yet.",
+      "select_book":"Select a book to add notes",
+      "not_saved_warning":"Not saved yet"
+    },
+    "BookRecommendations":{
+      "title":"Book Recommendations",
+      "norecommendations_warning":"No recommendations available at the moment."
+    },
+    "BookAvatar":{
+      "error_loading_book":"Error loading book details",
+      "rating_label":"Your Rating",
+      "review_label":"Your Review",
+      "reading_status1":"To Read",
+      "reading_status2":"Reading",
+      "reading_status3":"Finished",
+      "reading_status4":"Did Not Finish",
+      "author_label":"Author",
+      "page_label":"Page Count",
+      "unknown_label":"Unknown",
+      "categories_label":"Categories",
+      "description_label":"Description",
+      "nodescription_label":"No description available",
+      "addtolist_label":"Add to reading list",
+      "readless_label":"Read Less",
+      "readmore_label":"Read More",
+      "tags_label":"Tags",
+      "addtags_label":"Add tag",
+      "remove_btn":"Remove",
+      "untitled_label":"Untitled",
+      "view_sellers":"View",
+      "signup_cta":"Sign Up to find more!"
+    },
+    "ReadingRewards":{
+      "title":"Reading Rewards",
+      "merchants":"All Merchants",
+      "reward_name_coupon":"Coupon",
+      "points":"points",
+      "costs":"All Costs",
+      "categories":"All Categories",
+      "redeem":"Redeem",
+      "books_category":"books",
+      "audiobooks_category":"audio books",
+      "not_enough_points_warning":"Not enough points to redeem this reward.",
+      "failed_redeem_warning":"Failed to redeem reward. Please try again.",
+      "base_reward_description":"Get a coupon to buy any book on a trusted book selling website!",
+      "50%deal1_name":"Buy One, Get One 50% Off Fiction",
+      "50%deal1_desc":"Get a coupon to get a fiction book 50% OFF when you buy another one!",
+      "50%deal2_name":"Buy One, Get One 50% Off Nonfiction",
+      "50%deal2_desc":"Get a coupon to get a nonfiction book 50% OFF when you buy another one!",
+      "50%deal3_name":"Buy One, Get One 50% Off Picture Books",
+      "50%deal3_desc":"Get a coupon to get a picture book 50% OFF when you buy another one!",
+      "50%deal4_name":"Buy One, Get One 50% Off Mystery & Thrillers",
+      "50%deal4_desc":"Get a coupon to get a mystery & thrillers book 50% OFF when you buy another one!",
+      "50%deal5_name":"Buy One, Get One 50% Off Audiobooks",
+      "50%deal5_desc":"Get a coupon to get an audiobook 50% OFF when you buy another one!",
+      "3audiobook1_name":"Get 3 audio books for FREE",
+      "3audiobook1_desc":"Get 3 free audio books on a trusted audio book subscription website!"
     }
 }

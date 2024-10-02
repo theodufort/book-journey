@@ -7,6 +7,7 @@ import {
   createClientComponentClient,
   User,
 } from "@supabase/auth-helpers-nextjs";
+import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,6 +15,7 @@ import { useEffect, useState } from "react";
 import { HowToEarnPointsPopup } from "./HowToEarnPointsPopup";
 
 const HeaderDashboard = () => {
+  const t = useTranslations("HeaderDashboard");
   const [points, setPoints] = useState<number | null>(null);
   const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
@@ -138,7 +140,7 @@ const HeaderDashboard = () => {
                   className="flex items-center space-x-3 p-2 align-middle"
                 >
                   {/* Pointier Home Icon */}
-                  📊 Dashboard
+                  📊 {t("link1")}
                 </Link>
               </li>
 
@@ -148,7 +150,7 @@ const HeaderDashboard = () => {
                   className="flex items-center space-x-3 p-2 align-middle"
                 >
                   {/* Bookmark Icon */}
-                  📚 Reading List
+                  📚 {t("link2")}
                 </Link>
               </li>
               <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
@@ -157,7 +159,7 @@ const HeaderDashboard = () => {
                   className="flex items-center space-x-3 p-2 align-middle"
                 >
                   {/* Notebook Icon */}
-                  ✍️ Reading Notes
+                  ✍️ {t("link3")}
                 </Link>
               </li>
               <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
@@ -166,7 +168,7 @@ const HeaderDashboard = () => {
                   className="flex items-center space-x-3 p-2 align-middle"
                 >
                   {/* Star Icon */}
-                  🔮 Reading Recommendations
+                  🔮 {t("link4")}
                 </Link>
               </li>
               <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
@@ -175,7 +177,7 @@ const HeaderDashboard = () => {
                   className="flex items-center space-x-3 p-2 align-middle"
                 >
                   {/* Trophy Icon */}
-                  🏆 Reading Rewards
+                  🏆 {t("link5")}
                 </Link>
               </li>
             </div>
