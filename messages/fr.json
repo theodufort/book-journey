@@ -183,5 +183,32 @@
     "50%deal5_desc": "Obtenez un coupon pour un livre audio à -50% lorsque vous en achetez un autre!",
     "3audiobook1_name": "Obtenez 3 livres audio GRATUITS",
     "3audiobook1_desc": "Obtenez 3 livres audio gratuits sur un site d'abonnement de livres audio fiable!"
+  },
+  "Profile": {
+    "title": "Profil",
+    "public_profile": "Voir le profil public"
+  },
+  "CategorySelection": {
+    "title": "Catégories",
+    "prompt": "Sélectionnez jusqu'à 10 catégories:"
+  },
+  "ImportData": {
+    "title": "Importer des Données",
+    "how": "Comment accéder à mes données?",
+    "storygraph_li1": "Connectez-vous à votre compte Storygraph.",
+    "storygraph_li2": "Accédez à la page d'exportation à",
+    "storygraph_li3": "Cliquez sur le bouton 'Générer l'exportation'.",
+    "storygraph_li4": "Attendez que le fichier soit prêt et cliquez sur Télécharger.",
+    "whatimport": "Qu'est-ce qui sera importé?",
+    "importinfo_li1": "Tous les livres de votre profil.",
+    "importinfo_li2": "Toutes les étagères avec les livres qui y sont associés.",
+    "importinfo_li3": "La critique écrite et la note pour chaque livre. (le cas échéant)",
+    "goodreads_li1": "Connectez-vous à votre compte Goodreads.",
+    "goodreads_li2": "Accédez à la page d'exportation à",
+    "goodreads_li3": "Cliquez sur 'Exporter la Bibliothèque' en haut de la page.",
+    "goodreads_li4": "Attendez que le fichier soit prêt et cliquez sur le lien.",
+    "import_message": "Importation...",
+    "import_from": "Importer des données depuis",
+    "import_error": "Les lignes suivantes n'ont pas pu être importées:"
   }
 }

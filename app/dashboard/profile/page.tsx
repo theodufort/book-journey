@@ -5,6 +5,7 @@ import ImportFromApps from "@/components/ImportFromApps";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -18,6 +19,7 @@ type FriendData = {
   friend_id: string;
 };
 export default function Profile() {
+  const t = useTranslations("Profile");
   const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
   const [preferredCategories, setPreferredCategories] = useState<string[]>([]);
@@ -174,11 +176,11 @@ export default function Profile() {
         </div>
 
         <div className="flex">
-          <h1 className="text-3xl md:text-4xl font-extrabold">My Profile</h1>
+          <h1 className="text-3xl md:text-4xl font-extrabold">{t("title")}</h1>
           {user ? (
             <button className="btn btn-primary ml-5">
               <Link href={"/profile/" + user.id} target="_blank" passHref>
-                View public profile
+                {t("public_profile")}
               </Link>
             </button>
           ) : null}

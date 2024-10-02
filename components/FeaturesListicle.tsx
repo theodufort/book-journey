@@ -68,7 +68,7 @@ const FeaturesGrid = () => {
             {[
               t("featureslisticle_feat2_sub1"),
               t("featureslisticle_feat2_sub2"),
-              t("featureslisticle_feat2_sub2"),
+              t("featureslisticle_feat2_sub3"),
             ].map((item) => (
               <li key={item} className="flex items-center gap-3 text-left">
                 <svg

@@ -1,5 +1,6 @@
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
 
 interface CategorySelectionProps {
@@ -52,7 +53,7 @@ const categories = [
 const CategorySelection: React.FC<CategorySelectionProps> = ({ userId }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const supabase = createClientComponentClient<Database>();
-
+  const t = useTranslations("CategorySelection");
   useEffect(() => {
     // Fetch user preferences
     const fetchPreferences = async () => {
@@ -129,8 +130,8 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({ userId }) => {
 
   return (
     <div>
-      <h2 className="text-2xl md:text-3xl font-extrabold py-2">Categories</h2>
-      <p className="mb-2">Select up to 10 categories:</p>
+      <h2 className="text-2xl md:text-3xl font-extrabold py-2">{t("title")}</h2>
+      <p className="mb-2">{t("prompt")}</p>
       <div className="flex flex-wrap gap-1">
         {categories.map((category) => (
           <label key={category} className="flex items-center mr-1 mb-1">
