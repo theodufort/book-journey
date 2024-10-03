@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 
 async function getQuoteBySlug(slug: string) {
   const supabase = createServerComponentClient<Database>({ cookies });
-  const decodedSlug = decodeURIComponent(slug).toLowerCase();
+  const decodedSlug = decodeURIComponent(slug).toLowerCase().replace(/[.,;:]/g, '-');
   const [quoteText, author] = decodedSlug.split("-by-");
   let query = supabase
     .from("quotes")
