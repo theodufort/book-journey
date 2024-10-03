@@ -1,6 +1,5 @@
 import { getSEOTags } from "@/libs/seo";
 import Quotes from "./Quotes";
-import { sql } from "@vercel/postgres";
 
 export async function generateMetadata() {
   return getSEOTags({
@@ -26,12 +25,6 @@ export async function generateMetadata() {
   });
 }
 
-async function getQuotes() {
-  const { rows } = await sql`SELECT * FROM quotes ORDER BY RANDOM() LIMIT 20`;
-  return rows;
-}
-
 export default async function Tool() {
-  const quotes = await getQuotes();
   return <Quotes quotes={quotes} />;
 }
