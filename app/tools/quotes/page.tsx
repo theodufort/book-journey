@@ -45,6 +45,6 @@ async function getQuotes() {
 }
 
 export default async function Tool() {
-  const quotes = await getQuotes();
-  return <Quotes quotes={quotes} />;
+  const initialQuotes = await getQuotes();
+  return <Quotes initialQuotes={initialQuotes} />;
 }
