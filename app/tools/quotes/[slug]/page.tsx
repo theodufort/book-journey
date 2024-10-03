@@ -1,13 +1,47 @@
+import { getSEOTags } from "@/libs/seo";
 import { Database } from "@/types/supabase";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import Quote from "./Quote";
 import { notFound } from "next/navigation";
+import Quote from "./Quote";
 
+function decodeSlug(slug: string) {
+  const decodedSlug = decodeURIComponent(slug).toLowerCase();
+
+  return decodedSlug.split("-by-");
+}
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const quote = await getQuoteBySlug(params.slug);
+  const title = quote.text.split(" ").slice(0, 10).join(" ");
+  return getSEOTags({
+    title: title,
+    description: quote.text + " By " + quote.author,
+    canonicalUrlRelative: `/tools/quotes/` + params.slug,
+    extraTags: {
+      openGraph: {
+        title: title,
+        description: quote.text + " By " + quote.author,
+        url: `/tools/quotes/` + params.slug,
+        images: [
+          {
+            url: "",
+            width: 1200,
+            height: 660,
+          },
+        ],
+        locale: "en_US",
+        type: "website",
+      },
+    },
+  });
+}
 async function getQuoteBySlug(slug: string) {
   const supabase = createServerComponentClient<Database>({ cookies });
-  const decodedSlug = decodeURIComponent(slug).toLowerCase().replace(/[.,;:]/g, '-');
-  const [quoteText, author] = decodedSlug.split("-by-");
+  const [quoteText, author] = decodeSlug(slug);
   let query = supabase
     .from("quotes")
     .select("*")

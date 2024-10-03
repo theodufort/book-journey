@@ -12,6 +12,7 @@ module.exports = {
       { loc: "/tools" },
       { loc: "/tools/ai-book-recommendations" },
       { loc: "/tools/movie-based-on-book" },
+      { loc: "/tools/quotes" },
       { loc: "/signin" },
       { loc: "/libraries" },
     ];
