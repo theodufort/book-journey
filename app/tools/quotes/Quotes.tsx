@@ -75,10 +75,10 @@ export default function Quotes({ initialQuotes }: QuotesProps) {
               whileHover={{ scale: 1.05 }}
               onHoverStart={() => setHoveredQuote(quote.id)}
               onHoverEnd={() => setHoveredQuote(null)}
-              className="card bg-white shadow-xl p-6 rounded-lg transition-all duration-300 hover:shadow-2xl"
+              className="card bg-white shadow-xl p-6 rounded-lg transition-all duration-300 hover:shadow-2xl cursor-pointer"
             >
               <div className="relative h-full flex flex-col justify-between">
-                <p className="text-xl mb-4 text-gray-800 font-serif">
+                <p className="text-xl mb-4 text-gray-800 font-serif line-clamp-3">
                   "{quote.text}"
                 </p>
                 {quote.author && (
