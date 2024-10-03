@@ -1,18 +1,16 @@
 import { getSEOTags } from "@/libs/seo";
 import { Database } from "@/types/supabase";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { notFound } from "next/navigation";
 import { generateQuoteSlug } from "../Quotes";
 import Quote from "./Quote";
-
+const supabase = createClientComponentClient<Database>();
 function decodeSlug(slug: string) {
   const decodedSlug = decodeURIComponent(slug).toLowerCase();
 
   return decodedSlug.split("-by-");
 }
 export async function generateStaticParams() {
-  const supabase = createServerComponentClient<Database>({ cookies });
   const { data: quotes, error } = await supabase.from("quotes").select("*");
 
   return quotes.map((x) => {
@@ -51,7 +49,6 @@ export async function generateMetadata({
   });
 }
 async function getQuoteBySlug(slug: string) {
-  const supabase = createServerComponentClient<Database>({ cookies });
   const [quoteText, author] = decodeSlug(slug);
   let query = supabase
     .from("quotes")
