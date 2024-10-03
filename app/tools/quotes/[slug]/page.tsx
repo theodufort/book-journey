@@ -1,11 +1,11 @@
-"use server";
 import { Database } from "@/types/supabase";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
 import Quote from "./Quote";
+import { notFound } from "next/navigation";
 
 async function getQuoteBySlug(slug: string) {
-  console.log(slug);
-  const supabase = createClientComponentClient<Database>();
+  const supabase = createServerComponentClient<Database>({ cookies });
   const decodedSlug = decodeURIComponent(slug).toLowerCase();
   const [quoteText, author] = decodedSlug.split("-by-");
   let query = supabase
@@ -33,5 +33,10 @@ export default async function QuotePage({
   params: { slug: string };
 }) {
   const quote = await getQuoteBySlug(params.slug);
+
+  if (!quote) {
+    notFound();
+  }
+
   return <Quote author={quote.author} text={quote.text} />;
 }
