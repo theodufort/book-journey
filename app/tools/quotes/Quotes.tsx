@@ -2,13 +2,14 @@
 
 import { Database } from "@/types/supabase";
 
-type Quote = Database['public']['Tables']['quotes']['Row'];
+type Quote = Database["public"]["Tables"]["quotes"]["Row"];
 
 interface QuotesProps {
   quotes: Quote[];
 }
 
 export default function Quotes({ quotes }: QuotesProps) {
+  console.log(quotes);
   return (
     <section>
       <div className="max-w-7xl mx-auto px-8 py-5 text-center">
@@ -19,7 +20,7 @@ export default function Quotes({ quotes }: QuotesProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto px-4">
         {quotes.map((quote) => (
           <div key={quote.id} className="card bg-base-200 shadow-xl p-6">
-            <p className="text-lg mb-4">{quote.text}</p>
+            <p className="text-lg mb-4">“{quote.text}”</p>
             {quote.author && (
               <p className="text-right italic">- {quote.author}</p>
             )}
