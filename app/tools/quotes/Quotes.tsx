@@ -4,6 +4,7 @@ import { Database } from "@/types/supabase";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import Link from "next/link";
 
 type Quote = Database["public"]["Tables"]["quotes"]["Row"];
 
@@ -44,6 +45,10 @@ export default function Quotes({ initialQuotes }: QuotesProps) {
     setCurrentPage(newPage);
   };
 
+  const generateSlug = (text: string) => {
+    return encodeURIComponent(text.split(' ').slice(0, 10).join(' '));
+  };
+
   return (
     <section className="min-h-screen py-12">
       <div className="max-w-7xl mx-auto px-8 py-5 text-center">
@@ -63,24 +68,25 @@ export default function Quotes({ initialQuotes }: QuotesProps) {
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto px-4"
       >
         {quotes.map((quote) => (
-          <motion.div
-            key={quote.id}
-            whileHover={{ scale: 1.05 }}
-            onHoverStart={() => setHoveredQuote(quote.id)}
-            onHoverEnd={() => setHoveredQuote(null)}
-            className="card bg-white shadow-xl p-6 rounded-lg transition-all duration-300 hover:shadow-2xl"
-          >
-            <div className="relative h-full flex flex-col justify-between">
-              <p className="text-xl mb-4 text-gray-800 font-serif">
-                "{quote.text}"
-              </p>
-              {quote.author && (
-                <p className="text-right italic text-indigo-600 font-medium">
-                  - {quote.author}
+          <Link href={`/tools/quotes/${generateSlug(quote.text)}`} key={quote.id}>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              onHoverStart={() => setHoveredQuote(quote.id)}
+              onHoverEnd={() => setHoveredQuote(null)}
+              className="card bg-white shadow-xl p-6 rounded-lg transition-all duration-300 hover:shadow-2xl"
+            >
+              <div className="relative h-full flex flex-col justify-between">
+                <p className="text-xl mb-4 text-gray-800 font-serif">
+                  "{quote.text}"
                 </p>
-              )}
-            </div>
-          </motion.div>
+                {quote.author && (
+                  <p className="text-right italic text-indigo-600 font-medium">
+                    - {quote.author}
+                  </p>
+                )}
+              </div>
+            </motion.div>
+          </Link>
         ))}
       </motion.div>
       <div className="flex justify-center mt-8">
