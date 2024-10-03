@@ -47,8 +47,6 @@ const getQuotesSlugs = async () => {
 
   if (error) {
     console.error("Error fetching quotes:", error);
-  } else {
-    setQuotes(data || []);
   }
   const generateSlug = (text, author) => {
     const words = text.split(" ").slice(0, 10).join("-");
