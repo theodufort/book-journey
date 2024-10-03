@@ -9,7 +9,6 @@ interface QuotesProps {
 }
 
 export default function Quotes({ quotes }: QuotesProps) {
-  console.log(quotes);
   return (
     <section>
       <div className="max-w-7xl mx-auto px-8 py-5 text-center">
