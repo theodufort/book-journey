@@ -1,20 +1,50 @@
-const { getBlogSlugs, getLibrarySlugs } = require("./libs/sitemap.js");
+const {
+  getBlogSlugs,
+  getLibrarySlugs,
+  getQuotesSlugs,
+} = require("./libs/sitemap.js");
 module.exports = {
   outdir: "app/",
   additionalPaths: async (config) => {
     const blogSlugs = await getBlogSlugs();
     const librarySlugs = await getLibrarySlugs();
+    const quoteSlugs = await getQuotesSlugs();
     const result = [
       ...blogSlugs,
       ...librarySlugs,
-      { loc: "/" },
-      { loc: "/blog" },
-      { loc: "/tools" },
-      { loc: "/tools/ai-book-recommendations" },
-      { loc: "/tools/movie-based-on-book" },
-      { loc: "/tools/quotes" },
-      { loc: "/signin" },
-      { loc: "/libraries" },
+      ...quoteSlugs,
+      { loc: "/", lastmod: new Date().toISOString(), changefreq: "weekly" },
+      { loc: "/blog", lastmod: new Date().toISOString(), changefreq: "weekly" },
+      {
+        loc: "/tools",
+        lastmod: new Date().toISOString(),
+        changefreq: "weekly",
+      },
+      {
+        loc: "/tools/ai-book-recommendations",
+        lastmod: new Date().toISOString(),
+        changefreq: "weekly",
+      },
+      {
+        loc: "/tools/movie-based-on-book",
+        lastmod: new Date().toISOString(),
+        changefreq: "weekly",
+      },
+      {
+        loc: "/tools/quotes",
+        lastmod: new Date().toISOString(),
+        changefreq: "weekly",
+      },
+      {
+        loc: "/signin",
+        lastmod: new Date().toISOString(),
+        changefreq: "weekly",
+      },
+      {
+        loc: "/libraries",
+        lastmod: new Date().toISOString(),
+        changefreq: "weekly",
+      },
     ];
     return result;
   },
