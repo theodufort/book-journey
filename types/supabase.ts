@@ -695,6 +695,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_conversations: {
+        Row: {
+          created_at: string | null
+          id: string
+          messages: Json
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          messages: Json
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          messages?: Json
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       article_categories: {
         Row: {
           article_id: number
@@ -1021,47 +1042,190 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          aud: string | null
+          banned_until: string | null
+          confirmation_sent_at: string | null
+          confirmation_token: string | null
+          confirmed_at: string | null
+          created_at: string | null
+          deleted_at: string | null
+          email: string | null
+          email_change: string | null
+          email_change_confirm_status: number | null
+          email_change_sent_at: string | null
+          email_change_token_current: string | null
+          email_change_token_new: string | null
+          email_confirmed_at: string | null
+          id: string | null
+          inactivity_email_sent: boolean
+          instance_id: string | null
+          invited_at: string | null
+          is_anonymous: boolean | null
+          is_sso_user: boolean | null
+          is_super_admin: boolean | null
+          last_sign_in_at: string | null
+          phone: string | null
+          phone_change: string | null
+          phone_change_sent_at: string | null
+          phone_change_token: string | null
+          phone_confirmed_at: string | null
+          raw_app_meta_data: Json | null
+          raw_user_meta_data: Json | null
+          reauthentication_sent_at: string | null
+          reauthentication_token: string | null
+          recovery_sent_at: string | null
+          recovery_token: string | null
+          role: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          aud?: string | null
+          banned_until?: string | null
+          confirmation_sent_at?: string | null
+          confirmation_token?: string | null
+          confirmed_at?: string | null
+          created_at?: string | null
+          deleted_at?: string | null
+          email?: string | null
+          email_change?: string | null
+          email_change_confirm_status?: number | null
+          email_change_sent_at?: string | null
+          email_change_token_current?: string | null
+          email_change_token_new?: string | null
+          email_confirmed_at?: string | null
+          id?: string | null
+          inactivity_email_sent?: boolean
+          instance_id?: string | null
+          invited_at?: string | null
+          is_anonymous?: boolean | null
+          is_sso_user?: boolean | null
+          is_super_admin?: boolean | null
+          last_sign_in_at?: string | null
+          phone?: string | null
+          phone_change?: string | null
+          phone_change_sent_at?: string | null
+          phone_change_token?: string | null
+          phone_confirmed_at?: string | null
+          raw_app_meta_data?: Json | null
+          raw_user_meta_data?: Json | null
+          reauthentication_sent_at?: string | null
+          reauthentication_token?: string | null
+          recovery_sent_at?: string | null
+          recovery_token?: string | null
+          role?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          aud?: string | null
+          banned_until?: string | null
+          confirmation_sent_at?: string | null
+          confirmation_token?: string | null
+          confirmed_at?: string | null
+          created_at?: string | null
+          deleted_at?: string | null
+          email?: string | null
+          email_change?: string | null
+          email_change_confirm_status?: number | null
+          email_change_sent_at?: string | null
+          email_change_token_current?: string | null
+          email_change_token_new?: string | null
+          email_confirmed_at?: string | null
+          id?: string | null
+          inactivity_email_sent?: boolean
+          instance_id?: string | null
+          invited_at?: string | null
+          is_anonymous?: boolean | null
+          is_sso_user?: boolean | null
+          is_super_admin?: boolean | null
+          last_sign_in_at?: string | null
+          phone?: string | null
+          phone_change?: string | null
+          phone_change_sent_at?: string | null
+          phone_change_token?: string | null
+          phone_confirmed_at?: string | null
+          raw_app_meta_data?: Json | null
+          raw_user_meta_data?: Json | null
+          reauthentication_sent_at?: string | null
+          reauthentication_token?: string | null
+          recovery_sent_at?: string | null
+          recovery_token?: string | null
+          role?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_user_id"
+            columns: ["id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quotes: {
+        Row: {
+          author: string
+          id: string
+          text: string
+        }
+        Insert: {
+          author: string
+          id?: string
+          text: string
+        }
+        Update: {
+          author?: string
+          id?: string
+          text?: string
+        }
+        Relationships: []
+      }
       reading_list: {
         Row: {
           book_id: string
-          created_at: string | null
+          finished_at: string | null
           id: number
           pointsAwardedFinished: boolean
           pointsAwardedRating: boolean
           pointsAwardedTextReview: boolean
           rating: number | null
+          reading_at: string | null
           review: string | null
           status: string | null
           tags: string[] | null
-          updated_at: string | null
+          toread_at: string | null
           user_id: string | null
         }
         Insert: {
           book_id: string
-          created_at?: string | null
+          finished_at?: string | null
           id?: number
           pointsAwardedFinished?: boolean
           pointsAwardedRating?: boolean
           pointsAwardedTextReview?: boolean
           rating?: number | null
+          reading_at?: string | null
           review?: string | null
           status?: string | null
           tags?: string[] | null
-          updated_at?: string | null
+          toread_at?: string | null
           user_id?: string | null
         }
         Update: {
           book_id?: string
-          created_at?: string | null
+          finished_at?: string | null
           id?: number
           pointsAwardedFinished?: boolean
           pointsAwardedRating?: boolean
           pointsAwardedTextReview?: boolean
           rating?: number | null
+          reading_at?: string | null
           review?: string | null
           status?: string | null
           tags?: string[] | null
-          updated_at?: string | null
+          toread_at?: string | null
           user_id?: string | null
         }
         Relationships: [
@@ -1253,6 +1417,48 @@ export type Database = {
           p_isbn_13: string
         }
         Returns: Json
+      }
+      check_inactive_users: {
+        Args: {
+          days: number
+        }
+        Returns: {
+          aud: string | null
+          banned_until: string | null
+          confirmation_sent_at: string | null
+          confirmation_token: string | null
+          confirmed_at: string | null
+          created_at: string | null
+          deleted_at: string | null
+          email: string | null
+          email_change: string | null
+          email_change_confirm_status: number | null
+          email_change_sent_at: string | null
+          email_change_token_current: string | null
+          email_change_token_new: string | null
+          email_confirmed_at: string | null
+          encrypted_password: string
+          id: string
+          instance_id: string | null
+          invited_at: string | null
+          is_anonymous: boolean
+          is_sso_user: boolean
+          is_super_admin: boolean | null
+          last_sign_in_at: string | null
+          phone: string | null
+          phone_change: string | null
+          phone_change_sent_at: string | null
+          phone_change_token: string | null
+          phone_confirmed_at: string | null
+          raw_app_meta_data: Json | null
+          raw_user_meta_data: Json | null
+          reauthentication_sent_at: string | null
+          reauthentication_token: string | null
+          recovery_sent_at: string | null
+          recovery_token: string | null
+          role: string | null
+          updated_at: string | null
+        }[]
       }
       get_basic_article_info: {
         Args: {
