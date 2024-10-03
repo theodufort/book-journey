@@ -53,7 +53,7 @@ const getQuotesSlugs = async () => {
     const slug = author ? `${words}-by-${author.replace(/\s+/g, "-")}` : words;
     return encodeURIComponent(slug.toLowerCase());
   };
-  data.map((x) => {
+  return data.map((x) => {
     return {
       loc: `/tools/quotes/${generateSlug(x.text, x.author)}`,
       lastmod: new Date().toISOString(),
