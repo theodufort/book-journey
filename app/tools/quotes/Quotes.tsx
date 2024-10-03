@@ -45,8 +45,10 @@ export default function Quotes({ initialQuotes }: QuotesProps) {
     setCurrentPage(newPage);
   };
 
-  const generateSlug = (text: string) => {
-    return encodeURIComponent(text.split(' ').slice(0, 10).join(' '));
+  const generateSlug = (text: string, author: string | null) => {
+    const words = text.split(' ').slice(0, 10).join('-');
+    const slug = author ? `${words}-by-${author.replace(/\s+/g, '-')}` : words;
+    return encodeURIComponent(slug.toLowerCase());
   };
 
   return (
@@ -68,7 +70,7 @@ export default function Quotes({ initialQuotes }: QuotesProps) {
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto px-4"
       >
         {quotes.map((quote) => (
-          <Link href={`/tools/quotes/${generateSlug(quote.text)}`} key={quote.id}>
+          <Link href={`/tools/quotes/${generateSlug(quote.text, quote.author)}`} key={quote.id}>
             <motion.div
               whileHover={{ scale: 1.05 }}
               onHoverStart={() => setHoveredQuote(quote.id)}
