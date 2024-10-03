@@ -2,7 +2,7 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { Database } from "@/types/supabase";
 import { notFound } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion as m } from "framer-motion";
 
 async function getQuoteBySlug(slug: string) {
   const supabase = createServerComponentClient<Database>({ cookies });
@@ -37,7 +37,7 @@ export default async function QuotePage({ params }: { params: { slug: string } }
 
   return (
     <div className="min-h-screen py-12 flex items-center justify-center">
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}

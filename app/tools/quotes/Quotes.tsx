@@ -1,7 +1,7 @@
 "use client";
 
 import { Database } from "@/types/supabase";
-import { motion } from "framer-motion";
+import { motion as m } from "framer-motion";
 import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
@@ -54,16 +54,16 @@ export default function Quotes({ initialQuotes }: QuotesProps) {
   return (
     <section className="min-h-screen py-12">
       <div className="max-w-7xl mx-auto px-8 py-5 text-center">
-        <motion.h2
+        <m.h2
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="max-w-3xl mx-auto font-extrabold text-5xl md:text-6xl tracking-tight mb-8 text-primary"
         >
           Inspiring Quotes
-        </motion.h2>
+        </m.h2>
       </div>
-      <motion.div
+      <m.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.2 }}
@@ -71,7 +71,7 @@ export default function Quotes({ initialQuotes }: QuotesProps) {
       >
         {quotes.map((quote) => (
           <Link href={`/tools/quotes/${generateSlug(quote.text, quote.author)}`} key={quote.id}>
-            <motion.div
+            <m.div
               whileHover={{ scale: 1.05 }}
               onHoverStart={() => setHoveredQuote(quote.id)}
               onHoverEnd={() => setHoveredQuote(null)}
