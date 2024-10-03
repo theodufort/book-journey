@@ -2,16 +2,47 @@
 
 import { Database } from "@/types/supabase";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 type Quote = Database["public"]["Tables"]["quotes"]["Row"];
 
 interface QuotesProps {
-  quotes: Quote[];
+  initialQuotes: Quote[];
 }
 
-export default function Quotes({ quotes }: QuotesProps) {
+export default function Quotes({ initialQuotes }: QuotesProps) {
+  const [quotes, setQuotes] = useState<Quote[]>(initialQuotes);
   const [hoveredQuote, setHoveredQuote] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const quotesPerPage = 9;
+
+  const supabase = createClientComponentClient<Database>();
+
+  const fetchQuotes = async (page: number) => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('quotes')
+      .select('*')
+      .range((page - 1) * quotesPerPage, page * quotesPerPage - 1)
+      .order('id', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching quotes:', error);
+    } else {
+      setQuotes(data || []);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchQuotes(currentPage);
+  }, [currentPage]);
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
 
   return (
     <section className="min-h-screen py-12">
@@ -20,8 +51,7 @@ export default function Quotes({ quotes }: QuotesProps) {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="max-w-3xl mx-auto font-extrabold text-5xl    
- md:text-6xl tracking-tight mb-8 text-primary"
+          className="max-w-3xl mx-auto font-extrabold text-5xl md:text-6xl tracking-tight mb-8 text-primary"
         >
           Inspiring Quotes
         </motion.h2>
@@ -30,8 +60,7 @@ export default function Quotes({ quotes }: QuotesProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 
- gap-8 max-w-6xl mx-auto px-4"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto px-4"
       >
         {quotes.map((quote) => (
           <motion.div
@@ -39,8 +68,7 @@ export default function Quotes({ quotes }: QuotesProps) {
             whileHover={{ scale: 1.05 }}
             onHoverStart={() => setHoveredQuote(quote.id)}
             onHoverEnd={() => setHoveredQuote(null)}
-            className="card bg-white shadow-xl p-6 rounded-lg     
- transition-all duration-300 hover:shadow-2xl"
+            className="card bg-white shadow-xl p-6 rounded-lg transition-all duration-300 hover:shadow-2xl"
           >
             <div className="relative h-full flex flex-col justify-between">
               <p className="text-xl mb-4 text-gray-800 font-serif">
@@ -55,6 +83,25 @@ export default function Quotes({ quotes }: QuotesProps) {
           </motion.div>
         ))}
       </motion.div>
+      <div className="flex justify-center mt-8">
+        <div className="join">
+          <button
+            className="join-item btn"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1 || loading}
+          >
+            «
+          </button>
+          <button className="join-item btn">Page {currentPage}</button>
+          <button
+            className="join-item btn"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={quotes.length < quotesPerPage || loading}
+          >
+            »
+          </button>
+        </div>
+      </div>
     </section>
   );
 }
