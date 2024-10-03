@@ -12,12 +12,13 @@ function decodeSlug(slug: string) {
 }
 export async function generateStaticParams() {
   const { data: quotes, error } = await supabase.from("quotes").select("*");
-
-  return quotes.map((x) => {
+  const quotesArray = quotes.map((x) => {
     return {
       slug: generateQuoteSlug(x.text, x.author),
     };
   });
+  console.log(quotesArray);
+  return quotesArray;
 }
 export async function generateMetadata({
   params,
