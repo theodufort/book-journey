@@ -11,7 +11,11 @@ type Quote = Database["public"]["Tables"]["quotes"]["Row"];
 interface QuotesProps {
   initialQuotes: Quote[];
 }
-
+export const generateQuoteSlug = (text: string, author: string | null) => {
+  const words = text.split(" ").slice(0, 10).join("-");
+  const slug = author ? `${words}-by-${author.replace(/\s+/g, "-")}` : words;
+  return encodeURIComponent(slug.toLowerCase());
+};
 export default function Quotes({ initialQuotes }: QuotesProps) {
   const [quotes, setQuotes] = useState<Quote[]>(initialQuotes);
   const [hoveredQuote, setHoveredQuote] = useState<string | null>(null);
@@ -45,12 +49,6 @@ export default function Quotes({ initialQuotes }: QuotesProps) {
     setCurrentPage(newPage);
   };
 
-  const generateSlug = (text: string, author: string | null) => {
-    const words = text.split(" ").slice(0, 10).join("-");
-    const slug = author ? `${words}-by-${author.replace(/\s+/g, "-")}` : words;
-    return encodeURIComponent(slug.toLowerCase());
-  };
-
   return (
     <section className="min-h-screen py-12">
       <div className="max-w-7xl mx-auto px-8 py-5 text-center">
@@ -71,7 +69,10 @@ export default function Quotes({ initialQuotes }: QuotesProps) {
       >
         {quotes.map((quote) => (
           <Link
-            href={`/tools/quotes/${generateSlug(quote.text, quote.author)}`}
+            href={`/tools/quotes/${generateQuoteSlug(
+              quote.text,
+              quote.author
+            )}`}
             key={quote.id}
           >
             <m.div

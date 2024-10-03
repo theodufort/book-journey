@@ -3,12 +3,23 @@ import { Database } from "@/types/supabase";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { generateQuoteSlug } from "../Quotes";
 import Quote from "./Quote";
 
 function decodeSlug(slug: string) {
   const decodedSlug = decodeURIComponent(slug).toLowerCase();
 
   return decodedSlug.split("-by-");
+}
+export async function generateStaticParams() {
+  const supabase = createServerComponentClient<Database>({ cookies });
+  const { data: quotes, error } = await supabase.from("quotes").select("*");
+
+  return quotes.map((x) => {
+    return {
+      slug: generateQuoteSlug(x.text, x.author),
+    };
+  });
 }
 export async function generateMetadata({
   params,
