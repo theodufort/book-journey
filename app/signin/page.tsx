@@ -40,6 +40,7 @@ export default function Login() {
           },
         });
       } else if (type === "magic_link") {
+        console.log(email);
         await supabase.auth.signInWithOtp({
           email,
           options: {
