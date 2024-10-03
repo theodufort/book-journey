@@ -1,5 +1,8 @@
 import { getSEOTags } from "@/libs/seo";
 import Quotes from "./Quotes";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import { Database } from "@/types/supabase";
 
 export async function generateMetadata() {
   return getSEOTags({
@@ -25,6 +28,23 @@ export async function generateMetadata() {
   });
 }
 
+async function getQuotes() {
+  const supabase = createServerComponentClient<Database>({ cookies });
+  const { data: quotes, error } = await supabase
+    .from('quotes')
+    .select('*')
+    .limit(20)
+    .order('id', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching quotes:', error);
+    return [];
+  }
+
+  return quotes;
+}
+
 export default async function Tool() {
+  const quotes = await getQuotes();
   return <Quotes quotes={quotes} />;
 }
