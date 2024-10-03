@@ -1,10 +1,10 @@
 "use client";
 
 import { Database } from "@/types/supabase";
-import { motion as m } from "framer-motion";
-import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { motion as m } from "framer-motion";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 type Quote = Database["public"]["Tables"]["quotes"]["Row"];
 
@@ -24,13 +24,13 @@ export default function Quotes({ initialQuotes }: QuotesProps) {
   const fetchQuotes = async (page: number) => {
     setLoading(true);
     const { data, error } = await supabase
-      .from('quotes')
-      .select('*')
+      .from("quotes")
+      .select("*")
       .range((page - 1) * quotesPerPage, page * quotesPerPage - 1)
-      .order('id', { ascending: false });
+      .order("id", { ascending: false });
 
     if (error) {
-      console.error('Error fetching quotes:', error);
+      console.error("Error fetching quotes:", error);
     } else {
       setQuotes(data || []);
     }
@@ -46,8 +46,8 @@ export default function Quotes({ initialQuotes }: QuotesProps) {
   };
 
   const generateSlug = (text: string, author: string | null) => {
-    const words = text.split(' ').slice(0, 10).join('-');
-    const slug = author ? `${words}-by-${author.replace(/\s+/g, '-')}` : words;
+    const words = text.split(" ").slice(0, 10).join("-");
+    const slug = author ? `${words}-by-${author.replace(/\s+/g, "-")}` : words;
     return encodeURIComponent(slug.toLowerCase());
   };
 
@@ -70,7 +70,10 @@ export default function Quotes({ initialQuotes }: QuotesProps) {
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto px-4"
       >
         {quotes.map((quote) => (
-          <Link href={`/tools/quotes/${generateSlug(quote.text, quote.author)}`} key={quote.id}>
+          <Link
+            href={`/tools/quotes/${generateSlug(quote.text, quote.author)}`}
+            key={quote.id}
+          >
             <m.div
               whileHover={{ scale: 1.05 }}
               onHoverStart={() => setHoveredQuote(quote.id)}
@@ -87,10 +90,10 @@ export default function Quotes({ initialQuotes }: QuotesProps) {
                   </p>
                 )}
               </div>
-            </motion.div>
+            </m.div>
           </Link>
         ))}
-      </motion.div>
+      </m.div>
       <div className="flex justify-center mt-8">
         <div className="join">
           <button
