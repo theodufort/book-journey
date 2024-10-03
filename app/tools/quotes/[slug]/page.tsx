@@ -6,12 +6,19 @@ import { notFound } from "next/navigation";
 
 async function getQuoteBySlug(slug: string) {
   const supabase = createServerComponentClient<Database>({ cookies });
-  const decodedSlug = decodeURIComponent(slug);
-  const { data: quotes, error } = await supabase
+  const decodedSlug = decodeURIComponent(slug).toLowerCase();
+  const [quoteText, author] = decodedSlug.split('-by-');
+  
+  let query = supabase
     .from('quotes')
     .select('*')
-    .ilike('text', `${decodedSlug}%`)
-    .limit(1);
+    .ilike('text', `${quoteText.replace(/-/g, ' ')}%`);
+
+  if (author) {
+    query = query.ilike('author', `${author.replace(/-/g, ' ')}%`);
+  }
+
+  const { data: quotes, error } = await query.limit(1);
 
   if (error) {
     console.error('Error fetching quote:', error);
