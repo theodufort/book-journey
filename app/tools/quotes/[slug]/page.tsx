@@ -13,9 +13,13 @@ function decodeSlug(slug: string) {
 }
 export async function generateStaticParams() {
   const { data: quotes, error } = await supabase.from("quotes").select("*");
-  const quotesArray = quotes.map((x) => ({
-    slug: generateQuoteSlug(x.text, x.author == "" ? null : x.author),
-  }));
+  if (error) {
+    console.error("Error fetching quotes:", error);
+    return [];
+  }
+  const quotesArray = quotes?.map((x) => ({
+    slug: generateQuoteSlug(x.text, x.author === "" ? null : x.author),
+  })) || [];
   console.log(quotesArray);
   return quotesArray;
 }
