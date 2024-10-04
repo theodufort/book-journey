@@ -1,5 +1,6 @@
 "use client";
 
+import SubscriberCardQuotes from "@/components/SubscriberCardQuotes";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { motion as m } from "framer-motion";
@@ -92,7 +93,7 @@ export default function Quotes({ initialQuotes }: QuotesProps) {
           </Link>
         ))}
       </m.div>
-      <div className="flex justify-center mt-8">
+      <div className="flex justify-center mt-8 mb-8">
         <div className="join">
           <button
             className="join-item btn"
@@ -111,6 +112,7 @@ export default function Quotes({ initialQuotes }: QuotesProps) {
           </button>
         </div>
       </div>
+      <SubscriberCardQuotes />
     </section>
   );
 }
