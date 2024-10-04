@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { generateQuoteSlug } from "../Quotes";
 import Quote from "./Quote";
 const supabase = createClientComponentClient<Database>();
+
 function decodeSlug(slug: string) {
   const decodedSlug = decodeURIComponent(slug).toLowerCase();
 
@@ -12,11 +13,9 @@ function decodeSlug(slug: string) {
 }
 export async function generateStaticParams() {
   const { data: quotes, error } = await supabase.from("quotes").select("*");
-  const quotesArray = quotes.map((x) => {
-    return {
-      slug: generateQuoteSlug(x.text, x.author),
-    };
-  });
+  const quotesArray = quotes.map((x) => ({
+    slug: generateQuoteSlug(x.text, x.author == "" ? null : x.author),
+  }));
   console.log(quotesArray);
   return quotesArray;
 }
