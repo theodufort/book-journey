@@ -1,4 +1,5 @@
 "use client";
+import SubscriberCardQuotes from "@/components/SubscriberCardQuotes";
 import React from "react";
 
 interface QuoteProps {
@@ -8,7 +9,7 @@ interface QuoteProps {
 
 const Quote: React.FC<QuoteProps> = ({ author, text }) => {
   return (
-    <div className="flex flex-col items-center justify-center max-h-screen p-4">
+    <div className="flex flex-col gap-4 items-center justify-center max-h-screen p-4">
       <div className="max-w-2xl w-full bg-white shadow-lg rounded-lg p-8">
         <blockquote className="text-2xl font-semibold italic text-center text-gray-900">
           "{text}"
@@ -19,6 +20,7 @@ const Quote: React.FC<QuoteProps> = ({ author, text }) => {
           </figcaption>
         )}
       </div>
+      <SubscriberCardQuotes />
     </div>
   );
 };
