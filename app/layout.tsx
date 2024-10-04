@@ -1,7 +1,7 @@
 import ClientLayout from "@/components/LayoutClient";
 import config from "@/config";
 import { getSEOTags } from "@/libs/seo";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 import { Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
@@ -36,6 +36,7 @@ export default async function RootLayout({
         <head>
           {" "}
           <GoogleAnalytics gaId="G-1LDR3284GW" />
+          <GoogleTagManager gtmId="AW-10934490832" />
           <meta name="impact-site-verification" data-value="369738092" />
           <PlausibleProvider domain={config.domainName} />
         </head>
