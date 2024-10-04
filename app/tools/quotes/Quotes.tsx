@@ -5,17 +5,14 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { motion as m } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { generateQuoteSlug } from "./helper";
 
 type Quote = Database["public"]["Tables"]["quotes"]["Row"];
 
 interface QuotesProps {
   initialQuotes: Quote[];
 }
-export const generateQuoteSlug = (text: string, author: string | null) => {
-  const words = text.split(" ").slice(0, 10).join("-");
-  const slug = author ? `${words}-by-${author.replace(/\s+/g, "-")}` : words;
-  return encodeURIComponent(slug.toLowerCase());
-};
+
 export default function Quotes({ initialQuotes }: QuotesProps) {
   const [quotes, setQuotes] = useState<Quote[]>(initialQuotes);
   const [hoveredQuote, setHoveredQuote] = useState<string | null>(null);

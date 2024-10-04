@@ -2,24 +2,15 @@ import { getSEOTags } from "@/libs/seo";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { notFound } from "next/navigation";
-import { generateQuoteSlug } from "../Quotes";
+import { generateQuoteSlug } from "../helper";
 import Quote from "./Quote";
 const supabase = createClientComponentClient<Database>();
 
-function decodeSlug(slug: string) {
-  const decodedSlug = decodeURIComponent(slug).toLowerCase();
-
-  return decodedSlug.split("-by-");
-}
 export async function generateStaticParams() {
   const { data: quotes, error } = await supabase.from("quotes").select("*");
-  if (error) {
-    console.error("Error fetching quotes:", error);
-    return [];
-  }
-  const quotesArray = quotes?.map((x) => ({
-    slug: generateQuoteSlug(x.text, x.author === "" ? null : x.author),
-  })) || [];
+  const quotesArray = quotes.map((x) => ({
+    slug: generateQuoteSlug(x.text, x.author == "" ? null : x.author),
+  }));
   console.log(quotesArray);
   return quotesArray;
 }
@@ -51,6 +42,11 @@ export async function generateMetadata({
       },
     },
   });
+}
+function decodeSlug(slug: string) {
+  const decodedSlug = decodeURIComponent(slug).toLowerCase();
+
+  return decodedSlug.split("-by-");
 }
 async function getQuoteBySlug(slug: string) {
   const [quoteText, author] = decodeSlug(slug);
