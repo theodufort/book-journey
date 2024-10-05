@@ -2,6 +2,7 @@
 import CategorySelection from "@/components/CategorySelection";
 import HeaderDashboard from "@/components/DashboardHeader";
 import ImportFromApps from "@/components/ImportFromApps";
+import { LanguagePreferences } from "@/components/LanguagePreferences";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
@@ -185,7 +186,7 @@ export default function Profile() {
             </button>
           ) : null}
         </div>
-        {/* {user ? <LanguagePreferences /> : null} */}
+        {user ? <LanguagePreferences /> : null}
         {user ? <CategorySelection userId={user.id} /> : null}
         <div>
           <ImportFromApps />

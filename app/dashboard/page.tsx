@@ -48,6 +48,8 @@ export default function Dashboard() {
         .select("onboarded")
         .eq("user_id", user.id)
         .single();
+      console.log("Onboarded: " + onboarded);
+      console.log(error);
       if (onboarded != true) {
         setShowOnboard(true);
       }

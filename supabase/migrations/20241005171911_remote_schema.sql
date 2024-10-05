@@ -1201,10 +1201,6 @@ CREATE POLICY "user_preferences are updatable only by their user" ON "public"."u
 
 
 
-CREATE PUBLICATION "logflare_pub" WITH (publish = 'insert, update, delete, truncate');
-
-
-ALTER PUBLICATION "logflare_pub" OWNER TO "postgres";
 
 
 
