@@ -1,5 +1,6 @@
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useTranslations } from "next-intl";
 import React, { useState } from "react";
 import CategorySelection from "./CategorySelection";
 
@@ -14,29 +15,27 @@ const OnboardingPopup: React.FC<OnboardingPopupProps> = ({
   onClose,
   userId,
 }) => {
+  const t = useTranslations("OnboardingPopup");
   const supabase = createClientComponentClient<Database>();
   const [step, setStep] = useState(1);
 
   const steps = [
     {
-      title: "Are you coming from Goodreads or Storygraph?",
-      content: "Go to the profile page to import your data!",
+      title: t("step1_title"),
+      content: t("step1_content"),
     },
     {
-      title: "Choose Your Preferred Categories",
-      content: "Select the book categories you're most interested in.",
+      title: t("step2_title"),
+      content: t("step2_content"),
       component: <CategorySelection userId={userId} />,
     },
     {
-      title: "Add Your Books",
-      content:
-        "Start building your personal library by adding books you've read or want to read.",
-      // Add book addition UI here
+      title: t("step3_title"),
+      content: t("step3_content"),
     },
     {
-      title: "Get Recommendations and Rewards",
-      content:
-        "Based on your preferences and books, we'll provide personalized recommendations and exciting rewards!",
+      title: t("step4_title"),
+      content: t("step4_content"),
       // Add recommendations preview or rewards explanation here
     },
   ];

@@ -212,5 +212,15 @@
     "import_message": "Importation...",
     "import_from": "Importer des données depuis",
     "import_error": "Les lignes suivantes n'ont pas pu être importées:"
+  },
+  "OnboardingPopup": {
+    "step1_title": "Venez-vous de Goodreads ou Storygraph?",
+    "step1_content": "Allez sur votre page de profil pour importer vos données!",
+    "step2_title": "Choisissez vos Catégories Préférées",
+    "step2_content": "Sélectionnez les catégories de livres qui vous intéressent le plus.",
+    "step3_title": "Ajoutez vos Livres",
+    "step3_content": "Commencez à construire votre bibliothèque personnelle en ajoutant des livres que vous avez lus ou que vous voulez lire.",
+    "step4_title": "Obtenez des Recommandations et des Récompenses",
+    "step4_content": "En fonction de vos préférences et de vos livres, nous vous fournirons des recommandations personnalisées et des récompenses excitantes!"
   }
 }
