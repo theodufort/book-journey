@@ -59,25 +59,30 @@ export async function GET(request: NextRequest) {
 
     // Transform the ISBNDB results to match our format
     const transformedBooks = data.books.map((book: any) => ({
-      title: book.title,
-      image: book.image,
-      title_long: book.title_long,
-      date_published: book.date_published,
-      publisher: book.publisher,
-      synopsis: book.synopsis,
-      subjects: book.subjects || [],
-      authors: book.authors,
-      isbn13: book.isbn13,
-      binding: book.binding,
-      isbn: book.isbn13,
-      isbn10: book.isbn10,
-      language: book.language,
-      pages: book.pages,
+      id: book.isbn13,
+      volumeInfo: {
+        title: book.title,
+        subtitle: book.title_long !== book.title ? book.title_long.replace(book.title, '').trim() : null,
+        authors: book.authors,
+        publishedDate: book.date_published,
+        description: book.synopsis,
+        industryIdentifiers: [
+          { type: 'ISBN_13', identifier: book.isbn13 },
+          { type: 'ISBN_10', identifier: book.isbn10 },
+        ],
+        pageCount: book.pages,
+        categories: book.subjects,
+        language: book.language,
+        imageLinks: {
+          thumbnail: book.image,
+        },
+        publisher: book.publisher,
+      },
     }));
 
     const result = {
-      total: data.total,
-      books: transformedBooks,
+      items: transformedBooks,
+      totalItems: data.total,
     };
 
     // Cache the search results
