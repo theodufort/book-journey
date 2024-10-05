@@ -156,7 +156,7 @@ async function getRecommendationsV2(
   userId: string
 ) {
   const readBooks = await getReadBooks(supabase, userId);
-  const userCategories = await getUserCategories(supabase, userId);
+  const userCategories: any = await getUserCategories(supabase, userId);
 
   let subjects: string[];
   if (readBooks.length === 0 && userCategories.length > 0) {
@@ -168,8 +168,10 @@ async function getRecommendationsV2(
   }
 
   const subjectsQuery = subjects.join("+");
-  const url = `/api/books/search/v3?query=${encodeURIComponent(subjectsQuery)}&pageSize=40`;
-  
+  const url = `/api/books/search/v3?query=${encodeURIComponent(
+    subjectsQuery
+  )}&pageSize=40`;
+
   const searchResponse = await fetch(url);
   if (!searchResponse.ok) {
     console.error("Error fetching recommendations");
@@ -207,10 +209,10 @@ export async function GET(request: Request) {
     }
 
     const url = new URL(request.url);
-    const version = url.searchParams.get('version') || 'v1';
+    const version = url.searchParams.get("version") || "v1";
 
     let recommendations;
-    if (version === 'v2') {
+    if (version === "v2") {
       recommendations = await getRecommendationsV2(supabase, user.id);
     } else {
       recommendations = await getRecommendationsV1(supabase, user.id);

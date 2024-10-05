@@ -61,14 +61,14 @@ async function getRecommendations(
     // For this example, we'll just use a default subject
     subjects = ["fiction"];
   }
-
   const subjectsQuery = subjects.join(",");
-  const url = `/api/books/search/v3?subjects=${encodeURIComponent(
+  const url = `https://localhost:3000/api/books/search/v3?subjects=${encodeURIComponent(
     subjectsQuery
   )}`;
 
-  const searchResponse = await fetch(url.toString());
-  console.log(await searchResponse.json());
+  const searchResponse = await fetch(url);
+  console.log(searchResponse);
+  console.log(searchResponse.status);
   if (!searchResponse.ok) {
     console.error("Error fetching recommendations");
     return [];
@@ -107,7 +107,7 @@ export async function GET() {
     const recommendations = await getRecommendations(supabase, user.id);
     return NextResponse.json(recommendations);
   } catch (error) {
-    console.error("Unexpected error:", error);
+    // console.error("Unexpected error:", error);
     return NextResponse.json(
       { error: "An unexpected error occurred" },
       { status: 500 }

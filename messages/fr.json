@@ -156,7 +156,9 @@
     "remove_btn": "Supprimer",
     "untitled_label": "Sans Titre",
     "view_sellers": "Voir",
-    "signup_cta": "Inscrivez-vous pour en découvrir plus!"
+    "signup_cta": "Inscrivez-vous pour en découvrir plus!",
+    "view_less":"Voir Moins",
+    "view_more":"Voir Plus"
   },
   "ReadingRewards": {
     "title": "Récompenses de Lecture",
