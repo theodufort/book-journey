@@ -26,8 +26,8 @@ export async function GET(req: NextRequest) {
     // }
   }
   // URL to redirect to after sign in process completes
-  return NextResponse.redirect(
-    "https://mybookquest.com" + config.auth.callbackUrl
+    return NextResponse.redirect(
+    process.env.NEXT_PUBLIC_BASE_URL + config.auth.callbackUrl
   );
   // return NextResponse.redirect(
   //   "https://localhost:3000" + config.auth.callbackUrl
