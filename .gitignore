@@ -70,3 +70,5 @@ bun.lockb
 pwa-android/
 /pwa-android
 roles.sql
+/.vscode
+data.sql

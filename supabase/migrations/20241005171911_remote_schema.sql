@@ -112,7 +112,7 @@ END;
 $$;
 
 
-ALTER FUNCTION "public"."check_inactive_users"("days" integer) OWNER TO "supabase_admin";
+ALTER FUNCTION "public"."check_inactive_users"("days" integer) OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."get_basic_article_info"("p_slug" character varying) RETURNS TABLE("id" integer, "slug" character varying, "title" character varying, "description" "text", "isbn13" character varying, "image_url" "text", "image_alt" "text", "published_at" timestamp with time zone)
@@ -198,7 +198,7 @@ END;
 $$;
 
 
-ALTER FUNCTION "public"."handle_new_user"() OWNER TO "supabase_admin";
+ALTER FUNCTION "public"."handle_new_user"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."increment_points_earned"("_user_id" "uuid", "_points_to_add" integer) RETURNS "void"
@@ -279,7 +279,7 @@ END;
 $$;
 
 
-ALTER FUNCTION "public"."update_timestamp_based_on_status"() OWNER TO "supabase_admin";
+ALTER FUNCTION "public"."update_timestamp_based_on_status"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."update_user_points"() RETURNS "trigger"
@@ -319,7 +319,7 @@ CREATE TABLE IF NOT EXISTS "public"."ai_conversations" (
 );
 
 
-ALTER TABLE "public"."ai_conversations" OWNER TO "supabase_admin";
+ALTER TABLE "public"."ai_conversations" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."article_categories" (
@@ -586,7 +586,7 @@ CREATE TABLE IF NOT EXISTS "public"."profiles" (
 );
 
 
-ALTER TABLE "public"."profiles" OWNER TO "supabase_admin";
+ALTER TABLE "public"."profiles" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."quotes" (
@@ -596,7 +596,7 @@ CREATE TABLE IF NOT EXISTS "public"."quotes" (
 );
 
 
-ALTER TABLE "public"."quotes" OWNER TO "supabase_admin";
+ALTER TABLE "public"."quotes" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."reading_list" (
@@ -1204,7 +1204,7 @@ CREATE POLICY "user_preferences are updatable only by their user" ON "public"."u
 CREATE PUBLICATION "logflare_pub" WITH (publish = 'insert, update, delete, truncate');
 
 
-ALTER PUBLICATION "logflare_pub" OWNER TO "supabase_admin";
+ALTER PUBLICATION "logflare_pub" OWNER TO "postgres";
 
 
 
