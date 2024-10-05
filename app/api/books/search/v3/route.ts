@@ -23,16 +23,22 @@ export async function GET(request: NextRequest) {
 
   try {
     // Construct the search string
-    let searchString = query || "";
+    let url: string;
+    let cacheKey: string;
+
     if (subjects) {
-      const subjectArray = subjects.split(",");
-      searchString +=
-        (searchString ? " " : "") +
-        subjectArray.map((subject) => `subject:"${subject.trim()}"`).join(" ");
+      const subjectArray = subjects.split(",").map(subject => subject.trim());
+      const subjectsQuery = subjectArray.join(", ");
+      url = `https://api2.isbndb.com/books/${encodeURIComponent(subjectsQuery)}?column=subjects&page=${page}&pageSize=${pageSize}&language=${language}`;
+      cacheKey = `search:v3:subjects:${subjectsQuery}:${page}:${pageSize}:${language}`;
+    } else if (query) {
+      url = `https://api2.isbndb.com/books/${encodeURIComponent(query)}?page=${page}&pageSize=${pageSize}&language=${language}`;
+      cacheKey = `search:v3:query:${query}:${page}:${pageSize}:${language}`;
+    } else {
+      return NextResponse.json({ error: "Either subjects or query must be provided" }, { status: 400 });
     }
 
     // Check if the search results exist in the cache
-    const cacheKey = `search:v3:${searchString}:${page}:${pageSize}:${language}`;
     const { data: cachedResults, error: cacheError } = await supabase
       .from("books")
       .select("data")
@@ -46,9 +52,6 @@ export async function GET(request: NextRequest) {
     if (cachedResults) {
       return NextResponse.json(cachedResults.data);
     }
-    const url = `https://api2.isbndb.com/books/${encodeURIComponent(
-      searchString
-    )}?page=${page}&pageSize=${pageSize}&language=${language}`;
     console.log(url);
     // If not in cache, fetch from ISBNDB API
     const response = await axios.get(url, {
