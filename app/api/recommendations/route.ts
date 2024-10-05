@@ -8,9 +8,7 @@ import {
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-const GOOGLE_BOOKS_API_BASE = "https://www.googleapis.com/books/v1";
-const GOOGLE_BOOKS_API_KEY = "YOUR_GOOGLE_BOOKS_API_KEY"; // Replace with your actual API key
-
+// V1 implementation (existing code)
 async function getUserCategories(
   supabase: SupabaseClient<any, "public", any>,
   userId: string
@@ -62,6 +60,7 @@ async function getBookDetails(bookId: string) {
     description: volume.volumeInfo.description,
   };
 }
+
 function getRandomCategories(set: Set<string>, count: number): string[] {
   const array = Array.from(set);
 
@@ -74,7 +73,7 @@ function getRandomCategories(set: Set<string>, count: number): string[] {
   return array.slice(0, count);
 }
 
-async function getRecommendations(
+async function getRecommendationsV1(
   supabase: SupabaseClient<any, "public", any>,
   userId: string
 ) {
@@ -151,7 +150,51 @@ async function getRecommendations(
   }
 }
 
-export async function GET() {
+// V2 implementation
+async function getRecommendationsV2(
+  supabase: SupabaseClient<any, "public", any>,
+  userId: string
+) {
+  const readBooks = await getReadBooks(supabase, userId);
+  const userCategories = await getUserCategories(supabase, userId);
+
+  let subjects: string[];
+  if (readBooks.length === 0 && userCategories.length > 0) {
+    subjects = getRandomCategories(userCategories, 1);
+  } else {
+    // In a real scenario, you'd analyze read books to determine subjects
+    // For this example, we'll just use a default subject
+    subjects = ["fiction"];
+  }
+
+  const subjectsQuery = subjects.join("+");
+  const url = `/api/books/search/v3?query=${encodeURIComponent(subjectsQuery)}&pageSize=40`;
+  
+  const searchResponse = await fetch(url);
+  if (!searchResponse.ok) {
+    console.error("Error fetching recommendations");
+    return [];
+  }
+
+  const searchData: BookVolumes = await searchResponse.json();
+  if (searchData.items) {
+    // Filter out books that the user has already read
+    const readBookIds = new Set(readBooks.map((book) => book.book_id));
+    const recommendations = searchData.items.filter(
+      (book: Volume) =>
+        !readBookIds.has(
+          book.volumeInfo.industryIdentifiers?.find(
+            (id) => id.type === "ISBN_13"
+          )?.identifier
+        ) && book.volumeInfo.authors
+    );
+    return recommendations.slice(0, 20); // Return top 20 recommendations
+  } else {
+    return [];
+  }
+}
+
+export async function GET(request: Request) {
   const supabase = createRouteHandlerClient<Database>({ cookies });
   try {
     const {
@@ -163,7 +206,16 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const recommendations = await getRecommendations(supabase, user.id);
+    const url = new URL(request.url);
+    const version = url.searchParams.get('version') || 'v1';
+
+    let recommendations;
+    if (version === 'v2') {
+      recommendations = await getRecommendationsV2(supabase, user.id);
+    } else {
+      recommendations = await getRecommendationsV1(supabase, user.id);
+    }
+
     return NextResponse.json(recommendations);
   } catch (error) {
     console.error("Unexpected error:", error);
