@@ -29,6 +29,7 @@ async function getAuthorDetails(authorKey: string) {
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const query = searchParams.get("q");
+  const version = searchParams.get("v") || "2";
 
   if (!query) {
     return NextResponse.json(
@@ -44,7 +45,7 @@ export async function GET(request: NextRequest) {
     const { data: cachedResults, error: cacheError } = await supabase
       .from("books")
       .select("data")
-      .eq("isbn_13", `search:v2:${query}`)
+      .eq("isbn_13", `search:v${version}:${query}`)
       .single();
 
     if (cacheError && cacheError.code !== "PGRST116") {
@@ -70,7 +71,7 @@ export async function GET(request: NextRequest) {
 
     const data = response.data;
     if (!data.docs || data.docs.length === 0) {
-      return NextResponse.json({ items: [] });
+      return NextResponse.json(version === "3" ? { total: 0, books: [] } : { items: [] });
     }
 
     // Transform the Open Library results to match the structure of our previous API
@@ -86,58 +87,77 @@ export async function GET(request: NextRequest) {
               { name: "Unknown Author" },
             ];
 
-        return {
-          id: book.key,
-          volumeInfo: {
-            title: book.title,
-            subtitle: book.subtitle || null,
-            authors: authors.filter(Boolean).map((author: any) => author.name),
-            publishedDate: book.first_publish_year?.toString() || "Unknown",
-            description:
-              book.description ||
-              book.first_sentence ||
-              "No description available",
-            industryIdentifiers: [
-              ...(book.isbn
-                ? [{ type: "ISBN_13", identifier: book.isbn[0] }]
-                : []),
-              ...(book.isbn
-                ? [{ type: "ISBN_10", identifier: book.isbn[0].slice(-10) }]
-                : []),
-            ],
-            imageLinks: {
-              thumbnail: book.cover_i
-                ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`
-                : null,
-              small: book.cover_i
-                ? `https://covers.openlibrary.org/b/id/${book.cover_i}-S.jpg`
-                : null,
-              medium: book.cover_i
-                ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`
-                : null,
-              large: book.cover_i
-                ? `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`
-                : null,
-            },
-            pageCount: book.number_of_pages_median || 0,
-            categories: book.subject || [],
-            language: book.language?.[0] || "und",
-            publisher: book.publisher?.[0] || "Unknown Publisher",
-            publishPlace: book.publish_place?.[0] || "Unknown",
-          },
+        const commonData = {
+          title: book.title,
+          authors: authors.filter(Boolean).map((author: any) => author.name),
+          publishedDate: book.first_publish_year?.toString() || "Unknown",
+          description:
+            book.description ||
+            book.first_sentence ||
+            "No description available",
+          isbn13: book.isbn?.[0] || "",
+          isbn10: book.isbn?.[0]?.slice(-10) || "",
+          language: book.language?.[0] || "und",
+          pageCount: book.number_of_pages_median || 0,
+          publisher: book.publisher?.[0] || "Unknown Publisher",
+          image: book.cover_i
+            ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`
+            : null,
         };
+
+        if (version === "3") {
+          return {
+            ...commonData,
+            title_long: book.subtitle ? `${book.title}: ${book.subtitle}` : book.title,
+            date_published: commonData.publishedDate,
+            synopsis: commonData.description,
+            subjects: book.subject || ["Subjects"],
+            binding: book.physical_format || "Unknown",
+            isbn: commonData.isbn13,
+            pages: commonData.pageCount,
+          };
+        } else {
+          return {
+            id: book.key,
+            volumeInfo: {
+              ...commonData,
+              subtitle: book.subtitle || null,
+              industryIdentifiers: [
+                ...(commonData.isbn13 ? [{ type: "ISBN_13", identifier: commonData.isbn13 }] : []),
+                ...(commonData.isbn10 ? [{ type: "ISBN_10", identifier: commonData.isbn10 }] : []),
+              ],
+              imageLinks: {
+                thumbnail: commonData.image,
+                small: book.cover_i
+                  ? `https://covers.openlibrary.org/b/id/${book.cover_i}-S.jpg`
+                  : null,
+                medium: commonData.image,
+                large: book.cover_i
+                  ? `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`
+                  : null,
+              },
+              categories: book.subject || [],
+              publishPlace: book.publish_place?.[0] || "Unknown",
+            },
+          };
+        }
       })
     );
 
-    const result = {
-      items: transformedItems,
-      totalItems: data.numFound,
-    };
+    const result = version === "3"
+      ? {
+          total: data.numFound,
+          books: transformedItems,
+        }
+      : {
+          items: transformedItems,
+          totalItems: data.numFound,
+        };
 
     // Cache the search results
     const { error: insertError } = await supabase
       .from("books")
-      .insert({ isbn_13: `search:v2:${query}`, data: result });
+      .insert({ isbn_13: `search:v${version}:${query}`, data: result });
 
     if (insertError) {
       console.error("Error caching search results:", insertError);
