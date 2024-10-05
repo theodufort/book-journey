@@ -8,7 +8,7 @@ import {
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 interface Props {
   vol: Volume;
@@ -21,6 +21,7 @@ const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
   const router = useRouter();
   const supabase = createClientComponentClient<Database>();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isCategoriesExpanded, setIsCategoriesExpanded] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const handleToggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -150,11 +151,27 @@ const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
           <h5>
             <b>{t("categories_label")}: </b>
             <ul>
-              <li>{vol.volumeInfo.mainCategory}</li>
-              {vol.volumeInfo.categories != null
-                ? vol.volumeInfo.categories.map((x, i) => <li key={i}>{x}</li>)
-                : null}
+              {useMemo(() => {
+                const allCategories = [
+                  vol.volumeInfo.mainCategory,
+                  ...(vol.volumeInfo.categories || []),
+                ].filter(Boolean);
+                const displayCategories = isCategoriesExpanded
+                  ? allCategories
+                  : allCategories.slice(0, 3);
+                return displayCategories.map((category, index) => (
+                  <li key={index}>{category}</li>
+                ));
+              }, [vol.volumeInfo.mainCategory, vol.volumeInfo.categories, isCategoriesExpanded])}
             </ul>
+            {(vol.volumeInfo.mainCategory ? 1 : 0) + (vol.volumeInfo.categories?.length || 0) > 3 && (
+              <button
+                onClick={() => setIsCategoriesExpanded(!isCategoriesExpanded)}
+                className="text-blue-500 ml-2"
+              >
+                {isCategoriesExpanded ? t("view_less") : t("view_more")}
+              </button>
+            )}
           </h5>
           <h5>
             <b>{t("description_label")}: </b>
