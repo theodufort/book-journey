@@ -62,8 +62,8 @@ async function getRecommendations(
     subjects = ["fiction"];
   }
 
-  const subjectsQuery = subjects.join("+");
-  const url = `/api/books/search/v3?query=${encodeURIComponent(subjectsQuery)}&pageSize=40`;
+  const subjectsQuery = subjects.join(",");
+  const url = `/api/books/search/v3?subjects=${encodeURIComponent(subjectsQuery)}&pageSize=40`;
   
   const searchResponse = await fetch(url);
   if (!searchResponse.ok) {
