@@ -125,12 +125,12 @@ export default function AddBook() {
               key={`search-result-${book.id}-${index}`}
               className="card lg:card-side bg-base-100 shadow-xl"
             >
-              <figure className="p-4 w-48 h-64 flex items-center justify-center">
+              <figure className="p-4 w-48 h-64 min-w-[120px] flex items-center justify-center">
                 {book.volumeInfo.imageLinks?.thumbnail ? (
                   <img
                     src={book.volumeInfo.imageLinks.thumbnail}
                     alt={book.volumeInfo.title}
-                    className="rounded-lg w-full h-full object-cover"
+                    className="rounded-lg w-full h-full object-contain"
                   />
                 ) : (
                   <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-lg">
