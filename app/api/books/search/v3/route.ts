@@ -6,14 +6,15 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const query = searchParams.get("q");
+  const query = searchParams.get("query");
+  const subjects = searchParams.get("subjects");
   const page = searchParams.get("page") || "1";
   const pageSize = searchParams.get("pageSize") || "20";
   const language = searchParams.get("language") || "en";
 
-  if (!query) {
+  if (!query && !subjects) {
     return NextResponse.json(
-      { error: "Search query is required" },
+      { error: "Search query or subjects are required" },
       { status: 400 }
     );
   }
@@ -21,11 +22,19 @@ export async function GET(request: NextRequest) {
   const supabase = createRouteHandlerClient<Database>({ cookies });
 
   try {
+    // Construct the search string
+    let searchString = query || "";
+    if (subjects) {
+      const subjectArray = subjects.split(',');
+      searchString += (searchString ? " " : "") + subjectArray.map(subject => `subject:"${subject.trim()}"`).join(" ");
+    }
+
     // Check if the search results exist in the cache
+    const cacheKey = `search:v3:${searchString}:${page}:${pageSize}:${language}`;
     const { data: cachedResults, error: cacheError } = await supabase
       .from("books")
       .select("data")
-      .eq("isbn_13", `search:v3:${query}:${page}:${pageSize}:${language}`)
+      .eq("isbn_13", cacheKey)
       .single();
 
     if (cacheError && cacheError.code !== "PGRST116") {
@@ -38,7 +47,7 @@ export async function GET(request: NextRequest) {
 
     // If not in cache, fetch from ISBNDB API
     const response = await axios.get(
-      `https://api2.isbndb.com/books/${encodeURIComponent(query)}?page=${page}&pageSize=${pageSize}&language=${language}`,
+      `https://api2.isbndb.com/books/${encodeURIComponent(searchString)}?page=${page}&pageSize=${pageSize}&language=${language}`,
       {
         headers: {
           'Authorization': process.env.ISBN_DB_API_KEY as string
@@ -88,7 +97,7 @@ export async function GET(request: NextRequest) {
     // Cache the search results
     const { error: insertError } = await supabase
       .from("books")
-      .insert({ isbn_13: `search:v3:${query}:${page}:${pageSize}:${language}`, data: result });
+      .insert({ isbn_13: cacheKey, data: result });
 
     if (insertError) {
       console.error("Error caching search results:", insertError);
