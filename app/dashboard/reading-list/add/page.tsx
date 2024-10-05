@@ -35,7 +35,7 @@ export default function AddBook() {
 
     try {
       const response = await fetch(
-        `/api/books/search?q=${encodeURIComponent(searchQuery)}`
+        `/api/books/search/v3?q=${encodeURIComponent(searchQuery)}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch books");
