@@ -25,8 +25,10 @@ export async function GET(request: NextRequest) {
     // Construct the search string
     let searchString = query || "";
     if (subjects) {
-      const subjectArray = subjects.split(',');
-      searchString += (searchString ? " " : "") + subjectArray.map(subject => `subject:"${subject.trim()}"`).join(" ");
+      const subjectArray = subjects.split(",");
+      searchString +=
+        (searchString ? " " : "") +
+        subjectArray.map((subject) => `subject:"${subject.trim()}"`).join(" ");
     }
 
     // Check if the search results exist in the cache
@@ -44,21 +46,19 @@ export async function GET(request: NextRequest) {
     if (cachedResults) {
       return NextResponse.json(cachedResults.data);
     }
-
+    const url = `https://api2.isbndb.com/books/${encodeURIComponent(
+      searchString
+    )}?page=${page}&pageSize=${pageSize}&language=${language}`;
+    console.log(url);
     // If not in cache, fetch from ISBNDB API
-    const response = await axios.get(
-      `https://api2.isbndb.com/books/${encodeURIComponent(searchString)}?page=${page}&pageSize=${pageSize}&language=${language}`,
-      {
-        headers: {
-          'Authorization': process.env.ISBN_DB_API_KEY as string
-        }
-      }
-    );
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: process.env.ISBN_DB_API_KEY as string,
+      },
+    });
 
     if (response.status !== 200) {
-      throw new Error(
-        `ISBNDB API responded with status ${response.status}`
-      );
+      throw new Error(`ISBNDB API responded with status ${response.status}`);
     }
 
     const data = response.data;
@@ -71,13 +71,16 @@ export async function GET(request: NextRequest) {
       id: book.isbn13,
       volumeInfo: {
         title: book.title,
-        subtitle: book.title_long !== book.title ? book.title_long.replace(book.title, '').trim() : null,
+        subtitle:
+          book.title_long !== book.title
+            ? book.title_long.replace(book.title, "").trim()
+            : null,
         authors: book.authors,
         publishedDate: book.date_published,
         description: book.synopsis,
         industryIdentifiers: [
-          { type: 'ISBN_13', identifier: book.isbn13 },
-          { type: 'ISBN_10', identifier: book.isbn10 },
+          { type: "ISBN_13", identifier: book.isbn13 },
+          { type: "ISBN_10", identifier: book.isbn10 },
         ],
         pageCount: book.pages,
         categories: book.subjects,
