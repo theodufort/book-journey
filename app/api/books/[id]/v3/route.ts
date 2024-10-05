@@ -48,16 +48,52 @@ export async function GET(
 
     const bookData = response.data.book;
 
-    // Cache the book data
+    // Transform the ISBNDB data to match v1 and v2 format
+    const transformedBookData = {
+      id: bookData.isbn13,
+      volumeInfo: {
+        title: bookData.title,
+        subtitle: bookData.title_long !== bookData.title ? bookData.title_long.replace(bookData.title, '').trim() : null,
+        authors: bookData.authors,
+        publishedDate: bookData.date_published,
+        description: bookData.synopsis,
+        industryIdentifiers: [
+          { type: 'ISBN_13', identifier: bookData.isbn13 },
+          { type: 'ISBN_10', identifier: bookData.isbn10 },
+        ],
+        pageCount: bookData.pages,
+        categories: bookData.subjects,
+        language: bookData.language,
+        imageLinks: {
+          thumbnail: bookData.image,
+          small: bookData.image,
+          medium: bookData.image,
+          large: bookData.image,
+        },
+        publisher: bookData.publisher,
+        publishPlace: bookData.publisher_place || "Unknown",
+        physicalFormat: bookData.binding,
+        dimensions: {
+          height: bookData.dimensions?.height,
+          width: bookData.dimensions?.width,
+          thickness: bookData.dimensions?.thickness,
+          unit: bookData.dimensions?.unit,
+        },
+        edition: bookData.edition,
+        msrp: bookData.msrp,
+      },
+    };
+
+    // Cache the transformed book data
     const { error: insertError } = await supabase
       .from("books")
-      .insert({ isbn_13: `v3:${id}`, data: { book: bookData } });
+      .insert({ isbn_13: `v3:${id}`, data: transformedBookData });
 
     if (insertError) {
       console.error("Error caching book data:", insertError);
     }
 
-    return NextResponse.json({ book: bookData });
+    return NextResponse.json(transformedBookData);
   } catch (error) {
     console.error("Error fetching book details:", error);
     return NextResponse.json(
