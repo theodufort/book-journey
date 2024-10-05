@@ -69,14 +69,14 @@ const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
           isBlurred ? "blur-md" : ""
         }`}
       >
-        <figure>
+        <figure className="flex items-center justify-center h-64">
           <img
             src={
               vol.volumeInfo.imageLinks?.thumbnail ||
               "https://mybookquest.com/default-book-cover.png"
             }
             alt="Book Thumbnail"
-            className="pt-5"
+            className="max-h-full w-auto object-contain"
           />
         </figure>
         <div className="card-body items-center text-center">
