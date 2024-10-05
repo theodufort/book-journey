@@ -8,7 +8,7 @@ import {
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 interface Props {
   vol: Volume;
@@ -59,7 +59,7 @@ const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
       : description;
   return (
     <div
-      className="relative"
+      className="relative h-full"
       key={
         vol.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
           ?.identifier
@@ -162,9 +162,15 @@ const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
                 return displayCategories.map((category, index) => (
                   <li key={index}>{category}</li>
                 ));
-              }, [vol.volumeInfo.mainCategory, vol.volumeInfo.categories, isCategoriesExpanded])}
+              }, [
+                vol.volumeInfo.mainCategory,
+                vol.volumeInfo.categories,
+                isCategoriesExpanded,
+              ])}
             </ul>
-            {(vol.volumeInfo.mainCategory ? 1 : 0) + (vol.volumeInfo.categories?.length || 0) > 3 && (
+            {(vol.volumeInfo.mainCategory ? 1 : 0) +
+              (vol.volumeInfo.categories?.length || 0) >
+              3 && (
               <button
                 onClick={() => setIsCategoriesExpanded(!isCategoriesExpanded)}
                 className="text-blue-500 ml-2"

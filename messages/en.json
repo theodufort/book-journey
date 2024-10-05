@@ -156,7 +156,9 @@
       "remove_btn":"Remove",
       "untitled_label":"Untitled",
       "view_sellers":"View",
-      "signup_cta":"Sign Up to find more!"
+      "signup_cta":"Sign Up to find more!",
+      "view_less":"View Less",
+      "view_more":"View More"
     },
     "ReadingRewards":{
       "title":"Reading Rewards",

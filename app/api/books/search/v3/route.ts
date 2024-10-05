@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const query = searchParams.get("query");
+  const query = searchParams.get("q");
   const subjects = searchParams.get("subjects");
   const page = searchParams.get("page") || "1";
   const pageSize = searchParams.get("pageSize") || "20";
@@ -27,15 +27,22 @@ export async function GET(request: NextRequest) {
     let cacheKey: string;
 
     if (subjects) {
-      const subjectArray = subjects.split(",").map(subject => subject.trim());
+      const subjectArray = subjects.split(",").map((subject) => subject.trim());
       const subjectsQuery = subjectArray.join(", ");
-      url = `https://api2.isbndb.com/books/${encodeURIComponent(subjectsQuery)}?column=subjects&page=${page}&pageSize=${pageSize}&language=${language}`;
+      url = `https://api2.isbndb.com/books/${encodeURIComponent(
+        subjectsQuery
+      )}?column=subjects&page=${page}&pageSize=${pageSize}&language=${language}`;
       cacheKey = `search:v3:subjects:${subjectsQuery}:${page}:${pageSize}:${language}`;
     } else if (query) {
-      url = `https://api2.isbndb.com/books/${encodeURIComponent(query)}?page=${page}&pageSize=${pageSize}&language=${language}`;
+      url = `https://api2.isbndb.com/books/${encodeURIComponent(
+        query
+      )}?page=${page}&pageSize=${pageSize}&language=${language}&column=title`;
       cacheKey = `search:v3:query:${query}:${page}:${pageSize}:${language}`;
     } else {
-      return NextResponse.json({ error: "Either subjects or query must be provided" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Either subjects or query must be provided" },
+        { status: 400 }
+      );
     }
 
     // Check if the search results exist in the cache
