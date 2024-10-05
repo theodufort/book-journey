@@ -67,7 +67,7 @@ async function getRecommendations(
     subjectsQuery
   )}`;
 
-  const searchResponse = await fetch(url);
+  const searchResponse = await fetch(url.toString());
   if (!searchResponse.ok) {
     console.error("Error fetching recommendations");
     return [];
