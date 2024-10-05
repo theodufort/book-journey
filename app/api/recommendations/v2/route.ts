@@ -63,8 +63,10 @@ async function getRecommendations(
   }
 
   const subjectsQuery = subjects.join(",");
-  const url = `/api/books/search/v3?subjects=${encodeURIComponent(subjectsQuery)}&pageSize=40`;
-  
+  const url = `/api/books/search/v3?subjects=${encodeURIComponent(
+    subjectsQuery
+  )}`;
+
   const searchResponse = await fetch(url);
   if (!searchResponse.ok) {
     console.error("Error fetching recommendations");
