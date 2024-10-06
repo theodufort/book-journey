@@ -1,16 +1,25 @@
-"use server";
-
 import { Locale, defaultLocale } from "@/i18n/config";
-import { cookies } from "next/headers";
 
-// In this example the locale is read from a cookie. You could alternatively
-// also read it from a database, backend service, or any other source.
 const COOKIE_NAME = "NEXT_LOCALE";
 
 export async function getUserLocale() {
-  return cookies().get(COOKIE_NAME)?.value || defaultLocale;
+  if (typeof window === 'undefined') {
+    // Server-side
+    const { cookies } = await import('next/headers');
+    return cookies().get(COOKIE_NAME)?.value || defaultLocale;
+  } else {
+    // Client-side
+    return document.cookie.split('; ').find(row => row.startsWith(COOKIE_NAME))?.split('=')[1] || defaultLocale;
+  }
 }
 
 export async function setUserLocale(locale: Locale) {
-  cookies().set(COOKIE_NAME, locale);
+  if (typeof window === 'undefined') {
+    // Server-side
+    const { cookies } = await import('next/headers');
+    cookies().set(COOKIE_NAME, locale);
+  } else {
+    // Client-side
+    document.cookie = `${COOKIE_NAME}=${locale}; path=/; max-age=31536000; SameSite=Lax`;
+  }
 }

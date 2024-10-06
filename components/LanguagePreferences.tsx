@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
+import { setUserLocale } from "@/libs/locale";
+import { Locale } from "@/i18n/config";
 
 interface LanguagePreferencesProps {
   userId: string;
@@ -50,6 +52,7 @@ export const LanguagePreferences: React.FC<LanguagePreferencesProps> = ({ userId
         setBookLanguage(value);
       } else {
         setInterfaceLanguage(value);
+        await setUserLocale(value as Locale);
       }
     }
   };
