@@ -73,7 +73,7 @@
   },
   "ButtonAccount": {
     "profile": "Profil",
-    "logout": "Déconnexion"
+    "logout": "Quitter"
   },
   "ReadingList": {
     "title": "Ma Liste de Lecture",
