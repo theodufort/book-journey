@@ -41,7 +41,7 @@ export default async function RootLayout({
           <meta name="impact-site-verification" data-value="369738092" />{" "}
           <Script
             strategy="lazyOnload"
-            src="https://embed.tawk.to/5f91958f17015e2aea6d73f8/default"
+            src="https://embed.tawk.to/6701c7a037379df10df23fe2/1i9ff7ip6"
           />
           <PlausibleProvider domain={config.domainName} />
         </head>
