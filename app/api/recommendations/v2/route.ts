@@ -62,7 +62,7 @@ async function getRecommendations(
     subjects = ["fiction"];
   }
   const subjectsQuery = subjects.join(",");
-  const url = `https://localhost:3000/api/books/search/v3?subjects=${encodeURIComponent(
+  const url = `/api/books/search/v3?subjects=${encodeURIComponent(
     subjectsQuery
   )}`;
 
