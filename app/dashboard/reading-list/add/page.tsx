@@ -111,27 +111,25 @@ export default function AddBook() {
         </div>
         <h1 className="text-3xl md:text-4xl font-extrabold">Add a Book</h1>
 
-        <form onSubmit={searchBooks} className="flex flex-col space-y-2">
-          <div className="flex space-x-2">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by title or ISBN"
-              className="input input-bordered w-full max-w-lg"
-            />
-            <select
-              value={selectedLanguage}
-              onChange={(e) => setSelectedLanguage(e.target.value)}
-              className="select select-bordered"
-            >
-              {languages.map((lang) => (
-                <option key={lang.code} value={lang.code}>
-                  {lang.name}
-                </option>
-              ))}
-            </select>
-          </div>
+        <form onSubmit={searchBooks} className="flex space-x-2">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by title or ISBN"
+            className="input input-bordered w-full"
+          />
+          <select
+            value={selectedLanguage}
+            onChange={(e) => setSelectedLanguage(e.target.value)}
+            className="select select-bordered"
+          >
+            {languages.map((lang) => (
+              <option key={lang.code} value={lang.code}>
+                {lang.name}
+              </option>
+            ))}
+          </select>
           <button
             type="submit"
             className="btn btn-primary"
