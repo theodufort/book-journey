@@ -46,7 +46,9 @@ export default function AddBook() {
 
     try {
       const response = await fetch(
-        `/api/books/search/v3?q=${encodeURIComponent(searchQuery)}&langRestrict=${selectedLanguage}&language=${selectedLanguage}`
+        `/api/books/search/v3?q=${encodeURIComponent(
+          searchQuery
+        )}&langRestrict=${selectedLanguage}&language=${selectedLanguage}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch books");
@@ -111,7 +113,10 @@ export default function AddBook() {
         </div>
         <h1 className="text-3xl md:text-4xl font-extrabold">Add a Book</h1>
 
-        <form onSubmit={searchBooks} className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+        <form
+          onSubmit={searchBooks}
+          className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2"
+        >
           <div className="flex-grow">
             <input
               type="text"
@@ -153,7 +158,7 @@ export default function AddBook() {
               key={`search-result-${book.id}-${index}`}
               className="card lg:card-side bg-base-100 shadow-xl"
             >
-              <figure className="p-4 w-48 h-64 min-w-[120px] flex items-center justify-center">
+              <figure className="p-4 w-48 h-64 min-w-[120px] flex items-center justify-center m-auto">
                 {book.volumeInfo.imageLinks?.thumbnail ? (
                   <img
                     src={book.volumeInfo.imageLinks.thumbnail}
