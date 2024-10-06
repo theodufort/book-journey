@@ -16,7 +16,7 @@ export default function AddBook() {
   const [searchResults, setSearchResults] = useState<BookSearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedLanguage, setSelectedLanguage] = useState("en");
+  const [selectedLanguage, setSelectedLanguage] = useState("");
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
 
@@ -24,16 +24,29 @@ export default function AddBook() {
     { code: "en", name: "English" },
     { code: "fr", name: "French" },
     { code: "es", name: "Spanish" },
-    { code: "de", name: "German" },
-    { code: "it", name: "Italian" },
-    { code: "ja", name: "Japanese" },
-    { code: "zh", name: "Chinese" },
   ];
 
   useEffect(() => {
     const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user);
+      const { data: userData } = await supabase.auth.getUser();
+      setUser(userData.user);
+
+      if (userData.user) {
+        const { data: preferenceData, error } = await supabase
+          .from('user_preferences')
+          .select('preferred_book_language')
+          .eq('user_id', userData.user.id)
+          .single();
+
+        if (error) {
+          console.error('Error fetching user preferences:', error);
+          setSelectedLanguage('en'); // Default to English if there's an error
+        } else if (preferenceData) {
+          setSelectedLanguage(preferenceData.preferred_book_language || 'en');
+        } else {
+          setSelectedLanguage('en'); // Default to English if no preference is set
+        }
+      }
     };
 
     getUser();
