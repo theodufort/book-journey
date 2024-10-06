@@ -66,18 +66,18 @@ const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
       }
     >
       <div
-        className={`card w-auto bg-base-200 shadow-xl h-full ${
+        className={`card w-auto bg-base-200 shadow-xl h-full pt-5 ${
           isBlurred ? "blur-md" : ""
         }`}
       >
-        <figure className="flex items-center justify-center h-64">
+        <figure className="flex items-center justify-center h-64 m-auto">
           <img
             src={
               vol.volumeInfo.imageLinks?.thumbnail ||
               "https://mybookquest.com/default-book-cover.png"
             }
             alt="Book Thumbnail"
-            className="max-h-full w-auto object-contain"
+            className="max-h-full w-auto object-contain rounded-lg"
           />
         </figure>
         <div className="card-body items-center text-center">
