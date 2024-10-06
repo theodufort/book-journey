@@ -106,10 +106,22 @@ export async function GET() {
     const recommendations = await getRecommendations(supabase, user.id);
     return NextResponse.json(recommendations);
   } catch (error) {
-    // console.error("Unexpected error:", error);
+    console.error("Unexpected error:", error);
+    let errorMessage = "An unexpected error occurred";
+    let statusCode = 500;
+
+    if (error instanceof Error) {
+      errorMessage = error.message;
+      if (error.name === "AuthError") {
+        statusCode = 401;
+      } else if (error.name === "DatabaseError") {
+        statusCode = 503;
+      }
+    }
+
     return NextResponse.json(
-      { error: error },
-      { status: 500 }
+      { error: errorMessage },
+      { status: statusCode }
     );
   }
 }
