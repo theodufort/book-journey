@@ -63,11 +63,10 @@ async function getRecommendations(
     subjects = ["fiction"];
   }
   const subjectsQuery = subjects.join(",");
-  const url = `/api/books/search/v3?subjects=${encodeURIComponent(
-    subjectsQuery
-  )}`;
+  const url = new URL("/api/books/search/v3", "http://localhost:3000");
+  url.searchParams.append("subjects", subjectsQuery);
 
-  const searchResponse = await fetch(url);
+  const searchResponse = await fetch(url.toString());
   if (!searchResponse.ok) {
     console.error("Error fetching recommendations");
     return [];
@@ -116,6 +115,9 @@ export async function GET() {
         statusCode = 401;
       } else if (error.name === "DatabaseError") {
         statusCode = 503;
+      } else if (error instanceof TypeError && error.message.includes("Invalid URL")) {
+        errorMessage = "Invalid URL configuration";
+        statusCode = 500;
       }
     }
 
