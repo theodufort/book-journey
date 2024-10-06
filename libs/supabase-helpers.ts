@@ -1,12 +1,10 @@
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { createClient } from "@supabase/supabase-js";
 
 // Initialize the Supabase client
-
+const supabase = createClientComponentClient<Database>();
 // Function to check if a book exists
 export async function checkBookExists(isbn13: string) {
-  const supabase = createClientComponentClient<Database>();
   try {
     const { data, error }: any = await supabase.rpc("check_book_exists", {
       p_isbn_13: isbn13,
