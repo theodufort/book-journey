@@ -1,8 +1,10 @@
 "use client";
 import CategorySelection from "@/components/CategorySelection";
-import { LanguagePreferences } from "@/components/LanguagePreferences";
 import HeaderDashboard from "@/components/DashboardHeader";
 import ImportFromApps from "@/components/ImportFromApps";
+import { LanguagePreferences } from "@/components/LanguagePreferences";
+import { Locale } from "@/i18n/config";
+import { setUserLocale } from "@/libs/locale";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
@@ -10,7 +12,6 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { setUserLocale } from "@/libs/locale";
 type Friend = {
   id: string;
   name: string;
@@ -45,7 +46,7 @@ export default function Profile() {
           .single();
 
         if (!error && preferences?.preferred_ui_language) {
-          await setUserLocale(preferences.preferred_ui_language);
+          await setUserLocale(preferences.preferred_ui_language as Locale);
         }
       }
     };
