@@ -52,7 +52,7 @@ async function getRecommendations(
 ) {
   const readBooks = await getReadBooks(supabase, userId);
   const userCategories = await getUserCategories(supabase, userId);
-
+console.log(readBooks)
   let subjects: string[];
   if (readBooks.length === 0 && userCategories.length > 0) {
     subjects = getRandomCategories(userCategories, 1);
