@@ -111,32 +111,38 @@ export default function AddBook() {
         </div>
         <h1 className="text-3xl md:text-4xl font-extrabold">Add a Book</h1>
 
-        <form onSubmit={searchBooks} className="flex space-x-2">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by title or ISBN"
-            className="input input-bordered w-full"
-          />
-          <select
-            value={selectedLanguage}
-            onChange={(e) => setSelectedLanguage(e.target.value)}
-            className="select select-bordered"
-          >
-            {languages.map((lang) => (
-              <option key={lang.code} value={lang.code}>
-                {lang.name}
-              </option>
-            ))}
-          </select>
-          <button
-            type="submit"
-            className="btn btn-primary"
-            disabled={loading}
-          >
-            {loading ? "Searching..." : "Search"}
-          </button>
+        <form onSubmit={searchBooks} className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+          <div className="flex-grow">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by title or ISBN"
+              className="input input-bordered w-full"
+            />
+          </div>
+          <div className="flex-shrink-0">
+            <select
+              value={selectedLanguage}
+              onChange={(e) => setSelectedLanguage(e.target.value)}
+              className="select select-bordered w-full"
+            >
+              {languages.map((lang) => (
+                <option key={lang.code} value={lang.code}>
+                  {lang.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex-shrink-0">
+            <button
+              type="submit"
+              className="btn btn-primary w-full"
+              disabled={loading}
+            >
+              {loading ? "Searching..." : "Search"}
+            </button>
+          </div>
         </form>
 
         {error && <p className="text-error">{error}</p>}
