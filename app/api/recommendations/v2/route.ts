@@ -63,7 +63,7 @@ async function getRecommendations(
     subjects = ["fiction"];
   }
   const subjectsQuery = subjects.join(",");
-  const url = new URL("/api/books/search/v3", "http://localhost:3000");
+  const url = new URL("/api/books/search/v3", process.env.NEXT_PUBLIC_BASE_URL);
   url.searchParams.append("subjects", subjectsQuery);
 
   const searchResponse = await fetch(url.toString());
