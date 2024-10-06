@@ -1044,121 +1044,31 @@ export type Database = {
       }
       profiles: {
         Row: {
-          aud: string | null
-          banned_until: string | null
-          confirmation_sent_at: string | null
-          confirmation_token: string | null
-          confirmed_at: string | null
           created_at: string | null
-          deleted_at: string | null
-          email: string | null
-          email_change: string | null
-          email_change_confirm_status: number | null
-          email_change_sent_at: string | null
-          email_change_token_current: string | null
-          email_change_token_new: string | null
-          email_confirmed_at: string | null
-          id: string | null
-          inactivity_email_sent: boolean
-          instance_id: string | null
-          invited_at: string | null
-          is_anonymous: boolean | null
-          is_sso_user: boolean | null
-          is_super_admin: boolean | null
+          id: string
           last_sign_in_at: string | null
-          phone: string | null
-          phone_change: string | null
-          phone_change_sent_at: string | null
-          phone_change_token: string | null
-          phone_confirmed_at: string | null
           raw_app_meta_data: Json | null
           raw_user_meta_data: Json | null
-          reauthentication_sent_at: string | null
-          reauthentication_token: string | null
-          recovery_sent_at: string | null
-          recovery_token: string | null
-          role: string | null
-          updated_at: string | null
         }
         Insert: {
-          aud?: string | null
-          banned_until?: string | null
-          confirmation_sent_at?: string | null
-          confirmation_token?: string | null
-          confirmed_at?: string | null
           created_at?: string | null
-          deleted_at?: string | null
-          email?: string | null
-          email_change?: string | null
-          email_change_confirm_status?: number | null
-          email_change_sent_at?: string | null
-          email_change_token_current?: string | null
-          email_change_token_new?: string | null
-          email_confirmed_at?: string | null
-          id?: string | null
-          inactivity_email_sent?: boolean
-          instance_id?: string | null
-          invited_at?: string | null
-          is_anonymous?: boolean | null
-          is_sso_user?: boolean | null
-          is_super_admin?: boolean | null
+          id: string
           last_sign_in_at?: string | null
-          phone?: string | null
-          phone_change?: string | null
-          phone_change_sent_at?: string | null
-          phone_change_token?: string | null
-          phone_confirmed_at?: string | null
           raw_app_meta_data?: Json | null
           raw_user_meta_data?: Json | null
-          reauthentication_sent_at?: string | null
-          reauthentication_token?: string | null
-          recovery_sent_at?: string | null
-          recovery_token?: string | null
-          role?: string | null
-          updated_at?: string | null
         }
         Update: {
-          aud?: string | null
-          banned_until?: string | null
-          confirmation_sent_at?: string | null
-          confirmation_token?: string | null
-          confirmed_at?: string | null
           created_at?: string | null
-          deleted_at?: string | null
-          email?: string | null
-          email_change?: string | null
-          email_change_confirm_status?: number | null
-          email_change_sent_at?: string | null
-          email_change_token_current?: string | null
-          email_change_token_new?: string | null
-          email_confirmed_at?: string | null
-          id?: string | null
-          inactivity_email_sent?: boolean
-          instance_id?: string | null
-          invited_at?: string | null
-          is_anonymous?: boolean | null
-          is_sso_user?: boolean | null
-          is_super_admin?: boolean | null
+          id?: string
           last_sign_in_at?: string | null
-          phone?: string | null
-          phone_change?: string | null
-          phone_change_sent_at?: string | null
-          phone_change_token?: string | null
-          phone_confirmed_at?: string | null
           raw_app_meta_data?: Json | null
           raw_user_meta_data?: Json | null
-          reauthentication_sent_at?: string | null
-          reauthentication_token?: string | null
-          recovery_sent_at?: string | null
-          recovery_token?: string | null
-          role?: string | null
-          updated_at?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "fk_user_id"
+            foreignKeyName: "profiles_id_fkey"
             columns: ["id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
@@ -1376,9 +1286,9 @@ export type Database = {
         Row: {
           bio: string | null
           onboarded: boolean
+          preferred_book_language: string | null
           preferred_categories: string[] | null
-          preffered_book_language: string | null
-          preffered_ui_language: string | null
+          preferred_ui_language: string | null
           profile_picture_url: string | null
           user_id: string
           username: string | null
@@ -1386,9 +1296,9 @@ export type Database = {
         Insert: {
           bio?: string | null
           onboarded?: boolean
+          preferred_book_language?: string | null
           preferred_categories?: string[] | null
-          preffered_book_language?: string | null
-          preffered_ui_language?: string | null
+          preferred_ui_language?: string | null
           profile_picture_url?: string | null
           user_id: string
           username?: string | null
@@ -1396,9 +1306,9 @@ export type Database = {
         Update: {
           bio?: string | null
           onboarded?: boolean
+          preferred_book_language?: string | null
           preferred_categories?: string[] | null
-          preffered_book_language?: string | null
-          preffered_ui_language?: string | null
+          preferred_ui_language?: string | null
           profile_picture_url?: string | null
           user_id?: string
           username?: string | null

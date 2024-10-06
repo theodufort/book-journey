@@ -33,18 +33,18 @@ export default function AddBook() {
 
       if (userData.user) {
         const { data: preferenceData, error } = await supabase
-          .from('user_preferences')
-          .select('preferred_book_language')
-          .eq('user_id', userData.user.id)
+          .from("user_preferences")
+          .select("preferred_book_language")
+          .eq("user_id", userData.user.id)
           .single();
 
         if (error) {
-          console.error('Error fetching user preferences:', error);
-          setSelectedLanguage('en'); // Default to English if there's an error
+          console.error("Error fetching user preferences:", error);
+          setSelectedLanguage("en"); // Default to English if there's an error
         } else if (preferenceData) {
-          setSelectedLanguage(preferenceData.preferred_book_language || 'en');
+          setSelectedLanguage(preferenceData.preferred_book_language || "en");
         } else {
-          setSelectedLanguage('en'); // Default to English if no preference is set
+          setSelectedLanguage("en"); // Default to English if no preference is set
         }
       }
     };
