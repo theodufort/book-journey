@@ -10,6 +10,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { setUserLocale } from "@/libs/locale";
 type Friend = {
   id: string;
   name: string;
@@ -36,6 +37,17 @@ export default function Profile() {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
       setUser(data.user);
+      if (data.user) {
+        const { data: preferences, error } = await supabase
+          .from("user_preferences")
+          .select("preferred_ui_language")
+          .eq("user_id", data.user.id)
+          .single();
+
+        if (!error && preferences?.preferred_ui_language) {
+          await setUserLocale(preferences.preferred_ui_language);
+        }
+      }
     };
 
     getUser();
