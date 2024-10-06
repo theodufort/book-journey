@@ -3,7 +3,7 @@ import { BookVolumes, Volume } from "@/interfaces/GoogleAPI";
 import { Database } from "@/types/supabase";
 import {
   SupabaseClient,
-  createRouteHandlerClient,
+  createServerComponentClient
 } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
@@ -52,7 +52,8 @@ async function getRecommendations(
 ) {
   const readBooks = await getReadBooks(supabase, userId);
   const userCategories = await getUserCategories(supabase, userId);
-console.log(readBooks)
+  console.log(readBooks);
+  console.log(userCategories);
   let subjects: string[];
   if (readBooks.length === 0 && userCategories.length > 0) {
     subjects = getRandomCategories(userCategories, 1);
@@ -67,8 +68,6 @@ console.log(readBooks)
   )}`;
 
   const searchResponse = await fetch(url);
-  console.log(searchResponse);
-  console.log(searchResponse.status);
   if (!searchResponse.ok) {
     console.error("Error fetching recommendations");
     return [];
@@ -93,7 +92,7 @@ console.log(readBooks)
 }
 
 export async function GET() {
-  const supabase = createRouteHandlerClient<Database>({ cookies });
+  const supabase = createServerComponentClient<Database>({cookies});
   try {
     const {
       data: { user },
