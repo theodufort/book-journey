@@ -16,8 +16,19 @@ export default function AddBook() {
   const [searchResults, setSearchResults] = useState<BookSearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedLanguage, setSelectedLanguage] = useState("en");
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
+
+  const languages = [
+    { code: "en", name: "English" },
+    { code: "fr", name: "French" },
+    { code: "es", name: "Spanish" },
+    { code: "de", name: "German" },
+    { code: "it", name: "Italian" },
+    { code: "ja", name: "Japanese" },
+    { code: "zh", name: "Chinese" },
+  ];
 
   useEffect(() => {
     const getUser = async () => {
@@ -35,7 +46,7 @@ export default function AddBook() {
 
     try {
       const response = await fetch(
-        `/api/books/search/v3?q=${encodeURIComponent(searchQuery)}`
+        `/api/books/search/v3?q=${encodeURIComponent(searchQuery)}&langRestrict=${selectedLanguage}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch books");
@@ -100,17 +111,30 @@ export default function AddBook() {
         </div>
         <h1 className="text-3xl md:text-4xl font-extrabold">Add a Book</h1>
 
-        <form onSubmit={searchBooks} className="flex">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by title or ISBN"
-            className="input input-bordered w-full max-w-lg"
-          />
+        <form onSubmit={searchBooks} className="flex flex-col space-y-2">
+          <div className="flex space-x-2">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by title or ISBN"
+              className="input input-bordered w-full max-w-lg"
+            />
+            <select
+              value={selectedLanguage}
+              onChange={(e) => setSelectedLanguage(e.target.value)}
+              className="select select-bordered"
+            >
+              {languages.map((lang) => (
+                <option key={lang.code} value={lang.code}>
+                  {lang.name}
+                </option>
+              ))}
+            </select>
+          </div>
           <button
             type="submit"
-            className="btn btn-primary ml-2"
+            className="btn btn-primary"
             disabled={loading}
           >
             {loading ? "Searching..." : "Search"}
