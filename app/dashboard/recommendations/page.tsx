@@ -23,7 +23,7 @@ export default function Recommendations() {
   async function fetchRecommendations() {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/recommendations/v2");
+      const response = await fetch("/api/recommendations");
       const data = await response.json();
       if (!response.ok) {
         throw new Error(
