@@ -1,5 +1,6 @@
 "use client";
 import CategorySelection from "@/components/CategorySelection";
+import { LanguagePreferences } from "@/components/LanguagePreferences";
 import HeaderDashboard from "@/components/DashboardHeader";
 import ImportFromApps from "@/components/ImportFromApps";
 import { Database } from "@/types/supabase";
@@ -185,7 +186,7 @@ export default function Profile() {
             </button>
           ) : null}
         </div>
-        {/* {user ? <LanguagePreferences /> : null} */}
+        {user ? <LanguagePreferences userId={user.id} /> : null}
         {user ? <CategorySelection userId={user.id} /> : null}
         <div>
           <ImportFromApps />
