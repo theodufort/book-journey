@@ -1,8 +1,14 @@
 "use client";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-
+import YouTube from "react-youtube";
+const opts = {
+  height: "315",
+  width: "560",
+  playerVars: {
+    autoplay: 0,
+  },
+};
 const Hero = () => {
   const t = useTranslations("HomePage");
 
@@ -29,27 +35,19 @@ const Hero = () => {
         </button>
       </div>
       <div
-        className="lg:w-full rounded-2xl"
+        className="h-full rounded-2xl"
         style={{ boxShadow: "0 0px 50px 0px #6366f1" }}
       >
-        {/* <video
-          className="w-full rounded-2xl"
-          autoPlay={true}
-          muted
-          preload="none"
-        >
-          <source src="/showcase.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video> */}
+        <YouTube className="rounded-2xl" videoId="qtQhC1YqiBw" opts={opts} />
 
-        <Image
+        {/* <Image
           src="/showcase.png"
           alt="MyBookQuest Showcase"
           className="w-full rounded-2xl"
           priority={true}
           width={500}
           height={500}
-        />
+        /> */}
       </div>
     </section>
   );
