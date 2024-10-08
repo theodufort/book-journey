@@ -1,10 +1,8 @@
 "use client";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import YouTube from "react-youtube";
 const opts = {
-  height: "315",
-  width: "560",
   playerVars: {
     autoplay: 0,
   },
@@ -38,16 +36,20 @@ const Hero = () => {
         className="h-full rounded-2xl"
         style={{ boxShadow: "0 0px 50px 0px #6366f1" }}
       >
-        <YouTube className="rounded-2xl" videoId="qtQhC1YqiBw" opts={opts} />
+        {/* <YouTube
+          className="rounded-2xl w-[300px] md:w-[560px]"
+          videoId="qtQhC1YqiBw"
+          opts={opts}
+        /> */}
 
-        {/* <Image
+        <Image
           src="/showcase.png"
           alt="MyBookQuest Showcase"
           className="w-full rounded-2xl"
           priority={true}
           width={500}
           height={500}
-        /> */}
+        />
       </div>
     </section>
   );
