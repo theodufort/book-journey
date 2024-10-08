@@ -15,14 +15,16 @@ export default function Authors() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch(`/api/authors/search?query=${encodeURIComponent(searchTerm)}`);
+      const response = await fetch(
+        `/api/authors/search?query=${encodeURIComponent(searchTerm)}`
+      );
       if (!response.ok) {
-        throw new Error('Failed to fetch authors');
+        throw new Error("Failed to fetch authors");
       }
       const data = await response.json();
       setAuthors(data.authors || []);
     } catch (err) {
-      setError('An error occurred while fetching authors');
+      setError("An error occurred while fetching authors");
       console.error(err);
     } finally {
       setIsLoading(false);
