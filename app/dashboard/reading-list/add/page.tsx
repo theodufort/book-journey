@@ -191,9 +191,10 @@ export default function AddBook() {
                 <p>
                   {typeof book.volumeInfo.description === "string"
                     ? book.volumeInfo.description
-                        .replace("<p>", "")
-                        .replace("</p>", "")
-                        .replace("<br>", "")
+                        .replaceAll("<p>", "")
+                        .replaceAll("</p>", "")
+                        .replaceAll("<br>", "")
+                        .replaceAll("<br/>", "")
                         .substring(0, 200) + "..."
                     : "No description available"}
                 </p>
