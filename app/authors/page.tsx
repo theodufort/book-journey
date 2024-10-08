@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Modal from '../../components/Modal';
+import { useState } from "react";
+import Modal from "../../components/Modal";
 
 export default function Authors() {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   const handleSearch = () => {
     // Implement search functionality here
-    console.log('Searching for:', searchTerm);
+    console.log("Searching for:", searchTerm);
   };
 
   return (
@@ -17,26 +17,26 @@ export default function Authors() {
       <h2 className="text-center font-extrabold text-4xl md:text-5xl tracking-tight mb-8">
         Authors
       </h2>
-      
-      <div className="flex items-center mb-8">
+
+      <div className="flex items-center mb-8 gap-2">
         <input
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search authors..."
-          className="flex-grow p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex-grow p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <button
           onClick={handleSearch}
-          className="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="btn btn-primary text-white py-2 rounded-r-mdfocus:outline-none focus:ring-2 text-lg"
         >
-          Search
+          🔍
         </button>
         <button
           onClick={() => setIsFilterModalOpen(true)}
-          className="ml-4 bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500"
+          className="btn btn-secondary text-lg"
         >
-          Filters
+          ⚙️
         </button>
       </div>
 
@@ -45,13 +45,18 @@ export default function Authors() {
         {/* Add author cards or list items here */}
       </div>
 
-      <Modal isModalOpen={isFilterModalOpen} setIsModalOpen={setIsFilterModalOpen}>
+      <Modal
+        isModalOpen={isFilterModalOpen}
+        setIsModalOpen={setIsFilterModalOpen}
+      >
         <h3 className="text-lg font-semibold mb-4">Filter Authors</h3>
         {/* Add filter options here */}
         <div className="space-y-4">
           {/* Example filter options */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">Genre</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Genre
+            </label>
             <select className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
               <option>All Genres</option>
               <option>Fiction</option>
