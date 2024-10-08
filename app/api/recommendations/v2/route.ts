@@ -83,12 +83,8 @@ async function getRecommendations(
     // For this example, we'll just use a default subject
     subjects = ["fiction"];
   }
-// Manually encode only the parts that really need it
-const subjectsQuery = subjects.map(subject => 
-  encodeURIComponent(subject)
-    .replace(/%20/g, ' ')   // Convert %20 back to space
-    .replace(/%26/g, '&')   // Convert %26 back to ampersand
-).join(",");
+// Join subjects without any encoding
+const subjectsQuery = subjects.join(",");
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://example.com";
   const url = new URL("/api/books/search/v3", baseUrl);
@@ -97,7 +93,7 @@ const subjectsQuery = subjects.map(subject =>
   url.searchParams.append("page", "1");
   url.searchParams.append("pageSize", "20");
   url.searchParams.append("language", "en");
-  console.log(url);
+  console.log(url.toString());
   const searchResponse = await fetch(url.toString());
   if (!searchResponse.ok) {
     console.error("Error fetching recommendations");
