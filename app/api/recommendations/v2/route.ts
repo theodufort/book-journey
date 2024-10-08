@@ -56,16 +56,48 @@ async function getRecommendations(
   console.log(userCategories);
   let subjects: string[];
   if (readBooks.length === 0 && userCategories.length > 0) {
-    subjects = getRandomCategories(userCategories, 1);
+    subjects = getRandomCategories(userCategories, 5);
+  } else if (readBooks.length != 0) {
+    const unfilteredSubjects = await Promise.all(
+          readBooks.map(async (item: any) => {
+            try {
+              const url = new URL(`/api/books/${item.book_id}/v3`, process.env.NEXT_PUBLIC_BASE_URL);
+              const response = await fetch(url);
+              if (!response.ok) {
+                throw new Error(
+                  `Failed to fetch book details for ${item.book_id}`
+                );
+              }
+              const bookData: Volume = await response.json();
+              return bookData.volumeInfo.categories;
+            } catch (error) {
+              console.error(error);
+              return null;
+            }
+          })
+    );
+    // Flatten the array and remove duplicates
+    subjects = getRandomCategories([...new Set(unfilteredSubjects.reduce((acc, val) => acc.concat(val), []))],3);
   } else {
     // In a real scenario, you'd analyze read books to determine subjects
     // For this example, we'll just use a default subject
     subjects = ["fiction"];
   }
-  const subjectsQuery = subjects.join(",");
-  const url = new URL("/api/books/search/v3", process.env.NEXT_PUBLIC_BASE_URL);
-  url.searchParams.append("subjects", subjectsQuery);
+// Manually encode only the parts that really need it
+const subjectsQuery = subjects.map(subject => 
+  encodeURIComponent(subject)
+    .replace(/%20/g, ' ')   // Convert %20 back to space
+    .replace(/%26/g, '&')   // Convert %26 back to ampersand
+).join(",");
 
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://example.com";
+  const url = new URL("/api/books/search/v3", baseUrl);
+  url.searchParams.append("subjects", subjectsQuery);
+  url.searchParams.append("column", "subjects");
+  url.searchParams.append("page", "1");
+  url.searchParams.append("pageSize", "20");
+  url.searchParams.append("language", "en");
+  console.log(url);
   const searchResponse = await fetch(url.toString());
   if (!searchResponse.ok) {
     console.error("Error fetching recommendations");

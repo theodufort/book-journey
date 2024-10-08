@@ -28,11 +28,17 @@ export async function GET(request: NextRequest) {
 
     if (subjects) {
       const subjectArray = subjects.split(",").map((subject) => subject.trim());
-      const subjectsQuery = subjectArray.join(", ");
-      url = `https://api2.isbndb.com/books/${encodeURIComponent(
-        subjectsQuery
-      )}?column=subjects&page=${page}&pageSize=${pageSize}&language=${language}`;
-      cacheKey = `search:v3:subjects:${subjectsQuery}:${page}:${pageSize}:${language}`;
+
+      // Manually encode subjects and join them with commas but without adding spaces after commas
+      const subjectsQuery = subjectArray
+        .map(
+          (subject) => encodeURIComponent(subject).replace(/%26/g, "&") // Convert %26 back to ampersand
+        )
+        .join("%2C"); // Use encoded comma to separate items
+
+      const baseUrl = "https://api2.isbndb.com/books";
+      const url = `${baseUrl}/${subjectsQuery}?column=subjects&page=${page}&pageSize=${pageSize}&language=${language}`;
+      const cacheKey = `search:v3:subjects:${subjectsQuery}:${page}:${pageSize}:${language}`;
     } else if (query) {
       url = `https://api2.isbndb.com/books/${encodeURIComponent(
         query
