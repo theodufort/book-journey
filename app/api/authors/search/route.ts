@@ -32,25 +32,15 @@ export async function GET(request: Request) {
       return NextResponse.json({ authors: [] });
     }
 
-    for (const author of authors) {
-      try {
-        const authorResponse = await fetch(`${BASE_URL}/${encodeURIComponent(author.author)}`, {
-          headers: {
-            Authorization: API_KEY as string,
-          },
-        });
+    const processedAuthors = authors.map((author: string) => {
+      const nameParts = author.split(' ').filter(part => part.toLowerCase() !== 'undefined');
+      return {
+        name: nameParts.join(' ') || 'Unknown',
+        original: author
+      };
+    });
 
-        if (authorResponse.ok) {
-          const authorData = await authorResponse.json();
-          return NextResponse.json(authorData);
-        }
-      } catch (error) {
-        console.error(`Error fetching author details for ${author.author}:`, error);
-      }
-    }
-
-    // If we couldn't get details for any author, return the original search results
-    return NextResponse.json(searchData);
+    return NextResponse.json({ total: searchData.total, authors: processedAuthors });
   } catch (error) {
     console.error("Error fetching authors:", error);
     return NextResponse.json(
