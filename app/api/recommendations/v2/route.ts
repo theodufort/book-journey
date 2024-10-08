@@ -3,7 +3,7 @@ import { BookVolumes, Volume } from "@/interfaces/GoogleAPI";
 import { Database } from "@/types/supabase";
 import {
   SupabaseClient,
-  createServerComponentClient
+  createServerComponentClient,
 } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
@@ -50,76 +50,65 @@ async function getRecommendations(
   supabase: SupabaseClient<any, "public", any>,
   userId: string
 ) {
-  const readBooks = await getReadBooks(supabase, userId);
-  const userCategories = await getUserCategories(supabase, userId);
-  console.log(readBooks);
-  console.log(userCategories);
-  let subjects: string[];
-  if (readBooks.length === 0 && userCategories.length > 0) {
-    subjects = getRandomCategories(userCategories, 5);
-  } else if (readBooks.length != 0) {
-    const unfilteredSubjects = await Promise.all(
-          readBooks.map(async (item: any) => {
-            try {
-              const url = new URL(`/api/books/${item.book_id}/v3`, process.env.NEXT_PUBLIC_BASE_URL);
-              const response = await fetch(url);
-              if (!response.ok) {
-                throw new Error(
-                  `Failed to fetch book details for ${item.book_id}`
-                );
-              }
-              const bookData: Volume = await response.json();
-              return bookData.volumeInfo.categories;
-            } catch (error) {
-              console.error(error);
-              return null;
-            }
-          })
-    );
-    // Flatten the array and remove duplicates
-    subjects = getRandomCategories([...new Set(unfilteredSubjects.reduce((acc, val) => acc.concat(val), []))],3);
-  } else {
-    // In a real scenario, you'd analyze read books to determine subjects
-    // For this example, we'll just use a default subject
-    subjects = ["fiction"];
-  }
-// Join subjects without any encoding
-const subjectsQuery = subjects.join(",");
+  const maxRetries = 5;
+  let attempt = 0;
+  let error = null;
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://example.com";
-  const url = new URL("/api/books/search/v3", baseUrl);
-  url.searchParams.append("subjects", subjectsQuery);
-  url.searchParams.append("column", "subjects");
-  url.searchParams.append("page", "1");
-  url.searchParams.append("pageSize", "20");
-  url.searchParams.append("language", "en");
-  console.log(url.toString());
-  const searchResponse = await fetch(url.toString());
-  if (!searchResponse.ok) {
-    console.error("Error fetching recommendations");
-    return [];
+  while (attempt < maxRetries) {
+    try {
+      const readBooks = await getReadBooks(supabase, userId);
+      const userCategories = await getUserCategories(supabase, userId);
+      let subjects: string[];
+
+      if (userCategories.length > 0) {
+        subjects = getRandomCategories(userCategories, 2);
+      } else {
+        subjects = ["fiction"]; // Default subject if no categories found
+      }
+
+      const subjectsQuery = subjects.join(",");
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://example.com";
+      const url = new URL("/api/books/search/v3", baseUrl);
+      url.searchParams.append("subjects", subjectsQuery);
+      url.searchParams.append("column", "subjects");
+      url.searchParams.append("page", "1");
+      url.searchParams.append("pageSize", "20");
+      url.searchParams.append("language", "en");
+
+      console.log(`Attempt ${attempt + 1}: Fetching ${url}`);
+      const searchResponse = await fetch(url.toString());
+
+      if (searchResponse.ok) {
+        const searchData: BookVolumes = await searchResponse.json();
+        if (searchData.items) {
+          const readBookIds = new Set(readBooks.map((book) => book.book_id));
+          const recommendations = searchData.items.filter(
+            (book: Volume) =>
+              !readBookIds.has(
+                book.volumeInfo.industryIdentifiers?.find(
+                  (id) => id.type === "ISBN_13"
+                )?.identifier
+              )
+          );
+          return recommendations.slice(0, 20); // Return top 20 recommendations
+        }
+        return [];
+      } else {
+        throw new Error("Failed to fetch recommendations");
+      }
+    } catch (err) {
+      error = err;
+      attempt++;
+      console.error(`Error on attempt ${attempt}: ${err}`);
+    }
   }
 
-  const searchData: BookVolumes = await searchResponse.json();
-  if (searchData.items) {
-    // Filter out books that the user has already read
-    const readBookIds = new Set(readBooks.map((book) => book.book_id));
-    const recommendations = searchData.items.filter(
-      (book: Volume) =>
-        !readBookIds.has(
-          book.volumeInfo.industryIdentifiers?.find(
-            (id) => id.type === "ISBN_13"
-          )?.identifier
-        ) && book.volumeInfo.authors
-    );
-    return recommendations.slice(0, 20); // Return top 20 recommendations
-  } else {
-    return [];
-  }
+  console.error("Max retries reached, returning error.");
+  throw error; // Throw the last encountered error after all retries have failed
 }
 
 export async function GET() {
-  const supabase = createServerComponentClient<Database>({cookies});
+  const supabase = createServerComponentClient<Database>({ cookies });
   try {
     const {
       data: { user },
@@ -143,15 +132,15 @@ export async function GET() {
         statusCode = 401;
       } else if (error.name === "DatabaseError") {
         statusCode = 503;
-      } else if (error instanceof TypeError && error.message.includes("Invalid URL")) {
+      } else if (
+        error instanceof TypeError &&
+        error.message.includes("Invalid URL")
+      ) {
         errorMessage = "Invalid URL configuration";
         statusCode = 500;
       }
     }
 
-    return NextResponse.json(
-      { error: errorMessage },
-      { status: statusCode }
-    );
+    return NextResponse.json({ error: errorMessage }, { status: statusCode });
   }
 }

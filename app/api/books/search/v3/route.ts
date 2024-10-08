@@ -28,12 +28,10 @@ export async function GET(request: NextRequest) {
 
     if (subjects) {
       const subjectArray = subjects.split(",").map((subject) => subject.trim());
-
-      // Use subjects as-is, without any encoding
-      const subjectsQuery = subjectArray.join(",");
-
-      const baseUrl = "https://api2.isbndb.com/books";
-      const url = `${baseUrl}/${subjectsQuery}?column=subjects&page=${page}&pageSize=${pageSize}&language=${language}`;
+      const subjectsQuery = subjectArray.join(", ");
+      url = `https://api2.isbndb.com/books/${encodeURIComponent(
+        subjectsQuery
+      )}?column=subjects&page=${page}&pageSize=${pageSize}&language=${language}`;
       cacheKey = `search:v3:subjects:${subjectsQuery}:${page}:${pageSize}:${language}`;
     } else if (query) {
       url = `https://api2.isbndb.com/books/${encodeURIComponent(
