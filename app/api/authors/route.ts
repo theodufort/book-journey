@@ -1,0 +1,1 @@
+https://api2.isbndb.com/authors/{name}
