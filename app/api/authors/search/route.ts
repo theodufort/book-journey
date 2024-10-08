@@ -15,18 +15,42 @@ export async function GET(request: Request) {
   }
 
   try {
-    const response = await fetch(`${BASE_URL}/${encodeURIComponent(query)}`, {
+    const searchResponse = await fetch(`${BASE_URL}/${encodeURIComponent(query)}`, {
       headers: {
         Authorization: API_KEY as string,
       },
     });
 
-    if (!response.ok) {
+    if (!searchResponse.ok) {
       throw new Error("Failed to fetch data from ISBNDB");
     }
 
-    const data = await response.json();
-    return NextResponse.json(data);
+    const searchData = await searchResponse.json();
+    const authors = searchData.authors || [];
+
+    if (authors.length === 0) {
+      return NextResponse.json({ authors: [] });
+    }
+
+    for (const author of authors) {
+      try {
+        const authorResponse = await fetch(`${BASE_URL}/${encodeURIComponent(author.author)}`, {
+          headers: {
+            Authorization: API_KEY as string,
+          },
+        });
+
+        if (authorResponse.ok) {
+          const authorData = await authorResponse.json();
+          return NextResponse.json(authorData);
+        }
+      } catch (error) {
+        console.error(`Error fetching author details for ${author.author}:`, error);
+      }
+    }
+
+    // If we couldn't get details for any author, return the original search results
+    return NextResponse.json(searchData);
   } catch (error) {
     console.error("Error fetching authors:", error);
     return NextResponse.json(

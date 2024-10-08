@@ -22,7 +22,15 @@ export default function Authors() {
         throw new Error("Failed to fetch authors");
       }
       const data = await response.json();
-      setAuthors(data.authors || []);
+      if (data.author) {
+        // Single author details returned
+        setAuthors([data.author]);
+      } else if (data.authors) {
+        // List of authors returned
+        setAuthors(data.authors);
+      } else {
+        setAuthors([]);
+      }
     } catch (err) {
       setError("An error occurred while fetching authors");
       console.error(err);
@@ -65,8 +73,16 @@ export default function Authors() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {authors.map((author, index) => (
             <div key={index} className="border p-4 rounded-md">
-              <h3 className="font-bold">{author.name}</h3>
-              {/* Add more author details here */}
+              <h3 className="font-bold">{author.name || author.author}</h3>
+              {author.books && (
+                <p>Books: {author.books.join(", ")}</p>
+              )}
+              {author.born && (
+                <p>Born: {author.born}</p>
+              )}
+              {author.died && (
+                <p>Died: {author.died}</p>
+              )}
             </div>
           ))}
         </div>
