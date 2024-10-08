@@ -52,11 +52,11 @@ const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
   };
   // Truncate the description if it's too long and not expanded
   const MAX_LENGTH = 100;
-  const description =
-    vol.volumeInfo.description
-      .replace("<p>", "")
-      .replace("</p>", "")
-      .replace("<br>", "") || "";
+  const description = (vol.volumeInfo.description || "Unknown")
+    .replaceAll("<p>", "")
+    .replaceAll("</p>", "")
+    .replaceAll("<br>", "")
+    .replaceAll("<br/>", "");
   const truncatedDescription =
     description.length > MAX_LENGTH
       ? description.substring(0, MAX_LENGTH) + "..."
