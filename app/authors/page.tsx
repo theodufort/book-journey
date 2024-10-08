@@ -73,7 +73,11 @@ export default function Authors() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {authors.map((author, index) => (
             <div key={index} className="border p-4 rounded-md">
-              <h3 className="font-bold">{author.name || author.author}</h3>
+              <h3 className="font-bold">{author.name}</h3>
+              {author.original && author.original !== author.name && (
+                <p className="text-sm text-gray-500">Original: {author.original}</p>
+              )}
+              {/* We'll keep these commented out for now as we don't have this data
               {author.books && (
                 <p>Books: {author.books.join(", ")}</p>
               )}
@@ -83,6 +87,7 @@ export default function Authors() {
               {author.died && (
                 <p>Died: {author.died}</p>
               )}
+              */}
             </div>
           ))}
         </div>
