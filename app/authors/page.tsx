@@ -7,9 +7,26 @@ export default function Authors() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
-  const handleSearch = () => {
-    // Implement search functionality here
-    console.log("Searching for:", searchTerm);
+  const [authors, setAuthors] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleSearch = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`/api/authors/search?query=${encodeURIComponent(searchTerm)}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch authors');
+      }
+      const data = await response.json();
+      setAuthors(data.authors || []);
+    } catch (err) {
+      setError('An error occurred while fetching authors');
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -40,10 +57,18 @@ export default function Authors() {
         </button>
       </div>
 
-      {/* Author list would go here */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Add author cards or list items here */}
-      </div>
+      {isLoading && <p>Loading...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+      {!isLoading && !error && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {authors.map((author, index) => (
+            <div key={index} className="border p-4 rounded-md">
+              <h3 className="font-bold">{author.name}</h3>
+              {/* Add more author details here */}
+            </div>
+          ))}
+        </div>
+      )}
 
       <Modal
         isModalOpen={isFilterModalOpen}
