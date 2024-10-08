@@ -190,7 +190,11 @@ export default function AddBook() {
                 <p>{book.volumeInfo.publishedDate}</p>
                 <p>
                   {typeof book.volumeInfo.description === "string"
-                    ? book.volumeInfo.description.substring(0, 200) + "..."
+                    ? book.volumeInfo.description
+                        .replace("<p>", "")
+                        .replace("</p>", "")
+                        .replace("<br>", "")
+                        .substring(0, 200) + "..."
                     : "No description available"}
                 </p>
                 <div className="card-actions justify-end">
