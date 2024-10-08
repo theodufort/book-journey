@@ -203,7 +203,10 @@ const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
                     </a>
                   </li>
                   <li>
-                    <a href={createAffLink(vol.volumeInfo.title)} target="_blank">
+                    <a
+                      href={createAffLink(vol.volumeInfo.title)}
+                      target="_blank"
+                    >
                       Amazon
                     </a>
                   </li>
