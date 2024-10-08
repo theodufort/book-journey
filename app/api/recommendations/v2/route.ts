@@ -2,12 +2,12 @@
 import { BookVolumes, Volume } from "@/interfaces/GoogleAPI";
 import { Database } from "@/types/supabase";
 import {
-  SupabaseClient,
   createServerComponentClient,
+  SupabaseClient,
 } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-
+const supabase = createServerComponentClient<Database>({ cookies });
 async function getUserCategories(
   supabase: SupabaseClient<any, "public", any>,
   userId: string
@@ -108,7 +108,6 @@ async function getRecommendations(
 }
 
 export async function GET() {
-  const supabase = createServerComponentClient<Database>({ cookies });
   try {
     const {
       data: { user },

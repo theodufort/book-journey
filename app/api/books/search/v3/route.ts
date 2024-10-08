@@ -3,7 +3,7 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import axios from "axios";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-
+const supabase = createRouteHandlerClient<Database>({ cookies });
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const query = searchParams.get("q");
@@ -18,8 +18,6 @@ export async function GET(request: NextRequest) {
       { status: 400 }
     );
   }
-
-  const supabase = createRouteHandlerClient<Database>({ cookies });
 
   try {
     // Construct the search string
