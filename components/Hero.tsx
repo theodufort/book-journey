@@ -8,7 +8,7 @@ const Hero = () => {
   const router = useRouter();
 
   return (
-    <section className="w-full flex flex-col lg:flex-row items-start justify-center gap-16 lg:gap-20 px-8 py-8 lg:py-20">
+    <section className="w-full flex flex-col lg:flex-row items-start justify-center gap-16 lg:gap-20 px-8 py-8 lg:py-20 max-w-7xl m-auto">
       {/* Left Side */}
       <div className="flex flex-col gap-10 lg:gap-14 items-center justify-center text-center lg:text-left lg:items-start m-auto">
         <h1 className="font-extrabold text-4xl lg:text-6xl tracking-tight md:-mb-4">
