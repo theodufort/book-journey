@@ -58,13 +58,19 @@ export default function Login() {
       setIsLoading(false);
     }
   };
+  const sectionStyle = {
+    backgroundColor: "#1e1e19",
+    backgroundOpacity: "10",
+    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80' width='80' height='80'%3E%3Cg fill='%23737eff' fill-opacity='0.4'%3E%3Cpath d='M0 0h80v80H0V0zm20 20v40h40V20H20zm20 35a15 15 0 1 1 0-30 15 15 0 0 1 0 30z' opacity='.5'%3E%3C/path%3E%3Cpath d='M15 15h50l-5 5H20v40l-5 5V15zm0 50h50V15L80 0v80H0l15-15zm32.07-32.07l3.54-3.54A15 15 0 0 1 29.4 50.6l3.53-3.53a10 10 0 1 0 14.14-14.14zM32.93 47.07a10 10 0 1 1 14.14-14.14L32.93 47.07z'%3E%3C/path%3E%3C/g%3E%3C/svg%3E")`,
+  };
 
   return (
     <main
-      className="p-8 md:p-24 min-h-screen flex flex-col justify-center bg-base-200"
+      className="p-8 md:p-24 min-h-screen flex flex-col justify-center"
+      style={sectionStyle}
       data-theme={config.colors.theme}
     >
-      <div className="text-center mb-4">
+      <div className="text-center mb-4 text-white">
         <Link href="/" className="btn btn-ghost btn-sm">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -81,11 +87,11 @@ export default function Login() {
           {t("home")}
         </Link>
       </div>
-      <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-center mb-12">
+      <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-center text-white mb-12">
         {t("title")}
       </h1>
 
-      <div className="space-y-8 max-w-xl mx-auto bg-base-100 p-8 rounded-box shadow-lg">
+      <div className="space-y-8 max-w-xl mx-auto bg-[#7383fb] p-8 rounded-box shadow-lg">
         <button
           className="btn btn-block"
           onClick={(e) =>
@@ -98,7 +104,7 @@ export default function Login() {
           ) : (
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6"
+              className="w-6 h-6 bg-base-300"
               viewBox="0 0 48 48"
             >
               <path
