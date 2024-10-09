@@ -76,7 +76,8 @@
       "link2":"Reading List",
       "link3":"Reading Notes",
       "link4":"Reading Recommendations",
-      "link5":"Reading Rewards"
+      "link5":"Reading Rewards",
+      "link6":"Support"
     },
     "ButtonAccount":{
       "profile": "Profile",
@@ -229,5 +230,11 @@
       "step3_content":"Start building your personal library by adding books you've read or want to read.",
       "step4_title":"Get Recommendations and Rewards",
       "step4_content":"Based on your preferences and books, we'll provide personalized recommendations and exciting rewards!"
+    },
+    "Support":{
+      "title":"Support",
+      "name":"Name",
+      "email":"Email",
+      "message":"Message"
     }
 }

@@ -180,12 +180,18 @@ const HeaderDashboard = () => {
                   🏆 {t("link5")}
                 </Link>
               </li>
+              <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
+                <Link
+                  href="/dashboard/support"
+                  className="flex items-center space-x-3 p-2 align-middle"
+                >
+                  {/* Notebook Icon */}
+                  🙋‍♂️ {t("link6")}
+                </Link>
+              </li>
             </div>
-            {/* Align these two items at the bottom */}
-            <div
-              className="space-x-2 flex mt-auto"
-              style={{ marginTop: "auto" }}
-            >
+
+            <div className="space-x-2 flex" style={{ marginTop: "auto" }}>
               <div className="flex mr-auto">
                 <button
                   onClick={toggleTheme}

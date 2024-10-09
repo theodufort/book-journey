@@ -76,7 +76,8 @@
     "link2": "Liste de Lecture",
     "link3": "Notes de Lecture",
     "link4": "Recommandations de Lecture",
-    "link5": "Récompenses de Lecture"
+    "link5": "Récompenses de Lecture",
+    "link6":"Support"
   },
   "ButtonAccount": {
     "profile": "Profil",
@@ -229,5 +230,11 @@
     "step3_content": "Commencez à construire votre bibliothèque personnelle en ajoutant des livres que vous avez lus ou que vous voulez lire.",
     "step4_title": "Obtenez des Recommandations et des Récompenses",
     "step4_content": "En fonction de vos préférences et de vos livres, nous vous fournirons des recommandations personnalisées et des récompenses excitantes!"
-  }
+  },
+  "Support":{
+      "title":"Support",
+      "name":"Nom",
+      "email":"Courriel",
+      "message":"Message"
+    }
 }

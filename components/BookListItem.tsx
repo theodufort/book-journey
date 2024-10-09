@@ -479,12 +479,11 @@ export default function BookListItem({
     }
     return null;
   };
-  const description =
-    book.description
-      .replaceAll("<p>", "")
-      .replaceAll("</p>", "")
-      .replaceAll("<br>", "")
-      .replaceAll("<br/>", "") || "";
+  const description = (book.description || "")
+    .replaceAll("<p>", "")
+    .replaceAll("</p>", "")
+    .replaceAll("<br>", "")
+    .replaceAll("<br/>", "");
   const truncatedDescription =
     description.length > MAX_LENGTH
       ? description.substring(0, MAX_LENGTH) + "..."
