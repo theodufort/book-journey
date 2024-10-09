@@ -158,7 +158,7 @@ const HeaderDashboard = () => {
               <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
                 <Link
                   href="/dashboard"
-                  className="flex items-center space-x-3 p-2 align-middle"
+                  className="flex items-center space-x-3 p-2 align-middle text-lg"
                 >
                   {/* Pointier Home Icon */}
                   📊 {t("link1")}
@@ -168,7 +168,7 @@ const HeaderDashboard = () => {
               <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
                 <Link
                   href="/dashboard/reading-list"
-                  className="flex items-center space-x-3 p-2 align-middle"
+                  className="flex items-center space-x-3 p-2 align-middle text-lg"
                 >
                   {/* Bookmark Icon */}
                   📚 {t("link2")}
@@ -177,7 +177,7 @@ const HeaderDashboard = () => {
               <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
                 <Link
                   href="/dashboard/notes"
-                  className="flex items-center space-x-3 p-2 align-middle"
+                  className="flex items-center space-x-3 p-2 align-middle text-lg"
                 >
                   {/* Notebook Icon */}
                   ✍️ {t("link3")}
@@ -186,7 +186,7 @@ const HeaderDashboard = () => {
               <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
                 <Link
                   href="/dashboard/recommendations"
-                  className="flex items-center space-x-3 p-2 align-middle"
+                  className="flex items-center space-x-3 p-2 align-middle text-lg"
                 >
                   {/* Star Icon */}
                   🔮 {t("link4")}
@@ -195,7 +195,7 @@ const HeaderDashboard = () => {
               <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
                 <Link
                   href="/dashboard/reading-rewards"
-                  className="flex items-center space-x-3 p-2 align-middle"
+                  className="flex items-center space-x-3 p-2 align-middle text-lg"
                 >
                   {/* Trophy Icon */}
                   🏆 {t("link5")}
@@ -204,7 +204,7 @@ const HeaderDashboard = () => {
               <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
                 <Link
                   href="/dashboard/support"
-                  className="flex items-center space-x-3 p-2 align-middle"
+                  className="flex items-center space-x-3 p-2 align-middle text-lg"
                 >
                   {/* Notebook Icon */}
                   🙋‍♂️ {t("link6")}
@@ -212,10 +212,13 @@ const HeaderDashboard = () => {
               </li>
             </div>
 
-            <div className="flex justify-end space-x-2" style={{ marginTop: "auto" }}>
+            <div
+              className="flex justify-end space-x-2"
+              style={{ marginTop: "auto" }}
+            >
               <button
                 onClick={toggleTheme}
-                className="btn btn-circle btn-ghost"
+                className="btn btn-circle btn-ghost mr-auto"
                 aria-label="Toggle theme"
               >
                 {theme === "light" ? (

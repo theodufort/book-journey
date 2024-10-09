@@ -55,7 +55,7 @@ const EmailForm: React.FC<EmailFormProps> = ({ onSuccess, onError }) => {
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
-          className="w-2/3 mt-1 block rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+          className="w-2/3 mt-1 p-2 block rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
         />
       </div>
       <div>
@@ -68,7 +68,7 @@ const EmailForm: React.FC<EmailFormProps> = ({ onSuccess, onError }) => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-2/3 mt-1 block rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+          className="w-2/3 p-2 mt-1 block rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
         />
       </div>
       <div>
@@ -81,7 +81,7 @@ const EmailForm: React.FC<EmailFormProps> = ({ onSuccess, onError }) => {
           onChange={(e) => setContent(e.target.value)}
           required
           rows={6}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+          className="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
         ></textarea>
       </div>
       <div>
