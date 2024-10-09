@@ -112,7 +112,7 @@ const HeaderDashboard = () => {
           <ul
             className={`menu bg-base-200 text-base-content min-h-full w-80 p-4 space-y-2 shadow-lg rounded-r-lg flex flex-col`}
           >
-            <div className="flex">
+            <div className="flex justify-between items-center w-full">
               <li>
                 <Link
                   className="flex items-center gap-2 shrink-0 p-2"
@@ -131,8 +131,10 @@ const HeaderDashboard = () => {
                     height={32}
                   />
                 </Link>
+              </li>
+              <li>
                 <div
-                  className="bg-base-200 text-primary rounded-xl p-2 h-full flex items-center overflow-hidden"
+                  className="bg-base-200 text-primary rounded-xl p-2 flex items-center overflow-hidden"
                   style={{ boxShadow: "0 0px 10px 0px #6366f1" }}
                 >
                   <Link
