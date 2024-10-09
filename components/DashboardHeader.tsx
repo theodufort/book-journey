@@ -131,6 +131,25 @@ const HeaderDashboard = () => {
                     height={32}
                   />
                 </Link>
+                <div
+                  className="bg-base-200 text-primary rounded-xl p-2 h-full flex items-center overflow-hidden"
+                  style={{ boxShadow: "0 0px 10px 0px #6366f1" }}
+                >
+                  <Link
+                    href="/dashboard/reading-rewards"
+                    className="whitespace-nowrap overflow-hidden text-ellipsis mr-1"
+                  >
+                    {points ? points : 0}
+                  </Link>
+                  <div className="flex-shrink-0">
+                    <Image
+                      src={"/coin.png"}
+                      height={25}
+                      width={25}
+                      alt="coin"
+                    />
+                  </div>
+                </div>
               </li>
             </div>
             <div className="mb-auto">
@@ -230,20 +249,6 @@ const HeaderDashboard = () => {
                     </svg>
                   )}
                 </button>
-              </div>
-              <div
-                className="bg-base-200 text-primary rounded-xl p-2 h-full flex items-center overflow-hidden"
-                style={{ boxShadow: "0 0px 10px 0px #6366f1" }}
-              >
-                <Link
-                  href="/dashboard/reading-rewards"
-                  className="whitespace-nowrap overflow-hidden text-ellipsis mr-1"
-                >
-                  {points ? points : 0}
-                </Link>
-                <div className="flex-shrink-0">
-                  <Image src={"/coin.png"} height={25} width={25} alt="coin" />
-                </div>
               </div>
             </div>
           </ul>
