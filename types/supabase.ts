@@ -1045,21 +1045,27 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string | null
+          email: string | null
           id: string
+          inactivity_email_sent: boolean
           last_sign_in_at: string | null
           raw_app_meta_data: Json | null
           raw_user_meta_data: Json | null
         }
         Insert: {
           created_at?: string | null
+          email?: string | null
           id: string
+          inactivity_email_sent?: boolean
           last_sign_in_at?: string | null
           raw_app_meta_data?: Json | null
           raw_user_meta_data?: Json | null
         }
         Update: {
           created_at?: string | null
+          email?: string | null
           id?: string
+          inactivity_email_sent?: boolean
           last_sign_in_at?: string | null
           raw_app_meta_data?: Json | null
           raw_user_meta_data?: Json | null
@@ -1103,6 +1109,7 @@ export type Database = {
           rating: number | null
           reading_at: string | null
           review: string | null
+          reviewPublic: boolean
           status: string | null
           tags: string[] | null
           toread_at: string | null
@@ -1118,6 +1125,7 @@ export type Database = {
           rating?: number | null
           reading_at?: string | null
           review?: string | null
+          reviewPublic?: boolean
           status?: string | null
           tags?: string[] | null
           toread_at?: string | null
@@ -1133,6 +1141,7 @@ export type Database = {
           rating?: number | null
           reading_at?: string | null
           review?: string | null
+          reviewPublic?: boolean
           status?: string | null
           tags?: string[] | null
           toread_at?: string | null
