@@ -177,7 +177,7 @@ export default function BookNotes() {
             <div className="flex">
               <div className="w-1/3 border-r">
                 <div className="p-4 bg-base-200 border-b">
-                  <h2 className="text-xl font-semibold mb-2">
+                  <h2 className="text-md md:text-xl font-semibold mb-2">
                     {t("subtitle")}
                   </h2>
                   <input
@@ -199,7 +199,7 @@ export default function BookNotes() {
                       }`}
                       onClick={() => setSelectedBook(book)}
                     >
-                      <h3 className="font-semibold">
+                      <h3 className="font-semibold text-sm md:text-lg">
                         {book.data.volumeInfo.title}
                       </h3>
                       <p className="text-sm text-gray-500">
@@ -220,7 +220,7 @@ export default function BookNotes() {
                   <>
                     <div className="mb-4 block">
                       <div>
-                        <h2 className="text-2xl font-semibold">
+                        <h2 className="text-md md:text-2xl font-semibold">
                           {selectedBook.data.volumeInfo.title}
                         </h2>
                         <p className="text-gray-600">
