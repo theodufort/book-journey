@@ -115,7 +115,8 @@
     "tags_label": "Étiquettes",
     "addtags_label": "Ajouter une étiquette",
     "remove_btn": "Supprimer",
-    "untitled_label": "Sans Titre"
+    "untitled_label": "Sans Titre",
+    "make_review_public": "Rendre votre critique publique?"
   },
   "CongratulationsModal": {
     "title": "Félicitations!",
