@@ -458,7 +458,7 @@ export default function BookListItem({
 
   async function fetchReviewPublicStatus() {
     if (!user) return;
-    const { data, error } = await supabase
+    const { data, error }: any = await supabase
       .from("reading_list")
       .select("reviewPublic")
       .eq(
