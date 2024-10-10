@@ -448,6 +448,51 @@ export default function BookListItem({
     }
   }
 
+  const [isReviewPublic, setIsReviewPublic] = useState(false);
+
+  useEffect(() => {
+    if (user && status === "Finished") {
+      fetchReviewPublicStatus();
+    }
+  }, [user, status]);
+
+  async function fetchReviewPublicStatus() {
+    if (!user) return;
+    const { data, error } = await supabase
+      .from("reading_list")
+      .select("reviewPublic")
+      .eq(
+        "book_id",
+        item.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
+          ?.identifier
+      )
+      .eq("user_id", user.id)
+      .single();
+    if (error) {
+      console.error("Error fetching review public status:", error);
+    } else {
+      setIsReviewPublic(data?.reviewPublic || false);
+    }
+  }
+
+  async function updateReviewPublicStatus(isPublic: boolean) {
+    if (!user) return;
+    const { error } = await supabase
+      .from("reading_list")
+      .update({ reviewPublic: isPublic })
+      .eq(
+        "book_id",
+        item.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
+          ?.identifier
+      )
+      .eq("user_id", user.id);
+    if (error) {
+      console.error("Error updating review public status:", error);
+    } else {
+      setIsReviewPublic(isPublic);
+    }
+  }
+
   const renderReviewInput = () => {
     if (status === "Finished") {
       return (
@@ -475,6 +520,17 @@ export default function BookListItem({
               updateReview(e.target.value);
             }}
           ></textarea>
+          <div className="mt-2">
+            <label className="cursor-pointer label">
+              <span className="label-text">{t("make_review_public")}</span>
+              <input
+                type="checkbox"
+                className="checkbox checkbox-primary"
+                checked={isReviewPublic}
+                onChange={(e) => updateReviewPublicStatus(e.target.checked)}
+              />
+            </label>
+          </div>
         </div>
       );
     }
