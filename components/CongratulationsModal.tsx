@@ -22,7 +22,7 @@ const CongratulationsModal: React.FC<CongratulationsModalProps> = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
       <Confetti />
-      <div className="bg-white p-8 rounded-lg max-w-md w-full">
+      <div className="bg-base-200 p-8 rounded-lg max-w-md w-full">
         <h2 className="text-2xl font-bold mb-4">{t("title")}</h2>
         {messageType == "begin" ? (
           <p className="mb-4">

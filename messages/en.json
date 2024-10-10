@@ -115,7 +115,8 @@
       "tags_label":"Tags",
       "addtags_label":"Add tag",
       "remove_btn":"Remove",
-      "untitled_label":"Untitled"
+      "untitled_label":"Untitled",
+      "make_review_public": "Make your review public?"
     },
     "CongratulationsModal":{
       "title":"Congratulations!",
