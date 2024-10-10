@@ -71,7 +71,7 @@ async function getRecommendations(
       const url = new URL("/api/books/search/v3", baseUrl);
       url.searchParams.append("subjects", subjectsQuery);
       url.searchParams.append("column", "subjects");
-      url.searchParams.append("page", "1");
+      url.searchParams.append("page", "5");
       url.searchParams.append("pageSize", "20");
       url.searchParams.append("language", "en");
 
