@@ -88,7 +88,7 @@ async function getRecommendations(
                 book.volumeInfo.industryIdentifiers?.find(
                   (id) => id.type === "ISBN_13"
                 )?.identifier
-              )
+              ) && book.volumeInfo.description
           );
           return recommendations.slice(0, 20); // Return top 20 recommendations
         }
