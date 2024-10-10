@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import CongratulationsModal from "./CongratulationsModal";
+import ViewSellers from "./ViewSellers";
 export default function BookListItem({
   status,
   item,
@@ -501,10 +502,11 @@ export default function BookListItem({
         <div className="card-body md:w-2/3">
           <div className="grid md:grid-cols-2 md:grid-rows-1">
             <h2 className="card-title">{book.title || "Untitled"}</h2>
-            <div className="md:float-right md:ml-auto mr-auto my-2 md:my-0">
+            <div className="my-2 md:my-0 space-x-2 md:ml-auto mr-auto md:mr-0">
               {/* <label>
                 <b>Status:</b>{" "}
               </label> */}
+
               <select
                 value={status}
                 onChange={(e) =>
@@ -517,6 +519,9 @@ export default function BookListItem({
                 <option value="Finished">{t("reading_status3")}</option>
                 <option value="DNF">{t("reading_status4")}</option>
               </select>
+              <div className="mt-2 inline-block">
+                <ViewSellers title={book.title} />
+              </div>
             </div>
           </div>
           <p>
@@ -597,14 +602,14 @@ export default function BookListItem({
                 </div>
               </div>
             </div>
-            <div className="max-w-min ml-auto mt-auto">
+            {/* <div className="max-w-min ml-auto mt-auto">
               <button
                 className="btn btn-primary my-5 md:my-0 flex max-w-min"
                 onClick={removeBook}
               >
                 {t("remove_btn")}
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
