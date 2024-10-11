@@ -125,7 +125,6 @@ export default function AddBook() {
           <HeaderDashboard />
         </div>
         <h1 className="text-3xl md:text-4xl font-extrabold">Add a Book</h1>
-
         <form
           onSubmit={searchBooks}
           className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2"
@@ -162,9 +161,7 @@ export default function AddBook() {
             </button>
           </div>
         </form>
-
         {error && <p className="text-error">{error}</p>}
-
         <div className="space-y-4">
           {searchResults.map((book, index) => (
             <div
