@@ -251,6 +251,16 @@
       "select2":"To Read",
       "select3":"Currently Reading",
       "select4":"Finished",
-      "search_placeholder":"Search by title or ISBN"
+      "search_placeholder":"Search by title or ISBN",
+      "search_by_name":"Name",
+      "search_by_isbn":"ISBN"
+    },
+    "LanguagePreferences":{
+      "title":"Languages",
+      "title2":"Language for the platform",
+      "subtitle":"Language for book search",
+      "english":"English",
+      "french":"French",
+      "spanish":"Spanish"
     }
 }
