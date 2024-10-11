@@ -55,7 +55,6 @@ export default function AddBook() {
   const searchBooks = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
     setSearchResults([]); // Clear previous results immediately
 
     try {
@@ -68,15 +67,10 @@ export default function AddBook() {
         throw new Error("Failed to fetch books");
       }
       const data = await response.json();
-      if (!data.items || data.items.length === 0) {
-        setError("No results found. Please try again with a different search term.");
-      } else {
-        setSearchResults(data.items);
-        setError(null);
-      }
+      setSearchResults(data.items || []);
     } catch (err) {
-      setError("An error occurred while searching for books. Please try again.");
-      console.error(err);
+      console.error("An error occurred while searching for books:", err);
+      // We're not setting an error message anymore, just logging it
     } finally {
       setLoading(false);
     }
@@ -167,7 +161,6 @@ export default function AddBook() {
             </button>
           </div>
         </form>
-        {error && <p className="text-error text-center">{error}</p>}
         <div className="space-y-4">
           {searchResults.length === 0 && !loading && (
             <div className="text-center py-8">
