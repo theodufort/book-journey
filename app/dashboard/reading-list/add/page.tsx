@@ -167,8 +167,13 @@ export default function AddBook() {
             </button>
           </div>
         </form>
-        {error && <p className="text-error">{error}</p>}
+        {error && <p className="text-error text-center">{error}</p>}
         <div className="space-y-4">
+          {searchResults.length === 0 && !loading && (
+            <div className="text-center py-8">
+              <p className="text-xl font-semibold text-gray-600">No results found</p>
+            </div>
+          )}
           {searchResults.map((book, index) => (
             <div
               key={`search-result-${book.id}-${index}`}
