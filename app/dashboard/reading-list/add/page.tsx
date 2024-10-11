@@ -67,9 +67,15 @@ export default function AddBook() {
         throw new Error("Failed to fetch books");
       }
       const data = await response.json();
-      setSearchResults(data.items || []);
+      if (!data.items || data.items.length === 0) {
+        setError("No results found. Please try again with a different search term.");
+        setSearchResults([]);
+      } else {
+        setSearchResults(data.items);
+        setError(null);
+      }
     } catch (err) {
-      setError("An error occurred while searching for books");
+      setError("An error occurred while searching for books. Please try again.");
       console.error(err);
     } finally {
       setLoading(false);
