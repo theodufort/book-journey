@@ -19,6 +19,7 @@ export default function AddBook() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedLanguage, setSelectedLanguage] = useState("");
+  const [searchType, setSearchType] = useState("name");
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
 
