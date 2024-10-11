@@ -56,6 +56,7 @@ export default function AddBook() {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setSearchResults([]); // Clear previous results immediately
 
     try {
       const response = await fetch(
@@ -69,7 +70,6 @@ export default function AddBook() {
       const data = await response.json();
       if (!data.items || data.items.length === 0) {
         setError("No results found. Please try again with a different search term.");
-        setSearchResults([]);
       } else {
         setSearchResults(data.items);
         setError(null);
