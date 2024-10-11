@@ -60,16 +60,21 @@ export default function AddBook() {
     setSearchResults([]); // Clear previous results immediately
 
     try {
-      const response = await fetch(
-        `/api/books/search/v3?q=${encodeURIComponent(
+      let url;
+      if (searchType === "name") {
+        url = `/api/books/search/v3?q=${encodeURIComponent(
           searchQuery
-        )}&langRestrict=${selectedLanguage}&language=${selectedLanguage}`
-      );
+        )}&langRestrict=${selectedLanguage}&language=${selectedLanguage}`;
+      } else {
+        url = `/api/books/${encodeURIComponent(searchQuery)}/v3`;
+      }
+
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error("Failed to fetch books");
       }
       const data = await response.json();
-      setSearchResults(data.items || []);
+      setSearchResults(searchType === "name" ? data.items || [] : [data]);
     } catch (err) {
       console.error("An error occurred while searching for books:", err);
       // We're not setting an error message anymore, just logging it
@@ -136,23 +141,35 @@ export default function AddBook() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={t("search_placeholder")}
+              placeholder={searchType === "name" ? t("search_placeholder") : t("isbn_placeholder")}
               className="input input-bordered w-full"
             />
           </div>
           <div className="flex-shrink-0">
             <select
-              value={selectedLanguage}
-              onChange={(e) => setSelectedLanguage(e.target.value)}
+              value={searchType}
+              onChange={(e) => setSearchType(e.target.value)}
               className="select select-bordered w-full"
             >
-              {languages.map((lang) => (
-                <option key={lang.code} value={lang.code}>
-                  {lang.name}
-                </option>
-              ))}
+              <option value="name">{t("search_by_name")}</option>
+              <option value="isbn">{t("search_by_isbn")}</option>
             </select>
           </div>
+          {searchType === "name" && (
+            <div className="flex-shrink-0">
+              <select
+                value={selectedLanguage}
+                onChange={(e) => setSelectedLanguage(e.target.value)}
+                className="select select-bordered w-full"
+              >
+                {languages.map((lang) => (
+                  <option key={lang.code} value={lang.code}>
+                    {lang.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <div className="flex-shrink-0">
             <button
               type="submit"
