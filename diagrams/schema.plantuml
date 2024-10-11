@@ -1,0 +1,49 @@
+@startuml
+entity "User (Table existante)" as User {
+    + id: UUID [PK]
+}
+
+entity "Author (New table)" as Author {
+    author_id: SERIAL [PK]
+    author_name: VARCHAR
+    birth_date: DATE
+    first_book_published_year: INT
+    personal_favorite_genres: VARCHAR
+    main_writing_genres: VARCHAR
+    type_of_books: VARCHAR
+    picture: VARCHAR
+    website: VARCHAR
+    books_written: INT
+    social_media_id: SERIAL [FK]
+    user_id: UUID [FK]
+}
+
+entity "SocialMedia (New table)" as SocialMedia {
+    social_media_id: SERIAL [PK]
+    social_media_name: VARCHAR
+    link: VARCHAR
+}
+
+entity "AuthorBook (New table)" as AuthorBook {
+    author_book_id: SERIAL [PK]
+    volumeInfo_id: SERIAL [FK]
+    author_id: SERIAL [FK]
+}
+
+entity "Book (Table existante)" as Book {
+    volumeInfo_id: SERIAL [PK]
+} 
+
+entity "UpSell (New table)" as UpSell {
+    id: SERIAL [PK]
+    level: INT
+    author_book_id: SERIAL [FK]
+}
+
+User "1" -- "1" Author
+Author "1" -- "*"  SocialMedia
+Author "1" -- "*" AuthorBook
+AuthorBook "1" -- "1" Book
+AuthorBook "1" -- "1" UpSell
+
+@enduml

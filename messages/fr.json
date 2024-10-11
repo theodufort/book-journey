@@ -237,5 +237,19 @@
       "name":"Nom",
       "email":"Courriel",
       "message":"Message"
-    }
+    },
+  "AddToReadingList":{
+    "title":"Ajouter un Livre",
+    "error":"Aucun résultat",
+    "english":"Anglais",
+    "french":"Français",
+    "spanish":"Espagnol",
+    "searching":"Recherche...",
+    "search":"Chercher",
+    "no_desc":"Aucune description disponible",
+    "select1":"Ajouter à la liste de lecture",
+    "select2":"À Lire",
+    "select3":"En Cours",
+    "select4":"Terminé"
+  }
 }

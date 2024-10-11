@@ -9,8 +9,10 @@ import { FormEvent, useEffect, useState } from "react";
 
 import { BookSearchResult } from "@/interfaces/BookSearch";
 import { Database } from "@/types/supabase";
+import { useTranslations } from "next-intl";
 
 export default function AddBook() {
+  const t = useTranslations("AddToReadingList");
   const supabase = createClientComponentClient<Database>();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<BookSearchResult[]>([]);
@@ -21,9 +23,9 @@ export default function AddBook() {
   const [user, setUser] = useState<User | null>(null);
 
   const languages = [
-    { code: "en", name: "English" },
-    { code: "fr", name: "French" },
-    { code: "es", name: "Spanish" },
+    { code: "en", name: t("english") },
+    { code: "fr", name: t("french") },
+    { code: "es", name: t("spanish") },
   ];
 
   useEffect(() => {
@@ -124,7 +126,7 @@ export default function AddBook() {
         <div className="z-50">
           <HeaderDashboard />
         </div>
-        <h1 className="text-3xl md:text-4xl font-extrabold">Add a Book</h1>
+        <h1 className="text-3xl md:text-4xl font-extrabold">{t("title")}</h1>
         <form
           onSubmit={searchBooks}
           className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2"
@@ -157,14 +159,16 @@ export default function AddBook() {
               className="btn btn-primary w-full"
               disabled={loading}
             >
-              {loading ? "Searching..." : "Search"}
+              {loading ? t("searching") : t("search")}
             </button>
           </div>
         </form>
         <div className="space-y-4">
           {searchResults.length === 0 && !loading && (
             <div className="text-center py-8">
-              <p className="text-xl font-semibold text-gray-600">No results found</p>
+              <p className="text-xl font-semibold text-gray-600">
+                {t("error")}
+              </p>
             </div>
           )}
           {searchResults.map((book, index) => (
@@ -197,7 +201,7 @@ export default function AddBook() {
                         .replaceAll("<br>", "")
                         .replaceAll("<br/>", "")
                         .substring(0, 200) + "..."
-                    : "No description available"}
+                    : t("no_desc")}
                 </p>
                 <div className="card-actions justify-end">
                   <select
@@ -206,11 +210,11 @@ export default function AddBook() {
                     defaultValue=""
                   >
                     <option value="" disabled hidden>
-                      Add to Reading List
+                      {t("select1")}
                     </option>
-                    <option value="To Read">To Read</option>
-                    <option value="Reading">Currently Reading</option>
-                    <option value="Finished">Finished</option>
+                    <option value="To Read">{t("select2")}</option>
+                    <option value="Reading">{t("select3")}</option>
+                    <option value="Finished">{t("select4")}</option>
                   </select>
                 </div>
               </div>
@@ -221,5 +225,3 @@ export default function AddBook() {
     </main>
   );
 }
-
-// Add this at the end of the file
