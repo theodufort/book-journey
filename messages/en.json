@@ -237,5 +237,19 @@
       "name":"Name",
       "email":"Email",
       "message":"Message"
+    },
+    "AddToReadingList":{
+      "title":"Add a Book",
+      "error":"No results found",
+      "english":"English",
+      "french":"French",
+      "spanish":"Spanish",
+      "searching":"Searching...",
+      "search":"Search",
+      "no_desc":"No description available",
+      "select1":"Add to Reading List",
+      "select2":"To Read",
+      "select3":"Currently Reading",
+      "select4":"Finished"
     }
 }
