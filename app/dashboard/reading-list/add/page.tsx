@@ -136,7 +136,7 @@ export default function AddBook() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by title or ISBN"
+              placeholder={t("search_placeholder")}
               className="input input-bordered w-full"
             />
           </div>

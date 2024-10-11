@@ -250,6 +250,7 @@
     "select1":"Ajouter à la liste de lecture",
     "select2":"À Lire",
     "select3":"En Cours",
-    "select4":"Terminé"
+    "select4":"Terminé",
+    "search_placeholder":"Chercher par titre ou ISBN"
   }
 }
