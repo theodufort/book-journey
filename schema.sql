@@ -12,68 +12,13 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 
-CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
-
-
-
-
-
-
-CREATE EXTENSION IF NOT EXISTS "pgsodium" WITH SCHEMA "pgsodium";
-
-
-
-
-
-
+CREATE SCHEMA IF NOT EXISTS "public";
 
 
 ALTER SCHEMA "public" OWNER TO "postgres";
 
 
 COMMENT ON SCHEMA "public" IS 'standard public schema';
-
-
-
-CREATE EXTENSION IF NOT EXISTS "pg_graphql" WITH SCHEMA "graphql";
-
-
-
-
-
-
-CREATE EXTENSION IF NOT EXISTS "pg_stat_statements" WITH SCHEMA "extensions";
-
-
-
-
-
-
-CREATE EXTENSION IF NOT EXISTS "pgcrypto" WITH SCHEMA "extensions";
-
-
-
-
-
-
-CREATE EXTENSION IF NOT EXISTS "pgjwt" WITH SCHEMA "extensions";
-
-
-
-
-
-
-CREATE EXTENSION IF NOT EXISTS "supabase_vault" WITH SCHEMA "vault";
-
-
-
-
-
-
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
-
-
-
 
 
 
@@ -185,14 +130,19 @@ ALTER FUNCTION "public"."get_user_metadata"("user_id" "uuid") OWNER TO "postgres
 
 
 CREATE OR REPLACE FUNCTION "public"."handle_new_user"() RETURNS "trigger"
-    LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO ''
+    LANGUAGE "plpgsql"
     AS $$
 BEGIN
-  -- Insert the entire row from auth.users into public.profiles
-  INSERT INTO public.profiles
-  SELECT NEW.*;  -- Copy all columns from NEW (which refers to the newly inserted row in auth.users)
-  
+  INSERT INTO public.profiles (id, email, created_at, last_sign_in_at, raw_app_meta_data, raw_user_meta_data)
+  VALUES (NEW.id, NEW.email, NEW.created_at, NEW.updated_at, NEW.raw_app_meta_data, NEW.raw_user_meta_data);
+  INSERT INTO public.user_preferences (user_id)
+  VALUES (NEW.id);
+  INSERT INTO public.user_points (user_id)
+  VALUES (NEW.id);
+  INSERT INTO public.user_point_streak (user_id)
+  VALUES (NEW.id);
+  INSERT INTO public.reading_stats (user_id)
+  VALUES (NEW.id);
   RETURN NEW;
 END;
 $$;
@@ -548,40 +498,12 @@ ALTER SEQUENCE "public"."point_transactions_id_seq" OWNED BY "public"."point_tra
 
 
 CREATE TABLE IF NOT EXISTS "public"."profiles" (
-    "instance_id" "uuid",
-    "id" "uuid",
-    "aud" character varying(255),
-    "role" character varying(255),
-    "email" character varying(255),
-    "email_confirmed_at" timestamp with time zone,
-    "invited_at" timestamp with time zone,
-    "confirmation_token" character varying(255),
-    "confirmation_sent_at" timestamp with time zone,
-    "recovery_token" character varying(255),
-    "recovery_sent_at" timestamp with time zone,
-    "email_change_token_new" character varying(255),
-    "email_change" character varying(255),
-    "email_change_sent_at" timestamp with time zone,
+    "id" "uuid" NOT NULL,
+    "created_at" timestamp with time zone,
     "last_sign_in_at" timestamp with time zone,
     "raw_app_meta_data" "jsonb",
     "raw_user_meta_data" "jsonb",
-    "is_super_admin" boolean,
-    "created_at" timestamp with time zone,
-    "updated_at" timestamp with time zone,
-    "phone" "text",
-    "phone_confirmed_at" timestamp with time zone,
-    "phone_change" "text",
-    "phone_change_token" character varying(255),
-    "phone_change_sent_at" timestamp with time zone,
-    "confirmed_at" timestamp with time zone,
-    "email_change_token_current" character varying(255),
-    "email_change_confirm_status" smallint,
-    "banned_until" timestamp with time zone,
-    "reauthentication_token" character varying(255),
-    "reauthentication_sent_at" timestamp with time zone,
-    "is_sso_user" boolean,
-    "deleted_at" timestamp with time zone,
-    "is_anonymous" boolean,
+    "email" "text",
     "inactivity_email_sent" boolean DEFAULT false NOT NULL
 );
 
@@ -613,6 +535,7 @@ CREATE TABLE IF NOT EXISTS "public"."reading_list" (
     "tags" "text"[] DEFAULT '{}'::"text"[],
     "reading_at" timestamp with time zone,
     "finished_at" timestamp with time zone,
+    "reviewPublic" boolean DEFAULT false NOT NULL,
     CONSTRAINT "reading_list_status_check" CHECK (("status" = ANY (ARRAY[('To Read'::character varying)::"text", ('Reading'::character varying)::"text", ('Finished'::character varying)::"text", ('DNF'::character varying)::"text"])))
 );
 
@@ -710,8 +633,8 @@ CREATE TABLE IF NOT EXISTS "public"."user_preferences" (
     "bio" "text",
     "profile_picture_url" "text",
     "onboarded" boolean DEFAULT false NOT NULL,
-    "preffered_ui_language" "text",
-    "preffered_book_language" "text"
+    "preferred_ui_language" "text" DEFAULT 'en'::"text",
+    "preferred_book_language" "text" DEFAULT 'en'::"text"
 );
 
 
@@ -840,6 +763,11 @@ ALTER TABLE ONLY "public"."point_transactions"
 
 
 
+ALTER TABLE ONLY "public"."profiles"
+    ADD CONSTRAINT "profiles_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."quotes"
     ADD CONSTRAINT "quotes_pkey" PRIMARY KEY ("id");
 
@@ -923,11 +851,6 @@ ALTER TABLE ONLY "public"."books_like"
 
 
 
-ALTER TABLE ONLY "public"."profiles"
-    ADD CONSTRAINT "fk_user_id" FOREIGN KEY ("id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
-
-
-
 ALTER TABLE ONLY "public"."friends"
     ADD CONSTRAINT "friends_friend_id_fkey" FOREIGN KEY ("friend_id") REFERENCES "auth"."users"("id");
 
@@ -953,13 +876,18 @@ ALTER TABLE ONLY "public"."point_transactions"
 
 
 
+ALTER TABLE ONLY "public"."profiles"
+    ADD CONSTRAINT "profiles_id_fkey" FOREIGN KEY ("id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."reading_list"
     ADD CONSTRAINT "reading_list_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id");
 
 
 
 ALTER TABLE ONLY "public"."reading_stats"
-    ADD CONSTRAINT "reading_stats_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id");
+    ADD CONSTRAINT "reading_stats_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -974,12 +902,12 @@ ALTER TABLE ONLY "public"."user_point_streak"
 
 
 ALTER TABLE ONLY "public"."user_points"
-    ADD CONSTRAINT "user_points_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id");
+    ADD CONSTRAINT "user_points_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
 ALTER TABLE ONLY "public"."user_preferences"
-    ADD CONSTRAINT "user_preferences_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id");
+    ADD CONSTRAINT "user_preferences_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -1082,6 +1010,9 @@ CREATE POLICY "point_transactions are selectable only by their user" ON "public"
 
 CREATE POLICY "point_transactions are updatable only by their user" ON "public"."point_transactions" FOR UPDATE USING ((( SELECT "auth"."uid"() AS "uid") = "user_id")) WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
+
+
+ALTER TABLE "public"."profiles" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."quotes" ENABLE ROW LEVEL SECURITY;
@@ -1201,219 +1132,10 @@ CREATE POLICY "user_preferences are updatable only by their user" ON "public"."u
 
 
 
-CREATE PUBLICATION "logflare_pub" WITH (publish = 'insert, update, delete, truncate');
-
-
-ALTER PUBLICATION "logflare_pub" OWNER TO "supabase_admin";
-
-
-
-
-ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
-
-
-
-
-
 REVOKE USAGE ON SCHEMA "public" FROM PUBLIC;
 GRANT ALL ON SCHEMA "public" TO "anon";
 GRANT ALL ON SCHEMA "public" TO "authenticated";
 GRANT USAGE ON SCHEMA "public" TO "service_role";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1489,24 +1211,6 @@ GRANT ALL ON FUNCTION "public"."update_timestamp_based_on_status"() TO "service_
 GRANT ALL ON FUNCTION "public"."update_user_points"() TO "anon";
 GRANT ALL ON FUNCTION "public"."update_user_points"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."update_user_points"() TO "service_role";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1699,30 +1403,6 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TAB
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "anon";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "authenticated";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "service_role";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
