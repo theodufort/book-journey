@@ -250,6 +250,7 @@
       "select1":"Add to Reading List",
       "select2":"To Read",
       "select3":"Currently Reading",
-      "select4":"Finished"
+      "select4":"Finished",
+      "search_placeholder":"Search by title or ISBN"
     }
 }
