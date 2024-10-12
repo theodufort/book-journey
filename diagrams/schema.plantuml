@@ -34,17 +34,10 @@ entity "Book (Table existante)" as Book {
     volumeInfo_id: SERIAL [PK]
 } 
 
-entity "UpSell (New table)" as UpSell {
-    id: SERIAL [PK]
-    level: INT
-    author_book_id: SERIAL [FK]
-}
 
-User "1" -- "1" Author
 Author "1" -- "*"  SocialMedia
 Author "1" -- "*" AuthorBook
 AuthorBook "1" -- "1" Book
-AuthorBook "1" -- "1" UpSell
 
 ' Entities
 
@@ -129,14 +122,6 @@ entity "libraries" {
   created_at : timestamp
 }
 
-entity "messages" {
-  * id : integer
-  --
-  sender_id : uuid
-  receiver_id : uuid
-  content : text
-  created_at : timestamp
-}
 
 entity "point_transactions" {
   * id : integer
@@ -241,6 +226,7 @@ entity "users" as auth_users {
 }
 
 ' Relationships
+auth_users ||--o{ Author : "author_id"
 
 auth_users ||--o{ book_notes : "user_id"
 
@@ -257,10 +243,6 @@ auth_users ||--|| user_point_streak : "user_id"
 auth_users ||--|| user_points : "user_id"
 
 auth_users ||--|| user_preferences : "user_id"
-
-auth_users ||--o{ messages : "sender_id"
-
-auth_users ||--o{ messages : "receiver_id"
 
 auth_users ||--o{ friends : "user_id"
 
