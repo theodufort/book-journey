@@ -658,14 +658,14 @@ export default function BookListItem({
                 </div>
               </div>
             </div>
-            {/* <div className="max-w-min ml-auto mt-auto">
+            <div className="max-w-min ml-auto mt-auto">
               <button
                 className="btn btn-primary my-5 md:my-0 flex max-w-min"
                 onClick={removeBook}
               >
                 {t("remove_btn")}
               </button>
-            </div> */}
+            </div>
           </div>
         </div>
       </div>
