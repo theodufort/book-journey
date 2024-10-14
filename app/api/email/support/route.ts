@@ -17,8 +17,8 @@ export async function POST(request: Request) {
     }
 
     const data = await resend.emails.send({
-      from: "Support <ticket@mybookquest.com>",
-      to: "theodufort05@gmail.com",
+      from: "Support <info@mybookquest.com>",
+      to: "info@mybookquest.com",
       subject: `Support Request from ${name}`,
       text: `From: ${name} (${email})\n\n${content}`,
     });
