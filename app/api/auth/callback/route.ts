@@ -20,6 +20,7 @@ export async function GET(req: NextRequest) {
       // Check for referral code in cookies
       const cookieStore = cookies();
       const referralCode = cookieStore.get("referralCode");
+      console.log("All cookies:", cookieStore.getAll());
       console.log("Referral code cookie:", referralCode);
       console.log("Referral code value:", referralCode?.value);
 
@@ -29,6 +30,8 @@ export async function GET(req: NextRequest) {
 
         // Clear the referral code cookie
         cookieStore.delete("referralCode");
+      } else {
+        console.log("No referral code found in cookies");
       }
     }
   }
