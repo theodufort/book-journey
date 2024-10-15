@@ -6,10 +6,11 @@ import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 
 export default function BookNotes() {
   const t = useTranslations("Notes");
+  const tCommon = useTranslations("Common");
   const supabase = createClientComponentClient<Database>();
   const [readingList, setReadingList] = useState<ReadingListItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,6 +24,8 @@ export default function BookNotes() {
   const [isEditMode, setIsEditMode] = useState(true);
   const notesContainerRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const booksPerPage = 3;
 
   const filteredReadingList = useMemo(() => {
     return readingList.filter((book) =>
@@ -31,6 +34,18 @@ export default function BookNotes() {
         .includes(searchQuery.toLowerCase())
     );
   }, [readingList, searchQuery]);
+
+  const paginatedReadingList = useMemo(() => {
+    const startIndex = (currentPage - 1) * booksPerPage;
+    const endIndex = startIndex + booksPerPage;
+    return filteredReadingList.slice(startIndex, endIndex);
+  }, [filteredReadingList, currentPage]);
+
+  const totalPages = Math.ceil(filteredReadingList.length / booksPerPage);
+
+  const handlePageChange = useCallback((newPage: number) => {
+    setCurrentPage(newPage);
+  }, []);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -188,8 +203,8 @@ export default function BookNotes() {
                     className="input input-bordered w-full"
                   />
                 </div>
-                <ul className="divide-y overflow-y-auto max-h-[300px] md:max-h-[calc(100vh-250px)]">
-                  {filteredReadingList.map((book) => (
+                <ul className="divide-y overflow-y-auto max-h-[300px] md:max-h-[calc(100vh-300px)]">
+                  {paginatedReadingList.map((book) => (
                     <li
                       key={book.book_id}
                       className={`cursor-pointer p-4 transition-colors ${
@@ -214,6 +229,27 @@ export default function BookNotes() {
                       </li>
                     )}
                 </ul>
+                {totalPages > 1 && (
+                  <div className="flex justify-center mt-4 space-x-2">
+                    <button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="btn btn-sm"
+                    >
+                      {t("previous")}
+                    </button>
+                    <span className="flex items-center">
+                      {currentPage} / {totalPages}
+                    </span>
+                    <button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className="btn btn-sm"
+                    >
+                      {t("next")}
+                    </button>
+                  </div>
+                )}
               </div>
               <div className="w-full md:w-2/3 p-6">
                 {selectedBook ? (
