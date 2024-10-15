@@ -40,7 +40,7 @@ const ReferralLinkCard: React.FC = () => {
       <div className="card-body">
         <h2 className="card-title">Your Referral Link:</h2>
         <p className="text-sm mb-2">
-          Earn 100 points for each successful referral!
+          Earn 100 points for each successful referral! Both you and the person you refer will receive 100 points each!
         </p>
         <div className="flex items-center justify-center">
           <button
