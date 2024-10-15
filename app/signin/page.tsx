@@ -24,7 +24,7 @@ export default function Login() {
     const ref = searchParams.get('ref');
     if (ref) {
       // Set the referral code cookie
-      document.cookie = `referralCode=${ref}; path=/; max-age=2592000; SameSite=Lax; Secure`;
+      document.cookie = `referralCode=${ref}; path=/; max-age=2592000; SameSite=Lax; Secure; HttpOnly`;
     }
   }, [searchParams]);
 
