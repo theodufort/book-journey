@@ -1,15 +1,16 @@
-import Image from 'next/image'
+import Image from "next/image";
 
 interface Book {
-  id: string
-  title: string
-  author: string
-  description: string
-  cover_image: string
+  id: string;
+  title: string;
+  author: string;
+  description: string;
+  cover_image: string;
   // Add any other relevant fields
 }
 
 export default function BookDetails({ book }: { book: Book }) {
+  console.log(book);
   return (
     <div className="flex flex-col md:flex-row gap-8">
       <div className="w-full md:w-1/3">
@@ -28,5 +29,5 @@ export default function BookDetails({ book }: { book: Book }) {
         {/* Add more book details as needed */}
       </div>
     </div>
-  )
+  );
 }
