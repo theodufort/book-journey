@@ -19,20 +19,31 @@ export async function GET(req: NextRequest) {
     if (user) {
       // Check for referral code in cookies
       const cookieStore = cookies();
-      const referralCode = cookieStore.get("referralCode");
-      console.log("All cookies:", cookieStore.getAll());
+      const allCookies = cookieStore.getAll();
+      console.log("All cookies:", allCookies);
+
+      const referralCode = allCookies.find(cookie => cookie.name === "referralCode");
       console.log("Referral code cookie:", referralCode);
-      console.log("Referral code value:", referralCode?.value);
 
       if (referralCode?.value) {
+        const decodedValue = decodeURIComponent(referralCode.value);
+        console.log("Decoded referral code value:", decodedValue);
+
         // Handle the referral
-        await handleReferral(user.id, referralCode.value);
+        await handleReferral(user.id, decodedValue);
 
         // Clear the referral code cookie
         cookieStore.delete("referralCode");
       } else {
         console.log("No referral code found in cookies");
       }
+
+      // Additional check for other potential cookie names
+      const potentialReferralCookies = allCookies.filter(cookie => 
+        cookie.name.toLowerCase().includes('referral') || 
+        cookie.name.toLowerCase().includes('ref')
+      );
+      console.log("Potential referral cookies:", potentialReferralCookies);
     }
   }
 
