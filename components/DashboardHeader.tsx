@@ -213,7 +213,6 @@ const HeaderDashboard = () => {
               </li>
             </div>
             <div className="mt-auto flex flex-col space-y-4">
-              <ReferralLinkCard />
               <div className="flex justify-between items-center">
                 <button
                   onClick={toggleTheme}
@@ -272,7 +271,8 @@ const HeaderDashboard = () => {
                     />
                   </svg>
                 </label>
-              </div>
+              </div>{" "}
+              <ReferralLinkCard />
             </div>
           </ul>
         </div>
