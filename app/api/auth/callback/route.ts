@@ -19,12 +19,13 @@ export async function GET(req: NextRequest) {
     if (user) {
       // Check for referral code in cookies
       const cookieStore = cookies();
-      const referralCode = cookieStore.get("referralCode")?.value;
-      console.log("Referral code from cookie:", referralCode);
+      const referralCode = cookieStore.get("referralCode");
+      console.log("Referral code cookie:", referralCode);
+      console.log("Referral code value:", referralCode?.value);
 
-      if (referralCode) {
+      if (referralCode?.value) {
         // Handle the referral
-        await handleReferral(user.id, referralCode);
+        await handleReferral(user.id, referralCode.value);
 
         // Clear the referral code cookie
         cookieStore.delete("referralCode");
