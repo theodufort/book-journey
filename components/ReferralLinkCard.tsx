@@ -38,20 +38,14 @@ const ReferralLinkCard: React.FC = () => {
   return (
     <div className="card bg-base-200 shadow-xl w-full">
       <div className="card-body">
-        <h2 className="card-title">Your Referral Link</h2>
-        <p className="text-sm mb-2">Share this link to invite others:</p>
-        <div className="flex items-center">
-          <input
-            type="text"
-            value={referralLink}
-            readOnly
-            className="input input-bordered flex-grow mr-2"
-          />
+        <h2 className="card-title">Your Referral Program</h2>
+        <p className="text-sm mb-2">Earn 100 points for each successful referral!</p>
+        <div className="flex items-center justify-center">
           <button
             onClick={copyToClipboard}
             className={`btn ${copied ? "btn-success" : "btn-primary"}`}
           >
-            {copied ? "Copied!" : "Copy"}
+            {copied ? "Copied!" : "Copy Referral Link"}
           </button>
         </div>
       </div>
