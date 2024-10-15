@@ -13,6 +13,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { HowToEarnPointsPopup } from "./HowToEarnPointsPopup";
+import ReferralLinkCard from "./ReferralLinkCard";
 
 const HeaderDashboard = () => {
   const t = useTranslations("HeaderDashboard");
@@ -269,7 +270,7 @@ const HeaderDashboard = () => {
                   </svg>
                 </label>
               </div>
-              {/* <ReferralLinkCard /> */}
+              <ReferralLinkCard />
             </div>
           </ul>
         </div>
