@@ -5,7 +5,7 @@ const ReferralLinkCard: React.FC = () => {
   const { data: session } = useSession();
   const [copied, setCopied] = useState(false);
 
-  const referralLink = `${process.env.NEXT_PUBLIC_BASE_URL}?ref=${session?.user?.id}`;
+  const referralLink = `${process.env.NEXT_PUBLIC_BASE_URL}/signin?ref=${session?.user?.id}`;
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(referralLink).then(() => {
