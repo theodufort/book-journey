@@ -212,11 +212,12 @@ const HeaderDashboard = () => {
                 </Link>
               </li>
             </div>
-            <div className="mt-auto">
-              <div className="flex justify-end space-x-2">
+            <div className="mt-auto flex flex-col space-y-4">
+              <ReferralLinkCard />
+              <div className="flex justify-between items-center">
                 <button
                   onClick={toggleTheme}
-                  className="btn btn-circle btn-ghost mr-auto"
+                  className="btn btn-circle btn-ghost"
                   aria-label="Toggle theme"
                 >
                   {theme === "light" ? (
@@ -271,9 +272,6 @@ const HeaderDashboard = () => {
                     />
                   </svg>
                 </label>
-              </div>{" "}
-              <div>
-                <ReferralLinkCard />
               </div>
             </div>
           </ul>
