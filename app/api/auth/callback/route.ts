@@ -49,12 +49,10 @@ async function handleReferral(userId: string, referralCode: string) {
       console.log("Referral successfully recorded");
 
       // Add 100 points to the new user's account
-      const { error: pointsError } = await supabase
-        .from("user_points")
-        .update({
-          points_earned_referrals: supabase.rpc("increment", { inc: 100 }),
-        })
-        .eq("user_id", userId);
+      const { error: pointsError } = await supabase.rpc("increment", {
+        inc: 100,
+        user_id: userId,
+      });
 
       if (pointsError) {
         console.error("Error adding points to new user:", pointsError);
@@ -63,13 +61,10 @@ async function handleReferral(userId: string, referralCode: string) {
       }
 
       // Add 100 points to the referrer's account
-      const { error: referrerPointsError } = await supabase
-        .from("user_points")
-        .update({
-          points_earned_referrals: supabase.rpc("increment", { inc: 100 }),
-        })
-        .eq("user_id", referralCode);
-
+      const { error: referrerPointsError } = await supabase.rpc("increment", {
+        inc: 100,
+        user_id: referralCode,
+      });
       if (referrerPointsError) {
         console.error("Error adding points to referrer:", referrerPointsError);
       } else {
