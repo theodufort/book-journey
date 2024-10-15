@@ -14,13 +14,19 @@ export default function BookDetails({ book }: { book: Book }) {
   return (
     <div className="flex flex-col md:flex-row gap-8">
       <div className="w-full md:w-1/3">
-        <Image
-          src={book.cover_image}
-          alt={`Cover of ${book.title}`}
-          width={300}
-          height={450}
-          className="w-full h-auto object-cover rounded-lg shadow-lg"
-        />
+        {book.cover_image ? (
+          <Image
+            src={book.cover_image}
+            alt={`Cover of ${book.title}`}
+            width={300}
+            height={450}
+            className="w-full h-auto object-cover rounded-lg shadow-lg"
+          />
+        ) : (
+          <div className="w-full h-[450px] bg-gray-200 flex items-center justify-center rounded-lg shadow-lg">
+            <span className="text-gray-500">No cover image available</span>
+          </div>
+        )}
       </div>
       <div className="w-full md:w-2/3">
         <h1 className="text-3xl font-bold mb-4">{book.title}</h1>
