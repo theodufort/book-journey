@@ -6,7 +6,6 @@ const ReferralLinkCard: React.FC = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const supabase = createClientComponentClient<Database>();
-
   useEffect(() => {
     const fetchUser = async () => {
       const {
