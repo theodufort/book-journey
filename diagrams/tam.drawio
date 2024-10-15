@@ -1,0 +1,45 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36" version="24.7.17">
+  <diagram name="Page-1" id="dWJm9gUYO65ROz1F62hu">
+    <mxGraphModel dx="1969" dy="885" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Jl47htiT6anzOYpmPyCc-1" value="&lt;font style=&quot;font-size: 36px;&quot;&gt;Competitors Complaints&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="170" y="30" width="490" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Jl47htiT6anzOYpmPyCc-2" value="&lt;font style=&quot;font-size: 36px;&quot;&gt;Positioning/Target Customers&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="30" width="490" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Jl47htiT6anzOYpmPyCc-3" value="&lt;font style=&quot;font-size: 36px;&quot;&gt;Marketing Channels&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="180" y="1120" width="490" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Jl47htiT6anzOYpmPyCc-4" value="&lt;font style=&quot;font-size: 36px;&quot;&gt;Customer Journey&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="1120" width="490" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Jl47htiT6anzOYpmPyCc-5" value="&lt;font style=&quot;font-size: 36px;&quot;&gt;Marketing Plan&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1930" y="30" width="490" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Jl47htiT6anzOYpmPyCc-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Jl47htiT6anzOYpmPyCc-7" target="Jl47htiT6anzOYpmPyCc-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Jl47htiT6anzOYpmPyCc-7" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Goodreads Complaints&lt;/h1&gt;&lt;p&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;font size=&quot;3&quot;&gt;Amazon owned&lt;/font&gt;&lt;/li&gt;&lt;li&gt;&lt;font size=&quot;3&quot;&gt;Ugly UI&lt;/font&gt;&lt;/li&gt;&lt;li&gt;&lt;font size=&quot;3&quot;&gt;Lack of moderation&lt;/font&gt;&lt;/li&gt;&lt;li&gt;&lt;font size=&quot;3&quot;&gt;None half stars rating&lt;/font&gt;&lt;/li&gt;&lt;li&gt;&lt;font size=&quot;3&quot;&gt;Spoilers in comments&lt;/font&gt;&lt;/li&gt;&lt;li&gt;&lt;font size=&quot;3&quot;&gt;Bad recommendations&lt;/font&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="110" width="280" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="Jl47htiT6anzOYpmPyCc-9" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Storygraph Complaints&lt;/h1&gt;&lt;p&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;font size=&quot;3&quot;&gt;Bad recommendations&lt;/font&gt;&lt;/li&gt;&lt;li&gt;&lt;font size=&quot;3&quot;&gt;Spoilers in comments&lt;/font&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="480" y="110" width="280" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="Jl47htiT6anzOYpmPyCc-14" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Overlap&lt;/h1&gt;&lt;p&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Recommendations&lt;/font&gt;&lt;/li&gt;&lt;li&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Spoilers/moderation&lt;/font&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="300" y="380" width="225" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="Jl47htiT6anzOYpmPyCc-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.655;entryY=0.027;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="Jl47htiT6anzOYpmPyCc-9" target="Jl47htiT6anzOYpmPyCc-14">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="620" y="330" />
+              <mxPoint x="447" y="330" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
