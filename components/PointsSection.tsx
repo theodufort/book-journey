@@ -1,8 +1,8 @@
 // components/PointsSection.tsx
-import { User } from "@supabase/supabase-js";
-import { useState, useEffect } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { User } from "@supabase/supabase-js";
+import { useEffect, useState } from "react";
 
 const PointsSection = () => {
   const [points, setPoints] = useState<number | null>(null);
@@ -23,14 +23,18 @@ const PointsSection = () => {
 
       const { data, error } = await supabase
         .from("user_points")
-        .select("points_earned,points_redeemed")
+        .select("points_earned,points_redeemed,points_earned_referrals")
         .eq("user_id", user.id)
         .single();
 
       if (error) {
         console.error("Error fetching points:", error);
       } else {
-        setPoints(data?.points_earned - data?.points_redeemed || 0);
+        setPoints(
+          data?.points_earned +
+            data?.points_earned_referrals -
+            data?.points_redeemed || 0
+        );
       }
     };
 

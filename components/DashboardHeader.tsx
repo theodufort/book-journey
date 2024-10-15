@@ -50,7 +50,7 @@ const HeaderDashboard = () => {
 
       const { data: checkExistPoints, error } = await supabase
         .from("user_points")
-        .select("points_earned, points_redeemed")
+        .select("points_earned, points_redeemed,points_earned_referrals")
         .eq("user_id", user.id)
         .single();
 
@@ -73,8 +73,9 @@ const HeaderDashboard = () => {
         console.error("Error fetching points:", error);
       } else {
         setPoints(
-          checkExistPoints?.points_earned - checkExistPoints?.points_redeemed ||
-            0
+          checkExistPoints?.points_earned +
+            checkExistPoints?.points_earned_referrals -
+            checkExistPoints?.points_redeemed || 0
         );
       }
     };
