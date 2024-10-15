@@ -70,7 +70,7 @@ export default async function BookPage({
       <main className="min-h-screen p-8 pb-24">
         <section className="max-w-6xl mx-auto space-y-8">
           <BookDetails book={book} />
-        </section>{" "}
+        </section>
       </main>
       <Footer />
     </div>
