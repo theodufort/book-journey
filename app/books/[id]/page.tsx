@@ -7,25 +7,46 @@ import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
+async function getBookDetails(id: string) {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  const response = await fetch(`${baseUrl}/api/books/${id}/v3`, {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    console.error(`API request failed with status ${response.status}`);
+    return null;
+  }
+
+  const book: Volume = await response.json();
+  return book;
+}
+
 export async function generateMetadata({ params }: { params: { id: string } }) {
+  const book = await getBookDetails(params.id);
+
+  if (!book) {
+    return {};
+  }
+
   return getSEOTags({
-    title: article.title,
-    description: article.description,
-    canonicalUrlRelative: `/blog/${article.slug}`,
+    title: book.volumeInfo.title,
+    description: book.volumeInfo.description || "",
+    canonicalUrlRelative: `/books/${book.id}`,
     extraTags: {
       openGraph: {
-        title: article.title,
-        description: article.description,
-        url: `/blog/${article.slug}`,
+        title: book.volumeInfo.title,
+        description: book.volumeInfo.description || "",
+        url: `/books/${book.id}`,
         images: [
           {
-            url: article.image_url,
-            width: 1200,
-            height: 660,
+            url: book.volumeInfo.imageLinks?.thumbnail || "",
+            width: 128,
+            height: 192,
           },
         ],
         locale: "en_US",
-        type: "website",
+        type: "book",
       },
     },
   });
@@ -35,23 +56,14 @@ export default async function BookPage({
 }: {
   params: { id: string };
 }) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const response = await fetch(`${baseUrl}/api/books/${id}/v3`, {
-    cache: "no-store",
-  });
-
-  if (!response.ok) {
-    console.error(`API request failed with status ${response.status}`);
-    notFound();
-  }
-
-  const book: Volume = await response.json();
-  console.log("API Response:", book);
+  const book = await getBookDetails(id);
 
   if (!book || typeof book !== "object") {
     console.error("Invalid book data received from API");
     notFound();
   }
+
+  console.log("API Response:", book);
   return (
     <div>
       <Header />
