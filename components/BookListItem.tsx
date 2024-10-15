@@ -5,6 +5,7 @@ import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import BookSharebutton from "./BookShareButton";
 import CongratulationsModal from "./CongratulationsModal";
 import ViewSellers from "./ViewSellers";
 export default function BookListItem({
@@ -575,8 +576,17 @@ export default function BookListItem({
                 <option value="Finished">{t("reading_status3")}</option>
                 <option value="DNF">{t("reading_status4")}</option>
               </select>
-              <div className="mt-2 inline-block">
+              <div className="inline-block">
                 <ViewSellers title={book.title} />
+              </div>
+              <div className="inline-block">
+                <BookSharebutton
+                  isbn={
+                    book.industryIdentifiers?.find(
+                      (id) => id.type === "ISBN_13"
+                    )?.identifier
+                  }
+                />
               </div>
             </div>
           </div>

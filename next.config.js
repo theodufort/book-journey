@@ -15,6 +15,7 @@ const nextConfig = {
     domains: [
       // NextJS <Image> component needs to whitelist domains for src={}
       "lh3.googleusercontent.com",
+      "images.isbndb.com",
       "pbs.twimg.com",
       "images.unsplash.com",
       "logos-world.net",

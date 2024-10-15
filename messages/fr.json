@@ -164,7 +164,7 @@
     "addtags_label": "Ajouter une étiquette",
     "remove_btn": "Supprimer",
     "untitled_label": "Sans Titre",
-    "view_sellers": "Voir",
+    "view_sellers": "Acheter",
     "signup_cta": "Inscrivez-vous pour en découvrir plus!",
     "view_less":"Voir Moins",
     "view_more":"Voir Plus"
@@ -262,5 +262,9 @@
     "english":"Anglais",
     "french":"Français",
     "spanish":"Espagnol"
-  }
+  },
+  "BookShareButton":{
+      "label":"Partager",
+      "message": "Copié au presse-papiers!"
+    }
 }

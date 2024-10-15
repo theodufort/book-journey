@@ -25,7 +25,7 @@ const cta: JSX.Element = <ButtonSignin extraStyle="btn-primary" />;
 // A header with a logo on the left, links in the center (like Pricing, etc...), and a CTA (like Get Started or Login) on the right.
 // The header is responsive, and on mobile, the links are hidden behind a burger button.
 const Header = () => {
-  const t = useTranslations();
+  const t = useTranslations("Header");
   const DashboardButton = () => (
     <Link href="/dashboard" className="btn btn-primary">
       {t("cta_btn")}
@@ -81,7 +81,7 @@ const Header = () => {
         {user ? (
           <div className="flex justify-end flex-1">
             {" "}
-            <LocaleSwitcher />
+            {/* <LocaleSwitcher /> */}
             <ButtonTheme />
             <DashboardButton />
           </div>
@@ -90,7 +90,7 @@ const Header = () => {
             {/* Burger button to open menu on mobile */}
             <div className="flex lg:hidden">
               {" "}
-              <LocaleSwitcher />
+              {/* <LocaleSwitcher /> */}
               <ButtonTheme />
               <button
                 type="button"

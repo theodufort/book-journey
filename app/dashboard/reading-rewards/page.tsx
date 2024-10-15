@@ -11,6 +11,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function ReadingRewards() {
   const t = useTranslations("ReadingRewards");
@@ -195,7 +196,7 @@ export default function ReadingRewards() {
       !userPoints ||
       userPoints?.points_earned - userPoints?.points_redeemed < reward.cost
     ) {
-      alert(t("not_enough_points_warning"));
+      toast.error(t("not_enough_points_warning"));
       return;
     }
 
@@ -220,7 +221,7 @@ export default function ReadingRewards() {
       fetchUserPoints();
     } catch (error) {
       console.error("Error redeeming reward:", error);
-      alert(t("failed_redeem_warning"));
+      toast.error(t("failed_redeem_warning"));
     }
   }
 
