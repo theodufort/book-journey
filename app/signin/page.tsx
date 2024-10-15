@@ -5,23 +5,12 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Provider } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { useSearchParams } from 'next/navigation';
+import { useState } from "react";
 import toast from "react-hot-toast";
 
 // This a login/singup page for Supabase Auth.
 // Successfull login redirects to /api/auth/callback where the Code Exchange is processed (see app/api/auth/callback/route.js).
 export default function Login() {
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    // This will trigger the Layout component to set the cookie
-    const ref = searchParams.get('ref');
-    if (ref) {
-      // You can add any additional client-side logic here if needed
-      console.log('Referral code:', ref);
-    }
-  }, [searchParams]);
   const supabase = createClientComponentClient<Database>();
   const [email, setEmail] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
