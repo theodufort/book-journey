@@ -25,7 +25,16 @@ export default function BookNotes() {
   const notesContainerRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const booksPerPage = 3;
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const booksPerPage = isMobile ? 3 : 5;
 
   const filteredReadingList = useMemo(() => {
     return readingList.filter((book) =>
@@ -39,13 +48,20 @@ export default function BookNotes() {
     const startIndex = (currentPage - 1) * booksPerPage;
     const endIndex = startIndex + booksPerPage;
     return filteredReadingList.slice(startIndex, endIndex);
-  }, [filteredReadingList, currentPage]);
+  }, [filteredReadingList, currentPage, booksPerPage]);
 
   const totalPages = Math.ceil(filteredReadingList.length / booksPerPage);
 
   const handlePageChange = useCallback((newPage: number) => {
     setCurrentPage(newPage);
   }, []);
+
+  const displayedPages = useMemo(() => {
+    if (isMobile) {
+      return Math.min(totalPages, 3);
+    }
+    return totalPages;
+  }, [totalPages, isMobile]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -203,53 +219,55 @@ export default function BookNotes() {
                     className="input input-bordered w-full"
                   />
                 </div>
-                <ul className="divide-y overflow-y-auto max-h-[300px] md:max-h-[calc(100vh-300px)]">
-                  {paginatedReadingList.map((book) => (
-                    <li
-                      key={book.book_id}
-                      className={`cursor-pointer p-4 transition-colors ${
-                        selectedBook?.book_id === book.book_id
-                          ? "bg-base-200"
-                          : ""
-                      }`}
-                      onClick={() => setSelectedBook(book)}
-                    >
-                      <h3 className="font-semibold text-sm md:text-lg">
-                        {book.data.volumeInfo.title}
-                      </h3>
-                      <p className="text-sm text-gray-500">
-                        {book.data.volumeInfo.authors?.join(", ")}
-                      </p>
-                    </li>
-                  ))}
-                  {readingList.length > 0 &&
-                    filteredReadingList.length === 0 && (
-                      <li className="p-4 text-center text-gray-500">
-                        {t("no_books_found")}
+                <div className="flex flex-col h-full">
+                  <ul className="divide-y overflow-y-auto flex-grow">
+                    {paginatedReadingList.map((book) => (
+                      <li
+                        key={book.book_id}
+                        className={`cursor-pointer p-4 transition-colors ${
+                          selectedBook?.book_id === book.book_id
+                            ? "bg-base-200"
+                            : ""
+                        }`}
+                        onClick={() => setSelectedBook(book)}
+                      >
+                        <h3 className="font-semibold text-sm md:text-lg">
+                          {book.data.volumeInfo.title}
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          {book.data.volumeInfo.authors?.join(", ")}
+                        </p>
                       </li>
-                    )}
-                </ul>
-                {totalPages > 1 && (
-                  <div className="flex justify-center mt-4 space-x-2">
-                    <button
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      className="btn btn-sm btn-circle"
-                    >
-                      ←
-                    </button>
-                    <span className="flex items-center">
-                      {currentPage} / {totalPages}
-                    </span>
-                    <button
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                      className="btn btn-sm btn-circle"
-                    >
-                      →
-                    </button>
-                  </div>
-                )}
+                    ))}
+                    {readingList.length > 0 &&
+                      filteredReadingList.length === 0 && (
+                        <li className="p-4 text-center text-gray-500">
+                          {t("no_books_found")}
+                        </li>
+                      )}
+                  </ul>
+                  {totalPages > 1 && (
+                    <div className="flex justify-between items-center p-4 border-t">
+                      <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="btn btn-sm btn-circle"
+                      >
+                        ←
+                      </button>
+                      <span className="text-sm">
+                        {currentPage} / {displayedPages}
+                      </span>
+                      <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="btn btn-sm btn-circle"
+                      >
+                        →
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="w-full md:w-2/3 p-6">
                 {selectedBook ? (
