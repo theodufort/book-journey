@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   const requestUrl = new URL(req.url);
   const code = requestUrl.searchParams.get("code");
-  console.log(cookies().getAll());
+  
   if (code) {
     const supabase = createRouteHandlerClient({ cookies });
     const {
@@ -18,14 +18,16 @@ export async function GET(req: NextRequest) {
 
     if (user) {
       // Check for referral code in cookies
-      const referralCode = cookies().get("referralCode")?.value;
-      console.log(referralCode);
+      const cookieStore = cookies();
+      const referralCode = cookieStore.get("referralCode")?.value;
+      console.log("Referral code from cookie:", referralCode);
+
       if (referralCode) {
         // Handle the referral
         await handleReferral(user.id, referralCode);
 
         // Clear the referral code cookie
-        cookies().delete("referralCode");
+        cookieStore.delete("referralCode");
       }
     }
   }
