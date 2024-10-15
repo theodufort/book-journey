@@ -1,22 +1,16 @@
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import BookDetails from '@/components/BookDetails'
 
 export const dynamic = 'force-dynamic'
 
 export default async function BookPage({ params: { id } }: { params: { id: string } }) {
-  const supabase = createServerComponentClient({ cookies })
+  const response = await fetch(`/api/books/${id}/v3`)
   
-  const { data: book } = await supabase
-    .from('books')
-    .select('*')
-    .eq('id', id)
-    .single()
-
-  if (!book) {
+  if (!response.ok) {
     notFound()
   }
+
+  const book = await response.json()
 
   return (
     <div className="max-w-4xl mx-auto py-8">
