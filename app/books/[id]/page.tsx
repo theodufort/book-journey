@@ -14,11 +14,17 @@ export default async function BookPage({
   });
 
   if (!response.ok) {
+    console.error(`API request failed with status ${response.status}`);
     notFound();
   }
 
   const book = await response.json();
-  console.log(book);
+  console.log('API Response:', book);
+
+  if (!book || typeof book !== 'object') {
+    console.error('Invalid book data received from API');
+    notFound();
+  }
   return (
     <div className="max-w-4xl mx-auto py-8">
       <BookDetails book={book} />
