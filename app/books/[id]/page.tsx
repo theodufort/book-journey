@@ -1,6 +1,8 @@
 import BookDetails from "@/components/BookDetails";
-import { notFound } from "next/navigation";
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 import { Volume } from "@/interfaces/GoogleAPI";
+import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -20,15 +22,21 @@ export default async function BookPage({
   }
 
   const book: Volume = await response.json();
-  console.log('API Response:', book);
+  console.log("API Response:", book);
 
-  if (!book || typeof book !== 'object') {
-    console.error('Invalid book data received from API');
+  if (!book || typeof book !== "object") {
+    console.error("Invalid book data received from API");
     notFound();
   }
   return (
-    <div className="max-w-4xl mx-auto py-8">
-      <BookDetails book={book} />
+    <div>
+      <Header />
+      <main className="min-h-screen p-8 pb-24">
+        <section className="max-w-6xl mx-auto space-y-8">
+          <BookDetails book={book} />
+        </section>{" "}
+      </main>
+      <Footer />
     </div>
   );
 }

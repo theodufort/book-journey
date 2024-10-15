@@ -164,7 +164,7 @@
       "addtags_label":"Add tag",
       "remove_btn":"Remove",
       "untitled_label":"Untitled",
-      "view_sellers":"View",
+      "view_sellers":"Buy",
       "signup_cta":"Sign Up to find more!",
       "view_less":"View Less",
       "view_more":"View More"
@@ -262,5 +262,9 @@
       "english":"English",
       "french":"French",
       "spanish":"Spanish"
+    },
+    "BookShareButton":{
+      "label":"Share",
+      "message": "Copied to Clipboard!"
     }
 }
