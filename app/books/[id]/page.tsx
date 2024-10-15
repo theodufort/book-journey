@@ -1,5 +1,6 @@
 import BookDetails from "@/components/BookDetails";
 import { notFound } from "next/navigation";
+import { Volume } from "@/interfaces/GoogleAPI";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +19,7 @@ export default async function BookPage({
     notFound();
   }
 
-  const book = await response.json();
+  const book: Volume = await response.json();
   console.log('API Response:', book);
 
   if (!book || typeof book !== 'object') {
