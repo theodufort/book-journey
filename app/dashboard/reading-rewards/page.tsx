@@ -194,7 +194,10 @@ export default function ReadingRewards() {
   async function redeemReward(reward: Reward) {
     if (
       !userPoints ||
-      userPoints?.points_earned - userPoints?.points_redeemed < reward.cost
+      userPoints?.points_earned +
+        userPoints?.points_earned_referrals -
+        userPoints?.points_redeemed <
+        reward.cost
     ) {
       toast.error(t("not_enough_points_warning"));
       return;
@@ -251,7 +254,9 @@ export default function ReadingRewards() {
                 className="whitespace-nowrap overflow-hidden text-ellipsis mr-1 flex items-center"
               >
                 <span className="mr-1">
-                  {userPoints?.points_earned - userPoints?.points_redeemed}
+                  {userPoints?.points_earned +
+                    userPoints?.points_earned_referrals -
+                    userPoints?.points_redeemed}
                 </span>
                 <Image src={"/coin.png"} height={20} width={20} alt="coin" />
               </Link>
@@ -323,7 +328,9 @@ export default function ReadingRewards() {
                     onClick={() => redeemReward(reward)}
                     disabled={
                       !userPoints ||
-                      userPoints.points_earned - userPoints.points_redeemed <
+                      userPoints.points_earned +
+                        userPoints?.points_earned_referrals -
+                        userPoints.points_redeemed <
                         reward.cost
                     }
                   >
