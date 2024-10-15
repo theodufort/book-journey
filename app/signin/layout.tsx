@@ -9,11 +9,14 @@ export const metadata = getSEOTags({
 });
 
 export default function Layout({ children }: { children: ReactNode }) {
-  const ref = searchParams.get("ref");
-  console.log(ref);
-  if (ref) {
-    // Store the ref code in localStorage
-    cookies().set("referralCode", ref);
-  }
   return <>{children}</>;
+}
+
+export async function getServerSideProps(context) {
+  const { ref } = context.query;
+  if (ref) {
+    // Set the referral code as a cookie
+    context.res.setHeader('Set-Cookie', `referralCode=${ref}; Path=/; HttpOnly`);
+  }
+  return { props: {} };
 }
