@@ -1,11 +1,26 @@
-import React, { useState } from 'react';
-import { useSession } from 'next-auth/react';
+import React, { useState, useEffect } from 'react';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { Database } from '@/types/supabase';
 
 const ReferralLinkCard: React.FC = () => {
-  const { data: session } = useSession();
+  const [userId, setUserId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const supabase = createClientComponentClient<Database>();
 
-  const referralLink = `${process.env.NEXT_PUBLIC_BASE_URL}/signin?ref=${session?.user?.id}`;
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUserId(user.id);
+      }
+    };
+
+    fetchUser();
+  }, [supabase.auth]);
+
+  const referralLink = userId
+    ? `${process.env.NEXT_PUBLIC_BASE_URL}/signin?ref=${userId}`
+    : '';
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(referralLink).then(() => {
@@ -13,6 +28,10 @@ const ReferralLinkCard: React.FC = () => {
       setTimeout(() => setCopied(false), 2000);
     });
   };
+
+  if (!userId) {
+    return null; // Or a loading state
+  }
 
   return (
     <div className="card bg-base-200 shadow-xl">
