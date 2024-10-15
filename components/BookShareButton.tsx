@@ -13,7 +13,7 @@ export default function BookSharebutton({ isbn }: props) {
   };
   return (
     <button className="btn btn-secondary" onClick={copylink}>
-      {t("label")}
+      {/* {t("label")} */}🔗
     </button>
   );
 }
