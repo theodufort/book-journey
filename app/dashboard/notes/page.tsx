@@ -174,8 +174,8 @@ export default function BookNotes() {
           </main>
         ) : (
           <div className="bg-base-200 shadow-md rounded-lg overflow-hidden">
-            <div className="flex">
-              <div className="w-1/3 border-r">
+            <div className="flex flex-col md:flex-row">
+              <div className="w-full md:w-1/3 md:border-r">
                 <div className="p-4 bg-base-200 border-b">
                   <h2 className="text-md md:text-xl font-semibold mb-2">
                     {t("subtitle")}
@@ -188,7 +188,7 @@ export default function BookNotes() {
                     className="input input-bordered w-full"
                   />
                 </div>
-                <ul className="divide-y overflow-y-auto max-h-[calc(100vh-250px)]">
+                <ul className="divide-y overflow-y-auto max-h-[300px] md:max-h-[calc(100vh-250px)]">
                   {filteredReadingList.map((book) => (
                     <li
                       key={book.book_id}
@@ -215,7 +215,7 @@ export default function BookNotes() {
                     )}
                 </ul>
               </div>
-              <div className="w-2/3 p-6">
+              <div className="w-full md:w-2/3 p-6">
                 {selectedBook ? (
                   <>
                     <div className="mb-4 block">
@@ -249,7 +249,7 @@ export default function BookNotes() {
                     </div>
                     <div
                       ref={notesContainerRef}
-                      className="flex flex-col h-[calc(100vh-300px)]"
+                      className="flex flex-col h-[300px] md:h-[calc(100vh-300px)]"
                     >
                       {isEditMode ? (
                         <>
