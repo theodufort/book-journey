@@ -8,20 +8,13 @@ export const metadata = getSEOTags({
   canonicalUrlRelative: "/auth/signin",
 });
 
-export default async function Layout({
-  children,
-  searchParams,
-}: {
-  children: ReactNode;
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
-  const ref = searchParams.ref as string | undefined;
-  
+export default async function Layout({ children }: { children: ReactNode }) {
+  const cookieStore = cookies();
+  const ref = cookieStore.get("referralCode")?.value;
+
   if (ref) {
-    cookies().set("referralCode", ref, { 
-      path: "/",
-      httpOnly: true,
-    });
+    // The cookie is already set by the page component, so we don't need to set it again
+    console.log("Referral code from cookie:", ref);
   }
 
   return <>{children}</>;
