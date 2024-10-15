@@ -234,9 +234,9 @@ export default function BookNotes() {
                     <button
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
-                      className="btn btn-sm"
+                      className="btn btn-sm btn-circle"
                     >
-                      {t("previous")}
+                      ←
                     </button>
                     <span className="flex items-center">
                       {currentPage} / {totalPages}
@@ -244,9 +244,9 @@ export default function BookNotes() {
                     <button
                       onClick={() => handlePageChange(currentPage + 1)}
                       disabled={currentPage === totalPages}
-                      className="btn btn-sm"
+                      className="btn btn-sm btn-circle"
                     >
-                      {t("next")}
+                      →
                     </button>
                   </div>
                 )}
