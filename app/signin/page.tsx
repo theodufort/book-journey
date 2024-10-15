@@ -5,8 +5,8 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Provider } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams } from "next/navigation";
+import { useState } from "react";
 import toast from "react-hot-toast";
 
 // This a login/singup page for Supabase Auth.
@@ -17,16 +17,8 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const searchParams = useSearchParams();
-
+  const ref = searchParams.get("ref");
   const t = useTranslations("Signin");
-
-  useEffect(() => {
-    const ref = searchParams.get('ref');
-    if (ref) {
-      // Set the referral code cookie
-      document.cookie = `referralCode=${ref}; path=/; max-age=2592000; SameSite=Lax; Secure`;
-    }
-  }, [searchParams]);
 
   const handleSignup = async (
     e: any,
@@ -41,7 +33,9 @@ export default function Login() {
 
     try {
       const { type, provider } = options;
-      const redirectURL = window.location.origin + "/api/auth/callback";
+      const redirectURL =
+        window.location.origin +
+        `/api/auth/callback${ref ? "?ref=" + ref : null}`;
       if (type === "oauth") {
         await supabase.auth.signInWithOAuth({
           provider,

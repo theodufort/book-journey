@@ -9,7 +9,8 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   const requestUrl = new URL(req.url);
   const code = requestUrl.searchParams.get("code");
-  
+  const ref = requestUrl.searchParams.get("ref");
+  console.log(ref);
   if (code) {
     const supabase = createRouteHandlerClient({ cookies });
     const {
@@ -18,32 +19,11 @@ export async function GET(req: NextRequest) {
 
     if (user) {
       // Check for referral code in cookies
-      const cookieStore = cookies();
-      const allCookies = cookieStore.getAll();
-      console.log("All cookies:", allCookies);
 
-      const referralCode = allCookies.find(cookie => cookie.name === "referralCode");
-      console.log("Referral code cookie:", referralCode);
-
-      if (referralCode?.value) {
-        const decodedValue = decodeURIComponent(referralCode.value);
-        console.log("Decoded referral code value:", decodedValue);
-
+      if (ref) {
         // Handle the referral
-        await handleReferral(user.id, decodedValue);
-
-        // Clear the referral code cookie
-        cookieStore.delete("referralCode");
-      } else {
-        console.log("No referral code found in cookies");
+        await handleReferral(user.id, ref);
       }
-
-      // Additional check for other potential cookie names
-      const potentialReferralCookies = allCookies.filter(cookie => 
-        cookie.name.toLowerCase().includes('referral') || 
-        cookie.name.toLowerCase().includes('ref')
-      );
-      console.log("Potential referral cookies:", potentialReferralCookies);
     }
   }
 
