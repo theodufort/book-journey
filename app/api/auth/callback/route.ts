@@ -12,18 +12,20 @@ export async function GET(req: NextRequest) {
 
   if (code) {
     const supabase = createRouteHandlerClient({ cookies });
-    const { data: { user } } = await supabase.auth.exchangeCodeForSession(code);
+    const {
+      data: { user },
+    } = await supabase.auth.exchangeCodeForSession(code);
 
     if (user) {
       // Check for referral code in cookies
-      const referralCode = cookies().get('referralCode')?.value;
-
+      const referralCode = cookies().get("referralCode")?.value;
+      console.log(referralCode);
       if (referralCode) {
         // Handle the referral
         await handleReferral(user.id, referralCode);
-        
+
         // Clear the referral code cookie
-        cookies().delete('referralCode');
+        cookies().delete("referralCode");
       }
     }
   }
@@ -41,46 +43,44 @@ async function handleReferral(userId: string, referralCode: string) {
   if (userId !== referralCode) {
     // Insert the referral information into the referrals table
     const { error: referralError } = await supabase
-      .from('referrals')
+      .from("referrals")
       .insert({ referrer_id: referralCode, referred_id: userId });
 
     if (referralError) {
-      console.error('Error inserting referral:', referralError);
+      console.error("Error inserting referral:", referralError);
     } else {
-      console.log('Referral successfully recorded');
+      console.log("Referral successfully recorded");
 
       // Add 100 points to the new user's account
-      const { error: pointsError } = await supabase
-        .from('user_points')
-        .upsert(
-          { 
-            user_id: userId, 
-            points_earned: 100,
-            points_redeemed: 0,
-            points_earned_referrals: 0
-          },
-          { onConflict: 'user_id' }
-        );
+      const { error: pointsError } = await supabase.from("user_points").upsert(
+        {
+          user_id: userId,
+          points_earned: 100,
+          points_redeemed: 0,
+          points_earned_referrals: 0,
+        },
+        { onConflict: "user_id" }
+      );
 
       if (pointsError) {
-        console.error('Error adding points to new user:', pointsError);
+        console.error("Error adding points to new user:", pointsError);
       } else {
-        console.log('100 points added to new user');
+        console.log("100 points added to new user");
       }
 
       // Add 100 points to the referrer's account
       const { error: referrerPointsError } = await supabase
-        .from('user_points')
-        .update({ 
-          points_earned: supabase.rpc('increment', { inc: 100 }),
-          points_earned_referrals: supabase.rpc('increment', { inc: 100 })
+        .from("user_points")
+        .update({
+          points_earned: supabase.rpc("increment", { inc: 100 }),
+          points_earned_referrals: supabase.rpc("increment", { inc: 100 }),
         })
-        .eq('user_id', referralCode);
+        .eq("user_id", referralCode);
 
       if (referrerPointsError) {
-        console.error('Error adding points to referrer:', referrerPointsError);
+        console.error("Error adding points to referrer:", referrerPointsError);
       } else {
-        console.log('100 points added to referrer');
+        console.log("100 points added to referrer");
       }
     }
   }

@@ -6,8 +6,8 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Provider } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 // This a login/singup page for Supabase Auth.
@@ -22,11 +22,12 @@ export default function Login() {
   const t = useTranslations("Signin");
 
   useEffect(() => {
-    const ref = searchParams.get('ref');
+    const ref = searchParams.get("ref");
+    console.log(ref);
     if (ref) {
       setRefCode(ref);
       // Store the ref code in localStorage
-      localStorage.setItem('referralCode', ref);
+      localStorage.setItem("referralCode", ref);
     }
   }, [searchParams]);
 
