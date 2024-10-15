@@ -46,7 +46,7 @@ export default function ReadingRewards() {
     try {
       const { data, error } = await supabase
         .from("user_points")
-        .select("*")
+        .select("points_earned,points_redeemed,points_earned_referrals")
         .eq("user_id", user.id)
         .single();
 
