@@ -13,8 +13,9 @@ export default async function Layout({ children }: { children: ReactNode }) {
   const ref = cookieStore.get("referralCode")?.value;
 
   if (ref) {
-    // The cookie is already set by the page component, so we don't need to set it again
+    // The cookie is set by the page component, we can use it here if needed
     console.log("Referral code from cookie:", ref);
+    // You can add any server-side logic here that needs to use the referral code
   }
 
   return <>{children}</>;
