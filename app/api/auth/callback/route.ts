@@ -39,19 +39,19 @@ async function handleReferral(userId: string, referralCode: string) {
 
   // Check if the referral is valid and not self-referral
   if (userId !== referralCode) {
-    // Update the user's record with the referral information
-    const { error } = await supabase
-      .from('users')
-      .update({ referred_by: referralCode })
-      .eq('id', userId);
+    // Insert the referral information into the referrals table
+    const { error: referralError } = await supabase
+      .from('referrals')
+      .insert({ referrer_id: referralCode, referred_id: userId });
 
-    if (error) {
-      console.error('Error updating referral:', error);
+    if (referralError) {
+      console.error('Error inserting referral:', referralError);
+    } else {
+      console.log('Referral successfully recorded');
     }
 
     // You might want to add more logic here, such as:
-    // - Incrementing a referral count for the referrer
     // - Granting rewards to both the referrer and the new user
-    // - Logging the referral in a separate table
+    // - Updating user statistics
   }
 }
