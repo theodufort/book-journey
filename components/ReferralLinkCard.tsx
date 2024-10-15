@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { Database } from '@/types/supabase';
+import { Database } from "@/types/supabase";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import React, { useEffect, useState } from "react";
 
 const ReferralLinkCard: React.FC = () => {
   const [userId, setUserId] = useState<string | null>(null);
@@ -9,7 +9,9 @@ const ReferralLinkCard: React.FC = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (user) {
         setUserId(user.id);
       }
@@ -20,7 +22,7 @@ const ReferralLinkCard: React.FC = () => {
 
   const referralLink = userId
     ? `${process.env.NEXT_PUBLIC_BASE_URL}/signin?ref=${userId}`
-    : '';
+    : "";
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(referralLink).then(() => {
@@ -34,7 +36,7 @@ const ReferralLinkCard: React.FC = () => {
   }
 
   return (
-    <div className="card bg-base-200 shadow-xl">
+    <div className="card bg-base-200 shadow-xl w-full">
       <div className="card-body">
         <h2 className="card-title">Your Referral Link</h2>
         <p className="text-sm mb-2">Share this link to invite others:</p>
@@ -47,9 +49,9 @@ const ReferralLinkCard: React.FC = () => {
           />
           <button
             onClick={copyToClipboard}
-            className={`btn ${copied ? 'btn-success' : 'btn-primary'}`}
+            className={`btn ${copied ? "btn-success" : "btn-primary"}`}
           >
-            {copied ? 'Copied!' : 'Copy'}
+            {copied ? "Copied!" : "Copy"}
           </button>
         </div>
       </div>
