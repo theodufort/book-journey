@@ -12,24 +12,46 @@ export async function GET(req: NextRequest) {
 
   if (code) {
     const supabase = createRouteHandlerClient({ cookies });
-    await supabase.auth.exchangeCodeForSession(code);
-  } else {
-    // const resend = new Resend(process.env.RESEND_API_KEY);
-    // const { data, error } = await resend.emails.send({
-    //   from: "welcome@mybookquest.com",
-    //   to: userLoggedIn == null ? "theodufort05@gmail.com" : userLoggedIn.email,
-    //   subject: "Welcome to MyBookQuest!",
-    //   react: WelcomeEmail(),
-    // });
-    // if (error) {
-    //   return Response.json({ error });
-    // }
+    const { data: { user } } = await supabase.auth.exchangeCodeForSession(code);
+
+    if (user) {
+      // Check for referral code in cookies
+      const referralCode = cookies().get('referralCode')?.value;
+
+      if (referralCode) {
+        // Handle the referral
+        await handleReferral(user.id, referralCode);
+        
+        // Clear the referral code cookie
+        cookies().delete('referralCode');
+      }
+    }
   }
+
   // URL to redirect to after sign in process completes
-    return NextResponse.redirect(
+  return NextResponse.redirect(
     process.env.NEXT_PUBLIC_BASE_URL + config.auth.callbackUrl
   );
-  // return NextResponse.redirect(
-  //   "https://localhost:3000" + config.auth.callbackUrl
-  // );
+}
+
+async function handleReferral(userId: string, referralCode: string) {
+  const supabase = createRouteHandlerClient({ cookies });
+
+  // Check if the referral is valid and not self-referral
+  if (userId !== referralCode) {
+    // Update the user's record with the referral information
+    const { error } = await supabase
+      .from('users')
+      .update({ referred_by: referralCode })
+      .eq('id', userId);
+
+    if (error) {
+      console.error('Error updating referral:', error);
+    }
+
+    // You might want to add more logic here, such as:
+    // - Incrementing a referral count for the referrer
+    // - Granting rewards to both the referrer and the new user
+    // - Logging the referral in a separate table
+  }
 }
