@@ -13,7 +13,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { HowToEarnPointsPopup } from "./HowToEarnPointsPopup";
-import ReferralLinkCard from "./ReferralLinkCard";
 
 const HeaderDashboard = () => {
   const t = useTranslations("HeaderDashboard");
@@ -111,9 +110,10 @@ const HeaderDashboard = () => {
           ></label>
 
           <ul
-            className={`menu bg-base-200 text-base-content min-h-full w-80 p-4 space-y-2 shadow-lg rounded-r-lg flex flex-col`}
+            className={`menu bg-base-200 text-base-content min-h-full w-80 p-4 shadow-lg rounded-r-lg flex flex-col`}
           >
             <div className="flex justify-between items-center w-full">
+              {/* Header part with app logo and points */}
               <li>
                 <Link
                   className="flex items-center gap-2 shrink-0 p-2"
@@ -155,23 +155,22 @@ const HeaderDashboard = () => {
                 </div>
               </li>
             </div>
+
+            {/* Links list */}
             <div className="mb-auto">
               <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
                 <Link
                   href="/dashboard"
                   className="flex items-center space-x-3 p-2 align-middle text-lg"
                 >
-                  {/* Pointier Home Icon */}
                   📊 {t("link1")}
                 </Link>
               </li>
-
               <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
                 <Link
                   href="/dashboard/reading-list"
                   className="flex items-center space-x-3 p-2 align-middle text-lg"
                 >
-                  {/* Bookmark Icon */}
                   📚 {t("link2")}
                 </Link>
               </li>
@@ -180,7 +179,6 @@ const HeaderDashboard = () => {
                   href="/dashboard/notes"
                   className="flex items-center space-x-3 p-2 align-middle text-lg"
                 >
-                  {/* Notebook Icon */}
                   ✍️ {t("link3")}
                 </Link>
               </li>
@@ -189,7 +187,6 @@ const HeaderDashboard = () => {
                   href="/dashboard/recommendations"
                   className="flex items-center space-x-3 p-2 align-middle text-lg"
                 >
-                  {/* Star Icon */}
                   🔮 {t("link4")}
                 </Link>
               </li>
@@ -198,7 +195,6 @@ const HeaderDashboard = () => {
                   href="/dashboard/reading-rewards"
                   className="flex items-center space-x-3 p-2 align-middle text-lg"
                 >
-                  {/* Trophy Icon */}
                   🏆 {t("link5")}
                 </Link>
               </li>
@@ -207,13 +203,13 @@ const HeaderDashboard = () => {
                   href="/dashboard/support"
                   className="flex items-center space-x-3 p-2 align-middle text-lg"
                 >
-                  {/* Notebook Icon */}
                   🙋‍♂️ {t("link6")}
                 </Link>
               </li>
             </div>
+
+            {/* Footer with referral link and buttons */}
             <div className="mt-auto flex flex-col space-y-4">
-              <ReferralLinkCard />
               <div className="flex justify-between items-center">
                 <button
                   onClick={toggleTheme}
@@ -273,6 +269,7 @@ const HeaderDashboard = () => {
                   </svg>
                 </label>
               </div>
+              {/* <ReferralLinkCard /> */}
             </div>
           </ul>
         </div>
