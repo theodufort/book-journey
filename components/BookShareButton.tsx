@@ -12,7 +12,7 @@ export default function BookSharebutton({ isbn }: props) {
     toast.success(t("message"));
   };
   return (
-    <button className="btn btn-secondary" onClick={copylink}>
+    <button className="btn btn-secondary text-lg" onClick={copylink}>
       {/* {t("label")} */}🔗
     </button>
   );

@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     } else if (query) {
       url = `https://api2.isbndb.com/books/${encodeURIComponent(
         query
-      )}?page=${page}&pageSize=${pageSize}&language=${language}&column=title`;
+      )}?page=${page}&pageSize=${pageSize}&language=${language}`;
       cacheKey = `search:v3:query:${query}:${page}:${pageSize}:${language}`;
     } else {
       return NextResponse.json(

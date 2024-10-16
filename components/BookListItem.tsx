@@ -581,7 +581,7 @@ export default function BookListItem({
                       )?.identifier
                     }
                   />
-                </div>{" "}
+                </div>
                 <div className="justify-end md:flex">
                   <ViewSellers title={book.title} />
                 </div>
