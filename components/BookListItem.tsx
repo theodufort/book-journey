@@ -560,33 +560,31 @@ export default function BookListItem({
           <div className="grid md:grid-cols-2 md:grid-rows-1">
             <h2 className="card-title">{book.title || "Untitled"}</h2>
             <div className="my-2 md:my-0 space-x-2 md:ml-auto mr-auto md:mr-0">
-              {/* <label>
-                <b>Status:</b>{" "}
-              </label> */}
-
               <select
                 value={status}
                 onChange={(e) =>
                   updateBookStatus(e.target.value, book.pageCount)
                 }
-                className="select select-bordered w-auto max-w-xs "
+                className="select select-bordered w-auto max-w-xs"
               >
                 <option value="To Read">{t("reading_status1")}</option>
                 <option value="Reading">{t("reading_status2")}</option>
                 <option value="Finished">{t("reading_status3")}</option>
                 <option value="DNF">{t("reading_status4")}</option>
               </select>
-              <div className="inline-block">
-                <ViewSellers title={book.title} />
-              </div>
-              <div className="inline-block">
-                <BookSharebutton
-                  isbn={
-                    book.industryIdentifiers?.find(
-                      (id) => id.type === "ISBN_13"
-                    )?.identifier
-                  }
-                />
+              <div className="grid grid-cols-2 mt-5 ml-auto">
+                <div className="justify-end md:flex">
+                  <BookSharebutton
+                    isbn={
+                      book.industryIdentifiers?.find(
+                        (id) => id.type === "ISBN_13"
+                      )?.identifier
+                    }
+                  />
+                </div>{" "}
+                <div className="justify-end md:flex">
+                  <ViewSellers title={book.title} />
+                </div>
               </div>
             </div>
           </div>
