@@ -76,7 +76,8 @@
     "link2": "Liste de Lecture",
     "link3": "Notes de Lecture",
     "link4": "Recommandations de Lecture",
-    "link5": "Récompenses de Lecture"
+    "link5": "Récompenses de Lecture",
+    "link6":"Support"
   },
   "ButtonAccount": {
     "profile": "Profil",
@@ -114,7 +115,8 @@
     "tags_label": "Étiquettes",
     "addtags_label": "Ajouter une étiquette",
     "remove_btn": "Supprimer",
-    "untitled_label": "Sans Titre"
+    "untitled_label": "Sans Titre",
+    "make_review_public": "Rendre votre critique publique?"
   },
   "CongratulationsModal": {
     "title": "Félicitations!",
@@ -162,7 +164,7 @@
     "addtags_label": "Ajouter une étiquette",
     "remove_btn": "Supprimer",
     "untitled_label": "Sans Titre",
-    "view_sellers": "Voir",
+    "view_sellers": "Acheter",
     "signup_cta": "Inscrivez-vous pour en découvrir plus!",
     "view_less":"Voir Moins",
     "view_more":"Voir Plus"
@@ -214,7 +216,7 @@
     "importinfo_li3": "La critique écrite et la note pour chaque livre. (le cas échéant)",
     "goodreads_li1": "Connectez-vous à votre compte Goodreads.",
     "goodreads_li2": "Accédez à la page d'exportation à",
-    "goodreads_li3": "Cliquez sur 'Exporter la Bibliothèque' en haut de la page.",
+    "goodreads_li3": "Cliquez sur 'Exporter la Bibliothèque en haut de la page.",
     "goodreads_li4": "Attendez que le fichier soit prêt et cliquez sur le lien.",
     "import_message": "Importation...",
     "import_from": "Importer des données depuis",
@@ -229,5 +231,40 @@
     "step3_content": "Commencez à construire votre bibliothèque personnelle en ajoutant des livres que vous avez lus ou que vous voulez lire.",
     "step4_title": "Obtenez des Recommandations et des Récompenses",
     "step4_content": "En fonction de vos préférences et de vos livres, nous vous fournirons des recommandations personnalisées et des récompenses excitantes!"
-  }
+  },
+  "Support":{
+      "title":"Support",
+      "name":"Nom",
+      "email":"Courriel",
+      "message":"Message"
+    },
+  "AddToReadingList":{
+    "title":"Ajouter un Livre",
+    "error":"Aucun résultat",
+    "english":"Anglais",
+    "french":"Français",
+    "spanish":"Espagnol",
+    "searching":"Recherche...",
+    "search":"Chercher",
+    "no_desc":"Aucune description disponible",
+    "select1":"Ajouter à la liste de lecture",
+    "select2":"À Lire",
+    "select3":"En Cours",
+    "select4":"Terminé",
+    "search_placeholder":"Chercher par titre ou ISBN",
+    "search_by_name":"Nom",
+    "search_by_isbn":"ISBN"
+  },
+  "LanguagePreferences":{
+    "title":"Langages",
+    "title2":"Langage pour la plateforme",
+    "subtitle":"Langage pour la recherche",
+    "english":"Anglais",
+    "french":"Français",
+    "spanish":"Espagnol"
+  },
+  "BookShareButton":{
+      "label":"Partager",
+      "message": "Copié au presse-papiers!"
+    }
 }

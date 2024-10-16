@@ -1,11 +1,15 @@
 "use client";
-import FeaturesListicle from "@/components/FeaturesListicle";
 import Header from "@/components/Header";
 
 import FAQ from "@/components/FAQ";
+import Feature1 from "@/components/Feature1";
+import Feature2 from "@/components/Feature2";
+import Feature3 from "@/components/Feature3";
+import Feature4 from "@/components/Feature4";
+import Feature5 from "@/components/Feature5";
+import Feature6 from "@/components/Feature6";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
-import Problem from "@/components/Problem";
 import { Database } from "@/types/supabase";
 import {
   createClientComponentClient,
@@ -38,8 +42,12 @@ export default function Page() {
       </Suspense>
       <main>
         <Hero />
-        <FeaturesListicle />
-        <Problem />
+        <Feature1 />
+        <Feature2 />
+        <Feature3 />
+        <Feature4 />
+        <Feature5 />
+        <Feature6 />
         <FAQ />
       </main>
       {/* <CalendlyFooter /> */}

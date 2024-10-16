@@ -1,0 +1,263 @@
+@startuml
+entity "User (Table existante)" as User {
+    + id: UUID [PK]
+}
+
+entity "Author (New table)" as Author {
+    author_id: SERIAL [PK]
+    author_name: VARCHAR
+    birth_date: DATE
+    first_book_published_year: INT
+    personal_favorite_genres: VARCHAR
+    main_writing_genres: VARCHAR
+    type_of_books: VARCHAR
+    picture: VARCHAR
+    website: VARCHAR
+    books_written: INT
+    social_media_id: SERIAL [FK]
+    user_id: UUID [FK]
+}
+
+entity "SocialMedia (New table)" as SocialMedia {
+    social_media_id: SERIAL [PK]
+    social_media_name: VARCHAR
+    link: VARCHAR
+}
+
+entity "AuthorBook (New table)" as AuthorBook {
+    author_book_id: SERIAL [PK]
+    volumeInfo_id: SERIAL [FK]
+    author_id: SERIAL [FK]
+}
+
+entity "Book (Table existante)" as Book {
+    volumeInfo_id: SERIAL [PK]
+} 
+
+
+Author "1" -- "*"  SocialMedia
+Author "1" -- "*" AuthorBook
+AuthorBook "1" -- "1" Book
+
+' Entities
+
+entity "ai_conversations" {
+  * id : uuid
+  --
+  messages : jsonb
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+entity "article_categories" {
+  * article_id : integer
+  * category_id : integer
+}
+
+entity "blog_articles" {
+  * id : integer
+  --
+  slug : varchar(255)
+  title : varchar(255)
+  description : text
+  content : text
+  image_url : text
+  image_alt : text
+  isbn_13 : text
+  published_at : timestamp
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+entity "blog_categories" {
+  * id : integer
+  --
+  name : varchar(100)
+  slug : varchar(100)
+  description : text
+}
+
+entity "book_notes" {
+  * id : integer
+  --
+  user_id : uuid
+  book_id : varchar(20)
+  notes : text
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+entity "books" {
+  * isbn_13 : text
+  --
+  data : jsonb
+  added_at : timestamp
+}
+
+entity "books_like" {
+  * id : text
+  --
+  books : text[]
+}
+
+entity "friends" {
+  * id : integer
+  --
+  user_id : uuid
+  friend_id : uuid
+  status : varchar(20)
+  created_at : timestamp
+}
+
+entity "libraries" {
+  * id : uuid
+  --
+  display_name : text
+  city_ascii : text
+  state_id : text
+  state_name : text
+  county_name : text
+  lat : text
+  lon : text
+  created_at : timestamp
+}
+
+
+entity "point_transactions" {
+  * id : integer
+  --
+  user_id : uuid
+  points : integer
+  type : varchar(50)
+  description : text
+  created_at : timestamp
+}
+
+entity "profiles" {
+  * id : uuid
+  --
+  created_at : timestamp
+  last_sign_in_at : timestamp
+  raw_app_meta_data : jsonb
+  raw_user_meta_data : jsonb
+  email : text
+  inactivity_email_sent : boolean
+}
+
+entity "quotes" {
+  * id : uuid
+  --
+  text : text
+  author : text
+}
+
+entity "reading_list" {
+  * id : integer
+  --
+  user_id : uuid
+  book_id : varchar(20)
+  status : text
+  rating : numeric(3,1)
+  review : text
+  toread_at : timestamp
+  pointsAwardedFinished : boolean
+  pointsAwardedRating : boolean
+  pointsAwardedTextReview : boolean
+  tags : text[]
+  reading_at : timestamp
+  finished_at : timestamp
+  reviewPublic : boolean
+}
+
+entity "reading_stats" {
+  * user_id : uuid
+  --
+  books_read : integer
+  pages_read : integer
+  reading_time_minutes : integer
+}
+
+entity "user_activity" {
+  * id : integer
+  --
+  user_id : uuid
+  activity_type : varchar(50)
+  details : jsonb
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+entity "user_point_streak" {
+  * user_id : uuid
+  --
+  day1 : timestamp
+  day2 : timestamp
+  day3 : timestamp
+  day4 : timestamp
+  day5 : timestamp
+  day6 : timestamp
+  day7 : timestamp
+  reward_awarded : boolean[]
+}
+
+entity "user_points" {
+  * user_id : uuid
+  --
+  points_earned : integer
+  points_redeemed : integer
+}
+
+entity "user_preferences" {
+  * user_id : uuid
+  --
+  preferred_categories : text[]
+  username : varchar(50)
+  bio : text
+  profile_picture_url : text
+  onboarded : boolean
+  preferred_ui_language : text
+  preferred_book_language : text
+}
+
+entity "users" as auth_users {
+  * id : uuid
+  --
+  -- other fields not specified
+}
+
+' Relationships
+auth_users ||--o{ Author : "author_id"
+
+auth_users ||--o{ book_notes : "user_id"
+
+books ||--o{ book_notes : "book_id"
+
+books ||--o{ reading_list : "book_id"
+
+auth_users ||--|| profiles : "id"
+
+auth_users ||--|| reading_stats : "user_id"
+
+auth_users ||--|| user_point_streak : "user_id"
+
+auth_users ||--|| user_points : "user_id"
+
+auth_users ||--|| user_preferences : "user_id"
+
+auth_users ||--o{ friends : "user_id"
+
+auth_users ||--o{ friends : "friend_id"
+
+auth_users ||--o{ point_transactions : "user_id"
+
+auth_users ||--o{ reading_list : "user_id"
+
+auth_users ||--o{ user_activity : "user_id"
+
+books ||--o{ blog_articles : "isbn_13"
+
+blog_articles ||--o{ article_categories : "article_id"
+
+blog_categories ||--o{ article_categories : "category_id"
+
+@enduml

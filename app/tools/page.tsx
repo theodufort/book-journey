@@ -21,6 +21,11 @@ const tools = [
       "Find movie or book adaptations of your favorite movie or book",
     path: "/tools/movie-based-on-book",
   },
+  {
+    name: "Quotes",
+    description: "Find real quotes from real people through time and history.",
+    path: "/tools/quotes",
+  },
 ];
 
 export default function ToolsPage() {

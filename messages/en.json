@@ -76,7 +76,8 @@
       "link2":"Reading List",
       "link3":"Reading Notes",
       "link4":"Reading Recommendations",
-      "link5":"Reading Rewards"
+      "link5":"Reading Rewards",
+      "link6":"Support"
     },
     "ButtonAccount":{
       "profile": "Profile",
@@ -114,7 +115,8 @@
       "tags_label":"Tags",
       "addtags_label":"Add tag",
       "remove_btn":"Remove",
-      "untitled_label":"Untitled"
+      "untitled_label":"Untitled",
+      "make_review_public": "Make your review public?"
     },
     "CongratulationsModal":{
       "title":"Congratulations!",
@@ -162,7 +164,7 @@
       "addtags_label":"Add tag",
       "remove_btn":"Remove",
       "untitled_label":"Untitled",
-      "view_sellers":"View",
+      "view_sellers":"Buy",
       "signup_cta":"Sign Up to find more!",
       "view_less":"View Less",
       "view_more":"View More"
@@ -229,5 +231,40 @@
       "step3_content":"Start building your personal library by adding books you've read or want to read.",
       "step4_title":"Get Recommendations and Rewards",
       "step4_content":"Based on your preferences and books, we'll provide personalized recommendations and exciting rewards!"
+    },
+    "Support":{
+      "title":"Support",
+      "name":"Name",
+      "email":"Email",
+      "message":"Message"
+    },
+    "AddToReadingList":{
+      "title":"Add a Book",
+      "error":"No results found",
+      "english":"English",
+      "french":"French",
+      "spanish":"Spanish",
+      "searching":"Searching...",
+      "search":"Search",
+      "no_desc":"No description available",
+      "select1":"Add to Reading List",
+      "select2":"To Read",
+      "select3":"Currently Reading",
+      "select4":"Finished",
+      "search_placeholder":"Search by title or ISBN",
+      "search_by_name":"Name",
+      "search_by_isbn":"ISBN"
+    },
+    "LanguagePreferences":{
+      "title":"Languages",
+      "title2":"Language for the platform",
+      "subtitle":"Language for book search",
+      "english":"English",
+      "french":"French",
+      "spanish":"Spanish"
+    },
+    "BookShareButton":{
+      "label":"Share",
+      "message": "Copied to Clipboard!"
     }
 }

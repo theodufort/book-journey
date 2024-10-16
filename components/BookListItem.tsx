@@ -5,7 +5,9 @@ import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import BookSharebutton from "./BookShareButton";
 import CongratulationsModal from "./CongratulationsModal";
+import ViewSellers from "./ViewSellers";
 export default function BookListItem({
   status,
   item,
@@ -447,6 +449,51 @@ export default function BookListItem({
     }
   }
 
+  const [isReviewPublic, setIsReviewPublic] = useState(false);
+
+  useEffect(() => {
+    if (user && status === "Finished") {
+      fetchReviewPublicStatus();
+    }
+  }, [user, status]);
+
+  async function fetchReviewPublicStatus() {
+    if (!user) return;
+    const { data, error }: any = await supabase
+      .from("reading_list")
+      .select("reviewPublic")
+      .eq(
+        "book_id",
+        item.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
+          ?.identifier
+      )
+      .eq("user_id", user.id)
+      .single();
+    if (error) {
+      console.error("Error fetching review public status:", error);
+    } else {
+      setIsReviewPublic(data?.reviewPublic || false);
+    }
+  }
+
+  async function updateReviewPublicStatus(isPublic: boolean) {
+    if (!user) return;
+    const { error } = await supabase
+      .from("reading_list")
+      .update({ reviewPublic: isPublic })
+      .eq(
+        "book_id",
+        item.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
+          ?.identifier
+      )
+      .eq("user_id", user.id);
+    if (error) {
+      console.error("Error updating review public status:", error);
+    } else {
+      setIsReviewPublic(isPublic);
+    }
+  }
+
   const renderReviewInput = () => {
     if (status === "Finished") {
       return (
@@ -474,17 +521,27 @@ export default function BookListItem({
               updateReview(e.target.value);
             }}
           ></textarea>
+          <div className="mt-2">
+            <label className="cursor-pointer label">
+              <span className="label-text">{t("make_review_public")}</span>
+              <input
+                type="checkbox"
+                className="checkbox checkbox-primary"
+                checked={isReviewPublic}
+                onChange={(e) => updateReviewPublicStatus(e.target.checked)}
+              />
+            </label>
+          </div>
         </div>
       );
     }
     return null;
   };
-  const description =
-    book.description
-      .replaceAll("<p>", "")
-      .replaceAll("</p>", "")
-      .replaceAll("<br>", "")
-      .replaceAll("<br/>", "") || "";
+  const description = (book.description || "")
+    .replaceAll("<p>", "")
+    .replaceAll("</p>", "")
+    .replaceAll("<br>", "")
+    .replaceAll("<br/>", "");
   const truncatedDescription =
     description.length > MAX_LENGTH
       ? description.substring(0, MAX_LENGTH) + "..."
@@ -502,22 +559,33 @@ export default function BookListItem({
         <div className="card-body md:w-2/3">
           <div className="grid md:grid-cols-2 md:grid-rows-1">
             <h2 className="card-title">{book.title || "Untitled"}</h2>
-            <div className="md:float-right md:ml-auto mr-auto my-2 md:my-0">
-              {/* <label>
-                <b>Status:</b>{" "}
-              </label> */}
+            <div className="my-2 md:my-0 space-x-2 md:ml-auto mr-auto md:mr-0">
               <select
                 value={status}
                 onChange={(e) =>
                   updateBookStatus(e.target.value, book.pageCount)
                 }
-                className="select select-bordered w-auto max-w-xs "
+                className="select select-bordered w-auto max-w-xs"
               >
                 <option value="To Read">{t("reading_status1")}</option>
                 <option value="Reading">{t("reading_status2")}</option>
                 <option value="Finished">{t("reading_status3")}</option>
                 <option value="DNF">{t("reading_status4")}</option>
               </select>
+              <div className="grid grid-cols-2 mt-5 ml-auto">
+                <div className="justify-end md:flex">
+                  <BookSharebutton
+                    isbn={
+                      book.industryIdentifiers?.find(
+                        (id) => id.type === "ISBN_13"
+                      )?.identifier
+                    }
+                  />
+                </div>{" "}
+                <div className="justify-end md:flex">
+                  <ViewSellers title={book.title} />
+                </div>
+              </div>
             </div>
           </div>
           <p>

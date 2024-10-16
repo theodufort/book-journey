@@ -72,3 +72,4 @@ pwa-android/
 roles.sql
 /.vscode
 data.sql
+.env

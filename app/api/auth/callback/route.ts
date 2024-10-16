@@ -9,27 +9,67 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   const requestUrl = new URL(req.url);
   const code = requestUrl.searchParams.get("code");
-
+  const ref = requestUrl.searchParams.get("ref");
+  console.log(ref);
   if (code) {
     const supabase = createRouteHandlerClient({ cookies });
-    await supabase.auth.exchangeCodeForSession(code);
-  } else {
-    // const resend = new Resend(process.env.RESEND_API_KEY);
-    // const { data, error } = await resend.emails.send({
-    //   from: "welcome@mybookquest.com",
-    //   to: userLoggedIn == null ? "theodufort05@gmail.com" : userLoggedIn.email,
-    //   subject: "Welcome to MyBookQuest!",
-    //   react: WelcomeEmail(),
-    // });
-    // if (error) {
-    //   return Response.json({ error });
-    // }
+    const {
+      data: { user },
+    } = await supabase.auth.exchangeCodeForSession(code);
+
+    if (user) {
+      // Check for referral code in cookies
+
+      if (ref) {
+        // Handle the referral
+        await handleReferral(user.id, ref);
+      }
+    }
   }
+
   // URL to redirect to after sign in process completes
-    return NextResponse.redirect(
+  return NextResponse.redirect(
     process.env.NEXT_PUBLIC_BASE_URL + config.auth.callbackUrl
   );
-  // return NextResponse.redirect(
-  //   "https://localhost:3000" + config.auth.callbackUrl
-  // );
+}
+
+async function handleReferral(userId: string, referralCode: string) {
+  const supabase = createRouteHandlerClient({ cookies });
+
+  // Check if the referral is valid and not self-referral
+  if (userId !== referralCode) {
+    // Insert the referral information into the referrals table
+    const { error: referralError } = await supabase
+      .from("referrals")
+      .insert({ referrer_id: referralCode, referred_id: userId });
+
+    if (referralError) {
+      console.error("Error inserting referral:", referralError);
+    } else {
+      console.log("Referral successfully recorded");
+
+      // Add 100 points to the new user's account
+      const { error: pointsError } = await supabase.rpc("increment", {
+        inc: 100,
+        userid: userId,
+      });
+
+      if (pointsError) {
+        console.error("Error adding points to new user:", pointsError);
+      } else {
+        console.log("100 points added to new user");
+      }
+
+      // Add 100 points to the referrer's account
+      const { error: referrerPointsError } = await supabase.rpc("increment", {
+        inc: 100,
+        userid: referralCode,
+      });
+      if (referrerPointsError) {
+        console.error("Error adding points to referrer:", referrerPointsError);
+      } else {
+        console.log("100 points added to referrer");
+      }
+    }
+  }
 }

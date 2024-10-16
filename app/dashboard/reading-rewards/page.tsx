@@ -11,6 +11,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function ReadingRewards() {
   const t = useTranslations("ReadingRewards");
@@ -45,7 +46,7 @@ export default function ReadingRewards() {
     try {
       const { data, error } = await supabase
         .from("user_points")
-        .select("*")
+        .select("points_earned,points_redeemed,points_earned_referrals")
         .eq("user_id", user.id)
         .single();
 
@@ -193,9 +194,12 @@ export default function ReadingRewards() {
   async function redeemReward(reward: Reward) {
     if (
       !userPoints ||
-      userPoints?.points_earned - userPoints?.points_redeemed < reward.cost
+      userPoints?.points_earned +
+        userPoints?.points_earned_referrals -
+        userPoints?.points_redeemed <
+        reward.cost
     ) {
-      alert(t("not_enough_points_warning"));
+      toast.error(t("not_enough_points_warning"));
       return;
     }
 
@@ -220,7 +224,7 @@ export default function ReadingRewards() {
       fetchUserPoints();
     } catch (error) {
       console.error("Error redeeming reward:", error);
-      alert(t("failed_redeem_warning"));
+      toast.error(t("failed_redeem_warning"));
     }
   }
 
@@ -250,7 +254,9 @@ export default function ReadingRewards() {
                 className="whitespace-nowrap overflow-hidden text-ellipsis mr-1 flex items-center"
               >
                 <span className="mr-1">
-                  {userPoints?.points_earned - userPoints?.points_redeemed}
+                  {userPoints?.points_earned +
+                    userPoints?.points_earned_referrals -
+                    userPoints?.points_redeemed}
                 </span>
                 <Image src={"/coin.png"} height={20} width={20} alt="coin" />
               </Link>
@@ -322,7 +328,9 @@ export default function ReadingRewards() {
                     onClick={() => redeemReward(reward)}
                     disabled={
                       !userPoints ||
-                      userPoints.points_earned - userPoints.points_redeemed <
+                      userPoints.points_earned +
+                        userPoints?.points_earned_referrals -
+                        userPoints.points_redeemed <
                         reward.cost
                     }
                   >

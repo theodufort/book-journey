@@ -968,45 +968,6 @@ export type Database = {
         }
         Relationships: []
       }
-      messages: {
-        Row: {
-          content: string
-          created_at: string | null
-          id: number
-          receiver_id: string | null
-          sender_id: string | null
-        }
-        Insert: {
-          content: string
-          created_at?: string | null
-          id?: number
-          receiver_id?: string | null
-          sender_id?: string | null
-        }
-        Update: {
-          content?: string
-          created_at?: string | null
-          id?: number
-          receiver_id?: string | null
-          sender_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "messages_receiver_id_fkey"
-            columns: ["receiver_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "messages_sender_id_fkey"
-            columns: ["sender_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       point_transactions: {
         Row: {
           created_at: string | null
@@ -1045,21 +1006,27 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string | null
+          email: string | null
           id: string
+          inactivity_email_sent: boolean
           last_sign_in_at: string | null
           raw_app_meta_data: Json | null
           raw_user_meta_data: Json | null
         }
         Insert: {
           created_at?: string | null
+          email?: string | null
           id: string
+          inactivity_email_sent?: boolean
           last_sign_in_at?: string | null
           raw_app_meta_data?: Json | null
           raw_user_meta_data?: Json | null
         }
         Update: {
           created_at?: string | null
+          email?: string | null
           id?: string
+          inactivity_email_sent?: boolean
           last_sign_in_at?: string | null
           raw_app_meta_data?: Json | null
           raw_user_meta_data?: Json | null
@@ -1103,6 +1070,7 @@ export type Database = {
           rating: number | null
           reading_at: string | null
           review: string | null
+          reviewPublic: boolean
           status: string | null
           tags: string[] | null
           toread_at: string | null
@@ -1118,6 +1086,7 @@ export type Database = {
           rating?: number | null
           reading_at?: string | null
           review?: string | null
+          reviewPublic?: boolean
           status?: string | null
           tags?: string[] | null
           toread_at?: string | null
@@ -1133,6 +1102,7 @@ export type Database = {
           rating?: number | null
           reading_at?: string | null
           review?: string | null
+          reviewPublic?: boolean
           status?: string | null
           tags?: string[] | null
           toread_at?: string | null
@@ -1171,6 +1141,29 @@ export type Database = {
           {
             foreignKeyName: "reading_stats_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referrals: {
+        Row: {
+          referred_id: string
+          referrer_id: string
+        }
+        Insert: {
+          referred_id?: string
+          referrer_id: string
+        }
+        Update: {
+          referred_id?: string
+          referrer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_referrer_id_fkey"
+            columns: ["referrer_id"]
             isOneToOne: true
             referencedRelation: "users"
             referencedColumns: ["id"]
@@ -1259,16 +1252,19 @@ export type Database = {
       user_points: {
         Row: {
           points_earned: number | null
+          points_earned_referrals: number
           points_redeemed: number | null
           user_id: string
         }
         Insert: {
           points_earned?: number | null
+          points_earned_referrals?: number
           points_redeemed?: number | null
           user_id: string
         }
         Update: {
           points_earned?: number | null
+          points_earned_referrals?: number
           points_redeemed?: number | null
           user_id?: string
         }
@@ -1405,6 +1401,13 @@ export type Database = {
           user_id: string
         }
         Returns: Json
+      }
+      increment: {
+        Args: {
+          inc: number
+          userid: string
+        }
+        Returns: undefined
       }
       increment_points_earned: {
         Args: {

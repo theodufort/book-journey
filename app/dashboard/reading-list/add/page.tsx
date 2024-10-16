@@ -9,21 +9,24 @@ import { FormEvent, useEffect, useState } from "react";
 
 import { BookSearchResult } from "@/interfaces/BookSearch";
 import { Database } from "@/types/supabase";
+import { useTranslations } from "next-intl";
 
 export default function AddBook() {
+  const t = useTranslations("AddToReadingList");
   const supabase = createClientComponentClient<Database>();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<BookSearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedLanguage, setSelectedLanguage] = useState("");
+  const [searchType, setSearchType] = useState("name");
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
 
   const languages = [
-    { code: "en", name: "English" },
-    { code: "fr", name: "French" },
-    { code: "es", name: "Spanish" },
+    { code: "en", name: t("english") },
+    { code: "fr", name: t("french") },
+    { code: "es", name: t("spanish") },
   ];
 
   useEffect(() => {
@@ -55,22 +58,27 @@ export default function AddBook() {
   const searchBooks = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
+    setSearchResults([]); // Clear previous results immediately
 
     try {
-      const response = await fetch(
-        `/api/books/search/v3?q=${encodeURIComponent(
+      let url;
+      if (searchType === "name") {
+        url = `/api/books/search/v3?q=${encodeURIComponent(
           searchQuery
-        )}&langRestrict=${selectedLanguage}&language=${selectedLanguage}`
-      );
+        )}&langRestrict=${selectedLanguage}&language=${selectedLanguage}`;
+      } else {
+        url = `/api/books/${encodeURIComponent(searchQuery)}/v3`;
+      }
+
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error("Failed to fetch books");
       }
       const data = await response.json();
-      setSearchResults(data.items || []);
+      setSearchResults(searchType === "name" ? data.items || [] : [data]);
     } catch (err) {
-      setError("An error occurred while searching for books");
-      console.error(err);
+      console.error("An error occurred while searching for books:", err);
+      // We're not setting an error message anymore, just logging it
     } finally {
       setLoading(false);
     }
@@ -124,8 +132,7 @@ export default function AddBook() {
         <div className="z-50">
           <HeaderDashboard />
         </div>
-        <h1 className="text-3xl md:text-4xl font-extrabold">Add a Book</h1>
-
+        <h1 className="text-3xl md:text-4xl font-extrabold">{t("title")}</h1>
         <form
           onSubmit={searchBooks}
           className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2"
@@ -135,37 +142,53 @@ export default function AddBook() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by title or ISBN"
+              placeholder={searchType === "name" ? t("search_placeholder") : t("isbn_placeholder")}
               className="input input-bordered w-full"
             />
           </div>
           <div className="flex-shrink-0">
             <select
-              value={selectedLanguage}
-              onChange={(e) => setSelectedLanguage(e.target.value)}
+              value={searchType}
+              onChange={(e) => setSearchType(e.target.value)}
               className="select select-bordered w-full"
             >
-              {languages.map((lang) => (
-                <option key={lang.code} value={lang.code}>
-                  {lang.name}
-                </option>
-              ))}
+              <option value="name">{t("search_by_name")}</option>
+              <option value="isbn">{t("search_by_isbn")}</option>
             </select>
           </div>
+          {searchType === "name" && (
+            <div className="flex-shrink-0">
+              <select
+                value={selectedLanguage}
+                onChange={(e) => setSelectedLanguage(e.target.value)}
+                className="select select-bordered w-full"
+              >
+                {languages.map((lang) => (
+                  <option key={lang.code} value={lang.code}>
+                    {lang.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <div className="flex-shrink-0">
             <button
               type="submit"
               className="btn btn-primary w-full"
               disabled={loading}
             >
-              {loading ? "Searching..." : "Search"}
+              {loading ? t("searching") : t("search")}
             </button>
           </div>
         </form>
-
-        {error && <p className="text-error">{error}</p>}
-
         <div className="space-y-4">
+          {searchResults.length === 0 && !loading && (
+            <div className="text-center py-8">
+              <p className="text-xl font-semibold text-gray-600">
+                {t("error")}
+              </p>
+            </div>
+          )}
           {searchResults.map((book, index) => (
             <div
               key={`search-result-${book.id}-${index}`}
@@ -196,7 +219,7 @@ export default function AddBook() {
                         .replaceAll("<br>", "")
                         .replaceAll("<br/>", "")
                         .substring(0, 200) + "..."
-                    : "No description available"}
+                    : t("no_desc")}
                 </p>
                 <div className="card-actions justify-end">
                   <select
@@ -205,11 +228,11 @@ export default function AddBook() {
                     defaultValue=""
                   >
                     <option value="" disabled hidden>
-                      Add to Reading List
+                      {t("select1")}
                     </option>
-                    <option value="To Read">To Read</option>
-                    <option value="Reading">Currently Reading</option>
-                    <option value="Finished">Finished</option>
+                    <option value="To Read">{t("select2")}</option>
+                    <option value="Reading">{t("select3")}</option>
+                    <option value="Finished">{t("select4")}</option>
                   </select>
                 </div>
               </div>
@@ -220,5 +243,3 @@ export default function AddBook() {
     </main>
   );
 }
-
-// Add this at the end of the file

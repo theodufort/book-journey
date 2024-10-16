@@ -1,11 +1,11 @@
 "use client";
-
 import config from "@/config";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Provider } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -16,6 +16,8 @@ export default function Login() {
   const [email, setEmail] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
+  const searchParams = useSearchParams();
+  const ref = searchParams.get("ref");
   const t = useTranslations("Signin");
 
   const handleSignup = async (
@@ -31,7 +33,9 @@ export default function Login() {
 
     try {
       const { type, provider } = options;
-      const redirectURL = window.location.origin + "/api/auth/callback";
+      const redirectURL =
+        window.location.origin +
+        `/api/auth/callback${ref ? "?ref=" + ref : ""}`;
       if (type === "oauth") {
         await supabase.auth.signInWithOAuth({
           provider,
@@ -58,15 +62,10 @@ export default function Login() {
       setIsLoading(false);
     }
   };
-  const sectionStyle = {
-    backgroundColor: "#1e1e19",
-    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80' width='80' height='80'%3E%3Cg fill='%23737eff' fill-opacity='0.4'%3E%3Cpath d='M0 0h80v80H0V0zm20 20v40h40V20H20zm20 35a15 15 0 1 1 0-30 15 15 0 0 1 0 30z' opacity='.5'%3E%3C/path%3E%3Cpath d='M15 15h50l-5 5H20v40l-5 5V15zm0 50h50V15L80 0v80H0l15-15zm32.07-32.07l3.54-3.54A15 15 0 0 1 29.4 50.6l3.53-3.53a10 10 0 1 0 14.14-14.14zM32.93 47.07a10 10 0 1 1 14.14-14.14L32.93 47.07z'%3E%3C/path%3E%3C/g%3E%3C/svg%3E")`,
-  };
 
   return (
     <main
-      className="p-8 md:p-24 min-h-screen flex flex-col justify-center"
-      style={sectionStyle}
+      className="p-8 md:p-24 min-h-screen flex flex-col justify-center bg-[#7383fb]"
       data-theme={config.colors.theme}
     >
       <div className="text-center mb-4 text-white">
@@ -90,7 +89,7 @@ export default function Login() {
         {t("title")}
       </h1>
 
-      <div className="space-y-8 max-w-xl mx-auto bg-[#7383fb] p-8 rounded-box shadow-lg">
+      <div className="space-y-8 max-w-xl mx-auto p-8 rounded-box shadow-lg bg-base-100">
         <button
           className="btn btn-block"
           onClick={(e) =>

@@ -6,10 +6,11 @@ import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 
 export default function BookNotes() {
   const t = useTranslations("Notes");
+  const tCommon = useTranslations("Common");
   const supabase = createClientComponentClient<Database>();
   const [readingList, setReadingList] = useState<ReadingListItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,6 +24,17 @@ export default function BookNotes() {
   const [isEditMode, setIsEditMode] = useState(true);
   const notesContainerRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const booksPerPage = isMobile ? 3 : 5;
 
   const filteredReadingList = useMemo(() => {
     return readingList.filter((book) =>
@@ -31,6 +43,25 @@ export default function BookNotes() {
         .includes(searchQuery.toLowerCase())
     );
   }, [readingList, searchQuery]);
+
+  const paginatedReadingList = useMemo(() => {
+    const startIndex = (currentPage - 1) * booksPerPage;
+    const endIndex = startIndex + booksPerPage;
+    return filteredReadingList.slice(startIndex, endIndex);
+  }, [filteredReadingList, currentPage, booksPerPage]);
+
+  const totalPages = Math.ceil(filteredReadingList.length / booksPerPage);
+
+  const handlePageChange = useCallback((newPage: number) => {
+    setCurrentPage(newPage);
+  }, []);
+
+  const displayedPages = useMemo(() => {
+    if (isMobile) {
+      return Math.min(totalPages, 3);
+    }
+    return totalPages;
+  }, [totalPages, isMobile]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -174,10 +205,10 @@ export default function BookNotes() {
           </main>
         ) : (
           <div className="bg-base-200 shadow-md rounded-lg overflow-hidden">
-            <div className="flex">
-              <div className="w-1/3 border-r">
+            <div className="flex flex-col md:flex-row">
+              <div className="w-full md:w-1/3 md:border-r">
                 <div className="p-4 bg-base-200 border-b">
-                  <h2 className="text-xl font-semibold mb-2">
+                  <h2 className="text-md md:text-xl font-semibold mb-2">
                     {t("subtitle")}
                   </h2>
                   <input
@@ -188,39 +219,62 @@ export default function BookNotes() {
                     className="input input-bordered w-full"
                   />
                 </div>
-                <ul className="divide-y overflow-y-auto max-h-[calc(100vh-250px)]">
-                  {filteredReadingList.map((book) => (
-                    <li
-                      key={book.book_id}
-                      className={`cursor-pointer p-4 transition-colors ${
-                        selectedBook?.book_id === book.book_id
-                          ? "bg-base-200"
-                          : ""
-                      }`}
-                      onClick={() => setSelectedBook(book)}
-                    >
-                      <h3 className="font-semibold">
-                        {book.data.volumeInfo.title}
-                      </h3>
-                      <p className="text-sm text-gray-500">
-                        {book.data.volumeInfo.authors?.join(", ")}
-                      </p>
-                    </li>
-                  ))}
-                  {readingList.length > 0 &&
-                    filteredReadingList.length === 0 && (
-                      <li className="p-4 text-center text-gray-500">
-                        {t("no_books_found")}
+                <div className="flex flex-col h-full">
+                  <ul className="divide-y overflow-y-auto flex-grow">
+                    {paginatedReadingList.map((book) => (
+                      <li
+                        key={book.book_id}
+                        className={`cursor-pointer p-4 transition-colors ${
+                          selectedBook?.book_id === book.book_id
+                            ? "bg-base-200"
+                            : ""
+                        }`}
+                        onClick={() => setSelectedBook(book)}
+                      >
+                        <h3 className="font-semibold text-sm md:text-lg">
+                          {book.data.volumeInfo.title}
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          {book.data.volumeInfo.authors?.join(", ")}
+                        </p>
                       </li>
-                    )}
-                </ul>
+                    ))}
+                    {readingList.length > 0 &&
+                      filteredReadingList.length === 0 && (
+                        <li className="p-4 text-center text-gray-500">
+                          {t("no_books_found")}
+                        </li>
+                      )}
+                  </ul>
+                  {totalPages > 1 && (
+                    <div className="flex justify-between items-center p-4 border-t">
+                      <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="btn btn-sm btn-circle"
+                      >
+                        ←
+                      </button>
+                      <span className="text-sm">
+                        {currentPage} / {displayedPages}
+                      </span>
+                      <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="btn btn-sm btn-circle"
+                      >
+                        →
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="w-2/3 p-6">
+              <div className="w-full md:w-2/3 p-6">
                 {selectedBook ? (
                   <>
                     <div className="mb-4 block">
                       <div>
-                        <h2 className="text-2xl font-semibold">
+                        <h2 className="text-md md:text-2xl font-semibold">
                           {selectedBook.data.volumeInfo.title}
                         </h2>
                         <p className="text-gray-600">
@@ -249,7 +303,7 @@ export default function BookNotes() {
                     </div>
                     <div
                       ref={notesContainerRef}
-                      className="flex flex-col h-[calc(100vh-300px)]"
+                      className="flex flex-col h-[300px] md:h-[calc(100vh-300px)]"
                     >
                       {isEditMode ? (
                         <>

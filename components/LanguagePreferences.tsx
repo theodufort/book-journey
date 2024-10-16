@@ -1,14 +1,18 @@
-import { useState, useEffect } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Database } from "@/types/supabase";
-import { setUserLocale } from "@/libs/locale";
 import { Locale } from "@/i18n/config";
+import { setUserLocale } from "@/libs/locale";
+import { Database } from "@/types/supabase";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 
 interface LanguagePreferencesProps {
   userId: string;
 }
 
-export const LanguagePreferences: React.FC<LanguagePreferencesProps> = ({ userId }) => {
+export const LanguagePreferences: React.FC<LanguagePreferencesProps> = ({
+  userId,
+}) => {
+  const t = useTranslations("LanguagePreferences");
   const [bookLanguage, setBookLanguage] = useState<string>("en");
   const [interfaceLanguage, setInterfaceLanguage] = useState<string>("en");
   const supabase = createClientComponentClient<Database>();
@@ -59,35 +63,35 @@ export const LanguagePreferences: React.FC<LanguagePreferencesProps> = ({ userId
 
   return (
     <div>
-      <h2 className="text-2xl md:text-3xl font-extrabold py-2">Languages</h2>
+      <h2 className="text-2xl md:text-3xl font-extrabold py-2">{t("title")}</h2>
       <div>
         <label className="form-control w-full max-w-xs">
           <div className="label">
-            <span className="label-text">Language for book search</span>
+            <span className="label-text">{t("subtitle")}</span>
           </div>
           <select
             className="select select-bordered"
             value={bookLanguage}
             onChange={(e) => updateLanguagePreferences("book", e.target.value)}
           >
-            <option value="en">English</option>
-            <option value="fr">French</option>
-            <option value="es">Spanish</option>
+            <option value="en">{t("english")}</option>
+            <option value="fr">{t("french")}</option>
+            <option value="es">{t("spanish")}</option>
           </select>
         </label>
       </div>
       <div>
         <label className="form-control w-full max-w-xs">
           <div className="label">
-            <span className="label-text">Language for the platform</span>
+            <span className="label-text">{t("title2")}</span>
           </div>
           <select
             className="select select-bordered"
             value={interfaceLanguage}
             onChange={(e) => updateLanguagePreferences("ui", e.target.value)}
           >
-            <option value="en">English</option>
-            <option value="fr">French</option>
+            <option value="en">{t("english")}</option>
+            <option value="fr">{t("french")}</option>
           </select>
         </label>
       </div>

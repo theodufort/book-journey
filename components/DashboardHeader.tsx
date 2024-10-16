@@ -13,6 +13,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { HowToEarnPointsPopup } from "./HowToEarnPointsPopup";
+import ReferralLinkCard from "./ReferralLinkCard";
 
 const HeaderDashboard = () => {
   const t = useTranslations("HeaderDashboard");
@@ -49,7 +50,7 @@ const HeaderDashboard = () => {
 
       const { data: checkExistPoints, error } = await supabase
         .from("user_points")
-        .select("points_earned, points_redeemed")
+        .select("points_earned, points_redeemed,points_earned_referrals")
         .eq("user_id", user.id)
         .single();
 
@@ -72,8 +73,9 @@ const HeaderDashboard = () => {
         console.error("Error fetching points:", error);
       } else {
         setPoints(
-          checkExistPoints?.points_earned - checkExistPoints?.points_redeemed ||
-            0
+          checkExistPoints?.points_earned +
+            checkExistPoints?.points_earned_referrals -
+            checkExistPoints?.points_redeemed || 0
         );
       }
     };
@@ -110,9 +112,10 @@ const HeaderDashboard = () => {
           ></label>
 
           <ul
-            className={`menu bg-base-200 text-base-content min-h-full w-80 p-4 space-y-2 shadow-lg rounded-r-lg flex flex-col`}
+            className={`menu bg-base-200 text-base-content min-h-full w-80 p-4 shadow-lg rounded-r-lg flex flex-col`}
           >
-            <div className="flex">
+            <div className="flex justify-between items-center w-full">
+              {/* Header part with app logo and points */}
               <li>
                 <Link
                   className="flex items-center gap-2 shrink-0 p-2"
@@ -132,61 +135,84 @@ const HeaderDashboard = () => {
                   />
                 </Link>
               </li>
+              <li>
+                <div
+                  className="bg-base-200 text-primary rounded-xl p-2 flex items-center overflow-hidden"
+                  style={{ boxShadow: "0 0px 10px 0px #6366f1" }}
+                >
+                  <Link
+                    href="/dashboard/reading-rewards"
+                    className="whitespace-nowrap overflow-hidden text-ellipsis mr-1"
+                  >
+                    {points ? points : 0}
+                  </Link>
+                  <div className="flex-shrink-0">
+                    <Image
+                      src={"/coin.png"}
+                      height={25}
+                      width={25}
+                      alt="coin"
+                    />
+                  </div>
+                </div>
+              </li>
             </div>
+
+            {/* Links list */}
             <div className="mb-auto">
               <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
                 <Link
                   href="/dashboard"
-                  className="flex items-center space-x-3 p-2 align-middle"
+                  className="flex items-center space-x-3 p-2 align-middle text-lg"
                 >
-                  {/* Pointier Home Icon */}
                   📊 {t("link1")}
                 </Link>
               </li>
-
               <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
                 <Link
                   href="/dashboard/reading-list"
-                  className="flex items-center space-x-3 p-2 align-middle"
+                  className="flex items-center space-x-3 p-2 align-middle text-lg"
                 >
-                  {/* Bookmark Icon */}
                   📚 {t("link2")}
                 </Link>
               </li>
               <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
                 <Link
                   href="/dashboard/notes"
-                  className="flex items-center space-x-3 p-2 align-middle"
+                  className="flex items-center space-x-3 p-2 align-middle text-lg"
                 >
-                  {/* Notebook Icon */}
                   ✍️ {t("link3")}
                 </Link>
               </li>
               <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
                 <Link
                   href="/dashboard/recommendations"
-                  className="flex items-center space-x-3 p-2 align-middle"
+                  className="flex items-center space-x-3 p-2 align-middle text-lg"
                 >
-                  {/* Star Icon */}
                   🔮 {t("link4")}
                 </Link>
               </li>
               <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
                 <Link
                   href="/dashboard/reading-rewards"
-                  className="flex items-center space-x-3 p-2 align-middle"
+                  className="flex items-center space-x-3 p-2 align-middle text-lg"
                 >
-                  {/* Trophy Icon */}
                   🏆 {t("link5")}
                 </Link>
               </li>
+              <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
+                <Link
+                  href="/dashboard/support"
+                  className="flex items-center space-x-3 p-2 align-middle text-lg"
+                >
+                  🙋‍♂️ {t("link6")}
+                </Link>
+              </li>
             </div>
-            {/* Align these two items at the bottom */}
-            <div
-              className="space-x-2 flex mt-auto"
-              style={{ marginTop: "auto" }}
-            >
-              <div className="flex mr-auto">
+
+            {/* Footer with referral link and buttons */}
+            <div className="mt-auto flex flex-col space-y-4">
+              <div className="flex justify-between items-center">
                 <button
                   onClick={toggleTheme}
                   className="btn btn-circle btn-ghost"
@@ -224,21 +250,28 @@ const HeaderDashboard = () => {
                     </svg>
                   )}
                 </button>
-              </div>
-              <div
-                className="bg-base-200 text-primary rounded-xl p-2 h-full flex items-center overflow-hidden"
-                style={{ boxShadow: "0 0px 10px 0px #6366f1" }}
-              >
-                <Link
-                  href="/dashboard/reading-rewards"
-                  className="whitespace-nowrap overflow-hidden text-ellipsis mr-1"
+                <label
+                  htmlFor="my-drawer"
+                  className="btn btn-circle btn-ghost drawer-button"
+                  aria-label="Close drawer"
                 >
-                  {points ? points : 0}
-                </Link>
-                <div className="flex-shrink-0">
-                  <Image src={"/coin.png"} height={25} width={25} alt="coin" />
-                </div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </label>
               </div>
+              <ReferralLinkCard />
             </div>
           </ul>
         </div>

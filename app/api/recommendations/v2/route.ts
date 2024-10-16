@@ -71,7 +71,7 @@ async function getRecommendations(
       const url = new URL("/api/books/search/v3", baseUrl);
       url.searchParams.append("subjects", subjectsQuery);
       url.searchParams.append("column", "subjects");
-      url.searchParams.append("page", "1");
+      url.searchParams.append("page", "5");
       url.searchParams.append("pageSize", "20");
       url.searchParams.append("language", "en");
 
@@ -88,7 +88,7 @@ async function getRecommendations(
                 book.volumeInfo.industryIdentifiers?.find(
                   (id) => id.type === "ISBN_13"
                 )?.identifier
-              )
+              ) && book.volumeInfo.description
           );
           return recommendations.slice(0, 20); // Return top 20 recommendations
         }
