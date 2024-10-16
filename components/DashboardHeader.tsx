@@ -200,6 +200,10 @@ const HeaderDashboard = () => {
                   🏆 {t("link5")}
                 </Link>
               </li>
+            </div>
+
+            {/* Footer with referral link and buttons */}
+            <div className="mt-auto flex flex-col space-y-4">
               <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
                 <Link
                   href="/dashboard/support"
@@ -208,10 +212,6 @@ const HeaderDashboard = () => {
                   🙋‍♂️ {t("link6")}
                 </Link>
               </li>
-            </div>
-
-            {/* Footer with referral link and buttons */}
-            <div className="mt-auto flex flex-col space-y-4">
               <div className="flex justify-between items-center">
                 <button
                   onClick={toggleTheme}
