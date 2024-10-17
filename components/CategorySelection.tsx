@@ -69,21 +69,21 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({ userId }) => {
       if (
         preferencesData &&
         preferencesData.preferred_categories &&
-        preferencesData.preferred_categories.length > 0
+        preferencesData.preferred_categories.length >= 3
       ) {
         setSelectedCategories(preferencesData.preferred_categories);
       } else {
-        // If no categories are selected, default to the first category
-        const defaultCategory = categories[0];
-        setSelectedCategories([defaultCategory]);
-        // Update the database with the default category
+        // If less than 3 categories are selected, default to the first 3 categories
+        const defaultCategories = categories.slice(0, 3);
+        setSelectedCategories(defaultCategories);
+        // Update the database with the default categories
         const { error } = await supabase
           .from("user_preferences")
-          .upsert({ user_id: userId, preferred_categories: [defaultCategory] })
+          .upsert({ user_id: userId, preferred_categories: defaultCategories })
           .select();
 
         if (error) {
-          console.error("Error setting default category:", error);
+          console.error("Error setting default categories:", error);
         }
       }
     };
@@ -96,8 +96,8 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({ userId }) => {
       let newSelectedCategories: string[];
 
       if (prev.includes(category)) {
-        // Prevent deselecting if it's the last category
-        if (prev.length === 1) {
+        // Prevent deselecting if it would result in less than 3 categories
+        if (prev.length <= 3) {
           return prev;
         }
         newSelectedCategories = prev.filter((cat) => cat !== category);
