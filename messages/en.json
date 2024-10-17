@@ -251,7 +251,8 @@
       "select2":"To Read",
       "select3":"Currently Reading",
       "select4":"Finished",
-      "search_placeholder":"Search by title or ISBN",
+      "search_placeholder":"Search by title",
+      "isbn_placeholder":"Search by ISBN",
       "search_by_name":"Name",
       "search_by_isbn":"ISBN"
     },
