@@ -101,7 +101,7 @@ async function getReadBooks(
     .select("book_id, rating")
     .eq("user_id", userId)
     .eq("status", "Finished")
-    .neq("rating", null)
+    .not("rating", "is", null)
     .neq("rating", 0.0)
     .order("rating", { ascending: false });
 
