@@ -1,7 +1,7 @@
-"use client";
-
 import AdminHeader from "@/components/AdminHeader";
 import { Button } from "@/components/ui/button";
+import { Dialog } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -19,6 +19,8 @@ export default function IndieAuthors() {
   const [totalPages, setTotalPages] = useState(0);
   const [selectedAuthor, setSelectedAuthor] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editedAuthor, setEditedAuthor] = useState({ name: "", email: "" });
   const supabase = createClientComponentClient();
   const pageSize = 10;
 
@@ -29,20 +31,68 @@ export default function IndieAuthors() {
   async function fetchAuthors() {
     const { data, error, count } = await supabase
       .from("indie_authors")
-      .select("*", { count: "exact" })
+      .select("author_id, name", { count: "exact" })
       .range((currentPage - 1) * pageSize, currentPage * pageSize - 1);
 
     if (error) {
       console.error("Error fetching authors:", error);
     } else {
-      setAuthors(data);
+      const authorsWithEmail = await Promise.all(
+        data.map(async (author) => {
+          const { data: profileData, error: profileError } = await supabase
+            .from("profiles")
+            .select("email")
+            .eq("id", author.author_id)
+            .single();
+
+          if (profileError) {
+            console.error("Error fetching profile:", profileError);
+            return { ...author, email: "N/A" };
+          }
+
+          return { ...author, email: profileData.email };
+        })
+      );
+
+      setAuthors(authorsWithEmail);
       setTotalPages(Math.ceil(count / pageSize));
     }
   }
 
-  function handleAuthorClick(author) {
+  function handleAuthorClick(author: any) {
     setSelectedAuthor(author);
     setIsModalOpen(true);
+  }
+
+  function handleEditAuthor() {
+    setEditedAuthor({ name: selectedAuthor.name, email: selectedAuthor.email });
+    setIsEditModalOpen(true);
+  }
+
+  async function updateAuthor() {
+    const { error: authorError } = await supabase
+      .from("indie_authors")
+      .update({ name: editedAuthor.name })
+      .eq("author_id", selectedAuthor.author_id);
+
+    if (authorError) {
+      console.error("Error updating author:", authorError);
+      return;
+    }
+
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .update({ email: editedAuthor.email })
+      .eq("id", selectedAuthor.author_id);
+
+    if (profileError) {
+      console.error("Error updating profile:", profileError);
+      return;
+    }
+
+    setSelectedAuthor({ ...selectedAuthor, ...editedAuthor });
+    setIsEditModalOpen(false);
+    fetchAuthors();
   }
 
   return (
@@ -54,8 +104,7 @@ export default function IndieAuthors() {
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>Is Approved</TableHead>
-              <TableHead>Main Writing Genres</TableHead>
+              <TableHead>Email</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -66,8 +115,7 @@ export default function IndieAuthors() {
                 className="cursor-pointer"
               >
                 <TableCell>{author.name}</TableCell>
-                <TableCell>{author.is_approved ? "Yes" : "No"}</TableCell>
-                <TableCell>{author.main_writing_genres.join(", ")}</TableCell>
+                <TableCell>{author.email}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -92,33 +140,39 @@ export default function IndieAuthors() {
           </Button>
         </div>
       </div>
-      <dialog open={isModalOpen}>
+      <Dialog isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
         <h3 className="font-bold text-lg">{selectedAuthor?.name}</h3>
         <div className="py-4">
-          <p>Is Approved: {selectedAuthor?.is_approved ? "Yes" : "No"}</p>
-          <p>
-            Main Writing Genres:{" "}
-            {selectedAuthor?.main_writing_genres.join(", ")}
-          </p>
-          <p>
-            Personal Favorite Genres:{" "}
-            {selectedAuthor?.personal_favorite_genres.join(", ")}
-          </p>
-          <p>Type of Books: {selectedAuthor?.type_of_books.join(", ")}</p>
-          <p>Birth Date: {selectedAuthor?.birth_date}</p>
-          <p>
-            First Book Published Year:{" "}
-            {selectedAuthor?.first_book_published_year}
-          </p>
-          <p>Website: {selectedAuthor?.website}</p>
-          <p>Presentation: {selectedAuthor?.presentation}</p>
+          <p>Email: {selectedAuthor?.email}</p>
         </div>
         <div className="modal-action">
-          <button className="btn" onClick={() => setIsModalOpen(false)}>
-            Close
-          </button>
+          <Button onClick={handleEditAuthor}>Edit</Button>
+          <Button onClick={() => setIsModalOpen(false)}>Close</Button>
         </div>
-      </dialog>
+      </Dialog>
+      <Dialog isModalOpen={isEditModalOpen} setIsModalOpen={setIsEditModalOpen}>
+        <h3 className="font-bold text-lg">Edit Author</h3>
+        <div className="py-4">
+          <Input
+            label="Name"
+            value={editedAuthor.name}
+            onChange={(e: any) =>
+              setEditedAuthor((prev) => ({ ...prev, name: e.target.value }))
+            }
+          />
+          <Input
+            label="Email"
+            value={editedAuthor.email}
+            onChange={(e: any) =>
+              setEditedAuthor((prev) => ({ ...prev, email: e.target.value }))
+            }
+          />
+        </div>
+        <div className="modal-action">
+          <Button onClick={updateAuthor}>Save</Button>
+          <Button onClick={() => setIsEditModalOpen(false)}>Cancel</Button>
+        </div>
+      </Dialog>
     </div>
   );
 }
