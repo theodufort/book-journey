@@ -44,38 +44,24 @@ function sortAuthors(
 function sortSubjects(
   subjectsArray: {
     author: string;
-    subjects: string;
+    subjects: string[];
   }[]
 ) {
-  const subjects = subjectsArray
-    .flatMap((item) => item.subjects)
-    .filter((subject) => subject); // Remove any undefined or null subjects
+  // Flatten the array of subjects
+  const allSubjects = subjectsArray.flatMap(item => item.subjects);
 
-  // 3. Count the occurrences of each subject
-  const subjectCounts = subjects.reduce(
-    (counts: Record<string, number>, subject: string) => {
-      counts[subject] = (counts[subject] || 0) + 1;
-      return counts;
-    },
-    {}
-  );
+  // Count the occurrences of each subject
+  const subjectCounts = allSubjects.reduce((counts, subject) => {
+    counts[subject] = (counts[subject] || 0) + 1;
+    return counts;
+  }, {} as Record<string, number>);
 
-  // 4. Convert the subjectCounts object into an array of [subject, count] pairs
-  const subjectCountArray = Object.entries(subjectCounts);
+  // Sort subjects by count in descending order
+  const sortedSubjects = Object.entries(subjectCounts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([subject]) => subject);
 
-  // 5. Filter subjects that appear more than once
-  const repeatedSubjectsArray = subjectCountArray.filter(
-    ([subject, count]) => count > 1
-  );
-
-  // 6. Sort the array by count in descending order
-  repeatedSubjectsArray.sort((a, b) => b[1] - a[1]);
-
-  // 7. Extract the subjects from the sorted array
-  const repeatedSubjects = repeatedSubjectsArray.map(
-    ([subject, count]) => subject
-  );
-  return repeatedSubjects;
+  return sortedSubjects;
 }
 async function getUserCategories(
   supabase: SupabaseClient<any, "public", any>,
@@ -156,7 +142,7 @@ async function getRecommendations(
         console.log(prioritizationData);
         // const prioritizedAuthors = sortAuthors(prioritizationData);
         const prioritizedSubjects = sortSubjects(prioritizationData);
-        console.log(prioritizedSubjects);
+        console.log("Sorted subjects:", prioritizedSubjects);
         subjects = getRandomCategories(prioritizedSubjects, 2);
       } else {
         if (userCategories.length > 0) {
