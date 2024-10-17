@@ -41,6 +41,9 @@
                 <mxCell id="9" value="weight--" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
                     <mxGeometry x="490" y="40" width="60" height="30" as="geometry"/>
                 </mxCell>
+                <mxCell id="22" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="12" target="18">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
                 <mxCell id="12" value="Subjects" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
                     <mxGeometry x="560" y="180" width="120" height="60" as="geometry"/>
                 </mxCell>
@@ -54,10 +57,13 @@
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="16" value="Prioritized authors" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="300" y="280" width="120" height="60" as="geometry"/>
+                    <mxGeometry x="330" y="280" width="120" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="18" value="Coincidence" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="480" y="400" width="120" height="60" as="geometry"/>
+                    <mxGeometry x="560" y="460" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="23" value="Sort by subjects" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="650" y="320" width="60" height="30" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
