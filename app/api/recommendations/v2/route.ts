@@ -134,17 +134,18 @@ async function getRecommendations(
     try {
       let subjects: string[];
       if (readBooks.length != 0) {
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
         const prioritizationData: any = await Promise.all(
           await readBooks.slice(0, topRatedBooks).map(async (book) => {
-            let url = `/api/books/${encodeURIComponent(book.book_id)}/v3`;
-            const response = await fetch(url);
+            let url = new URL(`/api/books/${encodeURIComponent(book.book_id)}/v3`, baseUrl);
+            const response = await fetch(url.toString());
             if (!response.ok) {
               throw new Error("Failed to fetch books");
             }
             const data: BookSearchResult = await response.json();
             return {
-              author: data.volumeInfo.authors[0] || "Unknown",
-              subjects: data.volumeInfo.subjects,
+              author: data.volumeInfo.authors?.[0] || "Unknown",
+              subjects: data.volumeInfo.subjects || [],
             };
           })
         );
