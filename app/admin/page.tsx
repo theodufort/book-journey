@@ -1,11 +1,12 @@
 "use client";
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-
 import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function Admin() {
-  const [userGrowthData, setUserGrowthData] = useState<any>(null);
+  const [userGrowthData, setUserGrowthData] = useState<any[]>([]);
   const [userStats, setUserStats] = useState<any>(null);
   const supabase = createClientComponentClient();
 
@@ -31,21 +32,12 @@ export default function Admin() {
       return acc;
     }, {});
 
-    const labels = Object.keys(userCounts);
-    const dataPoints = Object.values(userCounts);
+    const chartData = Object.entries(userCounts).map(([date, count]) => ({
+      date,
+      users: count,
+    }));
 
-    setUserGrowthData({
-      labels,
-      datasets: [
-        {
-          label: "User Growth",
-          data: dataPoints,
-          fill: false,
-          borderColor: "rgb(75, 192, 192)",
-          tension: 0.1,
-        },
-      ],
-    });
+    setUserGrowthData(chartData);
   }
 
   async function fetchUserStats() {
@@ -74,5 +66,53 @@ export default function Admin() {
     });
   }
 
-  return <div className="container mx-auto p-4"></div>;
+  return (
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <Card>
+          <CardHeader>
+            <CardTitle>Total Users</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold">{userStats?.totalUsers || 0}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Users with Books</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold">{userStats?.usersWithBooks || 0}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Users without Books</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold">{userStats?.usersWithoutBooks || 0}</p>
+          </CardContent>
+        </Card>
+      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>User Growth</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[400px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={userGrowthData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Line type="monotone" dataKey="users" stroke="#8884d8" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
 }
