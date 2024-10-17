@@ -69,7 +69,7 @@ export default function Admin() {
   }
 
   async function fetchUserStats() {
-    const { data: usersWithBooks, error: error1 } = await supabase
+    const { count: usersWithBooks, error: error1 } = await supabase
       .from("reading_list")
       .select("user_id", { count: "exact", head: true })
       .not("book_id", "is", null);
@@ -83,11 +83,13 @@ export default function Admin() {
       return;
     }
 
-    const usersWithoutBooks = totalUsers! - usersWithBooks!.length;
+    const usersWithBooksCount = usersWithBooks || 0;
+    const totalUsersCount = totalUsers || 0;
+    const usersWithoutBooks = totalUsersCount - usersWithBooksCount;
 
     setUserStats({
-      totalUsers,
-      usersWithBooks: usersWithBooks!.length,
+      totalUsers: totalUsersCount,
+      usersWithBooks: usersWithBooksCount,
       usersWithoutBooks,
     });
   }
