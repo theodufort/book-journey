@@ -1,28 +1,8 @@
 "use client";
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import {
-  CategoryScale,
-  Chart as ChartJS,
-  Legend,
-  LinearScale,
-  LineElement,
-  PointElement,
-  Title,
-  Tooltip,
-} from "chart.js";
-import { useEffect, useState } from "react";
-import { Line } from "react-chartjs-2";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+import { useEffect, useState } from "react";
 
 export default function Admin() {
   const [userGrowthData, setUserGrowthData] = useState<any>(null);
@@ -94,27 +74,5 @@ export default function Admin() {
     });
   }
 
-  return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
-
-      {userGrowthData && (
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-2">User Growth</h2>
-          <Line data={userGrowthData} />
-        </div>
-      )}
-
-      {userStats && (
-        <div>
-          <h2 className="text-xl font-semibold mb-2">User Statistics</h2>
-          <ul>
-            <li>Total Users: {userStats.totalUsers}</li>
-            <li>Users with Books: {userStats.usersWithBooks}</li>
-            <li>Users without Books: {userStats.usersWithoutBooks}</li>
-          </ul>
-        </div>
-      )}
-    </div>
-  );
+  return <div className="container mx-auto p-4"></div>;
 }
