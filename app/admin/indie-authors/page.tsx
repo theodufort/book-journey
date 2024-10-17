@@ -8,6 +8,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Table,
   TableBody,
@@ -165,21 +166,29 @@ export default function IndieAuthors() {
           <DialogHeader>
             <DialogTitle>Edit Author</DialogTitle>
           </DialogHeader>
-          <div className="py-4">
-            <Input
-              label="Name"
-              value={editedAuthor.name}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setEditedAuthor((prev) => ({ ...prev, name: e.target.value }))
-              }
-            />
-            <Input
-              label="Email"
-              value={editedAuthor.email}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setEditedAuthor((prev) => ({ ...prev, email: e.target.value }))
-              }
-            />
+          <div className="py-4 space-y-4">
+            <div className="grid w-full max-w-sm items-center gap-1.5">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                type="text"
+                id="name"
+                value={editedAuthor.name}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setEditedAuthor((prev) => ({ ...prev, name: e.target.value }))
+                }
+              />
+            </div>
+            <div className="grid w-full max-w-sm items-center gap-1.5">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                type="email"
+                id="email"
+                value={editedAuthor.email}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setEditedAuthor((prev) => ({ ...prev, email: e.target.value }))
+                }
+              />
+            </div>
           </div>
           <DialogFooter>
             <Button onClick={updateAuthor}>Save</Button>
