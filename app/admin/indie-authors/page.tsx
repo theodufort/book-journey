@@ -1,6 +1,12 @@
 import AdminHeader from "@/components/AdminHeader";
 import { Button } from "@/components/ui/button";
-import { Dialog } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -18,8 +24,8 @@ export default function IndieAuthors() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedAuthor, setSelectedAuthor] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [editedAuthor, setEditedAuthor] = useState({ name: "", email: "" });
   const supabase = createClientComponentClient();
   const pageSize = 10;
@@ -140,38 +146,46 @@ export default function IndieAuthors() {
           </Button>
         </div>
       </div>
-      <Dialog isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
-        <h3 className="font-bold text-lg">{selectedAuthor?.name}</h3>
-        <div className="py-4">
-          <p>Email: {selectedAuthor?.email}</p>
-        </div>
-        <div className="modal-action">
-          <Button onClick={handleEditAuthor}>Edit</Button>
-          <Button onClick={() => setIsModalOpen(false)}>Close</Button>
-        </div>
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{selectedAuthor?.name}</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p>Email: {selectedAuthor?.email}</p>
+          </div>
+          <DialogFooter>
+            <Button onClick={handleEditAuthor}>Edit</Button>
+            <Button onClick={() => setIsModalOpen(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
       </Dialog>
-      <Dialog isModalOpen={isEditModalOpen} setIsModalOpen={setIsEditModalOpen}>
-        <h3 className="font-bold text-lg">Edit Author</h3>
-        <div className="py-4">
-          <Input
-            label="Name"
-            value={editedAuthor.name}
-            onChange={(e: any) =>
-              setEditedAuthor((prev) => ({ ...prev, name: e.target.value }))
-            }
-          />
-          <Input
-            label="Email"
-            value={editedAuthor.email}
-            onChange={(e: any) =>
-              setEditedAuthor((prev) => ({ ...prev, email: e.target.value }))
-            }
-          />
-        </div>
-        <div className="modal-action">
-          <Button onClick={updateAuthor}>Save</Button>
-          <Button onClick={() => setIsEditModalOpen(false)}>Cancel</Button>
-        </div>
+      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Author</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <Input
+              label="Name"
+              value={editedAuthor.name}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setEditedAuthor((prev) => ({ ...prev, name: e.target.value }))
+              }
+            />
+            <Input
+              label="Email"
+              value={editedAuthor.email}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setEditedAuthor((prev) => ({ ...prev, email: e.target.value }))
+              }
+            />
+          </div>
+          <DialogFooter>
+            <Button onClick={updateAuthor}>Save</Button>
+            <Button onClick={() => setIsEditModalOpen(false)}>Cancel</Button>
+          </DialogFooter>
+        </DialogContent>
       </Dialog>
     </div>
   );
