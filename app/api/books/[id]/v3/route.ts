@@ -63,7 +63,10 @@ export async function GET(
         ],
         pageCount: bookData.pages,
         reviews: bookData.reviews,
-        categories: bookData.subjects,
+        categories: bookData.subjects.filter(
+          (x) =>
+            x.toLowerCase() != "categories" && x.toLowerCase() != "subjects"
+        ),
         language: bookData.language,
         imageLinks: {
           thumbnail: bookData.image,
