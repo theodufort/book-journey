@@ -61,7 +61,7 @@ async function getRecommendations(
       let subjects: string[];
 
       if (userCategories.length > 0) {
-        subjects = getRandomCategories(userCategories, 2);
+        subjects = getRandomCategories(userCategories, 1);
       } else {
         subjects = ["fiction"]; // Default subject if no categories found
       }
