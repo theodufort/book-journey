@@ -80,30 +80,36 @@ const AdminHeader = () => {
         <ul className="menu md:menu-horizontal bg-base-200 rounded-box">
           <li>
             <details>
-              <summary>Authors</summary>
+              <summary>
+                <Link href={"/admin/indie-authors"}>Indie Authors</Link>
+              </summary>
               <ul>
                 <li>
-                  <a>Review</a>
+                  <Link href={"/admin/indie-authors/review"}>Review</Link>
                 </li>
               </ul>
             </details>
           </li>
           <li>
             <details>
-              <summary>Indie Books</summary>
+              <summary>
+                <Link href={"/admin/indie-books"}>Indie Books</Link>
+              </summary>
               <ul>
                 <li>
-                  <a>Review</a>
+                  <Link href={"/admin/indie-books/review"}>Review</Link>
                 </li>
               </ul>
             </details>
           </li>
           <li>
             <details>
-              <summary>Books Modifications</summary>
+              <summary>
+                <Link href={"/admin/books"}>Books Modifications</Link>
+              </summary>
               <ul>
                 <li>
-                  <a>Review</a>
+                  <Link href={"/admin/books/review"}>Review</Link>
                 </li>
               </ul>
             </details>
