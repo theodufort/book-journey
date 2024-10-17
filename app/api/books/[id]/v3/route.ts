@@ -65,7 +65,9 @@ export async function GET(
         reviews: bookData.reviews,
         categories: bookData.subjects.filter(
           (x) =>
-            x.toLowerCase() != "categories" && x.toLowerCase() != "subjects"
+            x.toLowerCase() != "categories" ||
+            x.toLowerCase() != "subjects" ||
+            x.toLowerCase() != "study aids"
         ),
         language: bookData.language,
         imageLinks: {
