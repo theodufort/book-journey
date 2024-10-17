@@ -1,43 +1,40 @@
 @startuml
-entity "User (Table existante)" as User {
-    + id: UUID [PK]
-}
 
-entity "Author (New table)" as Author {
+entity "indie_authors" as Author {
     author_id: SERIAL [PK]
-    author_name: VARCHAR
+    author_name: text
     birth_date: DATE
     first_book_published_year: INT
-    personal_favorite_genres: VARCHAR
-    main_writing_genres: VARCHAR
-    type_of_books: VARCHAR
-    picture: VARCHAR
-    website: VARCHAR
+    personal_favorite_genres: text
+    main_writing_genres: text
+    type_of_books: text
+    picture_link: text
+    website: text
     books_written: INT
     social_media_id: SERIAL [FK]
     user_id: UUID [FK]
 }
 
-entity "SocialMedia (New table)" as SocialMedia {
+entity "indie_authors_social" as SocialMedia {
     social_media_id: SERIAL [PK]
-    social_media_name: VARCHAR
-    link: VARCHAR
+    social_media_name: text
+    link: text
 }
 
-entity "AuthorBook (New table)" as AuthorBook {
-    author_book_id: SERIAL [PK]
-    volumeInfo_id: SERIAL [FK]
+entity "indie_authors_books" as AuthorBook {
     author_id: SERIAL [FK]
+    book_id: SERIAL [PK]
+    release_date: timestamp
+    title: text
+    description: text
+    categories: text[]
+    cover_image_small_link: text
+    cover_image_medium_link: text
+    cover_image_large_link: text
 }
-
-entity "Book (Table existante)" as Book {
-    volumeInfo_id: SERIAL [PK]
-} 
-
 
 Author "1" -- "*"  SocialMedia
 Author "1" -- "*" AuthorBook
-AuthorBook "1" -- "1" Book
 
 ' Entities
 
@@ -57,8 +54,8 @@ entity "article_categories" {
 entity "blog_articles" {
   * id : integer
   --
-  slug : varchar(255)
-  title : varchar(255)
+  slug : text
+  title : text
   description : text
   content : text
   image_url : text
@@ -72,8 +69,8 @@ entity "blog_articles" {
 entity "blog_categories" {
   * id : integer
   --
-  name : varchar(100)
-  slug : varchar(100)
+  name : text
+  slug : text
   description : text
 }
 
@@ -81,7 +78,7 @@ entity "book_notes" {
   * id : integer
   --
   user_id : uuid
-  book_id : varchar(20)
+  book_id : text
   notes : text
   created_at : timestamp
   updated_at : timestamp
@@ -105,7 +102,7 @@ entity "friends" {
   --
   user_id : uuid
   friend_id : uuid
-  status : varchar(20)
+  status : text
   created_at : timestamp
 }
 
@@ -128,7 +125,7 @@ entity "point_transactions" {
   --
   user_id : uuid
   points : integer
-  type : varchar(50)
+  type : text
   description : text
   created_at : timestamp
 }
@@ -155,7 +152,7 @@ entity "reading_list" {
   * id : integer
   --
   user_id : uuid
-  book_id : varchar(20)
+  book_id : text
   status : text
   rating : numeric(3,1)
   review : text
@@ -181,7 +178,7 @@ entity "user_activity" {
   * id : integer
   --
   user_id : uuid
-  activity_type : varchar(50)
+  activity_type : text
   details : jsonb
   created_at : timestamp
   updated_at : timestamp
@@ -211,7 +208,7 @@ entity "user_preferences" {
   * user_id : uuid
   --
   preferred_categories : text[]
-  username : varchar(50)
+  username : text
   bio : text
   profile_picture_url : text
   onboarded : boolean

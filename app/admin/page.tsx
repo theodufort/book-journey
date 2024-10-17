@@ -65,6 +65,7 @@ export default function Admin() {
 
     const usersWithBooksCount = usersWithBooks || 0;
     const totalUsersCount = totalUsers || 0;
+    console.log(totalUsersCount, usersWithBooksCount);
     const usersWithoutBooks = totalUsersCount - usersWithBooksCount;
 
     setUserStats({
@@ -90,20 +91,11 @@ export default function Admin() {
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle>Users with Books</CardTitle>
+              <CardTitle>With/Without Books</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-3xl font-bold">
-                {userStats?.usersWithBooks || 0}
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Users without Books</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold">
+                {userStats?.usersWithBooks || 0}/
                 {userStats?.usersWithoutBooks || 0}
               </p>
             </CardContent>
