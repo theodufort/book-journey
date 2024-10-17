@@ -1,18 +1,18 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { Line } from 'react-chartjs-2';
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import {
-  Chart as ChartJS,
   CategoryScale,
+  Chart as ChartJS,
+  Legend,
   LinearScale,
-  PointElement,
   LineElement,
+  PointElement,
   Title,
   Tooltip,
-  Legend,
-} from 'chart.js';
+} from "chart.js";
+import { useEffect, useState } from "react";
+import { Line } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
@@ -36,17 +36,17 @@ export default function Admin() {
 
   async function fetchUserGrowthData() {
     const { data, error } = await supabase
-      .from('profiles')
-      .select('created_at')
-      .order('created_at', { ascending: true });
+      .from("profiles")
+      .select("created_at")
+      .order("created_at", { ascending: true });
 
     if (error) {
-      console.error('Error fetching user growth data:', error);
+      console.error("Error fetching user growth data:", error);
       return;
     }
 
     const userCounts = data.reduce((acc: any, user: any) => {
-      const date = new Date(user.created_at).toISOString().split('T')[0];
+      const date = new Date(user.created_at).toISOString().split("T")[0];
       acc[date] = (acc[date] || 0) + 1;
       return acc;
     }, {});
@@ -58,10 +58,10 @@ export default function Admin() {
       labels,
       datasets: [
         {
-          label: 'User Growth',
+          label: "User Growth",
           data: dataPoints,
           fill: false,
-          borderColor: 'rgb(75, 192, 192)',
+          borderColor: "rgb(75, 192, 192)",
           tension: 0.1,
         },
       ],
@@ -70,16 +70,16 @@ export default function Admin() {
 
   async function fetchUserStats() {
     const { data: usersWithBooks, error: error1 } = await supabase
-      .from('reading_list')
-      .select('user_id', { count: 'exact', head: true })
-      .not('book_id', 'is', null);
+      .from("reading_list")
+      .select("user_id", { count: "exact", head: true })
+      .not("book_id", "is", null);
 
     const { count: totalUsers, error: error2 } = await supabase
-      .from('profiles')
-      .select('id', { count: 'exact', head: true });
+      .from("profiles")
+      .select("id", { count: "exact", head: true });
 
     if (error1 || error2) {
-      console.error('Error fetching user stats:', error1 || error2);
+      console.error("Error fetching user stats:", error1 || error2);
       return;
     }
 
@@ -95,14 +95,14 @@ export default function Admin() {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
-      
+
       {userGrowthData && (
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-2">User Growth</h2>
           <Line data={userGrowthData} />
         </div>
       )}
-      
+
       {userStats && (
         <div>
           <h2 className="text-xl font-semibold mb-2">User Statistics</h2>
