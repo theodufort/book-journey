@@ -5,7 +5,7 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import AdminHeader from "@/components/AdminHeader";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Modal } from "@/components/Modal";
 
 export default function IndieAuthors() {
   const [authors, setAuthors] = useState([]);
@@ -72,23 +72,22 @@ export default function IndieAuthors() {
           </Button>
         </div>
       </div>
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{selectedAuthor?.name}</DialogTitle>
-          </DialogHeader>
-          <DialogDescription>
-            <p>Is Approved: {selectedAuthor?.is_approved ? 'Yes' : 'No'}</p>
-            <p>Main Writing Genres: {selectedAuthor?.main_writing_genres.join(', ')}</p>
-            <p>Personal Favorite Genres: {selectedAuthor?.personal_favorite_genres.join(', ')}</p>
-            <p>Type of Books: {selectedAuthor?.type_of_books.join(', ')}</p>
-            <p>Birth Date: {selectedAuthor?.birth_date}</p>
-            <p>First Book Published Year: {selectedAuthor?.first_book_published_year}</p>
-            <p>Website: {selectedAuthor?.website}</p>
-            <p>Presentation: {selectedAuthor?.presentation}</p>
-          </DialogDescription>
-        </DialogContent>
-      </Dialog>
+      <Modal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
+        <h3 className="font-bold text-lg">{selectedAuthor?.name}</h3>
+        <div className="py-4">
+          <p>Is Approved: {selectedAuthor?.is_approved ? 'Yes' : 'No'}</p>
+          <p>Main Writing Genres: {selectedAuthor?.main_writing_genres.join(', ')}</p>
+          <p>Personal Favorite Genres: {selectedAuthor?.personal_favorite_genres.join(', ')}</p>
+          <p>Type of Books: {selectedAuthor?.type_of_books.join(', ')}</p>
+          <p>Birth Date: {selectedAuthor?.birth_date}</p>
+          <p>First Book Published Year: {selectedAuthor?.first_book_published_year}</p>
+          <p>Website: {selectedAuthor?.website}</p>
+          <p>Presentation: {selectedAuthor?.presentation}</p>
+        </div>
+        <div className="modal-action">
+          <button className="btn" onClick={() => setIsModalOpen(false)}>Close</button>
+        </div>
+      </Modal>
     </div>
   );
 }
