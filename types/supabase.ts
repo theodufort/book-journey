@@ -932,6 +932,143 @@ export type Database = {
           },
         ]
       }
+      indie_authors: {
+        Row: {
+          author_id: string
+          birth_date: string | null
+          first_book_published_year: string | null
+          is_approved: boolean
+          main_writing_genres: string[]
+          name: string | null
+          personal_favorite_genres: string[]
+          picture_link: string
+          presentation: string | null
+          type_of_books: string[]
+          website: string | null
+        }
+        Insert: {
+          author_id: string
+          birth_date?: string | null
+          first_book_published_year?: string | null
+          is_approved?: boolean
+          main_writing_genres: string[]
+          name?: string | null
+          personal_favorite_genres: string[]
+          picture_link: string
+          presentation?: string | null
+          type_of_books: string[]
+          website?: string | null
+        }
+        Update: {
+          author_id?: string
+          birth_date?: string | null
+          first_book_published_year?: string | null
+          is_approved?: boolean
+          main_writing_genres?: string[]
+          name?: string | null
+          personal_favorite_genres?: string[]
+          picture_link?: string
+          presentation?: string | null
+          type_of_books?: string[]
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "indie_authors_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      indie_authors_books: {
+        Row: {
+          author_id: string | null
+          book_id: string
+          categories: string[]
+          cover_image_large_link: string
+          cover_image_small_link: string
+          description: string
+          is_approved: boolean
+          release_date: string | null
+          title: string
+        }
+        Insert: {
+          author_id?: string | null
+          book_id: string
+          categories: string[]
+          cover_image_large_link: string
+          cover_image_small_link: string
+          description: string
+          is_approved?: boolean
+          release_date?: string | null
+          title: string
+        }
+        Update: {
+          author_id?: string | null
+          book_id?: string
+          categories?: string[]
+          cover_image_large_link?: string
+          cover_image_small_link?: string
+          description?: string
+          is_approved?: boolean
+          release_date?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_author_books"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "indie_authors"
+            referencedColumns: ["author_id"]
+          },
+          {
+            foreignKeyName: "indie_authors_books_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "indie_authors"
+            referencedColumns: ["author_id"]
+          },
+        ]
+      }
+      indie_authors_social: {
+        Row: {
+          author_id: string | null
+          link: string | null
+          social_media_id: string
+          social_media_name: string | null
+        }
+        Insert: {
+          author_id?: string | null
+          link?: string | null
+          social_media_id: string
+          social_media_name?: string | null
+        }
+        Update: {
+          author_id?: string | null
+          link?: string | null
+          social_media_id?: string
+          social_media_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_author_social"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "indie_authors"
+            referencedColumns: ["author_id"]
+          },
+          {
+            foreignKeyName: "indie_authors_social_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "indie_authors"
+            referencedColumns: ["author_id"]
+          },
+        ]
+      }
       libraries: {
         Row: {
           city_ascii: string
