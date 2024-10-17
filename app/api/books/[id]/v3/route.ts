@@ -45,7 +45,6 @@ export async function GET(
     }
 
     const bookData: Book = response.data.book;
-
     // Transform the ISBNDB data to match v1 and v2 format
     const transformedBookData = {
       id: bookData.isbn13,
@@ -63,7 +62,6 @@ export async function GET(
           { type: "ISBN_10", identifier: bookData.isbn },
         ],
         pageCount: bookData.pages,
-        subjects: bookData.subjects,
         reviews: bookData.reviews,
         categories: bookData.subjects,
         language: bookData.language,
