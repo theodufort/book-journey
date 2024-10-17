@@ -78,9 +78,10 @@ export default function Recommendations() {
         <div className="z-50">
           <HeaderDashboard />
         </div>
-
-        <h1 className="text-3xl md:text-4xl font-extrabold">{t("title")}</h1>
-
+        <div className="gap-2 flex">
+          <h1 className="text-3xl md:text-4xl font-extrabold">{t("title")}</h1>
+          <div className="badge badge-primary my-auto inline-block">Beta</div>
+        </div>
         {isLoading && (
           <div className="flex justify-center items-center">
             <span className="loading loading-spinner loading-lg"></span>

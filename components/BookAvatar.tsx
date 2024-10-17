@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
 import ViewSellers from "./ViewSellers";
 
 interface Props {
@@ -44,10 +45,11 @@ const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
     });
 
     if (error) {
-      setError("Failed to add book to reading list");
-      console.error(error);
-    } else {
-      router.push("/dashboard/reading-list");
+      if (error.code == "23505") {
+        toast.error("This book is already in your library");
+      } else {
+        toast.error("Failed to add book to reading list");
+      }
     }
   };
   // Truncate the description if it's too long and not expanded

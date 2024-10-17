@@ -1,3 +1,4 @@
+import { Book } from "@/interfaces/BookSearch";
 import { Database } from "@/types/supabase";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import axios from "axios";
@@ -33,36 +34,41 @@ export async function GET(
 
   // If not in cache, fetch from ISBNDB API
   try {
-    const response = await axios.get(
-      `https://api2.isbndb.com/book/${id}`,
-      {
-        headers: {
-          'Authorization': process.env.ISBN_DB_API_KEY as string
-        }
-      }
-    );
+    const response = await axios.get(`https://api2.isbndb.com/book/${id}`, {
+      headers: {
+        Authorization: process.env.ISBN_DB_API_KEY as string,
+      },
+    });
 
     if (response.status !== 200) {
       throw new Error(`ISBNDB API responded with status ${response.status}`);
     }
 
-    const bookData = response.data.book;
-
+    const bookData: Book = response.data.book;
     // Transform the ISBNDB data to match v1 and v2 format
     const transformedBookData = {
       id: bookData.isbn13,
       volumeInfo: {
         title: bookData.title,
-        subtitle: bookData.title_long !== bookData.title ? bookData.title_long.replace(bookData.title, '').trim() : null,
+        subtitle:
+          bookData.title_long !== bookData.title
+            ? bookData.title_long.replace(bookData.title, "").trim()
+            : null,
         authors: bookData.authors,
         publishedDate: bookData.date_published,
         description: bookData.synopsis,
         industryIdentifiers: [
-          { type: 'ISBN_13', identifier: bookData.isbn13 },
-          { type: 'ISBN_10', identifier: bookData.isbn10 },
+          { type: "ISBN_13", identifier: bookData.isbn13 },
+          { type: "ISBN_10", identifier: bookData.isbn },
         ],
         pageCount: bookData.pages,
-        categories: bookData.subjects,
+        reviews: bookData.reviews,
+        categories: bookData.subjects.filter(
+          (x) =>
+            x.toLowerCase() != "categories" ||
+            x.toLowerCase() != "subjects" ||
+            x.toLowerCase() != "study aids"
+        ),
         language: bookData.language,
         imageLinks: {
           thumbnail: bookData.image,
@@ -71,13 +77,13 @@ export async function GET(
           large: bookData.image,
         },
         publisher: bookData.publisher,
-        publishPlace: bookData.publisher_place || "Unknown",
+        publishPlace: bookData.publisher || "Unknown",
         physicalFormat: bookData.binding,
-        dimensions: {
-          height: bookData.dimensions?.height,
-          width: bookData.dimensions?.width,
-          thickness: bookData.dimensions?.thickness,
-          unit: bookData.dimensions?.unit,
+        dimensions_structured: {
+          height: bookData.dimensions_structured?.height,
+          width: bookData.dimensions_structured?.width,
+          thickness: bookData.dimensions_structured?.thickness,
+          unit: bookData.dimensions_structured?.unit,
         },
         edition: bookData.edition,
         msrp: bookData.msrp,

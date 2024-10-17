@@ -1,4 +1,5 @@
 "use server";
+import { BookSearchResult } from "@/interfaces/BookSearch";
 import { BookVolumes, Volume } from "@/interfaces/GoogleAPI";
 import { Database } from "@/types/supabase";
 import {
@@ -8,6 +9,60 @@ import {
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 const supabase = createServerComponentClient<Database>({ cookies });
+function sortAuthors(
+  authorsArray: {
+    author: string;
+    subjects: string;
+  }[]
+) {
+  const authors = authorsArray.map((item) => item.author);
+
+  // 3. Count the occurrences of each author
+  const authorCounts = authors.reduce(
+    (counts: Record<string, number>, author: string) => {
+      counts[author] = (counts[author] || 0) + 1;
+      return counts;
+    },
+    {}
+  );
+
+  // 4. Convert the authorCounts object into an array of [author, count] pairs
+  const authorCountArray = Object.entries(authorCounts);
+
+  // 5. Filter authors that appear more than once
+  const repeatedAuthorsArray = authorCountArray.filter(
+    ([author, count]) => count > 1
+  );
+
+  // 6. Sort the array by count in descending order
+  repeatedAuthorsArray.sort((a, b) => b[1] - a[1]);
+
+  // 7. Extract the authors from the sorted array
+  const repeatedAuthors = repeatedAuthorsArray.map(([author, count]) => author);
+  return repeatedAuthors;
+}
+function sortSubjects(
+  subjectsArray: {
+    author: string;
+    subjects: string[];
+  }[]
+) {
+  // Flatten the array of subjects
+  const allSubjects = subjectsArray.flatMap((item) => item.subjects);
+
+  // Count the occurrences of each subject
+  const subjectCounts = allSubjects.reduce((counts, subject) => {
+    counts[subject] = (counts[subject] || 0) + 1;
+    return counts;
+  }, {} as Record<string, number>);
+
+  // Sort subjects by count in descending order
+  const sortedSubjects = Object.entries(subjectCounts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([subject]) => subject);
+
+  return sortedSubjects;
+}
 async function getUserCategories(
   supabase: SupabaseClient<any, "public", any>,
   userId: string
@@ -29,9 +84,12 @@ async function getReadBooks(
 ) {
   const { data, error } = await supabase
     .from("reading_list")
-    .select("book_id, status")
+    .select("book_id, rating")
     .eq("user_id", userId)
-    .eq("status", "Finished");
+    .eq("status", "Finished")
+    .not("rating", "is", null)
+    .neq("rating", 0.0)
+    .order("rating", { ascending: false });
 
   if (error) {
     console.error("Error fetching read books:", error);
@@ -51,19 +109,46 @@ async function getRecommendations(
   userId: string
 ) {
   const maxRetries = 5;
+  const topRatedBooks = 50;
   let attempt = 0;
   let error = null;
-
+  //priority 1
+  const readBooks = await getReadBooks(supabase, userId);
+  //priority 2
+  const userCategories = await getUserCategories(supabase, userId);
   while (attempt < maxRetries) {
     try {
-      const readBooks = await getReadBooks(supabase, userId);
-      const userCategories = await getUserCategories(supabase, userId);
       let subjects: string[];
-
-      if (userCategories.length > 0) {
-        subjects = getRandomCategories(userCategories, 2);
+      if (readBooks.length != 0) {
+        const baseUrl =
+          process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+        const prioritizationData: any = await Promise.all(
+          await readBooks.slice(0, topRatedBooks).map(async (book) => {
+            let url = new URL(
+              `/api/books/${encodeURIComponent(book.book_id)}/v3`,
+              baseUrl
+            );
+            const response = await fetch(url.toString());
+            if (!response.ok) {
+              throw new Error("Failed to fetch books");
+            }
+            const data: BookSearchResult = await response.json();
+            return {
+              author: data.volumeInfo.authors?.[0] || "Unknown",
+              subjects: data.volumeInfo.categories || [],
+            };
+          })
+        );
+        console.log(prioritizationData);
+        // const prioritizedAuthors = sortAuthors(prioritizationData);
+        const prioritizedSubjects = sortSubjects(prioritizationData);
+        subjects = [prioritizedSubjects[attempt]];
       } else {
-        subjects = ["fiction"]; // Default subject if no categories found
+        if (userCategories.length > 0) {
+          subjects = getRandomCategories(userCategories, 1);
+        } else {
+          subjects = ["Fiction"]; // Default subject if no categories found
+        }
       }
 
       const subjectsQuery = subjects.join(",");

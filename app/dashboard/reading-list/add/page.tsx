@@ -10,6 +10,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { BookSearchResult } from "@/interfaces/BookSearch";
 import { Database } from "@/types/supabase";
 import { useTranslations } from "next-intl";
+import toast from "react-hot-toast";
 
 export default function AddBook() {
   const t = useTranslations("AddToReadingList");
@@ -99,8 +100,11 @@ export default function AddBook() {
     });
 
     if (error) {
-      setError("Failed to add book to reading list");
-      console.error(error);
+      if (error.code == "23505") {
+        toast.error("This book is already in your library");
+      } else {
+        toast.error("Failed to add book to reading list");
+      }
     } else {
       if (count === 0) {
         try {
@@ -122,7 +126,7 @@ export default function AddBook() {
           console.error("Error sending email:", emailError);
         }
       }
-      router.push("/dashboard/reading-list");
+      toast.success("Successfully added book!");
     }
   };
 
@@ -133,111 +137,117 @@ export default function AddBook() {
           <HeaderDashboard />
         </div>
         <h1 className="text-3xl md:text-4xl font-extrabold">{t("title")}</h1>
-        <form
-          onSubmit={searchBooks}
-          className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2"
-        >
-          <div className="flex-grow">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={searchType === "name" ? t("search_placeholder") : t("isbn_placeholder")}
-              className="input input-bordered w-full"
-            />
-          </div>
-          <div className="flex-shrink-0">
-            <select
-              value={searchType}
-              onChange={(e) => setSearchType(e.target.value)}
-              className="select select-bordered w-full"
-            >
-              <option value="name">{t("search_by_name")}</option>
-              <option value="isbn">{t("search_by_isbn")}</option>
-            </select>
-          </div>
-          {searchType === "name" && (
+        <div className="bg-base-200 p-8 rounded-3xl">
+          <form
+            onSubmit={searchBooks}
+            className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mb-5"
+          >
+            <div className="flex-grow">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={
+                  searchType === "name"
+                    ? t("search_placeholder")
+                    : t("isbn_placeholder")
+                }
+                className="input input-bordered w-full"
+              />
+            </div>
             <div className="flex-shrink-0">
               <select
-                value={selectedLanguage}
-                onChange={(e) => setSelectedLanguage(e.target.value)}
+                value={searchType}
+                onChange={(e) => setSearchType(e.target.value)}
                 className="select select-bordered w-full"
               >
-                {languages.map((lang) => (
-                  <option key={lang.code} value={lang.code}>
-                    {lang.name}
-                  </option>
-                ))}
+                <option value="name">{t("search_by_name")}</option>
+                <option value="isbn">{t("search_by_isbn")}</option>
               </select>
             </div>
-          )}
-          <div className="flex-shrink-0">
-            <button
-              type="submit"
-              className="btn btn-primary w-full"
-              disabled={loading}
-            >
-              {loading ? t("searching") : t("search")}
-            </button>
-          </div>
-        </form>
-        <div className="space-y-4">
-          {searchResults.length === 0 && !loading && (
-            <div className="text-center py-8">
-              <p className="text-xl font-semibold text-gray-600">
-                {t("error")}
-              </p>
-            </div>
-          )}
-          {searchResults.map((book, index) => (
-            <div
-              key={`search-result-${book.id}-${index}`}
-              className="card lg:card-side bg-base-100 shadow-xl"
-            >
-              <figure className="p-4 w-48 h-64 min-w-[120px] flex items-center justify-center m-auto">
-                {book.volumeInfo.imageLinks?.thumbnail ? (
-                  <img
-                    src={book.volumeInfo.imageLinks.thumbnail}
-                    alt={book.volumeInfo.title}
-                    className="rounded-lg w-full h-full object-contain"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-lg">
-                    <span className="text-gray-500">No image available</span>
-                  </div>
-                )}
-              </figure>
-              <div className="card-body">
-                <h2 className="card-title">{book.volumeInfo.title}</h2>
-                <p>{book.volumeInfo.authors?.join(", ")}</p>
-                <p>{book.volumeInfo.publishedDate}</p>
-                <p>
-                  {typeof book.volumeInfo.description === "string"
-                    ? book.volumeInfo.description
-                        .replaceAll("<p>", "")
-                        .replaceAll("</p>", "")
-                        .replaceAll("<br>", "")
-                        .replaceAll("<br/>", "")
-                        .substring(0, 200) + "..."
-                    : t("no_desc")}
-                </p>
-                <div className="card-actions justify-end">
-                  <select
-                    className="select select-bordered"
-                    onChange={(e) => addToReadingList(book, e.target.value)}
-                    defaultValue=""
-                  >
-                    <option value="" disabled hidden>
-                      {t("select1")}
+            {searchType === "name" && (
+              <div className="flex-shrink-0">
+                <select
+                  value={selectedLanguage}
+                  onChange={(e) => setSelectedLanguage(e.target.value)}
+                  className="select select-bordered w-full"
+                >
+                  {languages.map((lang) => (
+                    <option key={lang.code} value={lang.code}>
+                      {lang.name}
                     </option>
-                    <option value="To Read">{t("select2")}</option>
-                    <option value="Reading">{t("select3")}</option>
-                    <option value="Finished">{t("select4")}</option>
-                  </select>
+                  ))}
+                </select>
+              </div>
+            )}
+            <div className="flex-shrink-0">
+              <button
+                type="submit"
+                className="btn btn-primary w-full"
+                disabled={loading}
+              >
+                {loading ? t("searching") : t("search")}
+              </button>
+            </div>
+          </form>
+          <div className="space-y-4">
+            {searchResults.length === 0 && !loading && (
+              <div className="text-center py-8">
+                <p className="text-xl font-semibold text-gray-600">
+                  {t("error")}
+                </p>
+              </div>
+            )}
+            {searchResults.map((book, index) => (
+              <div
+                key={`search-result-${book.id}-${index}`}
+                className="card lg:card-side bg-base-100 shadow-xl"
+              >
+                <figure className="p-4 w-48 h-64 min-w-[120px] flex items-center justify-center m-auto">
+                  {book.volumeInfo.imageLinks?.thumbnail ? (
+                    <img
+                      src={book.volumeInfo.imageLinks.thumbnail}
+                      alt={book.volumeInfo.title}
+                      className="rounded-lg w-full h-full object-contain"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-lg">
+                      <span className="text-gray-500">No image available</span>
+                    </div>
+                  )}
+                </figure>
+                <div className="card-body">
+                  <h2 className="card-title">{book.volumeInfo.title}</h2>
+                  <p>{book.volumeInfo.authors?.join(", ")}</p>
+                  <p>{book.volumeInfo.publishedDate}</p>
+                  <p>
+                    {typeof book.volumeInfo.description === "string"
+                      ? book.volumeInfo.description
+                          .replaceAll("<p>", "")
+                          .replaceAll("</p>", "")
+                          .replaceAll("<br>", "")
+                          .replaceAll("<br/>", "")
+                          .substring(0, 200) + "..."
+                      : t("no_desc")}
+                  </p>
+                  <div className="card-actions justify-end">
+                    <select
+                      className="select select-bordered"
+                      onChange={(e) => addToReadingList(book, e.target.value)}
+                      defaultValue=""
+                    >
+                      <option value="" disabled hidden>
+                        {t("select1")}
+                      </option>
+                      <option value="To Read">{t("select2")}</option>
+                      <option value="Reading">{t("select3")}</option>
+                      <option value="Finished">{t("select4")}</option>
+                    </select>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
     </main>
