@@ -1,9 +1,17 @@
 "use client";
 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 export default function Admin() {
   const [userGrowthData, setUserGrowthData] = useState<any[]>([]);
@@ -43,13 +51,12 @@ export default function Admin() {
   async function fetchUserStats() {
     const { count: usersWithBooks, error: error1 } = await supabase
       .from("reading_list")
-      .select("user_id", { count: "exact", head: true })
-      .not("book_id", "is", null);
-
+      .select("user_id", { count: "exact", head: true });
+    console.log(usersWithBooks);
     const { count: totalUsers, error: error2 } = await supabase
       .from("profiles")
       .select("id", { count: "exact", head: true });
-
+    console.log(totalUsers);
     if (error1 || error2) {
       console.error("Error fetching user stats:", error1 || error2);
       return;
@@ -83,7 +90,9 @@ export default function Admin() {
             <CardTitle>Users with Books</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold">{userStats?.usersWithBooks || 0}</p>
+            <p className="text-3xl font-bold">
+              {userStats?.usersWithBooks || 0}
+            </p>
           </CardContent>
         </Card>
         <Card>
@@ -91,7 +100,9 @@ export default function Admin() {
             <CardTitle>Users without Books</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold">{userStats?.usersWithoutBooks || 0}</p>
+            <p className="text-3xl font-bold">
+              {userStats?.usersWithoutBooks || 0}
+            </p>
           </CardContent>
         </Card>
       </div>
