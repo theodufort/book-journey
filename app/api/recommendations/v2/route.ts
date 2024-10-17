@@ -48,7 +48,7 @@ function sortSubjects(
   }[]
 ) {
   // Flatten the array of subjects
-  const allSubjects = subjectsArray.flatMap(item => item.subjects);
+  const allSubjects = subjectsArray.flatMap((item) => item.subjects);
 
   // Count the occurrences of each subject
   const subjectCounts = allSubjects.reduce((counts, subject) => {
@@ -142,8 +142,7 @@ async function getRecommendations(
         console.log(prioritizationData);
         // const prioritizedAuthors = sortAuthors(prioritizationData);
         const prioritizedSubjects = sortSubjects(prioritizationData);
-        console.log("Sorted subjects:", prioritizedSubjects);
-        subjects = getRandomCategories(prioritizedSubjects, 2);
+        subjects = [prioritizedSubjects[attempt]];
       } else {
         if (userCategories.length > 0) {
           subjects = getRandomCategories(userCategories, 1);

@@ -53,7 +53,7 @@ export interface BookSearchResult {
     authors?: string[];
     publishedDate?: string;
     description?: string;
-    subjects?: string[];
+    categories?: string[];
     reviews?: string[];
     imageLinks?: {
       thumbnail: string;
