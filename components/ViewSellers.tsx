@@ -6,7 +6,7 @@ interface props {
 export default function ViewSellers({ title }: props) {
   const t = useTranslations("BookAvatar");
   return (
-    <div className="dropdown md:dropdown-end dropdown-end">
+    <div className="dropdown md:dropdown-end dropdown-bottom">
       <div tabIndex={0} role="button" className="btn btn-primary p-2">
         {t("view_sellers")}
       </div>
