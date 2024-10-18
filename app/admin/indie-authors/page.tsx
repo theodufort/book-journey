@@ -84,19 +84,27 @@ export default function IndieAuthors() {
 
   function handleEditAuthor() {
     setEditedAuthor({
-      name: selectedAuthor.name,
-      email: selectedAuthor.email,
-      is_approved: selectedAuthor.is_approved,
-      bio: selectedAuthor.bio || "",
-      website: selectedAuthor.website || "",
-      twitter: selectedAuthor.twitter || "",
-      facebook: selectedAuthor.facebook || "",
-      instagram: selectedAuthor.instagram || "",
+      name: selectedAuthor?.name || "",
+      email: selectedAuthor?.email || "",
+      is_approved: selectedAuthor?.is_approved || false,
+      presentation: selectedAuthor?.presentation || "",
+      birth_date: selectedAuthor?.birth_date || "",
+      first_book_published_year: selectedAuthor?.first_book_published_year || "",
+      personal_favorite_genres: selectedAuthor?.personal_favorite_genres || [],
+      main_writing_genres: selectedAuthor?.main_writing_genres || [],
+      type_of_books: selectedAuthor?.type_of_books || [],
+      picture_link: selectedAuthor?.picture_link || "",
+      website: selectedAuthor?.website || "",
     });
     setIsEditModalOpen(true);
   }
 
   async function updateAuthor() {
+    if (!selectedAuthor || !selectedAuthor.author_id) {
+      console.error("No author selected for update");
+      return;
+    }
+
     const { error: authorError } = await supabase
       .from("indie_authors")
       .update({
@@ -118,14 +126,16 @@ export default function IndieAuthors() {
       return;
     }
 
-    const { error: profileError } = await supabase
-      .from("profiles")
-      .update({ email: editedAuthor.email })
-      .eq("id", selectedAuthor.author_id);
+    if (editedAuthor.email) {
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .update({ email: editedAuthor.email })
+        .eq("id", selectedAuthor.author_id);
 
-    if (profileError) {
-      console.error("Error updating profile:", profileError);
-      return;
+      if (profileError) {
+        console.error("Error updating profile:", profileError);
+        return;
+      }
     }
 
     setSelectedAuthor({ ...selectedAuthor, ...editedAuthor });
