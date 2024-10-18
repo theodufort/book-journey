@@ -1,6 +1,5 @@
 "use client";
 import AdminHeader from "@/components/AdminHeader";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -30,7 +29,9 @@ export default function IndieAuthors() {
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [editedAuthor, setEditedAuthor] = useState({ name: "", email: "" });
   const [searchTerm, setSearchTerm] = useState("");
-  const [isApprovedFilter, setIsApprovedFilter] = useState<boolean | null>(null);
+  const [isApprovedFilter, setIsApprovedFilter] = useState<boolean | null>(
+    null
+  );
   const supabase = createClientComponentClient();
   const pageSize = 10;
 
@@ -41,18 +42,24 @@ export default function IndieAuthors() {
   async function fetchAuthors() {
     let query = supabase
       .from("indie_authors")
-      .select("author_id, name, is_approved, profiles(email)", { count: "exact" });
+      .select("author_id, name, is_approved, profiles(email)", {
+        count: "exact",
+      });
 
     if (searchTerm) {
-      query = query.or(`name.ilike.%${searchTerm}%,profiles.email.ilike.%${searchTerm}%`);
+      query = query.or(
+        `name.ilike.%${searchTerm}%,profiles.email.ilike.%${searchTerm}%`
+      );
     }
 
     if (isApprovedFilter !== null) {
       query = query.eq("is_approved", isApprovedFilter);
     }
 
-    const { data, error, count } = await query
-      .range((currentPage - 1) * pageSize, currentPage * pageSize - 1);
+    const { data, error, count } = await query.range(
+      (currentPage - 1) * pageSize,
+      currentPage * pageSize - 1
+    );
 
     if (error) {
       console.error("Error fetching authors:", error);
@@ -84,7 +91,10 @@ export default function IndieAuthors() {
   async function updateAuthor() {
     const { error: authorError } = await supabase
       .from("indie_authors")
-      .update({ name: editedAuthor.name, is_approved: editedAuthor.is_approved })
+      .update({
+        name: editedAuthor.name,
+        is_approved: editedAuthor.is_approved,
+      })
       .eq("author_id", selectedAuthor.author_id);
 
     if (authorError) {
@@ -124,25 +134,32 @@ export default function IndieAuthors() {
           <select
             className="border rounded p-2"
             value={isApprovedFilter === null ? "" : isApprovedFilter.toString()}
-            onChange={(e) => setIsApprovedFilter(e.target.value === "" ? null : e.target.value === "true")}
+            onChange={(e) =>
+              setIsApprovedFilter(
+                e.target.value === "" ? null : e.target.value === "true"
+              )
+            }
           >
             <option value="">All</option>
             <option value="true">Approved</option>
             <option value="false">Not Approved</option>
           </select>
-          <Button onClick={() => {
-            setCurrentPage(1);
-            fetchAuthors();
-          }}>
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              setCurrentPage(1);
+              fetchAuthors();
+            }}
+          >
             Search
-          </Button>
+          </button>
         </div>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Approved</TableHead>
+              <TableHead className="text-md">Name</TableHead>
+              <TableHead className="text-md">Email</TableHead>
+              <TableHead className="text-md">Approved</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -152,31 +169,35 @@ export default function IndieAuthors() {
                 onClick={() => handleAuthorClick(author)}
                 className="cursor-pointer"
               >
-                <TableCell>{author.name}</TableCell>
-                <TableCell>{author.email}</TableCell>
-                <TableCell>{author.is_approved ? "Yes" : "No"}</TableCell>
+                <TableCell className="text-md">{author.name}</TableCell>
+                <TableCell className="text-md">{author.email}</TableCell>
+                <TableCell className="text-md">
+                  {author.is_approved ? "Yes" : "No"}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
         <div className="flex justify-between mt-4">
-          <Button
+          <button
+            className="btn btn-secondary"
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
           >
             Previous
-          </Button>
+          </button>
           <span>
             Page {currentPage} of {totalPages}
           </span>
-          <Button
+          <button
+            className="btn btn-secondary"
             onClick={() =>
               setCurrentPage((prev) => Math.min(prev + 1, totalPages))
             }
             disabled={currentPage === totalPages}
           >
             Next
-          </Button>
+          </button>
         </div>
       </div>
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -188,8 +209,8 @@ export default function IndieAuthors() {
             <p>Email: {selectedAuthor?.email}</p>
           </div>
           <DialogFooter>
-            <Button onClick={handleEditAuthor}>Edit</Button>
-            <Button onClick={() => setIsModalOpen(false)}>Close</Button>
+            <button onClick={handleEditAuthor}>Edit</button>
+            <button onClick={() => setIsModalOpen(false)}>Close</button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -200,8 +221,11 @@ export default function IndieAuthors() {
           </DialogHeader>
           <div className="py-4 space-y-4">
             <div className="grid w-full max-w-sm items-center gap-1.5">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name" className="text-md">
+                Name
+              </Label>
               <Input
+                className="text-md"
                 type="text"
                 id="name"
                 value={editedAuthor.name}
@@ -240,8 +264,13 @@ export default function IndieAuthors() {
             </div>
           </div>
           <DialogFooter>
-            <Button onClick={updateAuthor}>Save</Button>
-            <Button onClick={() => setIsEditModalOpen(false)}>Cancel</Button>
+            <button onClick={updateAuthor}>Save</button>
+            <button
+              className="btn btn-primary"
+              onClick={() => setIsEditModalOpen(false)}
+            >
+              Cancel
+            </button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
