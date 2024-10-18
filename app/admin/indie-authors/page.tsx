@@ -1,11 +1,12 @@
+"use client";
 import AdminHeader from "@/components/AdminHeader";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -185,7 +186,10 @@ export default function IndieAuthors() {
                 id="email"
                 value={editedAuthor.email}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setEditedAuthor((prev) => ({ ...prev, email: e.target.value }))
+                  setEditedAuthor((prev) => ({
+                    ...prev,
+                    email: e.target.value,
+                  }))
                 }
               />
             </div>
