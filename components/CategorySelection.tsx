@@ -7,7 +7,7 @@ interface CategorySelectionProps {
   userId: string;
 }
 
-const categories = [
+export const categories = [
   "Fantasy",
   "History",
   "Music",
