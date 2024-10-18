@@ -194,80 +194,69 @@ export default function IndieAuthors() {
           </button>
         </div>
       </div>
-      <dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{selectedAuthor?.name}</DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <p>Email: {selectedAuthor?.email}</p>
+      <dialog id="author_modal" className={`modal ${isModalOpen ? 'modal-open' : ''}`}>
+        <div className="modal-box">
+          <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={() => setIsModalOpen(false)}>✕</button>
+          </form>
+          <h3 className="font-bold text-lg">{selectedAuthor?.name}</h3>
+          <p className="py-4">Email: {selectedAuthor?.email}</p>
+          <div className="modal-action">
+            <button className="btn" onClick={handleEditAuthor}>Edit</button>
+            <button className="btn" onClick={() => setIsModalOpen(false)}>Close</button>
           </div>
-          <DialogFooter>
-            <button onClick={handleEditAuthor}>Edit</button>
-            <button onClick={() => setIsModalOpen(false)}>Close</button>
-          </DialogFooter>
-        </DialogContent>
+        </div>
       </dialog>
-      <dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit Author</DialogTitle>
-          </DialogHeader>
+
+      <dialog id="edit_modal" className={`modal ${isEditModalOpen ? 'modal-open' : ''}`}>
+        <div className="modal-box">
+          <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={() => setIsEditModalOpen(false)}>✕</button>
+          </form>
+          <h3 className="font-bold text-lg">Edit Author</h3>
           <div className="py-4 space-y-4">
-            <div className="grid w-full max-w-sm items-center gap-1.5">
-              <Label htmlFor="name" className="text-md">
-                Name
-              </Label>
-              <Input
-                className="text-md"
+            <div className="form-control">
+              <label className="label" htmlFor="name">
+                <span className="label-text">Name</span>
+              </label>
+              <input
                 type="text"
                 id="name"
+                className="input input-bordered"
                 value={editedAuthor.name}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setEditedAuthor((prev) => ({ ...prev, name: e.target.value }))
-                }
+                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, name: e.target.value }))}
               />
             </div>
-            <div className="grid w-full max-w-sm items-center gap-1.5">
-              <Label htmlFor="email">Email</Label>
-              <Input
+            <div className="form-control">
+              <label className="label" htmlFor="email">
+                <span className="label-text">Email</span>
+              </label>
+              <input
                 type="email"
                 id="email"
+                className="input input-bordered"
                 value={editedAuthor.email}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setEditedAuthor((prev) => ({
-                    ...prev,
-                    email: e.target.value,
-                  }))
-                }
+                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, email: e.target.value }))}
               />
             </div>
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="is_approved"
-                checked={editedAuthor.is_approved}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setEditedAuthor((prev) => ({
-                    ...prev,
-                    is_approved: e.target.checked,
-                  }))
-                }
-              />
-              <Label htmlFor="is_approved">Approved</Label>
+            <div className="form-control">
+              <label className="label cursor-pointer">
+                <span className="label-text">Approved</span>
+                <input
+                  type="checkbox"
+                  className="checkbox"
+                  checked={editedAuthor.is_approved}
+                  onChange={(e) => setEditedAuthor((prev) => ({ ...prev, is_approved: e.target.checked }))}
+                />
+              </label>
             </div>
           </div>
-          <DialogFooter>
-            <button onClick={updateAuthor}>Save</button>
-            <button
-              className="btn btn-primary"
-              onClick={() => setIsEditModalOpen(false)}
-            >
-              Cancel
-            </button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          <div className="modal-action">
+            <button className="btn btn-primary" onClick={updateAuthor}>Save</button>
+            <button className="btn" onClick={() => setIsEditModalOpen(false)}>Cancel</button>
+          </div>
+        </div>
+      </dialog>
     </div>
   );
 }
