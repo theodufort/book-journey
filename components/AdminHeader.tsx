@@ -83,11 +83,6 @@ const AdminHeader = () => {
               <summary>
                 <Link href={"/admin/indie-authors"}>Indie Authors</Link>
               </summary>
-              <ul>
-                <li>
-                  <Link href={"/admin/indie-authors/review"}>Review</Link>
-                </li>
-              </ul>
             </details>
           </li>
           <li>
