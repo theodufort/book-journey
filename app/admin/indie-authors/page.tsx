@@ -18,11 +18,18 @@ export default function IndieAuthors() {
   const [selectedAuthor, setSelectedAuthor] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
-  const [editedAuthor, setEditedAuthor] = useState({ name: "", email: "" });
+  const [editedAuthor, setEditedAuthor] = useState({
+    name: "",
+    email: "",
+    is_approved: false,
+    bio: "",
+    website: "",
+    twitter: "",
+    facebook: "",
+    instagram: "",
+  });
   const [searchTerm, setSearchTerm] = useState("");
-  const [isApprovedFilter, setIsApprovedFilter] = useState<boolean | null>(
-    null
-  );
+  const [isApprovedFilter, setIsApprovedFilter] = useState<boolean | null>(null);
   const supabase = createClientComponentClient();
   const pageSize = 10;
 
@@ -33,7 +40,7 @@ export default function IndieAuthors() {
   async function fetchAuthors() {
     let query = supabase
       .from("indie_authors")
-      .select("author_id, name, is_approved, profiles(email)", {
+      .select("*, profiles(email)", {
         count: "exact",
       })
       .order("name", { ascending: true });
@@ -77,6 +84,11 @@ export default function IndieAuthors() {
       name: selectedAuthor.name,
       email: selectedAuthor.email,
       is_approved: selectedAuthor.is_approved,
+      bio: selectedAuthor.bio || "",
+      website: selectedAuthor.website || "",
+      twitter: selectedAuthor.twitter || "",
+      facebook: selectedAuthor.facebook || "",
+      instagram: selectedAuthor.instagram || "",
     });
     setIsEditModalOpen(true);
   }
@@ -87,6 +99,11 @@ export default function IndieAuthors() {
       .update({
         name: editedAuthor.name,
         is_approved: editedAuthor.is_approved,
+        bio: editedAuthor.bio,
+        website: editedAuthor.website,
+        twitter: editedAuthor.twitter,
+        facebook: editedAuthor.facebook,
+        instagram: editedAuthor.instagram,
       })
       .eq("author_id", selectedAuthor.author_id);
 
@@ -154,6 +171,8 @@ export default function IndieAuthors() {
               <TableHead className="text-md">Name</TableHead>
               <TableHead className="text-md">Email</TableHead>
               <TableHead className="text-md">Approved</TableHead>
+              <TableHead className="text-md">Website</TableHead>
+              <TableHead className="text-md">Social Media</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -167,6 +186,10 @@ export default function IndieAuthors() {
                 <TableCell className="text-md">{author.email}</TableCell>
                 <TableCell className="text-md">
                   {author.is_approved ? "Yes" : "No"}
+                </TableCell>
+                <TableCell className="text-md">{author.website || "N/A"}</TableCell>
+                <TableCell className="text-md">
+                  {author.twitter || author.facebook || author.instagram ? "Yes" : "No"}
                 </TableCell>
               </TableRow>
             ))}
@@ -200,7 +223,15 @@ export default function IndieAuthors() {
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={() => setIsModalOpen(false)}>✕</button>
           </form>
           <h3 className="font-bold text-lg">{selectedAuthor?.name}</h3>
-          <p className="py-4">Email: {selectedAuthor?.email}</p>
+          <div className="py-4 space-y-2">
+            <p><strong>Email:</strong> {selectedAuthor?.email}</p>
+            <p><strong>Approved:</strong> {selectedAuthor?.is_approved ? "Yes" : "No"}</p>
+            <p><strong>Bio:</strong> {selectedAuthor?.bio || "N/A"}</p>
+            <p><strong>Website:</strong> {selectedAuthor?.website || "N/A"}</p>
+            <p><strong>Twitter:</strong> {selectedAuthor?.twitter || "N/A"}</p>
+            <p><strong>Facebook:</strong> {selectedAuthor?.facebook || "N/A"}</p>
+            <p><strong>Instagram:</strong> {selectedAuthor?.instagram || "N/A"}</p>
+          </div>
           <div className="modal-action">
             <button className="btn" onClick={handleEditAuthor}>Edit</button>
             <button className="btn" onClick={() => setIsModalOpen(false)}>Close</button>
@@ -249,6 +280,65 @@ export default function IndieAuthors() {
                   onChange={(e) => setEditedAuthor((prev) => ({ ...prev, is_approved: e.target.checked }))}
                 />
               </label>
+            </div>
+            <div className="form-control">
+              <label className="label" htmlFor="bio">
+                <span className="label-text">Bio</span>
+              </label>
+              <textarea
+                id="bio"
+                className="textarea textarea-bordered"
+                value={editedAuthor.bio}
+                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, bio: e.target.value }))}
+              ></textarea>
+            </div>
+            <div className="form-control">
+              <label className="label" htmlFor="website">
+                <span className="label-text">Website</span>
+              </label>
+              <input
+                type="url"
+                id="website"
+                className="input input-bordered"
+                value={editedAuthor.website}
+                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, website: e.target.value }))}
+              />
+            </div>
+            <div className="form-control">
+              <label className="label" htmlFor="twitter">
+                <span className="label-text">Twitter</span>
+              </label>
+              <input
+                type="text"
+                id="twitter"
+                className="input input-bordered"
+                value={editedAuthor.twitter}
+                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, twitter: e.target.value }))}
+              />
+            </div>
+            <div className="form-control">
+              <label className="label" htmlFor="facebook">
+                <span className="label-text">Facebook</span>
+              </label>
+              <input
+                type="text"
+                id="facebook"
+                className="input input-bordered"
+                value={editedAuthor.facebook}
+                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, facebook: e.target.value }))}
+              />
+            </div>
+            <div className="form-control">
+              <label className="label" htmlFor="instagram">
+                <span className="label-text">Instagram</span>
+              </label>
+              <input
+                type="text"
+                id="instagram"
+                className="input input-bordered"
+                value={editedAuthor.instagram}
+                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, instagram: e.target.value }))}
+              />
             </div>
           </div>
           <div className="modal-action">
