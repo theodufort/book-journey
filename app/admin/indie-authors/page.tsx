@@ -47,19 +47,16 @@ export default function IndieAuthors() {
       });
 
     if (searchTerm) {
-      query = query.or(
-        `name.ilike.%${searchTerm}%,profiles.email.ilike.%${searchTerm}%`
-      );
+      query = query.or(`name.ilike.%${searchTerm}%,profiles.email.ilike.%${searchTerm}%`);
     }
 
     if (isApprovedFilter !== null) {
       query = query.eq("is_approved", isApprovedFilter);
     }
 
-    const { data, error, count } = await query.range(
-      (currentPage - 1) * pageSize,
-      currentPage * pageSize - 1
-    );
+    const { data, error, count } = await query
+      .order('name', { ascending: true })
+      .range((currentPage - 1) * pageSize, currentPage * pageSize - 1);
 
     if (error) {
       console.error("Error fetching authors:", error);
