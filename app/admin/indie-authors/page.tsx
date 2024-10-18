@@ -48,7 +48,10 @@ export default function IndieAuthors() {
       .order("name", { ascending: true });
 
     if (searchTerm) {
-      query = query.or(`name.ilike.%${searchTerm}%,profiles.email.ilike.%${searchTerm}%`);
+      query = query.or(
+        `name.ilike.%${searchTerm}%,profiles.email.ilike.%${searchTerm}%`,
+        { foreignTable: 'profiles' }
+      );
     }
 
     if (isApprovedFilter !== null) {
