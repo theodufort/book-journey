@@ -18,7 +18,6 @@ const categories = [
   "Children's",
   "Christian",
   "Classics",
-  "Comics",
   "Contemporary",
   "Cookbooks",
   "Crime",
