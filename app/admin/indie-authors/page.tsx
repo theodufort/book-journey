@@ -47,7 +47,9 @@ export default function IndieAuthors() {
       });
 
     if (searchTerm) {
-      query = query.or(`name.ilike.%${searchTerm}%,profiles.email.ilike.%${searchTerm}%`);
+      query = query.or(
+        `name.ilike.%${searchTerm}%,profiles.email.ilike.%${searchTerm}%`
+      );
     }
 
     if (isApprovedFilter !== null) {
@@ -55,7 +57,7 @@ export default function IndieAuthors() {
     }
 
     const { data, error, count } = await query
-      .order('name', { ascending: true })
+      .order("name", { ascending: true })
       .range((currentPage - 1) * pageSize, currentPage * pageSize - 1);
 
     if (error) {
