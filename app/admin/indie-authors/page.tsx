@@ -44,12 +44,11 @@ export default function IndieAuthors() {
       .from("indie_authors")
       .select("author_id, name, is_approved, profiles(email)", {
         count: "exact",
-      });
+      })
+      .order("name", { ascending: true });
 
     if (searchTerm) {
-      query = query.or(
-        `name.ilike.%${searchTerm}%,profiles.email.ilike.%${searchTerm}%`
-      );
+      query = query.or(`name.ilike.%${searchTerm}%,profiles.email.ilike.%${searchTerm}%`);
     }
 
     if (isApprovedFilter !== null) {
@@ -57,7 +56,6 @@ export default function IndieAuthors() {
     }
 
     const { data, error, count } = await query
-      .order("name", { ascending: true })
       .range((currentPage - 1) * pageSize, currentPage * pageSize - 1);
 
     if (error) {
@@ -69,7 +67,7 @@ export default function IndieAuthors() {
       }));
 
       setAuthors(authorsWithEmail);
-      setTotalPages(Math.ceil(count / pageSize));
+      setTotalPages(Math.ceil((count || 0) / pageSize));
     }
   }
 
