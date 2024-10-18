@@ -22,11 +22,14 @@ export default function IndieAuthors() {
     name: "",
     email: "",
     is_approved: false,
-    bio: "",
+    presentation: "",
+    birth_date: "",
+    first_book_published_year: "",
+    personal_favorite_genres: [],
+    main_writing_genres: [],
+    type_of_books: [],
+    picture_link: "",
     website: "",
-    twitter: "",
-    facebook: "",
-    instagram: "",
   });
   const [searchTerm, setSearchTerm] = useState("");
   const [isApprovedFilter, setIsApprovedFilter] = useState<boolean | null>(null);
@@ -99,11 +102,14 @@ export default function IndieAuthors() {
       .update({
         name: editedAuthor.name,
         is_approved: editedAuthor.is_approved,
-        bio: editedAuthor.bio,
+        presentation: editedAuthor.presentation,
+        birth_date: editedAuthor.birth_date,
+        first_book_published_year: editedAuthor.first_book_published_year,
+        personal_favorite_genres: editedAuthor.personal_favorite_genres,
+        main_writing_genres: editedAuthor.main_writing_genres,
+        type_of_books: editedAuthor.type_of_books,
+        picture_link: editedAuthor.picture_link,
         website: editedAuthor.website,
-        twitter: editedAuthor.twitter,
-        facebook: editedAuthor.facebook,
-        instagram: editedAuthor.instagram,
       })
       .eq("author_id", selectedAuthor.author_id);
 
@@ -226,11 +232,14 @@ export default function IndieAuthors() {
           <div className="py-4 space-y-2">
             <p><strong>Email:</strong> {selectedAuthor?.email}</p>
             <p><strong>Approved:</strong> {selectedAuthor?.is_approved ? "Yes" : "No"}</p>
-            <p><strong>Bio:</strong> {selectedAuthor?.bio || "N/A"}</p>
+            <p><strong>Presentation:</strong> {selectedAuthor?.presentation || "N/A"}</p>
+            <p><strong>Birth Date:</strong> {selectedAuthor?.birth_date || "N/A"}</p>
+            <p><strong>First Book Published Year:</strong> {selectedAuthor?.first_book_published_year || "N/A"}</p>
+            <p><strong>Personal Favorite Genres:</strong> {selectedAuthor?.personal_favorite_genres?.join(", ") || "N/A"}</p>
+            <p><strong>Main Writing Genres:</strong> {selectedAuthor?.main_writing_genres?.join(", ") || "N/A"}</p>
+            <p><strong>Type of Books:</strong> {selectedAuthor?.type_of_books?.join(", ") || "N/A"}</p>
+            <p><strong>Picture Link:</strong> {selectedAuthor?.picture_link || "N/A"}</p>
             <p><strong>Website:</strong> {selectedAuthor?.website || "N/A"}</p>
-            <p><strong>Twitter:</strong> {selectedAuthor?.twitter || "N/A"}</p>
-            <p><strong>Facebook:</strong> {selectedAuthor?.facebook || "N/A"}</p>
-            <p><strong>Instagram:</strong> {selectedAuthor?.instagram || "N/A"}</p>
           </div>
           <div className="modal-action">
             <button className="btn" onClick={handleEditAuthor}>Edit</button>
@@ -282,15 +291,87 @@ export default function IndieAuthors() {
               </label>
             </div>
             <div className="form-control">
-              <label className="label" htmlFor="bio">
-                <span className="label-text">Bio</span>
+              <label className="label" htmlFor="presentation">
+                <span className="label-text">Presentation</span>
               </label>
               <textarea
-                id="bio"
+                id="presentation"
                 className="textarea textarea-bordered"
-                value={editedAuthor.bio}
-                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, bio: e.target.value }))}
+                value={editedAuthor.presentation}
+                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, presentation: e.target.value }))}
               ></textarea>
+            </div>
+            <div className="form-control">
+              <label className="label" htmlFor="birth_date">
+                <span className="label-text">Birth Date</span>
+              </label>
+              <input
+                type="date"
+                id="birth_date"
+                className="input input-bordered"
+                value={editedAuthor.birth_date}
+                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, birth_date: e.target.value }))}
+              />
+            </div>
+            <div className="form-control">
+              <label className="label" htmlFor="first_book_published_year">
+                <span className="label-text">First Book Published Year</span>
+              </label>
+              <input
+                type="number"
+                id="first_book_published_year"
+                className="input input-bordered"
+                value={editedAuthor.first_book_published_year}
+                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, first_book_published_year: e.target.value }))}
+              />
+            </div>
+            <div className="form-control">
+              <label className="label" htmlFor="personal_favorite_genres">
+                <span className="label-text">Personal Favorite Genres</span>
+              </label>
+              <input
+                type="text"
+                id="personal_favorite_genres"
+                className="input input-bordered"
+                value={editedAuthor.personal_favorite_genres.join(", ")}
+                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, personal_favorite_genres: e.target.value.split(", ") }))}
+              />
+            </div>
+            <div className="form-control">
+              <label className="label" htmlFor="main_writing_genres">
+                <span className="label-text">Main Writing Genres</span>
+              </label>
+              <input
+                type="text"
+                id="main_writing_genres"
+                className="input input-bordered"
+                value={editedAuthor.main_writing_genres.join(", ")}
+                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, main_writing_genres: e.target.value.split(", ") }))}
+              />
+            </div>
+            <div className="form-control">
+              <label className="label" htmlFor="type_of_books">
+                <span className="label-text">Type of Books</span>
+              </label>
+              <input
+                type="text"
+                id="type_of_books"
+                className="input input-bordered"
+                value={editedAuthor.type_of_books.join(", ")}
+                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, type_of_books: e.target.value.split(", ") }))}
+              />
+            </div>
+            <div className="form-control">
+              <label className="label" htmlFor="picture_link">
+                <span className="label-text">Picture Link</span>
+              </label>
+              <input
+                type="url"
+                id="picture_link"
+                className="input input-bordered"
+                value={editedAuthor.picture_link}
+                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, picture_link: e.target.value }))}
+              />
             </div>
             <div className="form-control">
               <label className="label" htmlFor="website">
@@ -302,42 +383,6 @@ export default function IndieAuthors() {
                 className="input input-bordered"
                 value={editedAuthor.website}
                 onChange={(e) => setEditedAuthor((prev) => ({ ...prev, website: e.target.value }))}
-              />
-            </div>
-            <div className="form-control">
-              <label className="label" htmlFor="twitter">
-                <span className="label-text">Twitter</span>
-              </label>
-              <input
-                type="text"
-                id="twitter"
-                className="input input-bordered"
-                value={editedAuthor.twitter}
-                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, twitter: e.target.value }))}
-              />
-            </div>
-            <div className="form-control">
-              <label className="label" htmlFor="facebook">
-                <span className="label-text">Facebook</span>
-              </label>
-              <input
-                type="text"
-                id="facebook"
-                className="input input-bordered"
-                value={editedAuthor.facebook}
-                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, facebook: e.target.value }))}
-              />
-            </div>
-            <div className="form-control">
-              <label className="label" htmlFor="instagram">
-                <span className="label-text">Instagram</span>
-              </label>
-              <input
-                type="text"
-                id="instagram"
-                className="input input-bordered"
-                value={editedAuthor.instagram}
-                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, instagram: e.target.value }))}
               />
             </div>
           </div>
