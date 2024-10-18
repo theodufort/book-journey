@@ -29,38 +29,38 @@ export default function IndieAuthors() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [editedAuthor, setEditedAuthor] = useState({ name: "", email: "" });
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isApprovedFilter, setIsApprovedFilter] = useState<boolean | null>(null);
   const supabase = createClientComponentClient();
   const pageSize = 10;
 
   useEffect(() => {
     fetchAuthors();
-  }, [currentPage]);
+  }, [currentPage, searchTerm, isApprovedFilter]);
 
   async function fetchAuthors() {
-    const { data, error, count } = await supabase
+    let query = supabase
       .from("indie_authors")
-      .select("author_id, name", { count: "exact" })
+      .select("author_id, name, is_approved, profiles(email)", { count: "exact" });
+
+    if (searchTerm) {
+      query = query.or(`name.ilike.%${searchTerm}%,profiles.email.ilike.%${searchTerm}%`);
+    }
+
+    if (isApprovedFilter !== null) {
+      query = query.eq("is_approved", isApprovedFilter);
+    }
+
+    const { data, error, count } = await query
       .range((currentPage - 1) * pageSize, currentPage * pageSize - 1);
 
     if (error) {
       console.error("Error fetching authors:", error);
     } else {
-      const authorsWithEmail = await Promise.all(
-        data.map(async (author) => {
-          const { data: profileData, error: profileError } = await supabase
-            .from("profiles")
-            .select("email")
-            .eq("id", author.author_id)
-            .single();
-
-          if (profileError) {
-            console.error("Error fetching profile:", profileError);
-            return { ...author, email: "N/A" };
-          }
-
-          return { ...author, email: profileData.email };
-        })
-      );
+      const authorsWithEmail = data.map((author) => ({
+        ...author,
+        email: author.profiles?.email || "N/A",
+      }));
 
       setAuthors(authorsWithEmail);
       setTotalPages(Math.ceil(count / pageSize));
@@ -73,14 +73,18 @@ export default function IndieAuthors() {
   }
 
   function handleEditAuthor() {
-    setEditedAuthor({ name: selectedAuthor.name, email: selectedAuthor.email });
+    setEditedAuthor({
+      name: selectedAuthor.name,
+      email: selectedAuthor.email,
+      is_approved: selectedAuthor.is_approved,
+    });
     setIsEditModalOpen(true);
   }
 
   async function updateAuthor() {
     const { error: authorError } = await supabase
       .from("indie_authors")
-      .update({ name: editedAuthor.name })
+      .update({ name: editedAuthor.name, is_approved: editedAuthor.is_approved })
       .eq("author_id", selectedAuthor.author_id);
 
     if (authorError) {
@@ -108,11 +112,37 @@ export default function IndieAuthors() {
       <AdminHeader />
       <div className="container mx-auto p-4">
         <h1 className="text-2xl font-bold mb-4">Indie Authors</h1>
+        <div className="flex space-x-4 mb-4">
+          <div className="flex-1">
+            <Input
+              type="text"
+              placeholder="Search by name or email"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <select
+            className="border rounded p-2"
+            value={isApprovedFilter === null ? "" : isApprovedFilter.toString()}
+            onChange={(e) => setIsApprovedFilter(e.target.value === "" ? null : e.target.value === "true")}
+          >
+            <option value="">All</option>
+            <option value="true">Approved</option>
+            <option value="false">Not Approved</option>
+          </select>
+          <Button onClick={() => {
+            setCurrentPage(1);
+            fetchAuthors();
+          }}>
+            Search
+          </Button>
+        </div>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
+              <TableHead>Approved</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -124,6 +154,7 @@ export default function IndieAuthors() {
               >
                 <TableCell>{author.name}</TableCell>
                 <TableCell>{author.email}</TableCell>
+                <TableCell>{author.is_approved ? "Yes" : "No"}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -192,6 +223,20 @@ export default function IndieAuthors() {
                   }))
                 }
               />
+            </div>
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="is_approved"
+                checked={editedAuthor.is_approved}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setEditedAuthor((prev) => ({
+                    ...prev,
+                    is_approved: e.target.checked,
+                  }))
+                }
+              />
+              <Label htmlFor="is_approved">Approved</Label>
             </div>
           </div>
           <DialogFooter>
