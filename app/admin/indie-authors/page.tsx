@@ -1,15 +1,6 @@
 "use client";
 import AdminHeader from "@/components/AdminHeader";
 import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
   Table,
   TableBody,
   TableCell,
@@ -50,7 +41,7 @@ export default function IndieAuthors() {
     if (searchTerm) {
       query = query.or(
         `name.ilike.%${searchTerm}%,profiles.email.ilike.%${searchTerm}%`,
-        { foreignTable: 'profiles' }
+        { foreignTable: "profiles" }
       );
     }
 
@@ -58,8 +49,10 @@ export default function IndieAuthors() {
       query = query.eq("is_approved", isApprovedFilter);
     }
 
-    const { data, error, count } = await query
-      .range((currentPage - 1) * pageSize, currentPage * pageSize - 1);
+    const { data, error, count } = await query.range(
+      (currentPage - 1) * pageSize,
+      currentPage * pageSize - 1
+    );
 
     if (error) {
       console.error("Error fetching authors:", error);
@@ -124,7 +117,8 @@ export default function IndieAuthors() {
         <h1 className="text-2xl font-bold mb-4">Indie Authors</h1>
         <div className="flex space-x-4 mb-4">
           <div className="flex-1">
-            <Input
+            <input
+              className="input input-bordered w-full max-w-xs"
               type="text"
               placeholder="Search by name or email"
               value={searchTerm}
@@ -200,7 +194,7 @@ export default function IndieAuthors() {
           </button>
         </div>
       </div>
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+      <dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{selectedAuthor?.name}</DialogTitle>
@@ -213,8 +207,8 @@ export default function IndieAuthors() {
             <button onClick={() => setIsModalOpen(false)}>Close</button>
           </DialogFooter>
         </DialogContent>
-      </Dialog>
-      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+      </dialog>
+      <dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit Author</DialogTitle>
