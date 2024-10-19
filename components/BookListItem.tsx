@@ -76,6 +76,27 @@ export default function BookListItem({
     };
     fetchPagesRead();
   }, [user, item.volumeInfo.industryIdentifiers, supabase]);
+
+  const updatePagesRead = async (newPagesRead: number) => {
+    if (user) {
+      const { error } = await supabase
+        .from("reading_list")
+        .update({ pages_read: newPagesRead })
+        .eq("user_id", user.id)
+        .eq(
+          "book_id",
+          item.volumeInfo.industryIdentifiers?.find(
+            (id) => id.type === "ISBN_13"
+          )?.identifier
+        );
+
+      if (error) {
+        console.error("Error updating pages read:", error);
+      } else {
+        setPagesRead(newPagesRead);
+      }
+    }
+  };
   async function awardPoints(points: number, type: string) {
     if (!user) {
       console.error("User not authenticated");
@@ -637,7 +658,20 @@ export default function BookListItem({
             {book.authors?.join(", ") || t("unknown_label")}
           </p>
           <p>
-            <b>{t("page_label")}:</b> {book.pageCount || t("unknown_label")}
+            <b>{t("page_label")}:</b> {book.pageCount || t("unknown_label")}{" "}
+            {status === "Reading" && (
+              <span className="badge badge-primary">
+                <input
+                  type="number"
+                  value={pagesRead}
+                  onChange={(e) => updatePagesRead(Number(e.target.value))}
+                  className="w-16 bg-transparent text-center"
+                  min="0"
+                  max={book.pageCount || 9999}
+                />
+                / {book.pageCount || "?"}
+              </span>
+            )}
           </p>
           <div className="description-container max-w-lg">
             <b>{t("description_label")}:</b>{" "}
