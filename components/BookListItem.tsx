@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import BookSharebutton from "./BookShareButton";
 import CongratulationsModal from "./CongratulationsModal";
 import ViewSellers from "./ViewSellers";
+import { calculateReadingProgress } from "@/utils/bookUtils";
 export default function BookListItem({
   status,
   item,
@@ -42,14 +43,34 @@ export default function BookListItem({
   const [user, setUser] = useState<User | null>(null);
   const [rating, setRating] = useState(0);
   const [newTag, setNewTag] = useState("");
+  const [pagesRead, setPagesRead] = useState(0);
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
-
       setUser(data.user);
     };
     getUser();
   }, [supabase]);
+
+  useEffect(() => {
+    const fetchPagesRead = async () => {
+      if (user) {
+        const { data, error } = await supabase
+          .from("reading_list")
+          .select("pages_read")
+          .eq("user_id", user.id)
+          .eq("book_id", item.volumeInfo.industryIdentifiers?.find(id => id.type === "ISBN_13")?.identifier)
+          .single();
+
+        if (error) {
+          console.error("Error fetching pages read:", error);
+        } else {
+          setPagesRead(data?.pages_read || 0);
+        }
+      }
+    };
+    fetchPagesRead();
+  }, [user, item.volumeInfo.industryIdentifiers, supabase]);
   async function awardPoints(points: number, type: string) {
     if (!user) {
       console.error("User not authenticated");
@@ -549,12 +570,27 @@ export default function BookListItem({
   return (
     <>
       <div className="card md:card-side bg-base-100 shadow-xl">
-        <figure className="p-10 md:w-1/5 mb-auto">
+        <figure className="p-10 md:w-1/5 mb-auto relative">
           <img
             src={book.imageLinks?.thumbnail || "/placeholder-book-cover.jpg"}
             alt={book.title || "Book cover"}
             className="rounded-lg md:w-full object-cover"
           />
+          {status === "Reading" && (
+            <div className="absolute bottom-2 right-2 bg-base-100 rounded-full">
+              <div 
+                className="radial-progress text-primary" 
+                style={{ 
+                  "--value": calculateReadingProgress(pagesRead, book.pageCount), 
+                  "--size": "3rem",
+                  "--thickness": "3px"
+                }} 
+                role="progressbar"
+              >
+                {calculateReadingProgress(pagesRead, book.pageCount)}%
+              </div>
+            </div>
+          )}
         </figure>
         <div className="card-body md:w-2/3">
           <div className="grid md:grid-cols-2 md:grid-rows-1">
