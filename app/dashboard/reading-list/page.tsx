@@ -256,10 +256,10 @@ export default function ReadingList() {
   return (
     <main className="min-h-screen p-4 sm:p-8 pb-16">
       <section className="max-w-6xl mx-auto space-y-4 sm:space-y-8">
-        <div className="z-50">
+        <div className="sticky top-0 z-50 bg-base-100 py-4">
           <HeaderDashboard />
         </div>
-        <div className="flex">
+        <div className="flex pt-4">
           <h1 className="text-2xl md:text-4xl font-extrabold  my-auto">
             {t("title")}
           </h1>
