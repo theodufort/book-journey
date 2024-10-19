@@ -640,21 +640,25 @@ export default function BookListItem({
           </p>
           <p>
             <b>{t("page_label")}:</b>{" "}
-            <span className="badge badge-primary">
-              <input
-                type="number"
-                value={pagesRead}
-                onChange={(e) => {
-                  const newValue = Number(e.target.value);
-                  setPagesRead(newValue);
-                  updatePagesRead(newValue);
-                }}
-                className="w-16 bg-transparent text-center"
-                min="0"
-                max={book.pageCount || 9999}
-              />
-              / {book.pageCount || "?"}
-            </span>
+            {status != "Reading" ? (
+              book.pageCount || "?"
+            ) : (
+              <span className="badge badge-primary">
+                <input
+                  type="number"
+                  value={pagesRead}
+                  onChange={(e) => {
+                    const newValue = Number(e.target.value);
+                    setPagesRead(newValue);
+                    updatePagesRead(newValue);
+                  }}
+                  className="bg-transparent text-center"
+                  min="0"
+                  max={book.pageCount || 9999}
+                />
+                / {book.pageCount || "?"}
+              </span>
+            )}
           </p>
           <div className="description-container max-w-lg">
             <b>{t("description_label")}:</b>{" "}
