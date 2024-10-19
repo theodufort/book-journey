@@ -133,7 +133,7 @@ export default function AddBook() {
   return (
     <main className="min-h-screen p-8 pb-16">
       <section className="max-w-6xl mx-auto space-y-4">
-        <div className="z-50">
+        <div className="sticky top-0 z-50 bg-base-100">
           <HeaderDashboard />
         </div>
         <h1 className="text-3xl md:text-4xl font-extrabold">{t("title")}</h1>

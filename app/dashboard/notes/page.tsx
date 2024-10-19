@@ -6,7 +6,7 @@ import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export default function BookNotes() {
   const t = useTranslations("Notes");
@@ -30,8 +30,8 @@ export default function BookNotes() {
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   const booksPerPage = isMobile ? 3 : 5;
@@ -193,7 +193,7 @@ export default function BookNotes() {
   return (
     <main className="min-h-screen p-4 sm:p-8 pb-16">
       <section className="max-w-6xl mx-auto space-y-4 sm:space-y-8">
-        <div className="z-50">
+        <div className="sticky top-0 z-50 bg-base-100">
           <HeaderDashboard />
         </div>
         <h1 className="text-2xl md:text-4xl font-extrabold  my-auto">

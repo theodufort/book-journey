@@ -130,7 +130,7 @@ export default function Dashboard() {
   return (
     <main className="min-h-screen p-8 pb-24">
       <section className="max-w-6xl mx-auto space-y-8">
-        <div className="z-50">
+        <div className="sticky top-0 z-50 bg-base-100">
           <HeaderDashboard />
         </div>
         {user && showOnboard ? (

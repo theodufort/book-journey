@@ -239,7 +239,7 @@ export default function ReadingRewards() {
   return (
     <main className="min-h-screen p-4 pb-24">
       <section className="max-w-6xl mx-auto space-y-4">
-        <div className="z-50">
+        <div className="sticky top-0 z-50 bg-base-100">
           <HeaderDashboard />
         </div>
         <div className="flex flex-wrap items-center justify-between">
