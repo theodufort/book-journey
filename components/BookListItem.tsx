@@ -1,5 +1,4 @@
 import { Volume } from "@/interfaces/GoogleAPI";
-import { calculateReadingProgress } from "@/libs/book_utils";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
@@ -602,24 +601,6 @@ export default function BookListItem({
             alt={book.title || "Book cover"}
             className="rounded-lg md:w-full object-cover"
           />
-          {status === "Reading" && (
-            <div className="absolute bottom-2 right-2 bg-base-100 rounded-full">
-              <div
-                className="radial-progress text-primary"
-                style={{
-                  "--value": calculateReadingProgress(
-                    pagesRead,
-                    book.pageCount
-                  ),
-                  "--size": "3rem",
-                  "--thickness": "3px",
-                }}
-                role="progressbar"
-              >
-                {calculateReadingProgress(pagesRead, book.pageCount)}%
-              </div>
-            </div>
-          )}
         </figure>
         <div className="card-body md:w-2/3">
           <div className="grid md:grid-cols-2 md:grid-rows-1">
@@ -658,7 +639,7 @@ export default function BookListItem({
             {book.authors?.join(", ") || t("unknown_label")}
           </p>
           <p>
-            <b>{t("page_label")}:</b> {book.pageCount || t("unknown_label")}{" "}
+            <b>{t("page_label")}:</b>{" "}
             {status === "Reading" && (
               <span className="badge badge-primary">
                 <input
