@@ -980,6 +980,13 @@ export type Database = {
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "indie_authors_author_id_fkey1"
+            columns: ["author_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       indie_authors_books: {
@@ -1030,6 +1037,32 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "indie_authors"
             referencedColumns: ["author_id"]
+          },
+        ]
+      }
+      indie_authors_books_links: {
+        Row: {
+          book_id: string
+          label: string
+          link: string
+        }
+        Insert: {
+          book_id?: string
+          label: string
+          link: string
+        }
+        Update: {
+          book_id?: string
+          label?: string
+          link?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "indie_authors_books_links_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: true
+            referencedRelation: "indie_authors_books"
+            referencedColumns: ["book_id"]
           },
         ]
       }
@@ -1201,6 +1234,7 @@ export type Database = {
           book_id: string
           finished_at: string | null
           id: number
+          pages_read: number
           pointsAwardedFinished: boolean
           pointsAwardedRating: boolean
           pointsAwardedTextReview: boolean
@@ -1217,6 +1251,7 @@ export type Database = {
           book_id: string
           finished_at?: string | null
           id?: number
+          pages_read?: number
           pointsAwardedFinished?: boolean
           pointsAwardedRating?: boolean
           pointsAwardedTextReview?: boolean
@@ -1233,6 +1268,7 @@ export type Database = {
           book_id?: string
           finished_at?: string | null
           id?: number
+          pages_read?: number
           pointsAwardedFinished?: boolean
           pointsAwardedRating?: boolean
           pointsAwardedTextReview?: boolean
