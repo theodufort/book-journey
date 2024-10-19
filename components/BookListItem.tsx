@@ -1,4 +1,5 @@
 import { Volume } from "@/interfaces/GoogleAPI";
+import { calculateReadingProgress } from "@/libs/book_utils";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
@@ -8,7 +9,6 @@ import { useEffect, useState } from "react";
 import BookSharebutton from "./BookShareButton";
 import CongratulationsModal from "./CongratulationsModal";
 import ViewSellers from "./ViewSellers";
-import { calculateReadingProgress } from "@/utils/bookUtils";
 export default function BookListItem({
   status,
   item,
@@ -59,7 +59,12 @@ export default function BookListItem({
           .from("reading_list")
           .select("pages_read")
           .eq("user_id", user.id)
-          .eq("book_id", item.volumeInfo.industryIdentifiers?.find(id => id.type === "ISBN_13")?.identifier)
+          .eq(
+            "book_id",
+            item.volumeInfo.industryIdentifiers?.find(
+              (id) => id.type === "ISBN_13"
+            )?.identifier
+          )
           .single();
 
         if (error) {
@@ -578,13 +583,16 @@ export default function BookListItem({
           />
           {status === "Reading" && (
             <div className="absolute bottom-2 right-2 bg-base-100 rounded-full">
-              <div 
-                className="radial-progress text-primary" 
-                style={{ 
-                  "--value": calculateReadingProgress(pagesRead, book.pageCount), 
+              <div
+                className="radial-progress text-primary"
+                style={{
+                  "--value": calculateReadingProgress(
+                    pagesRead,
+                    book.pageCount
+                  ),
                   "--size": "3rem",
-                  "--thickness": "3px"
-                }} 
+                  "--thickness": "3px",
+                }}
                 role="progressbar"
               >
                 {calculateReadingProgress(pagesRead, book.pageCount)}%
