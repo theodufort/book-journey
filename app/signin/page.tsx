@@ -13,6 +13,7 @@ export default function Login() {
   useEffect(() => {
     supabase.auth.onAuthStateChange(async (event, session) => {
       if (event == "PASSWORD_RECOVERY") {
+        window.alert("jesus");
         const newPassword = prompt(
           "What would you like your new password to be?"
         );
