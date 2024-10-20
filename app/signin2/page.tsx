@@ -6,7 +6,7 @@ import { Provider } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function Login() {
@@ -140,7 +140,25 @@ export default function Login() {
       const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
         redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/signin`,
       });
+      /**
+       * Step 2: Once the user is redirected back to your application,
+       * ask the user to reset their password.
+       */
+      useEffect(() => {
+        supabase.auth.onAuthStateChange(async (event, session) => {
+          if (event == "PASSWORD_RECOVERY") {
+            const newPassword = prompt(
+              "What would you like your new password to be?"
+            );
+            const { data, error } = await supabase.auth.updateUser({
+              password: newPassword,
+            });
 
+            if (data) alert("Password updated successfully!");
+            if (error) alert("There was an error updating your password.");
+          }
+        });
+      }, []);
       if (error) throw error;
       toast.success("Password reset email sent. Please check your inbox.");
       setIsResetMode(false);
