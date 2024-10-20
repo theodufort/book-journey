@@ -29,6 +29,7 @@ export default function Login() {
 
   // Reset password state
   const [resetEmail, setResetEmail] = useState<string>("");
+  const [isResetMode, setIsResetMode] = useState<boolean>(false);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -141,6 +142,7 @@ export default function Login() {
 
       if (error) throw error;
       toast.success("Password reset email sent. Please check your inbox.");
+      setIsResetMode(false);
     } catch (error) {
       console.error(error);
       toast.error("Failed to send reset password email. Please try again.");
@@ -176,119 +178,18 @@ export default function Login() {
       </h1>
 
       <div className="flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-8 max-w-4xl mx-auto">
-        {/* Signup Form */}
-        <div className="flex-1 p-8 rounded-box shadow-lg bg-base-100 flex flex-col">
-          <h2 className="text-2xl font-bold mb-6">Sign Up</h2>
-          <form
-            onSubmit={handleSignup}
-            className="space-y-4 flex-grow flex flex-col"
-          >
-            <div className="space-y-4 flex-grow">
-              <input
-                required
-                type="text"
-                value={firstName}
-                placeholder="First Name"
-                className="input input-bordered w-full"
-                onChange={(e) => setFirstName(e.target.value)}
-              />
-              <input
-                required
-                type="email"
-                value={signupEmail}
-                placeholder="Email"
-                className="input input-bordered w-full"
-                onChange={(e) => setSignupEmail(e.target.value)}
-              />
-              <input
-                required
-                type="password"
-                value={signupPassword}
-                placeholder="Password"
-                className="input input-bordered w-full"
-                onChange={(e) => setSignupPassword(e.target.value)}
-              />
-              <input
-                required
-                type="password"
-                value={repeatPassword}
-                placeholder="Repeat Password"
-                className="input input-bordered w-full"
-                onChange={(e) => setRepeatPassword(e.target.value)}
-              />
-            </div>
-            <button
-              className="btn btn-primary btn-block mt-auto"
-              disabled={isLoading}
-              type="submit"
-            >
-              {isLoading && (
-                <span className="loading loading-spinner loading-xs"></span>
-              )}
-              Sign Up
-            </button>
-          </form>
-        </div>
-
-        {/* Signin Form */}
-        <div className="flex-1 p-8 rounded-box shadow-lg bg-base-100 flex flex-col">
-          <h2 className="text-2xl font-bold mb-6">Sign In</h2>
-          <div className="flex-grow flex flex-col">
-            <button
-              className="btn btn-block mb-4"
-              onClick={() => handleOAuthSignin("google")}
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <span className="loading loading-spinner loading-xs"></span>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6 bg-base-300"
-                  viewBox="0 0 48 48"
-                >
-                  <path
-                    fill="#FFC107"
-                    d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"
-                  />
-                  <path
-                    fill="#FF3D00"
-                    d="m6.306 14.691 6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"
-                  />
-                  <path
-                    fill="#4CAF50"
-                    d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"
-                  />
-                  <path
-                    fill="#1976D2"
-                    d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"
-                  />
-                </svg>
-              )}
-              {t("google")}
-            </button>
-
-            <div className="divider text-xs text-base-content/50 font-medium">
-              {t("separator")}
-            </div>
-
-            <form onSubmit={handleSignin} className="space-y-4 flex-grow flex flex-col">
+        {isResetMode ? (
+          <div className="flex-1 p-8 rounded-box shadow-lg bg-base-100 flex flex-col">
+            <h2 className="text-2xl font-bold mb-6">Reset Password</h2>
+            <form onSubmit={handleResetPassword} className="space-y-4 flex-grow flex flex-col">
               <div className="space-y-4 flex-grow">
                 <input
                   required
                   type="email"
-                  value={signinEmail}
+                  value={resetEmail}
                   placeholder="Email"
                   className="input input-bordered w-full"
-                  onChange={(e) => setSigninEmail(e.target.value)}
-                />
-                <input
-                  required
-                  type="password"
-                  value={signinPassword}
-                  placeholder="Password"
-                  className="input input-bordered w-full"
-                  onChange={(e) => setSigninPassword(e.target.value)}
+                  onChange={(e) => setResetEmail(e.target.value)}
                 />
               </div>
               <button
@@ -299,36 +200,155 @@ export default function Login() {
                 {isLoading && (
                   <span className="loading loading-spinner loading-xs"></span>
                 )}
-                Sign In
-              </button>
-            </form>
-
-            <div className="divider text-xs text-base-content/50 font-medium mt-4">
-              Forgot your password?
-            </div>
-
-            <form onSubmit={handleResetPassword} className="space-y-4">
-              <input
-                required
-                type="email"
-                value={resetEmail}
-                placeholder="Email"
-                className="input input-bordered w-full"
-                onChange={(e) => setResetEmail(e.target.value)}
-              />
-              <button
-                className="btn btn-secondary btn-block"
-                disabled={isLoading}
-                type="submit"
-              >
-                {isLoading && (
-                  <span className="loading loading-spinner loading-xs"></span>
-                )}
                 Reset Password
               </button>
             </form>
+            <button
+              className="btn btn-link mt-4"
+              onClick={() => setIsResetMode(false)}
+            >
+              Back to Sign In
+            </button>
           </div>
-        </div>
+        ) : (
+          <>
+            {/* Signup Form */}
+            <div className="flex-1 p-8 rounded-box shadow-lg bg-base-100 flex flex-col">
+              <h2 className="text-2xl font-bold mb-6">Sign Up</h2>
+              <form
+                onSubmit={handleSignup}
+                className="space-y-4 flex-grow flex flex-col"
+              >
+                <div className="space-y-4 flex-grow">
+                  <input
+                    required
+                    type="text"
+                    value={firstName}
+                    placeholder="First Name"
+                    className="input input-bordered w-full"
+                    onChange={(e) => setFirstName(e.target.value)}
+                  />
+                  <input
+                    required
+                    type="email"
+                    value={signupEmail}
+                    placeholder="Email"
+                    className="input input-bordered w-full"
+                    onChange={(e) => setSignupEmail(e.target.value)}
+                  />
+                  <input
+                    required
+                    type="password"
+                    value={signupPassword}
+                    placeholder="Password"
+                    className="input input-bordered w-full"
+                    onChange={(e) => setSignupPassword(e.target.value)}
+                  />
+                  <input
+                    required
+                    type="password"
+                    value={repeatPassword}
+                    placeholder="Repeat Password"
+                    className="input input-bordered w-full"
+                    onChange={(e) => setRepeatPassword(e.target.value)}
+                  />
+                </div>
+                <button
+                  className="btn btn-primary btn-block mt-auto"
+                  disabled={isLoading}
+                  type="submit"
+                >
+                  {isLoading && (
+                    <span className="loading loading-spinner loading-xs"></span>
+                  )}
+                  Sign Up
+                </button>
+              </form>
+            </div>
+
+            {/* Signin Form */}
+            <div className="flex-1 p-8 rounded-box shadow-lg bg-base-100 flex flex-col">
+              <h2 className="text-2xl font-bold mb-6">Sign In</h2>
+              <div className="flex-grow flex flex-col">
+                <button
+                  className="btn btn-block mb-4"
+                  onClick={() => handleOAuthSignin("google")}
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <span className="loading loading-spinner loading-xs"></span>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-6 h-6 bg-base-300"
+                      viewBox="0 0 48 48"
+                    >
+                      <path
+                        fill="#FFC107"
+                        d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"
+                      />
+                      <path
+                        fill="#FF3D00"
+                        d="m6.306 14.691 6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"
+                      />
+                      <path
+                        fill="#4CAF50"
+                        d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"
+                      />
+                      <path
+                        fill="#1976D2"
+                        d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"
+                      />
+                    </svg>
+                  )}
+                  {t("google")}
+                </button>
+
+                <div className="divider text-xs text-base-content/50 font-medium">
+                  {t("separator")}
+                </div>
+
+                <form onSubmit={handleSignin} className="space-y-4 flex-grow flex flex-col">
+                  <div className="space-y-4 flex-grow">
+                    <input
+                      required
+                      type="email"
+                      value={signinEmail}
+                      placeholder="Email"
+                      className="input input-bordered w-full"
+                      onChange={(e) => setSigninEmail(e.target.value)}
+                    />
+                    <input
+                      required
+                      type="password"
+                      value={signinPassword}
+                      placeholder="Password"
+                      className="input input-bordered w-full"
+                      onChange={(e) => setSigninPassword(e.target.value)}
+                    />
+                  </div>
+                  <button
+                    className="btn btn-primary btn-block mt-auto"
+                    disabled={isLoading}
+                    type="submit"
+                  >
+                    {isLoading && (
+                      <span className="loading loading-spinner loading-xs"></span>
+                    )}
+                    Sign In
+                  </button>
+                </form>
+
+                <button
+                  className="btn btn-link mt-4"
+                  onClick={() => setIsResetMode(true)}
+                >
+                  Forgot your password?
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </main>
   );
