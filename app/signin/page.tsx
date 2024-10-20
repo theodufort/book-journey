@@ -27,6 +27,9 @@ export default function Login() {
   const [signinEmail, setSigninEmail] = useState<string>("");
   const [signinPassword, setSigninPassword] = useState<string>("");
 
+  // Reset password state
+  const [resetEmail, setResetEmail] = useState<string>("");
+
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -122,6 +125,25 @@ export default function Login() {
     } catch (error) {
       console.error(error);
       toast.error("OAuth signin failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (error) throw error;
+      toast.success("Password reset email sent. Please check your inbox.");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to send reset password email. Please try again.");
     } finally {
       setIsLoading(false);
     }
