@@ -30,6 +30,13 @@ export default function Login() {
     e.preventDefault();
     setIsLoading(true);
 
+    // Check password strength
+    if (signupPassword.length < 6) {
+      toast.error("Password should be at least 6 characters long.");
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const { data, error } = await supabase.auth.signUp({
         email: signupEmail,
@@ -44,6 +51,8 @@ export default function Login() {
       if (error) {
         if (error.message === "User already registered") {
           toast.error("This email is already registered. Please sign in instead.");
+        } else if (error.message.includes("weak_password")) {
+          toast.error("Password is too weak. Please choose a stronger password.");
         } else {
           throw error;
         }
