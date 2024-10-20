@@ -302,6 +302,31 @@ export default function Login() {
                 Sign In
               </button>
             </form>
+
+            <div className="divider text-xs text-base-content/50 font-medium mt-4">
+              Forgot your password?
+            </div>
+
+            <form onSubmit={handleResetPassword} className="space-y-4">
+              <input
+                required
+                type="email"
+                value={resetEmail}
+                placeholder="Email"
+                className="input input-bordered w-full"
+                onChange={(e) => setResetEmail(e.target.value)}
+              />
+              <button
+                className="btn btn-secondary btn-block"
+                disabled={isLoading}
+                type="submit"
+              >
+                {isLoading && (
+                  <span className="loading loading-spinner loading-xs"></span>
+                )}
+                Reset Password
+              </button>
+            </form>
           </div>
         </div>
       </div>
