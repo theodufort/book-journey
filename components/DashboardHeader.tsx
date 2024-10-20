@@ -209,7 +209,7 @@ const HeaderDashboard = () => {
                   href="/dashboard/support"
                   className="flex items-center space-x-3 p-2 align-middle text-lg"
                 >
-                  🙋‍♂️ {t("link6")}
+                  🙋‍♀️ {t("link6")}
                 </Link>
               </li>
               <div className="flex justify-between items-center">
