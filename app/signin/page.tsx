@@ -41,12 +41,19 @@ export default function Login() {
         },
       });
 
-      if (error) throw error;
-      toast.success(
-        "Signup successful! You will be redirected!"
-        // "Signup successful! Please check your email to verify your account."
-      );
-      router.push("/dashboard");
+      if (error) {
+        if (error.message === "User already registered") {
+          toast.error("This email is already registered. Please sign in instead.");
+        } else {
+          throw error;
+        }
+      } else {
+        toast.success(
+          "Signup successful! You will be redirected!"
+          // "Signup successful! Please check your email to verify your account."
+        );
+        router.push("/dashboard");
+      }
     } catch (error) {
       console.error(error);
       toast.error("Signup failed. Please try again.");
