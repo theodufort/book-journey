@@ -21,6 +21,7 @@ export default function Login() {
   const [firstName, setFirstName] = useState<string>("");
   const [signupEmail, setSignupEmail] = useState<string>("");
   const [signupPassword, setSignupPassword] = useState<string>("");
+  const [repeatPassword, setRepeatPassword] = useState<string>("");
 
   // Signin state
   const [signinEmail, setSigninEmail] = useState<string>("");
@@ -30,9 +31,15 @@ export default function Login() {
     e.preventDefault();
     setIsLoading(true);
 
-    // Check password strength
+    // Check password strength and match
     if (signupPassword.length < 6) {
       toast.error("Password should be at least 6 characters long.");
+      setIsLoading(false);
+      return;
+    }
+
+    if (signupPassword !== repeatPassword) {
+      toast.error("Passwords do not match.");
       setIsLoading(false);
       return;
     }
@@ -174,6 +181,14 @@ export default function Login() {
                 placeholder="Password"
                 className="input input-bordered w-full"
                 onChange={(e) => setSignupPassword(e.target.value)}
+              />
+              <input
+                required
+                type="password"
+                value={repeatPassword}
+                placeholder="Repeat Password"
+                className="input input-bordered w-full"
+                onChange={(e) => setRepeatPassword(e.target.value)}
               />
             </div>
             <button
