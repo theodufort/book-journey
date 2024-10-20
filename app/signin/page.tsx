@@ -118,35 +118,37 @@ export default function Login() {
 
       <div className="flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-8 max-w-4xl mx-auto">
         {/* Signup Form */}
-        <div className="flex-1 p-8 rounded-box shadow-lg bg-base-100">
+        <div className="flex-1 p-8 rounded-box shadow-lg bg-base-100 flex flex-col">
           <h2 className="text-2xl font-bold mb-6">Sign Up</h2>
-          <form onSubmit={handleSignup} className="space-y-4">
-            <input
-              required
-              type="text"
-              value={firstName}
-              placeholder="First Name"
-              className="input input-bordered w-full"
-              onChange={(e) => setFirstName(e.target.value)}
-            />
-            <input
-              required
-              type="email"
-              value={signupEmail}
-              placeholder="Email"
-              className="input input-bordered w-full"
-              onChange={(e) => setSignupEmail(e.target.value)}
-            />
-            <input
-              required
-              type="password"
-              value={signupPassword}
-              placeholder="Password"
-              className="input input-bordered w-full"
-              onChange={(e) => setSignupPassword(e.target.value)}
-            />
+          <form onSubmit={handleSignup} className="space-y-4 flex-grow flex flex-col">
+            <div className="space-y-4 flex-grow">
+              <input
+                required
+                type="text"
+                value={firstName}
+                placeholder="First Name"
+                className="input input-bordered w-full"
+                onChange={(e) => setFirstName(e.target.value)}
+              />
+              <input
+                required
+                type="email"
+                value={signupEmail}
+                placeholder="Email"
+                className="input input-bordered w-full"
+                onChange={(e) => setSignupEmail(e.target.value)}
+              />
+              <input
+                required
+                type="password"
+                value={signupPassword}
+                placeholder="Password"
+                className="input input-bordered w-full"
+                onChange={(e) => setSignupPassword(e.target.value)}
+              />
+            </div>
             <button
-              className="btn btn-primary btn-block"
+              className="btn btn-primary btn-block mt-auto"
               disabled={isLoading}
               type="submit"
             >
