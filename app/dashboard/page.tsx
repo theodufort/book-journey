@@ -1,6 +1,5 @@
 "use client";
 import HeaderDashboard from "@/components/DashboardHeader";
-import OnboardingPopup from "@/components/OnboardingPopup";
 import StreakRewardSystem from "@/components/StreakRewardSystem";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -133,7 +132,7 @@ export default function Dashboard() {
         <div className="sticky top-0 z-50 bg-base-100">
           <HeaderDashboard />
         </div>
-        {user && showOnboard ? (
+        {/* {user && showOnboard ? (
           <OnboardingPopup
             isOpen={true}
             onClose={function (): void {
@@ -141,7 +140,7 @@ export default function Dashboard() {
             }}
             userId={user.id}
           />
-        ) : null}
+        ) : null} */}
         <h1 className="text-3xl md:text-4xl font-extrabold">{t("title")}</h1>
 
         {/* Reading Stats */}
