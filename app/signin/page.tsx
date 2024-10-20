@@ -5,11 +5,12 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Provider } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
 export default function Login() {
+  const router = useRouter();
   const supabase = createClientComponentClient<Database>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const searchParams = useSearchParams();
@@ -41,7 +42,11 @@ export default function Login() {
       });
 
       if (error) throw error;
-      toast.success("Signup successful! Please check your email to verify your account.");
+      toast.success(
+        "Signup successful! You will be redirected!"
+        // "Signup successful! Please check your email to verify your account."
+      );
+      router.push("/dashboard");
     } catch (error) {
       console.error(error);
       toast.error("Signup failed. Please try again.");
@@ -63,9 +68,12 @@ export default function Login() {
       if (error) throw error;
       toast.success("Signin successful!");
       // Redirect or update UI as needed
+      router.push("/dashboard");
     } catch (error) {
       console.error(error);
-      toast.error("Signin failed. Please check your credentials and try again.");
+      toast.error(
+        "Signin failed. Please check your credentials and try again."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -75,7 +83,9 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      const redirectURL = window.location.origin + `/api/auth/callback${ref ? "?ref=" + ref : ""}`;
+      const redirectURL =
+        window.location.origin +
+        `/api/auth/callback${ref ? "?ref=" + ref : ""}`;
       await supabase.auth.signInWithOAuth({
         provider,
         options: {
@@ -120,8 +130,11 @@ export default function Login() {
         {/* Signup Form */}
         <div className="flex-1 p-8 rounded-box shadow-lg bg-base-100 flex flex-col">
           <h2 className="text-2xl font-bold mb-6">Sign Up</h2>
-          <form onSubmit={handleSignup} className="space-y-4 flex-grow flex flex-col">
-            <div className="space-y-4 flex-grow">
+          <form
+            onSubmit={handleSignup}
+            className="space-y-4 flex-grow flex flex-col"
+          >
+            <div className="space-y-7 flex-grow">
               <input
                 required
                 type="text"
@@ -152,7 +165,9 @@ export default function Login() {
               disabled={isLoading}
               type="submit"
             >
-              {isLoading && <span className="loading loading-spinner loading-xs"></span>}
+              {isLoading && (
+                <span className="loading loading-spinner loading-xs"></span>
+              )}
               Sign Up
             </button>
           </form>
@@ -221,7 +236,9 @@ export default function Login() {
               disabled={isLoading}
               type="submit"
             >
-              {isLoading && <span className="loading loading-spinner loading-xs"></span>}
+              {isLoading && (
+                <span className="loading loading-spinner loading-xs"></span>
+              )}
               Sign In
             </button>
           </form>
