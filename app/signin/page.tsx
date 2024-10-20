@@ -57,9 +57,13 @@ export default function Login() {
 
       if (error) {
         if (error.message === "User already registered") {
-          toast.error("This email is already registered. Please sign in instead.");
+          toast.error(
+            "This email is already registered. Please sign in instead."
+          );
         } else if (error.message.includes("weak_password")) {
-          toast.error("Password is too weak. Please choose a stronger password.");
+          toast.error(
+            "Password is too weak. Please choose a stronger password."
+          );
         } else {
           throw error;
         }
@@ -157,7 +161,7 @@ export default function Login() {
             onSubmit={handleSignup}
             className="space-y-4 flex-grow flex flex-col"
           >
-            <div className="space-y-7 flex-grow">
+            <div className="space-y-4 flex-grow">
               <input
                 required
                 type="text"
