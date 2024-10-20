@@ -10,10 +10,12 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function Login() {
+  const supabase = createClientComponentClient<Database>();
   useEffect(() => {
     supabase.auth.onAuthStateChange(async (event, session) => {
+      window.alert("jesus1");
       if (event == "PASSWORD_RECOVERY") {
-        window.alert("jesus");
+        window.alert("jesus2");
         const newPassword = prompt(
           "What would you like your new password to be?"
         );
@@ -27,7 +29,7 @@ export default function Login() {
     });
   }, []);
   const router = useRouter();
-  const supabase = createClientComponentClient<Database>();
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const searchParams = useSearchParams();
   const ref = searchParams.get("ref");
@@ -156,10 +158,6 @@ export default function Login() {
       const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
         redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/signin2`,
       });
-      /**
-       * Step 2: Once the user is redirected back to your application,
-       * ask the user to reset their password.
-       */
 
       if (error) throw error;
       toast.success("Password reset email sent. Please check your inbox.");
