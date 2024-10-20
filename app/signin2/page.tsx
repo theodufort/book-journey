@@ -154,7 +154,7 @@ export default function Login() {
     try {
       console.log(resetEmail);
       const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-        redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/signin`,
+        redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/signin2`,
       });
       /**
        * Step 2: Once the user is redirected back to your application,
