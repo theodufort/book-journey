@@ -29,7 +29,13 @@ export default function BookDetails({ book }: { book: Volume }) {
             .replaceAll("<p>", "")
             .replaceAll("</p>", "")
             .replaceAll("<br>", "")
-            .replaceAll("<br/>", " ")}
+            .replaceAll("</br>", "")
+            .replaceAll("<br/>", "")
+            .replaceAll("<i/>", "")
+            .replaceAll("<i>", "")
+            .replaceAll("<b/>", "")
+            .replaceAll("</b>", "")
+            .replaceAll("<b>", "")}
         </p>
         {/* Add more book details as needed */}
       </div>
