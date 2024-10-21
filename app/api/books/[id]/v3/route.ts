@@ -63,12 +63,15 @@ export async function GET(
         ],
         pageCount: bookData.pages,
         reviews: bookData.reviews,
-        categories: bookData.subjects.filter(
-          (x) =>
-            x.toLowerCase() != "categories" ||
-            x.toLowerCase() != "subjects" ||
-            x.toLowerCase() != "study aids"
-        ),
+        categories:
+          bookData.subjects == null
+            ? []
+            : bookData.subjects.filter(
+                (x) =>
+                  x.toLowerCase() != "categories" ||
+                  x.toLowerCase() != "subjects" ||
+                  x.toLowerCase() != "study aids"
+              ),
         language: bookData.language,
         imageLinks: {
           thumbnail: bookData.image,
