@@ -587,7 +587,13 @@ export default function BookListItem({
     .replaceAll("<p>", "")
     .replaceAll("</p>", "")
     .replaceAll("<br>", "")
-    .replaceAll("<br/>", "");
+    .replaceAll("</br>", "")
+    .replaceAll("<br/>", "")
+    .replaceAll("<i/>", "")
+    .replaceAll("<i>", "")
+    .replaceAll("<b/>", "")
+    .replaceAll("</b>", "")
+    .replaceAll("<b>", "");
   const truncatedDescription =
     description.length > MAX_LENGTH
       ? description.substring(0, MAX_LENGTH) + "..."

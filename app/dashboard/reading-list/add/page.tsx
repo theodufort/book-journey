@@ -226,7 +226,13 @@ export default function AddBook() {
                           .replaceAll("<p>", "")
                           .replaceAll("</p>", "")
                           .replaceAll("<br>", "")
+                          .replaceAll("</br>", "")
                           .replaceAll("<br/>", "")
+                          .replaceAll("<i/>", "")
+                          .replaceAll("<i>", "")
+                          .replaceAll("<b/>", "")
+                          .replaceAll("</b>", "")
+                          .replaceAll("<b>", "")
                           .substring(0, 200) + "..."
                       : t("no_desc")}
                   </p>
