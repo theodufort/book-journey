@@ -101,7 +101,7 @@ export default function BookNotes() {
         const bookDetails = await Promise.all(
           booksData.map(async (item: any) => {
             try {
-              const response = await fetch(`/api/books/${item.book_id}`);
+              const response = await fetch(`/api/books/${item.book_id}/v3`);
               if (!response.ok) {
                 throw new Error(
                   `Failed to fetch book details for ${item.book_id}`
