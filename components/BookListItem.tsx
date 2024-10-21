@@ -619,7 +619,7 @@ export default function BookListItem({
                 <option value="DNF">{t("reading_status4")}</option>
               </select>
               <div className="grid grid-cols-2 mt-5 ml-auto">
-                <div className="justify-end md:flex">
+                <div className="md:flex">
                   <BookSharebutton
                     isbn={
                       book.industryIdentifiers?.find(
