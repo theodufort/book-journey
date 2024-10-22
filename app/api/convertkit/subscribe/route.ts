@@ -26,7 +26,7 @@ export async function POST(request: any) {
     const headers = {
       "Content-Type": "application/json",
       Accept: "application/json",
-      Authorization: `Bearer ${process.env.CONVERTKIT_API_KEY}`,
+      "X-Kit-Api-Key": process.env.CONVERTKIT_API_KEY,
     };
 
     // Send a POST request to ConvertKit's API to add a new subscriber

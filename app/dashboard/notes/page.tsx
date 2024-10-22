@@ -217,7 +217,7 @@ export default function BookNotes() {
                   />
                 </div>
                 <div className="flex flex-col h-full">
-                  <ul className="divide-y overflow-y-auto flex-grow">
+                  <ul className="divide-y overflow-y-auto">
                     {paginatedReadingList.map((book) => (
                       <li
                         key={book.book_id}
