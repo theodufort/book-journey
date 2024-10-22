@@ -35,6 +35,14 @@ export async function POST(request: any) {
       subscriberData,
       { headers }
     );
+    //tag subscriber
+    const response2 = await axios.post(
+      "https://api.kit.com/v4/tags/5484356/subscribers",
+      {
+        email_address: email_address,
+      },
+      { headers }
+    );
 
     // Return the response from ConvertKit's API
     return new Response(JSON.stringify(response.data), {
