@@ -251,7 +251,7 @@ export default function BookNotes() {
                       <button
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
-                        className="btn btn-sm btn-circle"
+                        className="btn btn-lg btn-circle text-2xl"
                       >
                         ←
                       </button>
@@ -261,7 +261,7 @@ export default function BookNotes() {
                       <button
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
-                        className="btn btn-sm btn-circle"
+                        className="btn btn-lg btn-circle text-2xl"
                       >
                         →
                       </button>
