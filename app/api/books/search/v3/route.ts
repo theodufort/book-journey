@@ -44,19 +44,19 @@ export async function GET(request: NextRequest) {
     }
 
     // Check if the search results exist in the cache
-    const { data: cachedResults, error: cacheError } = await supabase
-      .from("books")
-      .select("data")
-      .eq("isbn_13", cacheKey)
-      .single();
+    // const { data: cachedResults, error: cacheError } = await supabase
+    //   .from("books")
+    //   .select("data")
+    //   .eq("isbn_13", cacheKey)
+    //   .single();
 
-    if (cacheError && cacheError.code !== "PGRST116") {
-      console.error("Error checking cache:", cacheError);
-    }
+    // if (cacheError && cacheError.code !== "PGRST116") {
+    //   console.error("Error checking cache:", cacheError);
+    // }
 
-    if (cachedResults) {
-      return NextResponse.json(cachedResults.data);
-    }
+    // if (cachedResults) {
+    //   return NextResponse.json(cachedResults.data);
+    // }
     console.log(url);
     // If not in cache, fetch from ISBNDB API
     const response = await axios.get(url, {
@@ -106,13 +106,13 @@ export async function GET(request: NextRequest) {
     };
 
     // Cache the search results
-    const { error: insertError } = await supabase
-      .from("books")
-      .insert({ isbn_13: cacheKey, data: result });
+    // const { error: insertError } = await supabase
+    //   .from("books")
+    //   .insert({ isbn_13: cacheKey, data: result });
 
-    if (insertError) {
-      console.error("Error caching search results:", insertError);
-    }
+    // if (insertError) {
+    //   console.error("Error caching search results:", insertError);
+    // }
 
     // Return the transformed data
     return NextResponse.json(result);
