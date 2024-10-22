@@ -57,11 +57,8 @@ export default function BookNotes() {
   }, []);
 
   const displayedPages = useMemo(() => {
-    if (isMobile) {
-      return Math.min(totalPages, 3);
-    }
     return totalPages;
-  }, [totalPages, isMobile]);
+  }, [totalPages]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -246,7 +243,7 @@ export default function BookNotes() {
                         </li>
                       )}
                   </ul>
-                  {totalPages > 1 && (
+                  {(isMobile ? totalPages > 1 : filteredReadingList.length > booksPerPage) && (
                     <div className="flex justify-between items-center p-4 border-t">
                       <button
                         onClick={() => handlePageChange(currentPage - 1)}
