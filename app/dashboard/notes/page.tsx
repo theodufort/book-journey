@@ -7,6 +7,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import ReactMarkdown from 'react-markdown';
 
 export default function BookNotes() {
   const [bookStickys, setBookStickys] = useState<{
@@ -464,9 +465,11 @@ export default function BookNotes() {
                               />
                             </>
                           ) : (
-                            <div className="w-full h-full p-3 rounded-md bg-base-200 overflow-y-auto whitespace-pre-wrap">
-                              {notes[selectedBook.book_id]?.content ||
-                                t("no_notes_warning")}
+                            <div className="w-full h-full p-3 rounded-md bg-base-200 overflow-y-auto">
+                              <ReactMarkdown>
+                                {notes[selectedBook.book_id]?.content ||
+                                  t("no_notes_warning")}
+                              </ReactMarkdown>
                             </div>
                           )}
                         </div>
@@ -549,7 +552,9 @@ export default function BookNotes() {
                           )}
                           {editingStickyId && !isEditMode && (
                             <div className="mt-1 p-2 w-full text-sm border rounded bg-base-200">
-                              {bookStickys[editingStickyId].content}
+                              <ReactMarkdown>
+                                {bookStickys[editingStickyId].content}
+                              </ReactMarkdown>
                             </div>
                           )}
                         </div>
