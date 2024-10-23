@@ -77,9 +77,14 @@ export default function BookNotes() {
   useEffect(() => {
     if (user) {
       fetchReadingList();
-      fetchNotes();
     }
   }, [user]);
+
+  useEffect(() => {
+    if (selectedBook && user) {
+      fetchNotes(selectedBook.book_id);
+    }
+  }, [selectedBook, user]);
   const fetchStickyNotes = async (book_id: string) => {
     try {
       const { data: stickyNotesData, error: stickyNotesError } = await supabase
@@ -147,23 +152,24 @@ export default function BookNotes() {
     }
   };
 
-  const fetchNotes = async () => {
+  const fetchNotes = async (bookId: string) => {
     const { data, error } = await supabase
       .from("book_notes")
       .select("book_id, notes, updated_at")
-      .eq("user_id", user?.id);
+      .eq("user_id", user?.id)
+      .eq("book_id", bookId)
+      .single();
 
     if (error) {
       console.error("Error fetching notes:", error);
     } else {
-      const notesObj = data?.reduce((acc: any, item) => {
-        acc[item.book_id] = {
-          content: item.notes,
-          lastUpdated: item.updated_at,
-        };
-        return acc;
-      }, {});
-      setNotes(notesObj);
+      setNotes((prevNotes) => ({
+        ...prevNotes,
+        [bookId]: {
+          content: data?.notes || "",
+          lastUpdated: data?.updated_at || null,
+        },
+      }));
     }
   };
 
