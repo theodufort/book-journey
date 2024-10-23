@@ -169,7 +169,7 @@ export default function BookNotes() {
       if (error) {
         console.error("Error adding sticky note:", error);
       } else if (data && data[0]) {
-        setBookStickys((prev) => ({
+        setBookStickys((prev): any => ({
           ...prev,
           [data[0].id]: {
             content: data[0].content,
@@ -459,13 +459,18 @@ export default function BookNotes() {
                                 <textarea
                                   className="mt-1 p-2 w-full text-sm border rounded"
                                   value={sticky.content}
-                                  onChange={(e) => 
-                                    setBookStickys(prev => ({
+                                  onChange={(e) =>
+                                    setBookStickys((prev) => ({
                                       ...prev,
-                                      [id]: { ...prev[id], content: e.target.value }
+                                      [id]: {
+                                        ...prev[id],
+                                        content: e.target.value,
+                                      },
                                     }))
                                   }
-                                  onBlur={() => updateStickyContent(id, sticky.content)}
+                                  onBlur={() =>
+                                    updateStickyContent(id, sticky.content)
+                                  }
                                 />
                               )}
                             </div>
