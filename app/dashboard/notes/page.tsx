@@ -116,6 +116,64 @@ export default function BookNotes() {
       console.error("Unexpected error:", error);
     }
   };
+
+  const onRemoveSticky = async (id: string) => {
+    if (!selectedBook) return;
+
+    try {
+      const { error } = await supabase
+        .from("sticky_notes")
+        .delete()
+        .eq("id", id)
+        .eq("user_id", user?.id)
+        .eq("book_id", selectedBook.book_id);
+
+      if (error) {
+        console.error("Error removing sticky note:", error);
+      } else {
+        setBookStickys((prev) => {
+          const newStickys = { ...prev };
+          delete newStickys[id];
+          return newStickys;
+        });
+      }
+    } catch (error) {
+      console.error("Unexpected error:", error);
+    }
+  };
+
+  const onAddSticky = async () => {
+    if (!selectedBook || !newSticky.trim()) return;
+
+    try {
+      const { data, error } = await supabase
+        .from("sticky_notes")
+        .insert({
+          user_id: user?.id,
+          book_id: selectedBook.book_id,
+          content: newSticky.trim(),
+          label: "default", // You can modify this if you want to add label functionality
+        })
+        .select();
+
+      if (error) {
+        console.error("Error adding sticky note:", error);
+      } else if (data && data[0]) {
+        setBookStickys((prev) => ({
+          ...prev,
+          [data[0].id]: {
+            content: data[0].content,
+            lastUpdated: data[0].updated_at,
+            createdAt: data[0].created_at,
+            label: data[0].label,
+          },
+        }));
+        setNewSticky("");
+      }
+    } catch (error) {
+      console.error("Unexpected error:", error);
+    }
+  };
   const fetchReadingList = async () => {
     setLoading(true);
     try {
@@ -383,14 +441,14 @@ export default function BookNotes() {
                         />
                         <div role="tabpanel" className="tab-content p-6">
                           <div className="flex flex-wrap gap-2">
-                            {bookStickys.map((sticky) => (
+                            {Object.entries(bookStickys).map(([id, sticky]) => (
                               <div
-                                key={sticky}
-                                className="badge badge-secondary gap-2 p02 h-auto"
+                                key={id}
+                                className="badge badge-secondary gap-2 p-2 h-auto"
                               >
-                                {sticky}
+                                {sticky.content}
                                 <button
-                                  onClick={() => onRemoveSticky(sticky)}
+                                  onClick={() => onRemoveSticky(id)}
                                   className="btn btn-xs btn-circle btn-ghost"
                                 >
                                   ✕
@@ -405,18 +463,14 @@ export default function BookNotes() {
                                   onChange={(e) => setNewSticky(e.target.value)}
                                   onKeyPress={(e) => {
                                     if (e.key === "Enter") {
-                                      onAddSticky(newSticky);
-                                      setNewSticky("");
+                                      onAddSticky();
                                     }
                                   }}
                                   placeholder={t("addtags_label")}
                                   className="bg-transparent border-none outline-none w-20"
                                 />
                                 <button
-                                  onClick={() => {
-                                    onAddSticky(newSticky);
-                                    setNewSticky("");
-                                  }}
+                                  onClick={onAddSticky}
                                   className="btn btn-xs btn-circle btn-ghost"
                                 >
                                   +
