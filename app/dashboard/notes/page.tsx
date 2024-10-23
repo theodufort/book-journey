@@ -88,6 +88,7 @@ export default function BookNotes() {
   useEffect(() => {
     if (selectedBook && user) {
       fetchNotes(selectedBook.book_id);
+      fetchStickyNotes(selectedBook.book_id);
     }
   }, [selectedBook, user]);
   const fetchStickyNotes = async (book_id: string) => {
@@ -151,8 +152,8 @@ export default function BookNotes() {
         .insert({
           user_id: user?.id,
           book_id: selectedBook.book_id,
-          content: newSticky.trim(),
-          label: "default", // You can modify this if you want to add label functionality
+          label: newSticky.trim(),
+          content: "",
         })
         .select();
 
@@ -409,10 +410,7 @@ export default function BookNotes() {
                           aria-label={t("tab1")}
                           defaultChecked
                         />
-                        <div
-                          role="tabpanel"
-                          className="tab-content p-2 h-[calc(100vh-450px)]"
-                        >
+                        <div role="tabpanel" className="tab-content p-2 h-auto">
                           {isEditMode ? (
                             <>
                               <textarea
@@ -445,15 +443,17 @@ export default function BookNotes() {
                         />
                         <div
                           role="tabpanel"
-                          className="tab-content p-2 h-[calc(100vh-450px)] overflow-y-auto"
+                          className="tab-content p-2 overflow-y-auto"
                         >
                           <div className="flex flex-wrap gap-2">
                             {Object.entries(bookStickys).map(([id, sticky]) => (
                               <div
                                 key={id}
-                                className="badge badge-secondary gap-2 p-2 h-auto inline-flex items-center"
+                                className="badge badge-secondary gap-1 h-auto inline-flex items-center"
                               >
-                                <span className="mr-1 break-all">{sticky.content}</span>
+                                <span className="mr-1 break-all">
+                                  {sticky.label}
+                                </span>
                                 <button
                                   onClick={() => onRemoveSticky(id)}
                                   className="btn btn-xs btn-circle btn-ghost ml-1 flex-shrink-0"
@@ -462,7 +462,7 @@ export default function BookNotes() {
                                 </button>
                               </div>
                             ))}
-                            <div className="badge badge-outline gap-2 h-auto inline-flex items-center">
+                            <div className="badge badge-outline gap-1 h-auto inline-flex items-center">
                               <input
                                 type="text"
                                 value={newSticky}
