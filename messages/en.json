@@ -137,7 +137,8 @@
       "enter_notes_placeholder":"Enter your notes here...",
       "no_notes_warning":"No notes yet.",
       "select_book":"Select a book to add notes",
-      "not_saved_warning":"Not saved yet"
+      "not_saved_warning":"Not saved yet",
+      "quick_tags":"Quick Tags"
     },
     "BookRecommendations":{
       "title":"Book Recommendations",
