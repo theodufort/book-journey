@@ -455,6 +455,24 @@ export default function BookNotes() {
                                   {sticky.label}
                                 </span>
                               </div>
+                              {sticky.isEditing && (
+                                <textarea
+                                  className="mt-1 p-2 w-full text-sm border rounded"
+                                  value={sticky.content}
+                                  onChange={(e) =>
+                                    setBookStickys((prev) => ({
+                                      ...prev,
+                                      [id]: {
+                                        ...prev[id],
+                                        content: e.target.value,
+                                      },
+                                    }))
+                                  }
+                                  onBlur={() =>
+                                    updateStickyContent(id, sticky.content)
+                                  }
+                                />
+                              )}
                             </div>
                           ))}
                           <div className="badge badge-outline gap-1 h-auto inline-flex items-center px-2 py-1">
@@ -478,31 +496,6 @@ export default function BookNotes() {
                             </button>
                           </div>
                         </div>
-                        {Object.entries(bookStickys).some(([_, sticky]) => sticky.isEditing) && (
-                          <textarea
-                            className="mt-2 p-2 w-full text-sm border rounded"
-                            value={Object.entries(bookStickys).find(([_, sticky]) => sticky.isEditing)?.[1].content || ''}
-                            onChange={(e) => {
-                              const editingId = Object.entries(bookStickys).find(([_, sticky]) => sticky.isEditing)?.[0];
-                              if (editingId) {
-                                setBookStickys((prev) => ({
-                                  ...prev,
-                                  [editingId]: {
-                                    ...prev[editingId],
-                                    content: e.target.value,
-                                  },
-                                }));
-                              }
-                            }}
-                            onBlur={() => {
-                              const editingEntry = Object.entries(bookStickys).find(([_, sticky]) => sticky.isEditing);
-                              if (editingEntry) {
-                                const [id, sticky] = editingEntry;
-                                updateStickyContent(id, sticky.content);
-                              }
-                            }}
-                          />
-                        )}
                       )}
                     </div>
                   </>
