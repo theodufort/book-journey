@@ -7,8 +7,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import ReactMarkdown from 'react-markdown';
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown from "react-markdown";
 
 export default function BookNotes() {
   const [bookStickys, setBookStickys] = useState<{
@@ -517,7 +516,7 @@ export default function BookNotes() {
                                   }
                                 }}
                                 placeholder={t("add_sticky")}
-                                className="bg-transparent border-none outline-none w-full"
+                                className="bg-transparent border-none outline-none max-w-min"
                               />
                               <button
                                 onClick={onAddSticky}
@@ -529,7 +528,7 @@ export default function BookNotes() {
                           </div>
                           {editingStickyId && isEditMode && (
                             <textarea
-                              className="mt-1 p-2 w-full text-sm border rounded resize-vertical min-h-[100px]"
+                              className="mt-1 p-2 w-full text-sm rounded resize-vertical min-h-[100px]"
                               value={bookStickys[editingStickyId].content}
                               onChange={(e) => {
                                 setBookStickys((prev) => ({
@@ -552,10 +551,10 @@ export default function BookNotes() {
                             />
                           )}
                           {editingStickyId && !isEditMode && (
-                            <div className="mt-1 p-2 w-full text-sm border rounded bg-base-200">
-                              <ReactMarkdown>
-                                {bookStickys[editingStickyId].content}
-                              </ReactMarkdown>
+                            <div className="mt-1 p-2 w-full text-sm rounded bg-base-200">
+                              <ReactMarkdown
+                                children={bookStickys[editingStickyId].content}
+                              />
                             </div>
                           )}
                         </div>
