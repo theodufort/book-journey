@@ -455,26 +455,6 @@ export default function BookNotes() {
                                   {sticky.label}
                                 </span>
                               </div>
-                              <div className="badge badge-outline gap-1 h-auto inline-flex items-center px-2 py-1">
-                                <input
-                                  type="text"
-                                  value={newSticky}
-                                  onChange={(e) => setNewSticky(e.target.value)}
-                                  onKeyPress={(e) => {
-                                    if (e.key === "Enter") {
-                                      onAddSticky();
-                                    }
-                                  }}
-                                  placeholder={t("add_sticky")}
-                                  className="bg-transparent border-none outline-none w-full"
-                                />
-                                <button
-                                  onClick={onAddSticky}
-                                  className="btn btn-xs btn-circle btn-ghost flex-shrink-0"
-                                >
-                                  +
-                                </button>
-                              </div>
                               {sticky.isEditing && (
                                 <textarea
                                   className="mt-1 p-2 w-full text-sm border rounded"
@@ -495,6 +475,26 @@ export default function BookNotes() {
                               )}
                             </div>
                           ))}
+                          <div className="badge badge-outline gap-1 h-auto inline-flex items-center px-2 py-1">
+                            <input
+                              type="text"
+                              value={newSticky}
+                              onChange={(e) => setNewSticky(e.target.value)}
+                              onKeyPress={(e) => {
+                                if (e.key === "Enter") {
+                                  onAddSticky();
+                                }
+                              }}
+                              placeholder={t("add_sticky")}
+                              className="bg-transparent border-none outline-none w-full"
+                            />
+                            <button
+                              onClick={onAddSticky}
+                              className="btn btn-xs btn-circle btn-ghost flex-shrink-0"
+                            >
+                              +
+                            </button>
+                          </div>
                         </div>
                       )}
                     </div>
