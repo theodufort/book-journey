@@ -101,7 +101,7 @@ export default function BookNotes() {
         console.error("Error fetching sticky notes:", stickyNotesError);
         setBookStickys({});
       } else {
-        const stickyNotesObj = stickyNotesData.reduce((acc: any, item) => {
+        const stickyNotesObj = stickyNotesData.reduce((acc: any, item: any) => {
           acc[item.id] = {
             content: item.content,
             lastUpdated: item.updated_at,
@@ -383,14 +383,14 @@ export default function BookNotes() {
                         />
                         <div role="tabpanel" className="tab-content p-6">
                           <div className="flex flex-wrap gap-2">
-                            {tags.map((tag) => (
+                            {bookStickys.map((sticky) => (
                               <div
-                                key={tag}
+                                key={sticky}
                                 className="badge badge-secondary gap-2 p02 h-auto"
                               >
-                                {tag}
+                                {sticky}
                                 <button
-                                  onClick={() => onRemoveSticky(tag)}
+                                  onClick={() => onRemoveSticky(sticky)}
                                   className="btn btn-xs btn-circle btn-ghost"
                                 >
                                   ✕
