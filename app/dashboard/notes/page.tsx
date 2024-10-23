@@ -326,9 +326,9 @@ export default function BookNotes() {
         <div className="sticky top-0 z-50 bg-base-100">
           <HeaderDashboard />
         </div>
-        <h1 className="text-2xl md:text-4xl font-extrabold  my-auto">
+        {/* <h1 className="text-2xl md:text-4xl font-extrabold  my-auto">
           {t("title")}
-        </h1>
+        </h1> */}
         {loading ? (
           <main className="min-h-screen p-8 pb-24 flex items-center justify-center">
             <span className="loading loading-spinner loading-lg"></span>
@@ -456,8 +456,9 @@ export default function BookNotes() {
                                     selectedBook.book_id,
                                     e.target.value
                                   );
-                                  e.target.style.height = 'auto';
-                                  e.target.style.height = e.target.scrollHeight + 'px';
+                                  e.target.style.height = "auto";
+                                  e.target.style.height =
+                                    e.target.scrollHeight + "px";
                                 }}
                                 placeholder={t("enter_notes_placeholder")}
                               />
@@ -534,8 +535,9 @@ export default function BookNotes() {
                                     content: e.target.value,
                                   },
                                 }));
-                                e.target.style.height = 'auto';
-                                e.target.style.height = e.target.scrollHeight + 'px';
+                                e.target.style.height = "auto";
+                                e.target.style.height =
+                                  e.target.scrollHeight + "px";
                               }}
                               onBlur={() =>
                                 updateStickyContent(
