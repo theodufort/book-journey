@@ -26,14 +26,11 @@ export default function BookNotes() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
-<<<<<<< HEAD
   const [tags, setTags] = useState<{ [bookId: string]: string[] }>({});
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const predefinedTags = ["Important", "Review", "Question", "Idea", "Quote"];
-=======
->>>>>>> parent of 8d09acf (feat: Add predefined tags section to notes input area)
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -195,12 +192,14 @@ export default function BookNotes() {
       }));
     }
   };
-
   const handleAddTag = (tag: string) => {
     if (selectedBook) {
-      setTags(prevTags => ({
+      setTags((prevTags) => ({
         ...prevTags,
-        [selectedBook.book_id]: [...(prevTags[selectedBook.book_id] || []), tag]
+        [selectedBook.book_id]: [
+          ...(prevTags[selectedBook.book_id] || []),
+          tag,
+        ],
       }));
       const currentNote = notes[selectedBook.book_id]?.content || "";
       const updatedNote = currentNote + ` #${tag}`;
@@ -220,14 +219,17 @@ export default function BookNotes() {
 
   const handleUpdateTag = (updatedTag: string) => {
     if (selectedBook && selectedTag) {
-      setTags(prevTags => ({
+      setTags((prevTags) => ({
         ...prevTags,
-        [selectedBook.book_id]: prevTags[selectedBook.book_id].map(tag => 
+        [selectedBook.book_id]: prevTags[selectedBook.book_id].map((tag) =>
           tag === selectedTag ? updatedTag : tag
-        )
+        ),
       }));
       const currentNote = notes[selectedBook.book_id]?.content || "";
-      const updatedNote = currentNote.replace(`#${selectedTag}`, `#${updatedTag}`);
+      const updatedNote = currentNote.replace(
+        `#${selectedTag}`,
+        `#${updatedTag}`
+      );
       handleNoteChange(selectedBook.book_id, updatedNote);
       setSelectedTag(null);
       setIsModalOpen(false);
@@ -351,7 +353,6 @@ export default function BookNotes() {
                     >
                       {isEditMode ? (
                         <>
-<<<<<<< HEAD
                           <div className="flex flex-col h-full">
                             <textarea
                               className="flex-grow w-full p-3 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none mb-2"
@@ -365,7 +366,9 @@ export default function BookNotes() {
                               placeholder={t("enter_notes_placeholder")}
                             />
                             <div className="mt-2">
-                              <p className="text-sm font-semibold mb-1">{t("quick_tags")}</p>
+                              <p className="text-sm font-semibold mb-1">
+                                {t("quick_tags")}
+                              </p>
                               <div className="flex flex-wrap gap-2">
                                 {predefinedTags.map((tag) => (
                                   <button
@@ -379,35 +382,58 @@ export default function BookNotes() {
                               </div>
                             </div>
                             <div className="mt-4">
-                              <p className="text-sm font-semibold mb-1">{t("your_tags")}</p>
+                              <p className="text-sm font-semibold mb-1">
+                                {t("your_tags")}
+                              </p>
                               <div className="carousel carousel-center max-w-md p-4 space-x-4 bg-neutral rounded-box">
-                                {selectedBook && tags[selectedBook.book_id]?.map((tag, index) => (
-                                  <div key={index} className="carousel-item">
-                                    <button
-                                      onClick={() => handleTagClick(tag)}
-                                      className="badge badge-info gap-2"
-                                    >
-                                      {tag}
-                                    </button>
-                                  </div>
-                                ))}
+                                {selectedBook &&
+                                  tags[selectedBook.book_id]?.map(
+                                    (tag, index) => (
+                                      <div
+                                        key={index}
+                                        className="carousel-item"
+                                      >
+                                        <button
+                                          onClick={() => handleTagClick(tag)}
+                                          className="badge badge-info gap-2"
+                                        >
+                                          {tag}
+                                        </button>
+                                      </div>
+                                    )
+                                  )}
                               </div>
                             </div>
-                            <dialog id="edit_tag_dialog" className={`modal ${isDialogOpen ? 'modal-open' : ''}`}>
+                            <dialog
+                              id="edit_tag_dialog"
+                              className={`modal ${
+                                isDialogOpen ? "modal-open" : ""
+                              }`}
+                            >
                               <form method="dialog" className="modal-box">
-                                <h3 className="font-bold text-lg mb-4">{t("edit_tag")}</h3>
+                                <h3 className="font-bold text-lg mb-4">
+                                  {t("edit_tag")}
+                                </h3>
                                 <input
                                   type="text"
-                                  value={selectedTag || ''}
-                                  onChange={(e) => setSelectedTag(e.target.value)}
+                                  value={selectedTag || ""}
+                                  onChange={(e) =>
+                                    setSelectedTag(e.target.value)
+                                  }
                                   className="input input-bordered w-full mb-4"
                                 />
                                 <div className="modal-action">
-                                  <button className="btn" onClick={handleCloseDialog}>{t("cancel")}</button>
+                                  <button
+                                    className="btn"
+                                    onClick={handleCloseDialog}
+                                  >
+                                    {t("cancel")}
+                                  </button>
                                   <button
                                     className="btn btn-primary"
                                     onClick={() => {
-                                      if (selectedTag) handleUpdateTag(selectedTag);
+                                      if (selectedTag)
+                                        handleUpdateTag(selectedTag);
                                       handleCloseDialog();
                                     }}
                                   >
@@ -417,7 +443,6 @@ export default function BookNotes() {
                               </form>
                             </dialog>
                           </div>
-=======
                           <textarea
                             className="flex-grow w-full p-3  rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none mb-2"
                             value={notes[selectedBook.book_id]?.content || ""}
@@ -429,7 +454,6 @@ export default function BookNotes() {
                             }
                             placeholder={t("enter_notes_placeholder")}
                           />
->>>>>>> parent of 8d09acf (feat: Add predefined tags section to notes input area)
                         </>
                       ) : (
                         <div className="flex-grow w-full p-3 rounded-md bg-base-200 overflow-y-auto whitespace-pre-wrap">
