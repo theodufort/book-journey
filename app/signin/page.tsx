@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 export default function Login() {
   const supabase = createClientComponentClient<Database>();
@@ -17,6 +18,20 @@ export default function Login() {
   const searchParams = useSearchParams();
   const ref = searchParams.get("ref");
   const t = useTranslations("Signin");
+
+  const addToConvertKit = async (email: string) => {
+    try {
+      const response = await axios.post('/api/convertkit/subscribe', {
+        email_address: email,
+        first_name: email.split('@')[0], // Use part before @ as first name
+      });
+      if (response.status === 200) {
+        console.log('User added to ConvertKit');
+      }
+    } catch (error) {
+      console.error('Error adding user to ConvertKit:', error);
+    }
+  };
 
   const handleSignup = async (
     e: any,
@@ -35,12 +50,16 @@ export default function Login() {
         window.location.origin +
         `/api/auth/callback${ref ? "?ref=" + ref : ""}`;
       if (type === "oauth") {
-        await supabase.auth.signInWithOAuth({
+        const { data, error } = await supabase.auth.signInWithOAuth({
           provider,
           options: {
             redirectTo: redirectURL,
           },
         });
+        if (!error && data) {
+          // Add user to ConvertKit after successful OAuth signup
+          await addToConvertKit(data.user?.email || '');
+        }
       } else if (type === "magic_link") {
         console.log(email);
         await supabase.auth.signInWithOtp({
@@ -53,6 +72,9 @@ export default function Login() {
         toast.success("Check your emails!");
 
         setIsDisabled(true);
+
+        // Add user to ConvertKit after sending magic link
+        await addToConvertKit(email);
       }
     } catch (error) {
       console.log(error);
