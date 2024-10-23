@@ -3,12 +3,12 @@ import config from "@/config";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Provider } from "@supabase/supabase-js";
+import axios from "axios";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import axios from "axios";
 
 export default function Login() {
   const supabase = createClientComponentClient<Database>();
@@ -19,17 +19,17 @@ export default function Login() {
   const ref = searchParams.get("ref");
   const t = useTranslations("Signin");
 
-  const addToConvertKit = async (email: string) => {
+  const addToConvertKit = async (emailSub: string) => {
     try {
-      const response = await axios.post('/api/convertkit/subscribe', {
-        email_address: email,
-        first_name: email.split('@')[0], // Use part before @ as first name
+      const response = await axios.post("/api/convertkit/subscribe", {
+        email_address: emailSub,
+        first_name: emailSub.split("@")[0], // Use part before @ as first name
       });
       if (response.status === 200) {
-        console.log('User added to ConvertKit');
+        console.log("User added to ConvertKit");
       }
     } catch (error) {
-      console.error('Error adding user to ConvertKit:', error);
+      console.error("Error adding user to ConvertKit:", error);
     }
   };
 
@@ -58,10 +58,9 @@ export default function Login() {
         });
         if (!error && data) {
           // Add user to ConvertKit after successful OAuth signup
-          await addToConvertKit(data.user?.email || '');
+          await addToConvertKit(email || "");
         }
       } else if (type === "magic_link") {
-        console.log(email);
         await supabase.auth.signInWithOtp({
           email,
           options: {
