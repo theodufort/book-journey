@@ -449,9 +449,9 @@ export default function BookNotes() {
                             {Object.entries(bookStickys).map(([id, sticky]) => (
                               <div
                                 key={id}
-                                className="badge badge-secondary gap-1 h-auto inline-flex items-center"
+                                className="badge badge-secondary gap-1 h-auto inline-flex items-center px-2 py-1"
                               >
-                                <span className="mr-1 break-all">
+                                <span className="mr-1 whitespace-normal break-words max-w-[150px]">
                                   {sticky.label}
                                 </span>
                                 <button
@@ -462,7 +462,7 @@ export default function BookNotes() {
                                 </button>
                               </div>
                             ))}
-                            <div className="badge badge-outline gap-1 h-auto inline-flex items-center">
+                            <div className="badge badge-outline gap-1 h-auto inline-flex items-center px-2 py-1">
                               <input
                                 type="text"
                                 value={newSticky}
@@ -473,7 +473,7 @@ export default function BookNotes() {
                                   }
                                 }}
                                 placeholder={t("add_sticky")}
-                                className="bg-transparent border-none outline-none w-20"
+                                className="bg-transparent border-none outline-none w-24"
                               />
                               <button
                                 onClick={onAddSticky}
