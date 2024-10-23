@@ -7,6 +7,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Modal } from "@/components/Modal";
 
 export default function BookNotes() {
   const t = useTranslations("Notes");
@@ -26,7 +27,9 @@ export default function BookNotes() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
-  const [tags, setTags] = useState<string[]>([]);
+  const [tags, setTags] = useState<{ [bookId: string]: string[] }>({});
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const predefinedTags = ["Important", "Review", "Question", "Idea", "Quote"];
 
@@ -193,9 +196,39 @@ export default function BookNotes() {
 
   const handleAddTag = (tag: string) => {
     if (selectedBook) {
+      setTags(prevTags => ({
+        ...prevTags,
+        [selectedBook.book_id]: [...(prevTags[selectedBook.book_id] || []), tag]
+      }));
       const currentNote = notes[selectedBook.book_id]?.content || "";
       const updatedNote = currentNote + ` #${tag}`;
       handleNoteChange(selectedBook.book_id, updatedNote);
+    }
+  };
+
+  const handleTagClick = (tag: string) => {
+    setSelectedTag(tag);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedTag(null);
+  };
+
+  const handleUpdateTag = (updatedTag: string) => {
+    if (selectedBook && selectedTag) {
+      setTags(prevTags => ({
+        ...prevTags,
+        [selectedBook.book_id]: prevTags[selectedBook.book_id].map(tag => 
+          tag === selectedTag ? updatedTag : tag
+        )
+      }));
+      const currentNote = notes[selectedBook.book_id]?.content || "";
+      const updatedNote = currentNote.replace(`#${selectedTag}`, `#${updatedTag}`);
+      handleNoteChange(selectedBook.book_id, updatedNote);
+      setSelectedTag(null);
+      setIsModalOpen(false);
     }
   };
 
@@ -342,6 +375,40 @@ export default function BookNotes() {
                                 ))}
                               </div>
                             </div>
+                            <div className="mt-4">
+                              <p className="text-sm font-semibold mb-1">{t("your_tags")}</p>
+                              <div className="carousel carousel-center max-w-md p-4 space-x-4 bg-neutral rounded-box">
+                                {selectedBook && tags[selectedBook.book_id]?.map((tag, index) => (
+                                  <div key={index} className="carousel-item">
+                                    <button
+                                      onClick={() => handleTagClick(tag)}
+                                      className="badge badge-info gap-2"
+                                    >
+                                      {tag}
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                            <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+                              {selectedTag && (
+                                <div className="p-4">
+                                  <h3 className="font-bold text-lg mb-4">{t("edit_tag")}</h3>
+                                  <input
+                                    type="text"
+                                    value={selectedTag}
+                                    onChange={(e) => setSelectedTag(e.target.value)}
+                                    className="input input-bordered w-full mb-4"
+                                  />
+                                  <button
+                                    onClick={() => handleUpdateTag(selectedTag)}
+                                    className="btn btn-primary"
+                                  >
+                                    {t("update_tag")}
+                                  </button>
+                                </div>
+                              )}
+                            </Modal>
                           </div>
                         </>
                       ) : (
