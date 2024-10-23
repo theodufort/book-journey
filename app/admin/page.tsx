@@ -6,13 +6,13 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from "react";
 import {
   CartesianGrid,
+  Legend,
   Line,
   LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
-  Legend,
 } from "recharts";
 
 export default function Admin() {
@@ -108,12 +108,14 @@ export default function Admin() {
       return acc;
     }, {});
 
-    const chartData = Object.entries(retentionData).map(([date, data]: [string, any]) => ({
-      date,
-      totalUsers: data.totalUsers,
-      activeUsers: data.activeUsers,
-      retentionRate: (data.activeUsers / data.totalUsers) * 100,
-    }));
+    const chartData = Object.entries(retentionData).map(
+      ([date, data]: [string, any]) => ({
+        date,
+        totalUsers: data.totalUsers,
+        activeUsers: data.activeUsers,
+        retentionRate: (data.activeUsers / data.totalUsers) * 100,
+      })
+    );
 
     setUserRetentionData(chartData);
   }
@@ -144,24 +146,6 @@ export default function Admin() {
             </CardContent>
           </Card>
         </div>
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>User Growth</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[400px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={userGrowthData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="users" stroke="#8884d8" />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
         <Card>
           <CardHeader>
             <CardTitle>User Retention</CardTitle>
@@ -176,9 +160,27 @@ export default function Admin() {
                   <YAxis yAxisId="right" orientation="right" />
                   <Tooltip />
                   <Legend />
-                  <Line yAxisId="left" type="monotone" dataKey="totalUsers" name="Total Users" stroke="#8884d8" />
-                  <Line yAxisId="left" type="monotone" dataKey="activeUsers" name="Active Users" stroke="#82ca9d" />
-                  <Line yAxisId="right" type="monotone" dataKey="retentionRate" name="Retention Rate (%)" stroke="#ffc658" />
+                  <Line
+                    yAxisId="left"
+                    type="monotone"
+                    dataKey="totalUsers"
+                    name="Total Users"
+                    stroke="#8884d8"
+                  />
+                  <Line
+                    yAxisId="left"
+                    type="monotone"
+                    dataKey="activeUsers"
+                    name="Active Users"
+                    stroke="#82ca9d"
+                  />
+                  <Line
+                    yAxisId="right"
+                    type="monotone"
+                    dataKey="retentionRate"
+                    name="Retention Rate (%)"
+                    stroke="#ffc658"
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </div>
