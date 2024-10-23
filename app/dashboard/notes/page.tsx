@@ -26,11 +26,14 @@ export default function BookNotes() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
+<<<<<<< HEAD
   const [tags, setTags] = useState<{ [bookId: string]: string[] }>({});
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const predefinedTags = ["Important", "Review", "Question", "Idea", "Quote"];
+=======
+>>>>>>> parent of 8d09acf (feat: Add predefined tags section to notes input area)
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -348,6 +351,7 @@ export default function BookNotes() {
                     >
                       {isEditMode ? (
                         <>
+<<<<<<< HEAD
                           <div className="flex flex-col h-full">
                             <textarea
                               className="flex-grow w-full p-3 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none mb-2"
@@ -413,6 +417,19 @@ export default function BookNotes() {
                               </form>
                             </dialog>
                           </div>
+=======
+                          <textarea
+                            className="flex-grow w-full p-3  rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none mb-2"
+                            value={notes[selectedBook.book_id]?.content || ""}
+                            onChange={(e) =>
+                              handleNoteChange(
+                                selectedBook.book_id,
+                                e.target.value
+                              )
+                            }
+                            placeholder={t("enter_notes_placeholder")}
+                          />
+>>>>>>> parent of 8d09acf (feat: Add predefined tags section to notes input area)
                         </>
                       ) : (
                         <div className="flex-grow w-full p-3 rounded-md bg-base-200 overflow-y-auto whitespace-pre-wrap">
