@@ -451,38 +451,36 @@ export default function BookNotes() {
                             {Object.entries(bookStickys).map(([id, sticky]) => (
                               <div
                                 key={id}
-                                className="badge badge-secondary gap-2 p-2 h-auto"
+                                className="badge badge-secondary gap-2 p-2 h-auto inline-flex items-center"
                               >
-                                {sticky.content}
+                                <span className="mr-1 break-all">{sticky.content}</span>
                                 <button
                                   onClick={() => onRemoveSticky(id)}
-                                  className="btn btn-xs btn-circle btn-ghost"
+                                  className="btn btn-xs btn-circle btn-ghost ml-1 flex-shrink-0"
                                 >
                                   ✕
                                 </button>
                               </div>
                             ))}
-                            <div className="badge badge-outline gap-2 h-auto flex">
-                              <div className="inline-flex">
-                                <input
-                                  type="text"
-                                  value={newSticky}
-                                  onChange={(e) => setNewSticky(e.target.value)}
-                                  onKeyPress={(e) => {
-                                    if (e.key === "Enter") {
-                                      onAddSticky();
-                                    }
-                                  }}
-                                  placeholder={t("add_sticky")}
-                                  className="bg-transparent border-none outline-none w-20"
-                                />
-                                <button
-                                  onClick={onAddSticky}
-                                  className="btn btn-xs btn-circle btn-ghost"
-                                >
-                                  +
-                                </button>
-                              </div>
+                            <div className="badge badge-outline gap-2 h-auto inline-flex items-center">
+                              <input
+                                type="text"
+                                value={newSticky}
+                                onChange={(e) => setNewSticky(e.target.value)}
+                                onKeyPress={(e) => {
+                                  if (e.key === "Enter") {
+                                    onAddSticky();
+                                  }
+                                }}
+                                placeholder={t("add_sticky")}
+                                className="bg-transparent border-none outline-none w-20"
+                              />
+                              <button
+                                onClick={onAddSticky}
+                                className="btn btn-xs btn-circle btn-ghost flex-shrink-0"
+                              >
+                                +
+                              </button>
                             </div>
                           </div>
                         </div>
