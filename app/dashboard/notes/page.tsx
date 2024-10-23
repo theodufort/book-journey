@@ -473,7 +473,11 @@ export default function BookNotes() {
                             {Object.entries(bookStickys).map(([id, sticky]) => (
                               <div key={id} className="flex flex-col">
                                 <div
-                                  className="badge badge-secondary gap-1 h-auto inline-flex items-center px-2 py-1 cursor-pointer"
+                                  className={`badge ${
+                                    editingStickyId === id
+                                      ? "badge-warning"
+                                      : "badge-secondary"
+                                  } gap-1 h-auto inline-flex items-center px-2 py-1 cursor-pointer`}
                                   style={{ flexBasis: "auto" }}
                                 >
                                   <span
@@ -486,7 +490,6 @@ export default function BookNotes() {
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       setEditingStickyId(null);
-                                      // Add function to remove sticky note here
                                       removeStickyNote(id);
                                     }}
                                     className="btn btn-xs btn-circle btn-ghost"
