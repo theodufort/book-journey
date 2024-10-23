@@ -407,12 +407,13 @@ export default function BookNotes() {
                           role="tab"
                           className="tab"
                           aria-label={t("tab1")}
+                          defaultChecked
                         />
-                        <div role="tabpanel" className="tab-content">
+                        <div role="tabpanel" className="tab-content p-2 h-full">
                           {isEditMode ? (
                             <>
                               <textarea
-                                className="flex-grow w-full p-3  rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none mb-2"
+                                className="w-full h-[calc(100vh-400px)] p-3 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none mb-2"
                                 value={
                                   notes[selectedBook.book_id]?.content || ""
                                 }
@@ -426,7 +427,7 @@ export default function BookNotes() {
                               />
                             </>
                           ) : (
-                            <div className="flex-grow w-full p-3 rounded-md bg-base-200 overflow-y-auto whitespace-pre-wrap">
+                            <div className="w-full h-[calc(100vh-400px)] p-3 rounded-md bg-base-200 overflow-y-auto whitespace-pre-wrap">
                               {notes[selectedBook.book_id]?.content ||
                                 t("no_notes_warning")}
                             </div>
@@ -439,7 +440,7 @@ export default function BookNotes() {
                           className="tab"
                           aria-label={t("tab2")}
                         />
-                        <div role="tabpanel" className="tab-content p-6">
+                        <div role="tabpanel" className="tab-content p-2 h-[calc(100vh-400px)] overflow-y-auto">
                           <div className="flex flex-wrap gap-2">
                             {Object.entries(bookStickys).map(([id, sticky]) => (
                               <div
