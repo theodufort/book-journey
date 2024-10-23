@@ -15,6 +15,7 @@ export default function BookNotes() {
       lastUpdated: string | null;
       createdAt: string | null;
       label: string;
+      isEditing: boolean;
     };
   }>({});
   const [newSticky, setNewSticky] = useState("");
@@ -109,6 +110,7 @@ export default function BookNotes() {
             lastUpdated: item.updated_at,
             createdAt: item.created_at,
             label: item.label,
+            isEditing: false,
           };
           return acc;
         }, {});
@@ -119,25 +121,31 @@ export default function BookNotes() {
     }
   };
 
-  const onRemoveSticky = async (id: string) => {
+  const toggleStickyEdit = (id: string) => {
+    setBookStickys((prev) => ({
+      ...prev,
+      [id]: { ...prev[id], isEditing: !prev[id].isEditing },
+    }));
+  };
+
+  const updateStickyContent = async (id: string, newContent: string) => {
     if (!selectedBook) return;
 
     try {
       const { error } = await supabase
         .from("sticky_notes")
-        .delete()
+        .update({ content: newContent })
         .eq("id", id)
         .eq("user_id", user?.id)
         .eq("book_id", selectedBook.book_id);
 
       if (error) {
-        console.error("Error removing sticky note:", error);
+        console.error("Error updating sticky note:", error);
       } else {
-        setBookStickys((prev) => {
-          const newStickys = { ...prev };
-          delete newStickys[id];
-          return newStickys;
-        });
+        setBookStickys((prev) => ({
+          ...prev,
+          [id]: { ...prev[id], content: newContent, isEditing: false },
+        }));
       }
     } catch (error) {
       console.error("Unexpected error:", error);
@@ -437,20 +445,29 @@ export default function BookNotes() {
                       ) : (
                         <div className="flex flex-wrap gap-2">
                           {Object.entries(bookStickys).map(([id, sticky]) => (
-                            <div
-                              key={id}
-                              className="badge badge-secondary gap-1 h-auto inline-flex items-center px-2 py-1"
-                              style={{ flexBasis: "auto" }}
-                            >
-                              <span className="mr-1 whitespace-normal break-words flex-grow text-left">
-                                {sticky.label}
-                              </span>
-                              <button
-                                onClick={() => onRemoveSticky(id)}
-                                className="btn btn-xs btn-circle btn-ghost ml-1 flex-shrink-0"
+                            <div key={id} className="flex flex-col">
+                              <div
+                                className="badge badge-secondary gap-1 h-auto inline-flex items-center px-2 py-1 cursor-pointer"
+                                style={{ flexBasis: "auto" }}
+                                onClick={() => toggleStickyEdit(id)}
                               >
-                                ✕
-                              </button>
+                                <span className="mr-1 whitespace-normal break-words flex-grow text-left">
+                                  {sticky.label}
+                                </span>
+                              </div>
+                              {sticky.isEditing && (
+                                <textarea
+                                  className="mt-1 p-2 w-full text-sm border rounded"
+                                  value={sticky.content}
+                                  onChange={(e) => 
+                                    setBookStickys(prev => ({
+                                      ...prev,
+                                      [id]: { ...prev[id], content: e.target.value }
+                                    }))
+                                  }
+                                  onBlur={() => updateStickyContent(id, sticky.content)}
+                                />
+                              )}
                             </div>
                           ))}
                           <div className="badge badge-outline gap-1 h-auto inline-flex items-center px-2 py-1">
