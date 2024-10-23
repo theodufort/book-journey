@@ -8,6 +8,7 @@ import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from 'react-markdown';
+import ReactMarkdown from 'react-markdown';
 
 export default function BookNotes() {
   const [bookStickys, setBookStickys] = useState<{
