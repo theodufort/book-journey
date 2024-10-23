@@ -8,7 +8,6 @@ import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { Switch } from "@headlessui/react";
 
 export default function BookNotes() {
   const [bookStickys, setBookStickys] = useState<{
@@ -131,11 +130,17 @@ export default function BookNotes() {
     setEditingStickyId(editingStickyId === id ? null : id);
   };
 
-  const updateStickyContent = async (id: string, newContent: string, isPublic?: boolean) => {
+  const updateStickyContent = async (
+    id: string,
+    newContent: string,
+    isPublic?: boolean
+  ) => {
     if (!selectedBook) return;
 
     try {
-      const updateData: { content: string; is_public?: boolean } = { content: newContent };
+      const updateData: { content: string; is_public?: boolean } = {
+        content: newContent,
+      };
       if (isPublic !== undefined) {
         updateData.is_public = isPublic;
       }
@@ -152,10 +157,10 @@ export default function BookNotes() {
       } else {
         setBookStickys((prev) => ({
           ...prev,
-          [id]: { 
-            ...prev[id], 
+          [id]: {
+            ...prev[id],
             content: newContent,
-            isPublic: isPublic !== undefined ? isPublic : prev[id].isPublic
+            isPublic: isPublic !== undefined ? isPublic : prev[id].isPublic,
           },
         }));
         setEditingStickyId(null);
@@ -174,11 +179,14 @@ export default function BookNotes() {
 
   const copyStickyLink = (id: string) => {
     const link = `/sticky-note/${id}`;
-    navigator.clipboard.writeText(link).then(() => {
-      alert("Link copied to clipboard!");
-    }).catch((err) => {
-      console.error("Failed to copy link: ", err);
-    });
+    navigator.clipboard
+      .writeText(link)
+      .then(() => {
+        alert("Link copied to clipboard!");
+      })
+      .catch((err) => {
+        console.error("Failed to copy link: ", err);
+      });
   };
 
   const removeStickyNote = async (id: string) => {
@@ -559,17 +567,27 @@ export default function BookNotes() {
                               <div className="flex items-center justify-between mb-2">
                                 <Switch.Group>
                                   <div className="flex items-center">
-                                    <Switch.Label className="mr-4">Public</Switch.Label>
+                                    <Switch.Label className="mr-4">
+                                      Public
+                                    </Switch.Label>
                                     <Switch
-                                      checked={bookStickys[editingStickyId].isPublic}
-                                      onChange={() => toggleStickyPublic(editingStickyId)}
+                                      checked={
+                                        bookStickys[editingStickyId].isPublic
+                                      }
+                                      onChange={() =>
+                                        toggleStickyPublic(editingStickyId)
+                                      }
                                       className={`${
-                                        bookStickys[editingStickyId].isPublic ? 'bg-blue-600' : 'bg-gray-200'
+                                        bookStickys[editingStickyId].isPublic
+                                          ? "bg-blue-600"
+                                          : "bg-gray-200"
                                       } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2`}
                                     >
                                       <span
                                         className={`${
-                                          bookStickys[editingStickyId].isPublic ? 'translate-x-6' : 'translate-x-1'
+                                          bookStickys[editingStickyId].isPublic
+                                            ? "translate-x-6"
+                                            : "translate-x-1"
                                         } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
                                       />
                                     </Switch>
@@ -577,7 +595,9 @@ export default function BookNotes() {
                                 </Switch.Group>
                                 {bookStickys[editingStickyId].isPublic && (
                                   <button
-                                    onClick={() => copyStickyLink(editingStickyId)}
+                                    onClick={() =>
+                                      copyStickyLink(editingStickyId)
+                                    }
                                     className="btn btn-sm btn-outline"
                                   >
                                     Copy Link
