@@ -31,6 +31,7 @@ export default function BookNotes() {
     null
   );
   const [isEditMode, setIsEditMode] = useState(true);
+  const [noteType, setNoteType] = useState<"main" | "sticky">("main");
   const notesContainerRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -385,32 +386,31 @@ export default function BookNotes() {
                             : t("not_saved_warning")}
                         </p>
                       </div>
-                      <button
-                        className="px-4 py-2 my-2 btn-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                        onClick={() => {
-                          if (isEditMode) {
-                            saveNote();
-                          }
-                          setIsEditMode(!isEditMode);
-                        }}
-                      >
-                        {isEditMode ? t("save_view_label") : t("edit_label")}
-                      </button>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          className="py-2 my-2 btn btn-sm btn-info"
+                          onClick={() => {
+                            if (isEditMode) {
+                              saveNote();
+                            }
+                            setIsEditMode(!isEditMode);
+                          }}
+                        >
+                          {isEditMode ? t("save_view_label") : t("edit_label")}
+                        </button>
+                        <button
+                          className="py-2 my-2 btn btn-sm btn-success"
+                          onClick={() => {
+                            setNoteType(noteType == "main" ? "sticky" : "main");
+                          }}
+                        >
+                          {noteType == "main" ? t("tab1") : t("tab2")}
+                        </button>
+                      </div>
                     </div>
-                    <div
-                      ref={notesContainerRef}
-                      className="flex flex-col h-[300px] md:h-[calc(100vh-300px)]"
-                    >
-                      <div role="tablist" className="tabs tabs-boxed">
-                        <input
-                          type="radio"
-                          name="my_tabs_2"
-                          role="tab"
-                          className="tab"
-                          aria-label={t("tab1")}
-                          defaultChecked
-                        />
-                        <div role="tabpanel" className="tab-content p-2 h-auto">
+                    <div ref={notesContainerRef} className="flex flex-col">
+                      {noteType == "main" ? (
+                        <div className="p-2 h-auto">
                           {isEditMode ? (
                             <>
                               <textarea
@@ -434,57 +434,47 @@ export default function BookNotes() {
                             </div>
                           )}
                         </div>
-                        <input
-                          type="radio"
-                          name="my_tabs_2"
-                          role="tab"
-                          className="tab"
-                          aria-label={t("tab2")}
-                        />
-                        <div
-                          role="tabpanel"
-                          className="tab-content p-2 overflow-y-auto"
-                        >
-                          <div className="flex flex-wrap gap-2">
-                            {Object.entries(bookStickys).map(([id, sticky]) => (
-                              <div
-                                key={id}
-                                className="badge badge-secondary gap-1 h-auto inline-flex items-center px-2 py-1 min-w-[120px]"
-                              >
-                                <span className="mr-1 whitespace-normal break-words flex-grow text-left">
-                                  {sticky.label}
-                                </span>
-                                <button
-                                  onClick={() => onRemoveSticky(id)}
-                                  className="btn btn-xs btn-circle btn-ghost ml-1 flex-shrink-0"
-                                >
-                                  ✕
-                                </button>
-                              </div>
-                            ))}
-                            <div className="badge badge-outline gap-1 h-auto inline-flex items-center px-2 py-1 min-w-[120px]">
-                              <input
-                                type="text"
-                                value={newSticky}
-                                onChange={(e) => setNewSticky(e.target.value)}
-                                onKeyPress={(e) => {
-                                  if (e.key === "Enter") {
-                                    onAddSticky();
-                                  }
-                                }}
-                                placeholder={t("add_sticky")}
-                                className="bg-transparent border-none outline-none w-full"
-                              />
+                      ) : (
+                        <div className="flex flex-wrap gap-2">
+                          {Object.entries(bookStickys).map(([id, sticky]) => (
+                            <div
+                              key={id}
+                              className="badge badge-secondary gap-1 h-auto inline-flex items-center px-2 py-1"
+                              style={{ flexBasis: "auto" }}
+                            >
+                              <span className="mr-1 whitespace-normal break-words flex-grow text-left">
+                                {sticky.label}
+                              </span>
                               <button
-                                onClick={onAddSticky}
-                                className="btn btn-xs btn-circle btn-ghost flex-shrink-0"
+                                onClick={() => onRemoveSticky(id)}
+                                className="btn btn-xs btn-circle btn-ghost ml-1 flex-shrink-0"
                               >
-                                +
+                                ✕
                               </button>
                             </div>
+                          ))}
+                          <div className="badge badge-outline gap-1 h-auto inline-flex items-center px-2 py-1">
+                            <input
+                              type="text"
+                              value={newSticky}
+                              onChange={(e) => setNewSticky(e.target.value)}
+                              onKeyPress={(e) => {
+                                if (e.key === "Enter") {
+                                  onAddSticky();
+                                }
+                              }}
+                              placeholder={t("add_sticky")}
+                              className="bg-transparent border-none outline-none w-full"
+                            />
+                            <button
+                              onClick={onAddSticky}
+                              className="btn btn-xs btn-circle btn-ghost flex-shrink-0"
+                            >
+                              +
+                            </button>
                           </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   </>
                 ) : (
