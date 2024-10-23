@@ -9,9 +9,14 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export default function BookNotes() {
-  const [bookStickys, setBookStickys] = useState<{ [key: string]: string[] }>(
-    {}
-  );
+  const [bookStickys, setBookStickys] = useState<{
+    [bookId: string]: {
+      content: string;
+      lastUpdated: string | null;
+      createdAt: string | null;
+      label: string;
+    };
+  }>({});
   const [newSticky, setNewSticky] = useState("");
   const t = useTranslations("Notes");
   const tCommon = useTranslations("Common");
@@ -94,9 +99,9 @@ export default function BookNotes() {
         .eq("user_id", user?.id);
       if (stickyNotesError) {
         console.error("Error fetching sticky notes:", stickyNotesError);
-        return [];
+        setBookStickys([]);
       } else {
-        return stickyNotesData;
+        stickyNotesData.map();
       }
     } catch (error) {
       console.error("Unexpected error:", error);
