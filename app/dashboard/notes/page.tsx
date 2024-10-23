@@ -409,7 +409,10 @@ export default function BookNotes() {
                           aria-label={t("tab1")}
                           defaultChecked
                         />
-                        <div role="tabpanel" className="tab-content p-2 h-[calc(100vh-450px)]">
+                        <div
+                          role="tabpanel"
+                          className="tab-content p-2 h-[calc(100vh-450px)]"
+                        >
                           {isEditMode ? (
                             <>
                               <textarea
@@ -440,7 +443,10 @@ export default function BookNotes() {
                           className="tab"
                           aria-label={t("tab2")}
                         />
-                        <div role="tabpanel" className="tab-content p-2 h-[calc(100vh-450px)] overflow-y-auto">
+                        <div
+                          role="tabpanel"
+                          className="tab-content p-2 h-[calc(100vh-450px)] overflow-y-auto"
+                        >
                           <div className="flex flex-wrap gap-2">
                             {Object.entries(bookStickys).map(([id, sticky]) => (
                               <div
@@ -467,7 +473,7 @@ export default function BookNotes() {
                                       onAddSticky();
                                     }
                                   }}
-                                  placeholder={t("addtags_label")}
+                                  placeholder={t("add_sticky")}
                                   className="bg-transparent border-none outline-none w-20"
                                 />
                                 <button
