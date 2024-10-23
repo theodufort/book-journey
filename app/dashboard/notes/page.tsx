@@ -8,6 +8,7 @@ import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
+import { Switch } from "@headlessui/react";
 
 export default function BookNotes() {
   const [bookStickys, setBookStickys] = useState<{
@@ -17,6 +18,7 @@ export default function BookNotes() {
       createdAt: string | null;
       label: string;
       isEditing: boolean;
+      isPublic: boolean;
     };
   }>({});
   const [newSticky, setNewSticky] = useState("");
@@ -112,6 +114,7 @@ export default function BookNotes() {
             createdAt: item.created_at,
             label: item.label,
             isEditing: false,
+            isPublic: item.is_public,
           };
           return acc;
         }, {});
@@ -128,13 +131,18 @@ export default function BookNotes() {
     setEditingStickyId(editingStickyId === id ? null : id);
   };
 
-  const updateStickyContent = async (id: string, newContent: string) => {
+  const updateStickyContent = async (id: string, newContent: string, isPublic?: boolean) => {
     if (!selectedBook) return;
 
     try {
+      const updateData: { content: string; is_public?: boolean } = { content: newContent };
+      if (isPublic !== undefined) {
+        updateData.is_public = isPublic;
+      }
+
       const { error } = await supabase
         .from("sticky_notes")
-        .update({ content: newContent })
+        .update(updateData)
         .eq("id", id)
         .eq("user_id", user?.id)
         .eq("book_id", selectedBook.book_id);
@@ -144,13 +152,33 @@ export default function BookNotes() {
       } else {
         setBookStickys((prev) => ({
           ...prev,
-          [id]: { ...prev[id], content: newContent },
+          [id]: { 
+            ...prev[id], 
+            content: newContent,
+            isPublic: isPublic !== undefined ? isPublic : prev[id].isPublic
+          },
         }));
         setEditingStickyId(null);
       }
     } catch (error) {
       console.error("Unexpected error:", error);
     }
+  };
+
+  const toggleStickyPublic = async (id: string) => {
+    const sticky = bookStickys[id];
+    if (sticky) {
+      await updateStickyContent(id, sticky.content, !sticky.isPublic);
+    }
+  };
+
+  const copyStickyLink = (id: string) => {
+    const link = `/sticky-note/${id}`;
+    navigator.clipboard.writeText(link).then(() => {
+      alert("Link copied to clipboard!");
+    }).catch((err) => {
+      console.error("Failed to copy link: ", err);
+    });
   };
 
   const removeStickyNote = async (id: string) => {
@@ -527,28 +555,58 @@ export default function BookNotes() {
                             </div>
                           </div>
                           {editingStickyId && isEditMode && (
-                            <textarea
-                              className="mt-1 p-2 w-full text-sm rounded resize-vertical min-h-[100px]"
-                              value={bookStickys[editingStickyId].content}
-                              onChange={(e) => {
-                                setBookStickys((prev) => ({
-                                  ...prev,
-                                  [editingStickyId]: {
-                                    ...prev[editingStickyId],
-                                    content: e.target.value,
-                                  },
-                                }));
-                                e.target.style.height = "auto";
-                                e.target.style.height =
-                                  e.target.scrollHeight + "px";
-                              }}
-                              onBlur={() =>
-                                updateStickyContent(
-                                  editingStickyId,
-                                  bookStickys[editingStickyId].content
-                                )
-                              }
-                            />
+                            <>
+                              <div className="flex items-center justify-between mb-2">
+                                <Switch.Group>
+                                  <div className="flex items-center">
+                                    <Switch.Label className="mr-4">Public</Switch.Label>
+                                    <Switch
+                                      checked={bookStickys[editingStickyId].isPublic}
+                                      onChange={() => toggleStickyPublic(editingStickyId)}
+                                      className={`${
+                                        bookStickys[editingStickyId].isPublic ? 'bg-blue-600' : 'bg-gray-200'
+                                      } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2`}
+                                    >
+                                      <span
+                                        className={`${
+                                          bookStickys[editingStickyId].isPublic ? 'translate-x-6' : 'translate-x-1'
+                                        } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                                      />
+                                    </Switch>
+                                  </div>
+                                </Switch.Group>
+                                {bookStickys[editingStickyId].isPublic && (
+                                  <button
+                                    onClick={() => copyStickyLink(editingStickyId)}
+                                    className="btn btn-sm btn-outline"
+                                  >
+                                    Copy Link
+                                  </button>
+                                )}
+                              </div>
+                              <textarea
+                                className="mt-1 p-2 w-full text-sm rounded resize-vertical min-h-[100px]"
+                                value={bookStickys[editingStickyId].content}
+                                onChange={(e) => {
+                                  setBookStickys((prev) => ({
+                                    ...prev,
+                                    [editingStickyId]: {
+                                      ...prev[editingStickyId],
+                                      content: e.target.value,
+                                    },
+                                  }));
+                                  e.target.style.height = "auto";
+                                  e.target.style.height =
+                                    e.target.scrollHeight + "px";
+                                }}
+                                onBlur={() =>
+                                  updateStickyContent(
+                                    editingStickyId,
+                                    bookStickys[editingStickyId].content
+                                  )
+                                }
+                              />
+                            </>
                           )}
                           {editingStickyId && !isEditMode && (
                             <div className="mt-1 p-2 w-full text-sm rounded bg-base-200">
