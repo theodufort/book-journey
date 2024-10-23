@@ -152,6 +152,31 @@ export default function BookNotes() {
     }
   };
 
+  const removeStickyNote = async (id: string) => {
+    if (!selectedBook) return;
+
+    try {
+      const { error } = await supabase
+        .from("sticky_notes")
+        .delete()
+        .eq("id", id)
+        .eq("user_id", user?.id)
+        .eq("book_id", selectedBook.book_id);
+
+      if (error) {
+        console.error("Error removing sticky note:", error);
+      } else {
+        setBookStickys((prev) => {
+          const newStickys = { ...prev };
+          delete newStickys[id];
+          return newStickys;
+        });
+      }
+    } catch (error) {
+      console.error("Unexpected error:", error);
+    }
+  };
+
   const onAddSticky = async () => {
     if (!selectedBook || !newSticky.trim()) return;
 
@@ -450,11 +475,23 @@ export default function BookNotes() {
                                 <div
                                   className="badge badge-secondary gap-1 h-auto inline-flex items-center px-2 py-1 cursor-pointer"
                                   style={{ flexBasis: "auto" }}
-                                  onClick={() => toggleStickyEdit(id)}
                                 >
-                                  <span className="mr-1 whitespace-normal break-words flex-grow text-left">
+                                  <span 
+                                    className="mr-1 whitespace-normal break-words flex-grow text-left"
+                                    onClick={() => toggleStickyEdit(id)}
+                                  >
                                     {sticky.label}
                                   </span>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      // Add function to remove sticky note here
+                                      removeStickyNote(id);
+                                    }}
+                                    className="btn btn-xs btn-circle btn-ghost"
+                                  >
+                                    ×
+                                  </button>
                                 </div>
                               </div>
                             ))}
