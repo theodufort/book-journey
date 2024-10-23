@@ -9,6 +9,10 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export default function BookNotes() {
+  const [bookStickys, setBookStickys] = useState<{ [key: string]: string[] }>(
+    {}
+  );
+  const [newSticky, setNewSticky] = useState("");
   const t = useTranslations("Notes");
   const tCommon = useTranslations("Common");
   const supabase = createClientComponentClient<Database>();
@@ -76,7 +80,23 @@ export default function BookNotes() {
       fetchNotes();
     }
   }, [user]);
-
+  const fetchStickyNotes = async (book_id: string) => {
+    try {
+      const { data: stickyNotesData, error: stickyNotesError } = await supabase
+        .from("sticky_notes")
+        .select("id, content, created_at, updated_at, label")
+        .eq("book_id", book_id)
+        .eq("user_id", user?.id);
+      if (stickyNotesError) {
+        console.error("Error fetching sticky notes:", stickyNotesError);
+        return [];
+      } else {
+        return stickyNotesData;
+      }
+    } catch (error) {
+      console.error("Unexpected error:", error);
+    }
+  };
   const fetchReadingList = async () => {
     setLoading(true);
     try {
@@ -302,26 +322,90 @@ export default function BookNotes() {
                       ref={notesContainerRef}
                       className="flex flex-col h-[300px] md:h-[calc(100vh-300px)]"
                     >
-                      {isEditMode ? (
-                        <>
-                          <textarea
-                            className="flex-grow w-full p-3  rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none mb-2"
-                            value={notes[selectedBook.book_id]?.content || ""}
-                            onChange={(e) =>
-                              handleNoteChange(
-                                selectedBook.book_id,
-                                e.target.value
-                              )
-                            }
-                            placeholder={t("enter_notes_placeholder")}
-                          />
-                        </>
-                      ) : (
-                        <div className="flex-grow w-full p-3 rounded-md bg-base-200 overflow-y-auto whitespace-pre-wrap">
-                          {notes[selectedBook.book_id]?.content ||
-                            t("no_notes_warning")}
+                      <div role="tablist" className="tabs tabs-boxed">
+                        <input
+                          type="radio"
+                          name="my_tabs_2"
+                          role="tab"
+                          className="tab"
+                          aria-label={t("tab1")}
+                        />
+                        <div role="tabpanel" className="tab-content">
+                          {isEditMode ? (
+                            <>
+                              <textarea
+                                className="flex-grow w-full p-3  rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none mb-2"
+                                value={
+                                  notes[selectedBook.book_id]?.content || ""
+                                }
+                                onChange={(e) =>
+                                  handleNoteChange(
+                                    selectedBook.book_id,
+                                    e.target.value
+                                  )
+                                }
+                                placeholder={t("enter_notes_placeholder")}
+                              />
+                            </>
+                          ) : (
+                            <div className="flex-grow w-full p-3 rounded-md bg-base-200 overflow-y-auto whitespace-pre-wrap">
+                              {notes[selectedBook.book_id]?.content ||
+                                t("no_notes_warning")}
+                            </div>
+                          )}
                         </div>
-                      )}
+                        <input
+                          type="radio"
+                          name="my_tabs_2"
+                          role="tab"
+                          className="tab"
+                          aria-label={t("tab2")}
+                        />
+                        <div role="tabpanel" className="tab-content p-6">
+                          <div className="flex flex-wrap gap-2">
+                            {tags.map((tag) => (
+                              <div
+                                key={tag}
+                                className="badge badge-secondary gap-2 p02 h-auto"
+                              >
+                                {tag}
+                                <button
+                                  onClick={() => onRemoveSticky(tag)}
+                                  className="btn btn-xs btn-circle btn-ghost"
+                                >
+                                  ✕
+                                </button>
+                              </div>
+                            ))}
+                            <div className="badge badge-outline gap-2 h-auto flex">
+                              <div className="inline-flex">
+                                <input
+                                  type="text"
+                                  value={newSticky}
+                                  onChange={(e) => setNewSticky(e.target.value)}
+                                  onKeyPress={(e) => {
+                                    if (e.key === "Enter") {
+                                      onAddSticky(newSticky);
+                                      setNewSticky("");
+                                    }
+                                  }}
+                                  placeholder={t("addtags_label")}
+                                  className="bg-transparent border-none outline-none w-20"
+                                />
+                                <button
+                                  onClick={() => {
+                                    onAddSticky(newSticky);
+                                    setNewSticky("");
+                                  }}
+                                  className="btn btn-xs btn-circle btn-ghost"
+                                >
+                                  +
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </>
                 ) : (
