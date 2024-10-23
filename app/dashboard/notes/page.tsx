@@ -447,16 +447,18 @@ export default function BookNotes() {
                           {isEditMode ? (
                             <>
                               <textarea
-                                className="w-full h-full p-3 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                                className="w-full p-3 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical min-h-[200px]"
                                 value={
                                   notes[selectedBook.book_id]?.content || ""
                                 }
-                                onChange={(e) =>
+                                onChange={(e) => {
                                   handleNoteChange(
                                     selectedBook.book_id,
                                     e.target.value
-                                  )
-                                }
+                                  );
+                                  e.target.style.height = 'auto';
+                                  e.target.style.height = e.target.scrollHeight + 'px';
+                                }}
                                 placeholder={t("enter_notes_placeholder")}
                               />
                             </>
@@ -522,17 +524,19 @@ export default function BookNotes() {
                           </div>
                           {editingStickyId && isEditMode && (
                             <textarea
-                              className="mt-1 p-2 w-full text-sm border rounded"
+                              className="mt-1 p-2 w-full text-sm border rounded resize-vertical min-h-[100px]"
                               value={bookStickys[editingStickyId].content}
-                              onChange={(e) =>
+                              onChange={(e) => {
                                 setBookStickys((prev) => ({
                                   ...prev,
                                   [editingStickyId]: {
                                     ...prev[editingStickyId],
                                     content: e.target.value,
                                   },
-                                }))
-                              }
+                                }));
+                                e.target.style.height = 'auto';
+                                e.target.style.height = e.target.scrollHeight + 'px';
+                              }}
                               onBlur={() =>
                                 updateStickyContent(
                                   editingStickyId,
