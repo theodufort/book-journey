@@ -99,9 +99,18 @@ export default function BookNotes() {
         .eq("user_id", user?.id);
       if (stickyNotesError) {
         console.error("Error fetching sticky notes:", stickyNotesError);
-        setBookStickys([]);
+        setBookStickys({});
       } else {
-        stickyNotesData.map();
+        const stickyNotesObj = stickyNotesData.reduce((acc: any, item) => {
+          acc[item.id] = {
+            content: item.content,
+            lastUpdated: item.updated_at,
+            createdAt: item.created_at,
+            label: item.label,
+          };
+          return acc;
+        }, {});
+        setBookStickys(stickyNotesObj);
       }
     } catch (error) {
       console.error("Unexpected error:", error);
