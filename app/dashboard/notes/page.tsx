@@ -7,7 +7,6 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Modal } from "@/components/Modal";
 
 export default function BookNotes() {
   const t = useTranslations("Notes");
@@ -29,7 +28,7 @@ export default function BookNotes() {
   const [isMobile, setIsMobile] = useState(false);
   const [tags, setTags] = useState<{ [bookId: string]: string[] }>({});
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const predefinedTags = ["Important", "Review", "Question", "Idea", "Quote"];
 
@@ -208,11 +207,11 @@ export default function BookNotes() {
 
   const handleTagClick = (tag: string) => {
     setSelectedTag(tag);
-    setIsModalOpen(true);
+    setIsDialogOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
     setSelectedTag(null);
   };
 
@@ -390,25 +389,29 @@ export default function BookNotes() {
                                 ))}
                               </div>
                             </div>
-                            <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
-                              {selectedTag && (
-                                <div className="p-4">
-                                  <h3 className="font-bold text-lg mb-4">{t("edit_tag")}</h3>
-                                  <input
-                                    type="text"
-                                    value={selectedTag}
-                                    onChange={(e) => setSelectedTag(e.target.value)}
-                                    className="input input-bordered w-full mb-4"
-                                  />
+                            <dialog id="edit_tag_dialog" className={`modal ${isDialogOpen ? 'modal-open' : ''}`}>
+                              <form method="dialog" className="modal-box">
+                                <h3 className="font-bold text-lg mb-4">{t("edit_tag")}</h3>
+                                <input
+                                  type="text"
+                                  value={selectedTag || ''}
+                                  onChange={(e) => setSelectedTag(e.target.value)}
+                                  className="input input-bordered w-full mb-4"
+                                />
+                                <div className="modal-action">
+                                  <button className="btn" onClick={handleCloseDialog}>{t("cancel")}</button>
                                   <button
-                                    onClick={() => handleUpdateTag(selectedTag)}
                                     className="btn btn-primary"
+                                    onClick={() => {
+                                      if (selectedTag) handleUpdateTag(selectedTag);
+                                      handleCloseDialog();
+                                    }}
                                   >
                                     {t("update_tag")}
                                   </button>
                                 </div>
-                              )}
-                            </Modal>
+                              </form>
+                            </dialog>
                           </div>
                         </>
                       ) : (

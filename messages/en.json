@@ -141,7 +141,8 @@
       "quick_tags":"Quick Tags",
       "your_tags":"Your Tags",
       "edit_tag":"Edit Tag",
-      "update_tag":"Update Tag"
+      "update_tag":"Update Tag",
+      "cancel":"Cancel"
     },
     "BookRecommendations":{
       "title":"Book Recommendations",
