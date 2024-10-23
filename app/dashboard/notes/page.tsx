@@ -520,7 +520,7 @@ export default function BookNotes() {
                               </button>
                             </div>
                           </div>
-                          {editingStickyId && (
+                          {editingStickyId && isEditMode && (
                             <textarea
                               className="mt-1 p-2 w-full text-sm border rounded"
                               value={bookStickys[editingStickyId].content}
@@ -540,6 +540,11 @@ export default function BookNotes() {
                                 )
                               }
                             />
+                          )}
+                          {editingStickyId && !isEditMode && (
+                            <div className="mt-1 p-2 w-full text-sm border rounded bg-base-200">
+                              {bookStickys[editingStickyId].content}
+                            </div>
                           )}
                         </div>
                       )}
