@@ -476,7 +476,7 @@ export default function BookNotes() {
                                   className="badge badge-secondary gap-1 h-auto inline-flex items-center px-2 py-1 cursor-pointer"
                                   style={{ flexBasis: "auto" }}
                                 >
-                                  <span 
+                                  <span
                                     className="mr-1 whitespace-normal break-words flex-grow text-left"
                                     onClick={() => toggleStickyEdit(id)}
                                   >
@@ -485,6 +485,7 @@ export default function BookNotes() {
                                   <button
                                     onClick={(e) => {
                                       e.stopPropagation();
+                                      setEditingStickyId(null);
                                       // Add function to remove sticky note here
                                       removeStickyNote(id);
                                     }}
