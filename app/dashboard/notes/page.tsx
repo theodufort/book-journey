@@ -26,6 +26,9 @@ export default function BookNotes() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
+  const [tags, setTags] = useState<string[]>([]);
+
+  const predefinedTags = ["Important", "Review", "Question", "Idea", "Quote"];
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -187,6 +190,15 @@ export default function BookNotes() {
       }));
     }
   };
+
+  const handleAddTag = (tag: string) => {
+    if (selectedBook) {
+      const currentNote = notes[selectedBook.book_id]?.content || "";
+      const updatedNote = currentNote + ` #${tag}`;
+      handleNoteChange(selectedBook.book_id, updatedNote);
+    }
+  };
+
   return (
     <main className="min-h-screen p-4 sm:p-8 pb-16">
       <section className="max-w-6xl mx-auto space-y-4 sm:space-y-8">
@@ -304,17 +316,33 @@ export default function BookNotes() {
                     >
                       {isEditMode ? (
                         <>
-                          <textarea
-                            className="flex-grow w-full p-3  rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none mb-2"
-                            value={notes[selectedBook.book_id]?.content || ""}
-                            onChange={(e) =>
-                              handleNoteChange(
-                                selectedBook.book_id,
-                                e.target.value
-                              )
-                            }
-                            placeholder={t("enter_notes_placeholder")}
-                          />
+                          <div className="flex flex-col h-full">
+                            <textarea
+                              className="flex-grow w-full p-3 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none mb-2"
+                              value={notes[selectedBook.book_id]?.content || ""}
+                              onChange={(e) =>
+                                handleNoteChange(
+                                  selectedBook.book_id,
+                                  e.target.value
+                                )
+                              }
+                              placeholder={t("enter_notes_placeholder")}
+                            />
+                            <div className="mt-2">
+                              <p className="text-sm font-semibold mb-1">{t("quick_tags")}</p>
+                              <div className="flex flex-wrap gap-2">
+                                {predefinedTags.map((tag) => (
+                                  <button
+                                    key={tag}
+                                    onClick={() => handleAddTag(tag)}
+                                    className="badge badge-outline hover:bg-base-300 transition-colors"
+                                  >
+                                    {tag}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
                         </>
                       ) : (
                         <div className="flex-grow w-full p-3 rounded-md bg-base-200 overflow-y-auto whitespace-pre-wrap">
