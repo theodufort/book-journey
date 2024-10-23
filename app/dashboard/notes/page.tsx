@@ -121,11 +121,10 @@ export default function BookNotes() {
     }
   };
 
+  const [editingStickyId, setEditingStickyId] = useState<string | null>(null);
+
   const toggleStickyEdit = (id: string) => {
-    setBookStickys((prev) => ({
-      ...prev,
-      [id]: { ...prev[id], isEditing: !prev[id].isEditing },
-    }));
+    setEditingStickyId(editingStickyId === id ? null : id);
   };
 
   const updateStickyContent = async (id: string, newContent: string) => {
@@ -144,8 +143,9 @@ export default function BookNotes() {
       } else {
         setBookStickys((prev) => ({
           ...prev,
-          [id]: { ...prev[id], content: newContent, isEditing: false },
+          [id]: { ...prev[id], content: newContent },
         }));
+        setEditingStickyId(null);
       }
     } catch (error) {
       console.error("Unexpected error:", error);
@@ -443,58 +443,63 @@ export default function BookNotes() {
                           )}
                         </div>
                       ) : (
-                        <div className="flex flex-wrap gap-2">
-                          {Object.entries(bookStickys).map(([id, sticky]) => (
-                            <div key={id} className="flex flex-col">
-                              <div
-                                className="badge badge-secondary gap-1 h-auto inline-flex items-center px-2 py-1 cursor-pointer"
-                                style={{ flexBasis: "auto" }}
-                                onClick={() => toggleStickyEdit(id)}
-                              >
-                                <span className="mr-1 whitespace-normal break-words flex-grow text-left">
-                                  {sticky.label}
-                                </span>
+                        <div className="flex flex-col gap-2">
+                          <div className="flex flex-wrap gap-2">
+                            {Object.entries(bookStickys).map(([id, sticky]) => (
+                              <div key={id} className="flex flex-col">
+                                <div
+                                  className="badge badge-secondary gap-1 h-auto inline-flex items-center px-2 py-1 cursor-pointer"
+                                  style={{ flexBasis: "auto" }}
+                                  onClick={() => toggleStickyEdit(id)}
+                                >
+                                  <span className="mr-1 whitespace-normal break-words flex-grow text-left">
+                                    {sticky.label}
+                                  </span>
+                                </div>
                               </div>
-                              {sticky.isEditing && (
-                                <textarea
-                                  className="mt-1 p-2 w-full text-sm border rounded"
-                                  value={sticky.content}
-                                  onChange={(e) =>
-                                    setBookStickys((prev) => ({
-                                      ...prev,
-                                      [id]: {
-                                        ...prev[id],
-                                        content: e.target.value,
-                                      },
-                                    }))
+                            ))}
+                            <div className="badge badge-outline gap-1 h-auto inline-flex items-center px-2 py-1">
+                              <input
+                                type="text"
+                                value={newSticky}
+                                onChange={(e) => setNewSticky(e.target.value)}
+                                onKeyPress={(e) => {
+                                  if (e.key === "Enter") {
+                                    onAddSticky();
                                   }
-                                  onBlur={() =>
-                                    updateStickyContent(id, sticky.content)
-                                  }
-                                />
-                              )}
+                                }}
+                                placeholder={t("add_sticky")}
+                                className="bg-transparent border-none outline-none w-full"
+                              />
+                              <button
+                                onClick={onAddSticky}
+                                className="btn btn-xs btn-circle btn-ghost flex-shrink-0"
+                              >
+                                +
+                              </button>
                             </div>
-                          ))}
-                          <div className="badge badge-outline gap-1 h-auto inline-flex items-center px-2 py-1">
-                            <input
-                              type="text"
-                              value={newSticky}
-                              onChange={(e) => setNewSticky(e.target.value)}
-                              onKeyPress={(e) => {
-                                if (e.key === "Enter") {
-                                  onAddSticky();
-                                }
-                              }}
-                              placeholder={t("add_sticky")}
-                              className="bg-transparent border-none outline-none w-full"
-                            />
-                            <button
-                              onClick={onAddSticky}
-                              className="btn btn-xs btn-circle btn-ghost flex-shrink-0"
-                            >
-                              +
-                            </button>
                           </div>
+                          {editingStickyId && (
+                            <textarea
+                              className="mt-1 p-2 w-full text-sm border rounded"
+                              value={bookStickys[editingStickyId].content}
+                              onChange={(e) =>
+                                setBookStickys((prev) => ({
+                                  ...prev,
+                                  [editingStickyId]: {
+                                    ...prev[editingStickyId],
+                                    content: e.target.value,
+                                  },
+                                }))
+                              }
+                              onBlur={() =>
+                                updateStickyContent(
+                                  editingStickyId,
+                                  bookStickys[editingStickyId].content
+                                )
+                              }
+                            />
+                          )}
                         </div>
                       )}
                     </div>
