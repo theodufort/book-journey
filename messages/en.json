@@ -288,7 +288,7 @@
       "yearly": "Yearly",
       "metric": "Metric",
       "books_read": "Read {value} {book} {periodicity}",
-      "pages_read": "Pages Read",
+      "pages_read": "Read {value} {page} {periodicity}",
       "value": "Value",
       "enter_value": "Enter value",
       "description": "Description",
@@ -301,9 +301,11 @@
       "emoji": "Emoji",
       "click_to_change": "Click to change",
       "goal": "Goal: ",
-      "view_grid": "View Grid",
+      "view_stats": "View Stats",
       "reading_habit_grid": "Reading Habit Grid",
       "close": "Close",
-      "unnamed_habit": "Unnamed Habit"
+      "unnamed_habit": "Unnamed Habit",
+      "metric_books_read": "Books Read",
+      "metric_pages_read": "Pages Read"
     }
 }

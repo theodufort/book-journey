@@ -51,26 +51,40 @@ const Countdown = ({ habit, calculateNextEndDate }: any) => {
   return (
     <div className="grid grid-flow-col gap-5 text-center auto-cols-max">
       <div className="flex flex-col">
-        <span className="countdown font-mono text-5xl" style={{ "--value": timeLeft.days } as React.CSSProperties}>
-          {timeLeft.days > 99 ? timeLeft.days.toString() : timeLeft.days.toString().padStart(2, '0')}
+        <span
+          className="countdown font-mono text-5xl"
+          style={{ "--value": timeLeft.days } as React.CSSProperties}
+        >
+          {timeLeft.days > 99
+            ? timeLeft.days.toString()
+            : timeLeft.days.toString().padStart(2, "0")}
         </span>
         days
       </div>
       <div className="flex flex-col">
-        <span className="countdown font-mono text-5xl" style={{ "--value": timeLeft.hours } as React.CSSProperties}>
-          {timeLeft.hours.toString().padStart(2, '0')}
+        <span
+          className="countdown font-mono text-5xl"
+          style={{ "--value": timeLeft.hours } as React.CSSProperties}
+        >
+          {timeLeft.hours.toString().padStart(2, "0")}
         </span>
         hours
       </div>
       <div className="flex flex-col">
-        <span className="countdown font-mono text-5xl" style={{ "--value": timeLeft.minutes } as React.CSSProperties}>
-          {timeLeft.minutes.toString().padStart(2, '0')}
+        <span
+          className="countdown font-mono text-5xl"
+          style={{ "--value": timeLeft.minutes } as React.CSSProperties}
+        >
+          {timeLeft.minutes.toString().padStart(2, "0")}
         </span>
         min
       </div>
       <div className="flex flex-col">
-        <span className="countdown font-mono text-5xl" style={{ "--value": timeLeft.seconds } as React.CSSProperties}>
-          {timeLeft.seconds.toString().padStart(2, '0')}
+        <span
+          className="countdown font-mono text-5xl"
+          style={{ "--value": timeLeft.seconds } as React.CSSProperties}
+        >
+          {timeLeft.seconds.toString().padStart(2, "0")}
         </span>
         sec
       </div>
@@ -322,6 +336,14 @@ export default function ReadingHabits() {
                 periodicity: habit.periodicity,
               }),
             },
+            {
+              key: "pages_read",
+              label: t("pages_read", {
+                page: habit.value > 1 ? "pages" : "page",
+                value: habit.value,
+                periodicity: habit.periodicity,
+              }),
+            },
           ];
           return (
             <dialog
@@ -356,6 +378,14 @@ export default function ReadingHabits() {
                     periodicity: habit.periodicity,
                   }),
                 },
+                {
+                  key: "pages_read",
+                  label: t("pages_read", {
+                    page: habit.value > 1 ? "pages" : "page",
+                    value: habit.value,
+                    periodicity: habit.periodicity,
+                  }),
+                },
               ];
               return (
                 <div key={habit.id} className="card bg-base-200 shadow-xl">
@@ -380,7 +410,7 @@ export default function ReadingHabits() {
                             .showModal()
                         }
                       >
-                        {t("view_grid")}
+                        {t("view_stats")}
                       </button>
                     </div>
                   </div>
