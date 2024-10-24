@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Countdown from "./Countdown";
+import HabitConsistencyGraph from "./HabitConsistencyGraph";
 
 const HabitCard: React.FC = () => {
   const t = useTranslations("ReadingHabits");
@@ -198,6 +199,10 @@ const HabitCard: React.FC = () => {
                   %
                 </div>
               </div>
+            </div>
+            {/* Add the HabitConsistencyGraph component */}
+            <div className="mt-4">
+              <HabitConsistencyGraph habit={habit} days={30} />
             </div>
           </div>
         </div>
