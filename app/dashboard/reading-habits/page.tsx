@@ -3,11 +3,11 @@ import HeaderDashboard from "@/components/DashboardHeader";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import {
-  addDays,
-  addMonths,
-  addWeeks,
-  addYears,
-  differenceInSeconds,
+    addDays,
+    addMonths,
+    addWeeks,
+    addYears,
+    differenceInSeconds,
 } from "date-fns";
 import EmojiPicker from "emoji-picker-react";
 import { useTranslations } from "next-intl";
@@ -327,7 +327,7 @@ export default function ReadingHabits() {
           </dialog>
         </div>
         {habits.map((habit) => {
-          const metricBinding: [{ key: string; label: string }] = [
+          const metricBinding: any = [
             {
               key: "books_read",
               label: t("books_read", {
@@ -354,7 +354,7 @@ export default function ReadingHabits() {
                   </button>
                 </form>
                 <h3 className="font-bold text-lg mb-4" id={`habit_modal_title_${habit.id}`}>
-                  {metricBinding.find((x) => x.key === habit.metric)?.label ||
+                  {metricBinding.find((x: any) => x.key === habit.metric)?.label ||
                     t("unnamed_habit")}
                 </h3>
                 <div id={`habit_modal_content_${habit.id}`}></div>
