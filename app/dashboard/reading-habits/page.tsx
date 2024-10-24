@@ -3,7 +3,7 @@ import HeaderDashboard from "@/components/DashboardHeader";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useTranslations } from "next-intl";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function ReadingHabits() {
@@ -20,7 +20,9 @@ export default function ReadingHabits() {
   }, []);
 
   const fetchHabits = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (user) {
       const { data, error } = await supabase
         .from("habits")
@@ -169,12 +171,14 @@ export default function ReadingHabits() {
             </div>
           </dialog>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {habits.map((habit) => (
             <div key={habit.id} className="card bg-base-200 shadow-xl">
               <div className="card-body">
                 <h2 className="card-title">{t(habit.periodicity)}</h2>
-                <p>{t(habit.metric)}: {habit.value}</p>
+                <p>
+                  {t(habit.metric)}: {habit.value}
+                </p>
                 {habit.description && <p>{habit.description}</p>}
               </div>
             </div>
