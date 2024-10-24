@@ -77,7 +77,7 @@ export default function ReadingHabits() {
           value: numericValue.toString(),
           description: description || null,
           emoji: emoji,
-          streak: [].push({ timestamp: new Date().toISOString() }),
+          streak: [new Date().toISOString()],
         },
       ]);
 
