@@ -2,14 +2,25 @@
 import HeaderDashboard from "@/components/DashboardHeader";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import {
+  addDays,
+  addMonths,
+  addWeeks,
+  addYears,
+  differenceInSeconds,
+} from "date-fns";
 import EmojiPicker from "emoji-picker-react";
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { differenceInSeconds, addDays, addWeeks, addMonths, addYears, parseISO } from "date-fns";
 
-const Countdown = ({ habit, calculateNextEndDate }) => {
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+const Countdown = ({ habit, calculateNextEndDate }: any) => {
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
   const intervalRef = useRef(null);
 
   useEffect(() => {
@@ -116,19 +127,20 @@ export default function ReadingHabits() {
     }
   };
 
-  const calculateNextEndDate = (habit) => {
-    const lastDate = habit.streak && habit.streak.length > 0 
-      ? new Date(habit.streak[habit.streak.length - 1]) 
-      : new Date(habit.created_at);
+  const calculateNextEndDate = (habit: any) => {
+    const lastDate =
+      habit.streak && habit.streak.length > 0
+        ? new Date(habit.streak[habit.streak.length - 1])
+        : new Date(habit.created_at);
 
     switch (habit.periodicity) {
-      case 'daily':
+      case "daily":
         return addDays(lastDate, 1);
-      case 'weekly':
+      case "weekly":
         return addWeeks(lastDate, 1);
-      case 'monthly':
+      case "monthly":
         return addMonths(lastDate, 1);
-      case 'yearly':
+      case "yearly":
         return addYears(lastDate, 1);
       default:
         return lastDate;
@@ -238,8 +250,8 @@ export default function ReadingHabits() {
                     value={metric}
                     onChange={(e) => setMetric(e.target.value)}
                   >
-                    <option value="books_read">{t("books_read")}</option>
-                    <option value="pages_read">{t("pages_read")}</option>
+                    <option value="books_read">{t("metric_books_read")}</option>
+                    <option value="pages_read">{t("metric_pages_read")}</option>
                   </select>
                 </div>
                 <div className="form-control w-full max-w-xs">
@@ -352,10 +364,13 @@ export default function ReadingHabits() {
                       <span className="text-2xl mr-2">{habit.emoji}</span>
                       {metricBinding.find((x) => x.key === habit.metric)?.label}
                     </h2>
-                    {habit.description && (
+                    {/* {habit.description && (
                       <p className="text-sm italic mt-2">{habit.description}</p>
-                    )}
-                    <Countdown habit={habit} calculateNextEndDate={calculateNextEndDate} />
+                    )} */}
+                    <Countdown
+                      habit={habit}
+                      calculateNextEndDate={calculateNextEndDate}
+                    />
                     <div className="card-actions justify-end mt-4">
                       <button
                         className="btn btn-primary btn-sm"
