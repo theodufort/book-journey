@@ -6,6 +6,7 @@ import EmojiPicker from "emoji-picker-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import ReadingHabitGrid from "@/components/ReadingHabitGrid";
 
 export default function ReadingHabits() {
   const t = useTranslations("ReadingHabits");
@@ -95,13 +96,21 @@ export default function ReadingHabits() {
           <h1 className="text-2xl md:text-4xl font-extrabold  my-auto">
             {t("title")}
           </h1>
-          <button
-            className="btn btn-primary float-end ml-auto mr-0 my-auto"
-            onClick={() => document.getElementById("my_modal_3").showModal()}
-          >
-            <span className="hidden md:block">{t("add_habit")}</span>
-            <span className="block md:hidden text-2xl">+</span>
-          </button>
+          <div className="ml-auto flex gap-2">
+            <button
+              className="btn btn-secondary"
+              onClick={() => document.getElementById("habit_grid_modal").showModal()}
+            >
+              {t("view_grid")}
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={() => document.getElementById("my_modal_3").showModal()}
+            >
+              <span className="hidden md:block">{t("add_habit")}</span>
+              <span className="block md:hidden text-2xl">+</span>
+            </button>
+          </div>
         </div>
         <div className="space-y-8">
           <dialog id="my_modal_3" className="modal">
@@ -201,6 +210,17 @@ export default function ReadingHabits() {
             </div>
           </dialog>
         </div>
+        <dialog id="habit_grid_modal" className="modal">
+          <div className="modal-box w-11/12 max-w-5xl">
+            <h3 className="font-bold text-lg mb-4">{t("reading_habit_grid")}</h3>
+            <ReadingHabitGrid habits={habits} />
+            <div className="modal-action">
+              <form method="dialog">
+                <button className="btn">{t("close")}</button>
+              </form>
+            </div>
+          </div>
+        </dialog>
         {habits.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {habits.map((habit) => {
