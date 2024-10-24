@@ -6,9 +6,25 @@ import EmojiPicker from "emoji-picker-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import ReadingHabitGrid from "@/components/ReadingHabitGrid";
 
 export default function ReadingHabits() {
+  const [activityDataHabit, setActivityDataHabit] = useState([
+    {
+      date: "2024-06-23",
+      count: 2,
+      level: 1,
+    },
+    {
+      date: "2024-08-02",
+      count: 16,
+      level: 4,
+    },
+    {
+      date: "2024-11-29",
+      count: 11,
+      level: 3,
+    },
+  ]);
   const t = useTranslations("ReadingHabits");
   const [periodicity, setPeriodicity] = useState("daily");
   const [metric, setMetric] = useState("books_read");
@@ -61,6 +77,7 @@ export default function ReadingHabits() {
           value: numericValue.toString(),
           description: description || null,
           emoji: emoji,
+          streak: [].push({ timestamp: new Date().toISOString() }),
         },
       ]);
 
@@ -97,12 +114,6 @@ export default function ReadingHabits() {
             {t("title")}
           </h1>
           <div className="ml-auto flex gap-2">
-            <button
-              className="btn btn-secondary"
-              onClick={() => document.getElementById("habit_grid_modal").showModal()}
-            >
-              {t("view_grid")}
-            </button>
             <button
               className="btn btn-primary"
               onClick={() => document.getElementById("my_modal_3").showModal()}
@@ -210,19 +221,38 @@ export default function ReadingHabits() {
             </div>
           </dialog>
         </div>
-        {habits.map((habit) => (
-          <dialog id={`habit_grid_modal_${habit.id}`} className="modal" key={habit.id}>
-            <div className="modal-box w-11/12 max-w-5xl">
-              <h3 className="font-bold text-lg mb-4">{t("reading_habit_grid")}: {habit.description || t("unnamed_habit")}</h3>
-              <ReadingHabitGrid habit={habit} />
-              <div className="modal-action">
+        {habits.map((habit) => {
+          const metricBinding: [{ key: string; label: string }] = [
+            {
+              key: "books_read",
+              label: t("books_read", {
+                book: habit.value > 1 ? "books" : "book",
+                value: habit.value,
+                periodicity: habit.periodicity,
+              }),
+            },
+          ];
+          return (
+            <dialog
+              id={`habit_grid_modal_${habit.id}`}
+              className="modal"
+              key={habit.id}
+            >
+              <div className="modal-box">
                 <form method="dialog">
-                  <button className="btn">{t("close")}</button>
+                  {/* if there is a button in form, it will close the modal */}
+                  <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                    ✕
+                  </button>
                 </form>
+                <h3 className="font-bold text-lg mb-4">
+                  {metricBinding.find((x) => x.key === habit.metric)?.label ||
+                    t("unnamed_habit")}
+                </h3>
               </div>
-            </div>
-          </dialog>
-        ))}
+            </dialog>
+          );
+        })}
         {habits.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {habits.map((habit) => {
@@ -249,7 +279,11 @@ export default function ReadingHabits() {
                     <div className="card-actions justify-end mt-4">
                       <button
                         className="btn btn-primary btn-sm"
-                        onClick={() => document.getElementById(`habit_grid_modal_${habit.id}`).showModal()}
+                        onClick={() =>
+                          document
+                            .getElementById(`habit_grid_modal_${habit.id}`)
+                            .showModal()
+                        }
                       >
                         {t("view_grid")}
                       </button>
