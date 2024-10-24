@@ -298,6 +298,7 @@
       "insert_error": "Error inserting habit. Please try again.",
       "insert_success": "Habit inserted successfully!",
       "books_read": "Books Read",
-      "pages_read": "Pages Read"
+      "pages_read": "Pages Read",
+      "no_habits": "You don't have any reading habits yet. Click 'Add a Habit' to get started!"
     }
 }

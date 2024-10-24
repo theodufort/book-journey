@@ -171,19 +171,25 @@ export default function ReadingHabits() {
             </div>
           </dialog>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {habits.map((habit) => (
-            <div key={habit.id} className="card bg-base-200 shadow-xl">
-              <div className="card-body">
-                <h2 className="card-title">{t(habit.periodicity)}</h2>
-                <p>
-                  {t(habit.metric)}: {habit.value}
-                </p>
-                {habit.description && <p>{habit.description}</p>}
+        {habits.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {habits.map((habit) => (
+              <div key={habit.id} className="card bg-base-200 shadow-xl">
+                <div className="card-body">
+                  <h2 className="card-title">{t(habit.periodicity)}</h2>
+                  <p>
+                    {t(habit.metric)}: {habit.value}
+                  </p>
+                  {habit.description && <p>{habit.description}</p>}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8">
+            <p className="text-xl">{t("no_habits")}</p>
+          </div>
+        )}
       </section>
     </main>
   );
