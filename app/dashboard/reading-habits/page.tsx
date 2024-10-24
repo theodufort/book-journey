@@ -211,13 +211,16 @@ export default function ReadingHabits() {
                     {t(habit.periodicity)}
                   </h2>
                   <p className="font-bold">
-                    {t("goal")}: {habit.value} {t(habit.metric, { count: parseInt(habit.value) })}
+                    {t("goal", {
+                      count: parseInt(habit.value),
+                      metric: t(habit.metric, { count: parseInt(habit.value) })
+                    })}
                   </p>
                   <p>
                     {t("habit_description", {
                       value: habit.value,
                       metric: t(habit.metric, { count: parseInt(habit.value) }),
-                      periodicity: t(habit.periodicity.toLowerCase()),
+                      periodicity: t(habit.periodicity),
                     }).replace(/ReadingHabits\./g, "")}
                   </p>
                   {habit.description && (
