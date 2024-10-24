@@ -296,6 +296,8 @@
       "save": "Save",
       "value_error": "Please enter a valid number (minimum 1).",
       "insert_error": "Error inserting habit. Please try again.",
-      "insert_success": "Habit inserted successfully!"
+      "insert_success": "Habit inserted successfully!",
+      "books_read": "Books Read",
+      "pages_read": "Pages Read"
     }
 }
