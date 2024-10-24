@@ -308,6 +308,7 @@
       "books_read_other": "books",
       "pages_read_one": "page",
       "pages_read_other": "pages",
-      "goal": "Goal"
+      "goal_one": "Goal: {{count}} {{metric}}",
+      "goal_other": "Goal: {{count}} {{metric}}"
     }
 }
