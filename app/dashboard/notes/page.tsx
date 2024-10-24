@@ -6,7 +6,7 @@ import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useMemo, useRef, useState, Fragment } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -25,7 +25,6 @@ export default function BookNotes() {
   }>({});
   const [newSticky, setNewSticky] = useState("");
   const t = useTranslations("Notes");
-  const tCommon = useTranslations("Common");
   const supabase = createClientComponentClient<Database>();
   const [readingList, setReadingList] = useState<ReadingListItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,6 +42,8 @@ export default function BookNotes() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+
+  const [editingStickyId, setEditingStickyId] = useState<string | null>(null);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -99,11 +100,12 @@ export default function BookNotes() {
       fetchStickyNotes(selectedBook.book_id);
     }
   }, [selectedBook, user]);
+
   const fetchStickyNotes = async (book_id: string) => {
     try {
       const { data: stickyNotesData, error: stickyNotesError } = await supabase
         .from("sticky_notes")
-        .select("id, content, created_at, updated_at, label")
+        .select("id, content, created_at, updated_at, label, is_public")
         .eq("book_id", book_id)
         .eq("user_id", user?.id);
       if (stickyNotesError) {
@@ -127,8 +129,6 @@ export default function BookNotes() {
       console.error("Unexpected error:", error);
     }
   };
-
-  const [editingStickyId, setEditingStickyId] = useState<string | null>(null);
 
   const toggleStickyEdit = (id: string) => {
     setEditingStickyId(editingStickyId === id ? null : id);
@@ -167,7 +167,7 @@ export default function BookNotes() {
             isPublic: isPublic !== undefined ? isPublic : prev[id].isPublic,
           },
         }));
-        setEditingStickyId(null);
+        // Do not set editingStickyId to null here
       }
     } catch (error) {
       console.error("Unexpected error:", error);
@@ -178,6 +178,7 @@ export default function BookNotes() {
     const sticky = bookStickys[id];
     if (sticky) {
       await updateStickyContent(id, sticky.content, !sticky.isPublic);
+      // Do not set editingStickyId to null here
     }
   };
 
@@ -242,6 +243,7 @@ export default function BookNotes() {
             lastUpdated: data[0].updated_at,
             createdAt: data[0].created_at,
             label: data[0].label,
+            isPublic: data[0].is_public,
           },
         }));
         setNewSticky("");
@@ -250,6 +252,7 @@ export default function BookNotes() {
       console.error("Unexpected error:", error);
     }
   };
+
   const fetchReadingList = async () => {
     setLoading(true);
     try {
@@ -361,15 +364,34 @@ export default function BookNotes() {
       }));
     }
   };
+
+  const saveStickyNote = async () => {
+    if (editingStickyId) {
+      await updateStickyContent(
+        editingStickyId,
+        bookStickys[editingStickyId].content
+      );
+      setEditingStickyId(null);
+    }
+  };
+
+  const handleSaveButtonClick = async () => {
+    if (isEditMode) {
+      if (noteType === "main") {
+        await saveNote();
+      } else if (noteType === "sticky") {
+        await saveStickyNote();
+      }
+    }
+    setIsEditMode(!isEditMode);
+  };
+
   return (
     <main className="min-h-screen p-4 sm:p-8 pb-16">
       <section className="max-w-6xl mx-auto space-y-4 sm:space-y-8">
         <div className="sticky top-0 z-50 bg-base-100">
           <HeaderDashboard />
         </div>
-        {/* <h1 className="text-2xl md:text-4xl font-extrabold  my-auto">
-          {t("title")}
-        </h1> */}
         {loading ? (
           <main className="min-h-screen p-8 pb-24 flex items-center justify-center">
             <span className="loading loading-spinner loading-lg"></span>
@@ -463,12 +485,7 @@ export default function BookNotes() {
                       <div className="grid grid-cols-2 gap-2">
                         <button
                           className="py-2 my-2 btn btn-sm btn-info"
-                          onClick={() => {
-                            if (isEditMode) {
-                              saveNote();
-                            }
-                            setIsEditMode(!isEditMode);
-                          }}
+                          onClick={handleSaveButtonClick}
                         >
                           {isEditMode ? t("save_view_label") : t("edit_label")}
                         </button>
@@ -573,7 +590,7 @@ export default function BookNotes() {
                             </div>
                           </div>
                           {editingStickyId && isEditMode && (
-                            <>
+                            <div>
                               <div className="flex items-center justify-between mb-2">
                                 <div className="form-control">
                                   <label className="label cursor-pointer">
@@ -616,14 +633,8 @@ export default function BookNotes() {
                                   e.target.style.height =
                                     e.target.scrollHeight + "px";
                                 }}
-                                onBlur={() =>
-                                  updateStickyContent(
-                                    editingStickyId,
-                                    bookStickys[editingStickyId].content
-                                  )
-                                }
                               />
-                            </>
+                            </div>
                           )}
                           {editingStickyId && !isEditMode && (
                             <div className="mt-1 p-2 w-full text-sm rounded bg-base-200">
@@ -651,7 +662,9 @@ export default function BookNotes() {
         onClose={() => setDeleteConfirmId(null)}
         onConfirm={() => {
           if (deleteConfirmId) {
-            setEditingStickyId(null);
+            if (editingStickyId === deleteConfirmId) {
+              setEditingStickyId(null);
+            }
             removeStickyNote(deleteConfirmId);
             setDeleteConfirmId(null);
           }
@@ -660,15 +673,24 @@ export default function BookNotes() {
     </main>
   );
 
-  function DeleteConfirmDialog({ isOpen, onClose, onConfirm }: { isOpen: boolean; onClose: () => void; onConfirm: () => void }) {
+  function DeleteConfirmDialog({
+    isOpen,
+    onClose,
+    onConfirm,
+  }: {
+    isOpen: boolean;
+    onClose: () => void;
+    onConfirm: () => void;
+  }) {
     if (!isOpen) return null;
 
     return (
-      <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-        <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
+      <div className="fixed inset-0 z-50 overflow-auto flex bg-opacity-50 modal modal-open">
+        <div className="relative p-8 bg-base-200 m-auto flex-col flex rounded-lg mx-auto">
           <div className="flex flex-col items-center">
-            <h3 className="text-lg font-bold mb-2">{t("delete_sticky_title")}</h3>
-            <p className="text-center mb-4">{t("delete_sticky_message")}</p>
+            <h3 className="text-lg font-bold mb-2">
+              {t("delete_sticky_title")}
+            </h3>
             <div className="flex justify-center">
               <button className="btn btn-error mr-2" onClick={onConfirm}>
                 {t("delete_confirm")}
@@ -683,5 +705,3 @@ export default function BookNotes() {
     );
   }
 }
-
-// Add this at the end of the file

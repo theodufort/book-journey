@@ -786,15 +786,7 @@ export type Database = {
           title?: string
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "blog_articles_isbn_13_fkey"
-            columns: ["isbn_13"]
-            isOneToOne: false
-            referencedRelation: "books"
-            referencedColumns: ["isbn_13"]
-          },
-        ]
+        Relationships: []
       }
       blog_categories: {
         Row: {
@@ -1338,6 +1330,47 @@ export type Database = {
             foreignKeyName: "referrals_referrer_id_fkey"
             columns: ["referrer_id"]
             isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sticky_notes: {
+        Row: {
+          book_id: string
+          content: string
+          created_at: string
+          id: string
+          is_public: boolean
+          label: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          book_id: string
+          content: string
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          label: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          book_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          label?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sticky_notes_user_id_fkey1"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
