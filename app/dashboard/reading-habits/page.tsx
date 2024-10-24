@@ -51,26 +51,26 @@ const Countdown = ({ habit, calculateNextEndDate }: any) => {
   return (
     <div className="grid grid-flow-col gap-5 text-center auto-cols-max">
       <div className="flex flex-col">
-        <span className="countdown font-mono text-5xl">
-          <span style={{ "--value": timeLeft.days }}></span>
+        <span className="countdown font-mono text-5xl" style={{ "--value": timeLeft.days } as React.CSSProperties}>
+          {timeLeft.days.toString().padStart(3, '0')}
         </span>
         days
       </div>
       <div className="flex flex-col">
-        <span className="countdown font-mono text-5xl">
-          <span style={{ "--value": timeLeft.hours }}></span>
+        <span className="countdown font-mono text-5xl" style={{ "--value": timeLeft.hours } as React.CSSProperties}>
+          {timeLeft.hours.toString().padStart(2, '0')}
         </span>
         hours
       </div>
       <div className="flex flex-col">
-        <span className="countdown font-mono text-5xl">
-          <span style={{ "--value": timeLeft.minutes }}></span>
+        <span className="countdown font-mono text-5xl" style={{ "--value": timeLeft.minutes } as React.CSSProperties}>
+          {timeLeft.minutes.toString().padStart(2, '0')}
         </span>
         min
       </div>
       <div className="flex flex-col">
-        <span className="countdown font-mono text-5xl">
-          <span style={{ "--value": timeLeft.seconds }}></span>
+        <span className="countdown font-mono text-5xl" style={{ "--value": timeLeft.seconds } as React.CSSProperties}>
+          {timeLeft.seconds.toString().padStart(2, '0')}
         </span>
         sec
       </div>
