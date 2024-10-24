@@ -287,7 +287,7 @@
       "monthly": "Monthly",
       "yearly": "Yearly",
       "metric": "Metric",
-      "books_read": "Books Read",
+      "books_read": "Read {value} {book} {periodicity}",
       "pages_read": "Pages Read",
       "value": "Value",
       "enter_value": "Enter value",
@@ -300,15 +300,6 @@
       "no_habits": "You don't have any reading habits yet. Click 'Add a Habit' to get started!",
       "emoji": "Emoji",
       "click_to_change": "Click to change",
-      "read": "Read",
-      "book": "book",
-      "page": "page",
-      "habit_description": "Read {{value}} {{metric}} {{periodicity}}",
-      "books_read_one": "book",
-      "books_read_other": "books",
-      "pages_read_one": "page",
-      "pages_read_other": "pages",
-      "goal_one": "Goal: {{count}} {{metric}}",
-      "goal_other": "Goal: {{count}} {{metric}}"
+      "goal": "Goal: "
     }
 }
