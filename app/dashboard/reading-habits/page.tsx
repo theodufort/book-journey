@@ -9,14 +9,14 @@ export default function ReadingHabits() {
   const t = useTranslations("ReadingHabits");
   const [periodicity, setPeriodicity] = useState("daily");
   const [metric, setMetric] = useState("books_read");
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState("1");
   const [description, setDescription] = useState("");
   const supabase = createClientComponentClient<Database>();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const numericValue = parseFloat(value);
-    if (isNaN(numericValue) || numericValue <= 0) {
+    const numericValue = Math.max(1, parseInt(value, 10));
+    if (isNaN(numericValue)) {
       alert(t("value_error"));
       return;
     }
@@ -118,7 +118,8 @@ export default function ReadingHabits() {
                     placeholder={t("enter_value")}
                     className="input input-bordered w-full max-w-xs"
                     value={value}
-                    onChange={(e) => setValue(e.target.value)}
+                    onChange={(e) => setValue(Math.max(1, parseInt(e.target.value, 10)).toString())}
+                    min="1"
                     required
                   />
                 </div>
