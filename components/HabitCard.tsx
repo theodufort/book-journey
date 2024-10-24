@@ -1,20 +1,15 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { Database } from '@/types/supabase';
-import toast from 'react-hot-toast';
-import Countdown from './Countdown';
-import EmojiPicker from "emoji-picker-react";
 import HeaderDashboard from "@/components/DashboardHeader";
-import {
-  addDays,
-  addMonths,
-  addWeeks,
-  addYears,
-} from "date-fns";
+import { Database } from "@/types/supabase";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { addDays, addMonths, addWeeks, addYears } from "date-fns";
+import EmojiPicker from "emoji-picker-react";
+import { useTranslations } from "next-intl";
+import React, { useCallback, useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import Countdown from "./Countdown";
 
 const HabitCard: React.FC = () => {
-  const t = useTranslations('ReadingHabits');
+  const t = useTranslations("ReadingHabits");
   const supabase = createClientComponentClient<Database>();
   const [habit, setHabit] = useState<any>(null);
   const [periodicity, setPeriodicity] = useState("daily");
@@ -29,7 +24,9 @@ const HabitCard: React.FC = () => {
   }, []);
 
   const fetchHabit = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (user) {
       const { data, error } = await supabase
         .from("habits")
@@ -255,7 +252,9 @@ const HabitCard: React.FC = () => {
             <div className="card bg-base-200 shadow-xl border-2 border-dashed border-gray-300 flex items-center justify-center h-48">
               <button
                 className="btn btn-primary"
-                onClick={() => document.getElementById("my_modal_3").showModal()}
+                onClick={() =>
+                  document.getElementById("my_modal_3").showModal()
+                }
               >
                 {t("add_habit")}
               </button>
@@ -273,15 +272,21 @@ const HabitCard: React.FC = () => {
                 />
                 <div className="card-actions justify-end mt-4">
                   <div className="absolute bottom-4 left-4">
-                    <div 
-                      className="radial-progress text-primary" 
-                      style={{ 
-                        "--value": ((habit.progress_value || 0) / habit.value) * 100, 
-                        "--size": "3rem"
-                      } as React.CSSProperties} 
+                    <div
+                      className="radial-progress text-primary"
+                      style={
+                        {
+                          "--value":
+                            ((habit.progress_value || 0) / habit.value) * 100,
+                          "--size": "3rem",
+                        } as React.CSSProperties
+                      }
                       role="progressbar"
                     >
-                      {Math.round(((habit.progress_value || 0) / habit.value) * 100)}%
+                      {Math.round(
+                        ((habit.progress_value || 0) / habit.value) * 100
+                      )}
+                      %
                     </div>
                   </div>
                   <button
@@ -342,10 +347,7 @@ const HabitCard: React.FC = () => {
                           console.error("Error updating progress:", error);
                           toast.error(t("update_error"));
                         } else {
-                          console.log(
-                            "Progress updated successfully:",
-                            data
-                          );
+                          console.log("Progress updated successfully:", data);
                           toast.success(t("update_success"));
                           fetchHabit(); // Refresh the habit
                           modal.close();
@@ -383,14 +385,10 @@ const HabitCard: React.FC = () => {
                               habit.id
                             }" class="select select-bordered">
                               <option value="daily" ${
-                                habit.periodicity === "daily"
-                                  ? "selected"
-                                  : ""
+                                habit.periodicity === "daily" ? "selected" : ""
                               }>${t("daily")}</option>
                               <option value="weekly" ${
-                                habit.periodicity === "weekly"
-                                  ? "selected"
-                                  : ""
+                                habit.periodicity === "weekly" ? "selected" : ""
                               }>${t("weekly")}</option>
                               <option value="monthly" ${
                                 habit.periodicity === "monthly"
@@ -398,9 +396,7 @@ const HabitCard: React.FC = () => {
                                   : ""
                               }>${t("monthly")}</option>
                               <option value="yearly" ${
-                                habit.periodicity === "yearly"
-                                  ? "selected"
-                                  : ""
+                                habit.periodicity === "yearly" ? "selected" : ""
                               }>${t("yearly")}</option>
                             </select>
                           </div>
@@ -412,14 +408,10 @@ const HabitCard: React.FC = () => {
                               habit.id
                             }" class="select select-bordered">
                               <option value="books_read" ${
-                                habit.metric === "books_read"
-                                  ? "selected"
-                                  : ""
+                                habit.metric === "books_read" ? "selected" : ""
                               }>${t("metric_books_read")}</option>
                               <option value="pages_read" ${
-                                habit.metric === "pages_read"
-                                  ? "selected"
-                                  : ""
+                                habit.metric === "pages_read" ? "selected" : ""
                               }>${t("metric_pages_read")}</option>
                             </select>
                           </div>
@@ -519,10 +511,7 @@ const HabitCard: React.FC = () => {
           )}
         </div>
         {habit && (
-          <dialog
-            id={`habit_modal_${habit.id}`}
-            className="modal"
-          >
+          <dialog id={`habit_modal_${habit.id}`} className="modal">
             <div className="modal-box">
               <form method="dialog">
                 <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
