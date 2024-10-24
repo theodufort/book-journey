@@ -275,7 +275,33 @@ export default function ReadingHabits() {
                     </h2>
                     {habit.description && (
                       <p className="text-sm italic mt-2">{habit.description}</p>
-                    )}
+                          )}
+                          <div className="grid grid-flow-col gap-5 text-center auto-cols-max">
+  <div className="flex flex-col">
+    <span className="countdown font-mono text-5xl">
+      <span style={{"--value":15}}></span>
+    </span>
+    days
+  </div>
+  <div className="flex flex-col">
+    <span className="countdown font-mono text-5xl">
+      <span style={{"--value":10}}></span>
+    </span>
+    hours
+  </div>
+  <div className="flex flex-col">
+    <span className="countdown font-mono text-5xl">
+      <span style={{"--value":24}}></span>
+    </span>
+    min
+  </div>
+  <div className="flex flex-col">
+    <span className="countdown font-mono text-5xl">
+      <span style={{"--value":${counter}}}></span>
+    </span>
+    sec
+  </div>
+</div>
                     <div className="card-actions justify-end mt-4">
                       <button
                         className="btn btn-primary btn-sm"
