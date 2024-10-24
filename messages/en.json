@@ -138,11 +138,14 @@
       "no_notes_warning":"No notes yet.",
       "select_book":"Select a book to add notes",
       "not_saved_warning":"Not saved yet",
-      "quick_tags":"Quick Tags",
-      "your_tags":"Your Tags",
-      "edit_tag":"Edit Tag",
-      "update_tag":"Update Tag",
-      "cancel":"Cancel"
+      "cancel":"Cancel",
+      "view_stickys": "View Sticky Notes",
+      "tab1":"Main Notes",
+      "tab2": "Sticky Notes",
+      "add_sticky": "Add sticky note",
+      "delete_sticky_title":"Delete this note?",
+      "delete_confirm": "Delete",
+      "delete_cancel": "Cancel"
     },
     "BookRecommendations":{
       "title":"Book Recommendations",
