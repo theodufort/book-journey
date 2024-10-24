@@ -1,9 +1,9 @@
 "use client";
 import HeaderDashboard from "@/components/DashboardHeader";
+import { Database } from "@/types/supabase";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Database } from "@/types/supabase";
 
 export default function ReadingHabits() {
   const t = useTranslations("ReadingHabits");
