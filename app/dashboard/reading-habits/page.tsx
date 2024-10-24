@@ -4,8 +4,68 @@ import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import EmojiPicker from "emoji-picker-react";
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import toast from "react-hot-toast";
+import { differenceInSeconds, addDays, addWeeks, addMonths, addYears, parseISO } from "date-fns";
+
+const Countdown = ({ habit, calculateNextEndDate }) => {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const intervalRef = useRef(null);
+
+  useEffect(() => {
+    const updateCountdown = () => {
+      const now = new Date();
+      const endDate = calculateNextEndDate(habit);
+      const diffInSeconds = differenceInSeconds(endDate, now);
+
+      if (diffInSeconds <= 0) {
+        clearInterval(intervalRef.current);
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+      } else {
+        const days = Math.floor(diffInSeconds / (24 * 60 * 60));
+        const hours = Math.floor((diffInSeconds % (24 * 60 * 60)) / (60 * 60));
+        const minutes = Math.floor((diffInSeconds % (60 * 60)) / 60);
+        const seconds = diffInSeconds % 60;
+
+        setTimeLeft({ days, hours, minutes, seconds });
+      }
+    };
+
+    updateCountdown();
+    intervalRef.current = setInterval(updateCountdown, 1000);
+
+    return () => clearInterval(intervalRef.current);
+  }, [habit, calculateNextEndDate]);
+
+  return (
+    <div className="grid grid-flow-col gap-5 text-center auto-cols-max">
+      <div className="flex flex-col">
+        <span className="countdown font-mono text-5xl">
+          <span style={{ "--value": timeLeft.days }}></span>
+        </span>
+        days
+      </div>
+      <div className="flex flex-col">
+        <span className="countdown font-mono text-5xl">
+          <span style={{ "--value": timeLeft.hours }}></span>
+        </span>
+        hours
+      </div>
+      <div className="flex flex-col">
+        <span className="countdown font-mono text-5xl">
+          <span style={{ "--value": timeLeft.minutes }}></span>
+        </span>
+        min
+      </div>
+      <div className="flex flex-col">
+        <span className="countdown font-mono text-5xl">
+          <span style={{ "--value": timeLeft.seconds }}></span>
+        </span>
+        sec
+      </div>
+    </div>
+  );
+};
 
 export default function ReadingHabits() {
   const [activityDataHabit, setActivityDataHabit] = useState([
@@ -53,6 +113,25 @@ export default function ReadingHabits() {
       } else {
         setHabits(data);
       }
+    }
+  };
+
+  const calculateNextEndDate = (habit) => {
+    const lastDate = habit.streak && habit.streak.length > 0 
+      ? new Date(habit.streak[habit.streak.length - 1]) 
+      : new Date(habit.created_at);
+
+    switch (habit.periodicity) {
+      case 'daily':
+        return addDays(lastDate, 1);
+      case 'weekly':
+        return addWeeks(lastDate, 1);
+      case 'monthly':
+        return addMonths(lastDate, 1);
+      case 'yearly':
+        return addYears(lastDate, 1);
+      default:
+        return lastDate;
     }
   };
 
@@ -275,33 +354,8 @@ export default function ReadingHabits() {
                     </h2>
                     {habit.description && (
                       <p className="text-sm italic mt-2">{habit.description}</p>
-                          )}
-                          <div className="grid grid-flow-col gap-5 text-center auto-cols-max">
-  <div className="flex flex-col">
-    <span className="countdown font-mono text-5xl">
-      <span style={{"--value":15}}></span>
-    </span>
-    days
-  </div>
-  <div className="flex flex-col">
-    <span className="countdown font-mono text-5xl">
-      <span style={{"--value":10}}></span>
-    </span>
-    hours
-  </div>
-  <div className="flex flex-col">
-    <span className="countdown font-mono text-5xl">
-      <span style={{"--value":24}}></span>
-    </span>
-    min
-  </div>
-  <div className="flex flex-col">
-    <span className="countdown font-mono text-5xl">
-      <span style={{"--value":${counter}}}></span>
-    </span>
-    sec
-  </div>
-</div>
+                    )}
+                    <Countdown habit={habit} calculateNextEndDate={calculateNextEndDate} />
                     <div className="card-actions justify-end mt-4">
                       <button
                         className="btn btn-primary btn-sm"
