@@ -17,7 +17,9 @@ export default function ReadingHabits() {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [habits, setHabits] = useState<any[]>([]);
   const supabase = createClientComponentClient<Database>();
-
+  const metricBinding: [{ key: string; label: string }] = [
+    { key: "books_read", label: t("books_read") },
+  ];
   useEffect(() => {
     fetchHabits();
   }, []);
@@ -211,18 +213,10 @@ export default function ReadingHabits() {
                     {t(habit.periodicity)}
                   </h2>
                   <p className="font-bold">
-                    {t("goal", {
-                      count: parseInt(habit.value),
-                      metric: t(habit.metric, { count: parseInt(habit.value) })
-                    })}
+                    {t("goal") +
+                      metricBinding.find((x) => x.key == "reading_list")}
                   </p>
-                  <p>
-                    {t("habit_description", {
-                      value: habit.value,
-                      metric: t(habit.metric, { count: parseInt(habit.value) }),
-                      periodicity: t(habit.periodicity),
-                    }).replace(/ReadingHabits\./g, "")}
-                  </p>
+                  <p></p>
                   {habit.description && (
                     <p className="text-sm italic mt-2">{habit.description}</p>
                   )}
