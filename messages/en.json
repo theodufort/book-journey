@@ -309,6 +309,7 @@
       "metric_books_read": "Books Read",
       "metric_pages_read": "Pages Read",
       "update_error": "Error updating habit. Please try again.",
-      "update_success": "Habit updated successfully!"
+      "update_success": "Habit updated successfully!",
+      "progress_value": "Progress Value"
     }
 }
