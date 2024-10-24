@@ -17,9 +17,7 @@ export default function ReadingHabits() {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [habits, setHabits] = useState<any[]>([]);
   const supabase = createClientComponentClient<Database>();
-  const metricBinding: [{ key: string; label: string }] = [
-    { key: "books_read", label: t("books_read") },
-  ];
+
   useEffect(() => {
     fetchHabits();
   }, []);
@@ -205,24 +203,31 @@ export default function ReadingHabits() {
         </div>
         {habits.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {habits.map((habit) => (
-              <div key={habit.id} className="card bg-base-200 shadow-xl">
-                <div className="card-body">
-                  <h2 className="card-title">
-                    <span className="text-2xl mr-2">{habit.emoji}</span>
-                    {t(habit.periodicity)}
-                  </h2>
-                  <p className="font-bold">
-                    {t("goal") +
-                      metricBinding.find((x) => x.key === habit.metric)?.label}
-                  </p>
-                  <p></p>
-                  {habit.description && (
-                    <p className="text-sm italic mt-2">{habit.description}</p>
-                  )}
+            {habits.map((habit) => {
+              const metricBinding: [{ key: string; label: string }] = [
+                {
+                  key: "books_read",
+                  label: t("books_read", {
+                    book: habit.value > 1 ? "books" : "book",
+                    value: habit.value,
+                    periodicity: habit.periodicity,
+                  }),
+                },
+              ];
+              return (
+                <div key={habit.id} className="card bg-base-200 shadow-xl">
+                  <div className="card-body">
+                    <h2 className="card-title">
+                      <span className="text-2xl mr-2">{habit.emoji}</span>
+                      {metricBinding.find((x) => x.key === habit.metric)?.label}
+                    </h2>
+                    {habit.description && (
+                      <p className="text-sm italic mt-2">{habit.description}</p>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className="text-center py-8">
