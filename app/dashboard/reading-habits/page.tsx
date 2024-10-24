@@ -364,6 +364,36 @@ export default function ReadingHabits() {
                 </h3>
               </div>
             </dialog>
+
+            <dialog
+              id={`habit_progress_modal_${habit.id}`}
+              className="modal"
+            >
+              <div className="modal-box">
+                <form method="dialog">
+                  <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                    ✕
+                  </button>
+                </form>
+                <h3 className="font-bold text-lg mb-4">{t("update_progress")}</h3>
+                {/* Add form for updating progress here */}
+              </div>
+            </dialog>
+
+            <dialog
+              id={`habit_modify_modal_${habit.id}`}
+              className="modal"
+            >
+              <div className="modal-box">
+                <form method="dialog">
+                  <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                    ✕
+                  </button>
+                </form>
+                <h3 className="font-bold text-lg mb-4">{t("modify_habit")}</h3>
+                {/* Add form for modifying habit here */}
+              </div>
+            </dialog>
           );
         })}
         {habits.length > 0 ? (
@@ -411,6 +441,26 @@ export default function ReadingHabits() {
                         }
                       >
                         {t("view_stats")}
+                      </button>
+                      <button
+                        className="btn btn-secondary btn-sm"
+                        onClick={() =>
+                          document
+                            .getElementById(`habit_progress_modal_${habit.id}`)
+                            .showModal()
+                        }
+                      >
+                        {t("update_progress")}
+                      </button>
+                      <button
+                        className="btn btn-accent btn-sm"
+                        onClick={() =>
+                          document
+                            .getElementById(`habit_modify_modal_${habit.id}`)
+                            .showModal()
+                        }
+                      >
+                        {t("modify_habit")}
                       </button>
                     </div>
                   </div>

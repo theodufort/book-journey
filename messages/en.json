@@ -302,6 +302,8 @@
       "click_to_change": "Click to change",
       "goal": "Goal: ",
       "view_stats": "View Stats",
+      "update_progress": "Update Progress",
+      "modify_habit": "Modify Habit",
       "reading_habit_grid": "Reading Habit Grid",
       "close": "Close",
       "unnamed_habit": "Unnamed Habit",
