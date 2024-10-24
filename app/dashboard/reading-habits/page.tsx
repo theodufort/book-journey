@@ -20,19 +20,6 @@ export default function ReadingHabits() {
 
   useEffect(() => {
     fetchHabits();
-    // Add the new habit
-    setHabits(prevHabits => [
-      ...prevHabits,
-      {
-        id: 'new-habit-1', // This is a temporary ID
-        user_id: 'current-user', // This will be replaced with the actual user ID
-        periodicity: 'daily',
-        metric: 'books_read',
-        value: '1',
-        description: '',
-        emoji: '📚'
-      }
-    ]);
   }, []);
 
   const fetchHabits = async () => {
@@ -226,9 +213,12 @@ export default function ReadingHabits() {
                   <p>
                     {t("habit_description", {
                       value: habit.value,
-                      metric: habit.value === "1" ? t(habit.metric.slice(0, -1)) : t(habit.metric),
-                      periodicity: t(habit.periodicity.toLowerCase())
-                    }).replace(/ReadingHabits\./g, '')}
+                      metric:
+                        habit.value === "1"
+                          ? t(habit.metric.slice(0, -1))
+                          : t(habit.metric),
+                      periodicity: t(habit.periodicity.toLowerCase()),
+                    }).replace(/ReadingHabits\./g, "")}
                   </p>
                   {habit.description && <p>{habit.description}</p>}
                 </div>
