@@ -65,10 +65,10 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({ days }) =
   }
 
   return (
-    <div className="card bg-base-200 shadow-xl">
+    <div className="card bg-base-200 shadow-xl h-full">
       <div className="card-body">
         <h2 className="card-title">{t("consistency_graph")}</h2>
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" />
