@@ -15,6 +15,12 @@ export default function ReadingHabits() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const numericValue = parseFloat(value);
+    if (isNaN(numericValue) || numericValue <= 0) {
+      alert(t("value_error"));
+      return;
+    }
+
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -25,13 +31,14 @@ export default function ReadingHabits() {
           user_id: user.id,
           periodicity,
           metric,
-          value,
+          value: numericValue.toString(),
           description: description || null,
         },
       ]);
 
       if (error) {
         console.error("Error inserting habit:", error);
+        alert(t("insert_error"));
       } else {
         console.log("Habit inserted successfully:", data);
         // Close the modal and reset form
@@ -40,6 +47,7 @@ export default function ReadingHabits() {
         setMetric("books_read");
         setValue("");
         setDescription("");
+        alert(t("insert_success"));
       }
     }
   };
