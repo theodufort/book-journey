@@ -397,7 +397,19 @@ export default function ReadingHabits() {
                       habit={habit}
                       calculateNextEndDate={calculateNextEndDate}
                     />
-                    <div className="card-actions justify-end mt-4">
+                    <div className="flex justify-between items-end mt-4">
+                      <div 
+                        className="radial-progress text-primary" 
+                        style={{ 
+                          "--value": ((habit.progress_value || 0) / habit.value) * 100, 
+                          "--size": "3rem",
+                          "--thickness": "3px"
+                        } as React.CSSProperties} 
+                        role="progressbar"
+                      >
+                        {Math.round(((habit.progress_value || 0) / habit.value) * 100)}%
+                      </div>
+                      <div className="card-actions">
                       <button
                         className="btn btn-secondary btn-sm"
                         onClick={() => {
