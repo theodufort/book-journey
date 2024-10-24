@@ -123,63 +123,69 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
   const data = generateData();
 
   return (
-    <div className="card bg-base-200 shadow-xl h-full">
+    <div
+      className={`card bg-base-200 shadow-xl h-full ${
+        !habit ? "border-2 border-dashed border-gray-300" : null
+      }`}
+    >
       <div className="card-body h-full flex flex-col">
         {!habit ? (
-          <div className="flex items-center justify-center h-full">
-            <p className="text-lg font-semibold">{t("no_habits_yet")}</p>
+          <div className="flex items-center justify-center h-full ">
+            <p className="text-center text-gray-500">{t("no_habits_yet")}</p>
           </div>
         ) : (
-        {/* Title and Date Range Buttons Inline on larger screens */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-2 md:space-y-0">
-          <h2 className="card-title text-center md:justify-start">
-            {t("consistency_graph", { days: selectedDays })}
-          </h2>
-          {/* Date Range Selection Buttons - only visible on md and larger */}
-          {isMd && (
-            <div className="flex space-x-2">
-              {[7, 14, 30].map((days) => (
-                <button
-                  key={days}
-                  className={`btn btn-sm ${
-                    selectedDays === days ? "btn-primary" : "btn-outline"
-                  }`}
-                  onClick={() => setSelectedDays(days)}
-                >
-                  {days} {t("days")}
-                </button>
-              ))}
+          <div>
+            {/* Title and Date Range Buttons Inline on larger screens */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-2 md:space-y-0">
+              <h2 className="card-title text-center md:justify-start">
+                {t("consistency_graph", { days: selectedDays })}
+              </h2>
+              {/* Date Range Selection Buttons - only visible on md and larger */}
+              {isMd && (
+                <div className="flex space-x-2">
+                  {[7, 14, 30].map((days) => (
+                    <button
+                      key={days}
+                      className={`btn btn-sm ${
+                        selectedDays === days ? "btn-primary" : "btn-outline"
+                      }`}
+                      onClick={() => setSelectedDays(days)}
+                    >
+                      {days} {t("days")}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
-        </div>
-        {/* Chart */}
-        <div className="flex-1 mt-4 min-h-[200px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis
-                dataKey="date"
-                tick={{ fontSize: 12 }}
-                interval={selectedDays > 14 ? 2 : 0}
-              />
-              <YAxis domain={["dataMin - 1", "dataMax + 1"]} />
-              <Tooltip />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="value"
-                name={t("actual")}
-                stroke="#8884d8"
-              />
-              <Line
-                type="monotone"
-                dataKey="target"
-                name={t("target")}
-                stroke="#82ca9d"
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+            {/* Chart */}
+            <div className="flex-1 mt-4 min-h-[200px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={data}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="date"
+                    tick={{ fontSize: 12 }}
+                    interval={selectedDays > 14 ? 2 : 0}
+                  />
+                  <YAxis domain={["dataMin - 1", "dataMax + 1"]} />
+                  <Tooltip />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="value"
+                    name={t("actual")}
+                    stroke="#8884d8"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="target"
+                    name={t("target")}
+                    stroke="#82ca9d"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
         )}
       </div>
     </div>
