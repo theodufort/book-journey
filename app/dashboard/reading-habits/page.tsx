@@ -292,22 +292,12 @@ export default function ReadingHabits() {
             </dialog>
           );
         })}
-        {habits.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {habits.map((habit) => (
-              <HabitCard
-                key={habit.id}
-                habit={habit}
-                calculateNextEndDate={calculateNextEndDate}
-                fetchHabits={fetchHabits}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-8">
-            <p className="text-xl">{t("no_habits")}</p>
-          </div>
-        )}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <HabitCard
+            calculateNextEndDate={calculateNextEndDate}
+            fetchHabits={fetchHabits}
+          />
+        </div>
       </section>
     </main>
   );

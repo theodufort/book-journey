@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Database } from '@/types/supabase';
@@ -6,33 +6,67 @@ import toast from 'react-hot-toast';
 import Countdown from './Countdown';
 
 interface HabitCardProps {
-  habit: any;
   calculateNextEndDate: (habit: any) => Date;
   fetchHabits: () => void;
 }
 
-const HabitCard: React.FC<HabitCardProps> = ({ habit, calculateNextEndDate, fetchHabits }) => {
+const HabitCard: React.FC<HabitCardProps> = ({ calculateNextEndDate, fetchHabits }) => {
   const t = useTranslations('ReadingHabits');
   const supabase = createClientComponentClient<Database>();
+  const [habit, setHabit] = useState<any>(null);
+
+  useEffect(() => {
+    fetchHabit();
+  }, []);
+
+  const fetchHabit = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data, error } = await supabase
+        .from("habits")
+        .select("*")
+        .eq("user_id", user.id)
+        .limit(1)
+        .single();
+      if (error) {
+        console.error("Error fetching habit:", error);
+      } else {
+        setHabit(data);
+      }
+    }
+  };
 
   const metricBinding: [{ key: string; label: string }] = [
     {
       key: "books_read",
       label: t("books_read", {
-        book: habit.value > 1 ? "books" : "book",
-        value: habit.value,
-        periodicity: habit.periodicity,
+        book: habit?.value > 1 ? "books" : "book",
+        value: habit?.value,
+        periodicity: habit?.periodicity,
       }),
     },
     {
       key: "pages_read",
       label: t("pages_read", {
-        page: habit.value > 1 ? "pages" : "page",
-        value: habit.value,
-        periodicity: habit.periodicity,
+        page: habit?.value > 1 ? "pages" : "page",
+        value: habit?.value,
+        periodicity: habit?.periodicity,
       }),
     },
   ];
+
+  if (!habit) {
+    return (
+      <div className="card bg-base-200 shadow-xl border-2 border-dashed border-gray-300 flex items-center justify-center h-48">
+        <button
+          className="btn btn-primary"
+          onClick={() => document.getElementById("my_modal_3").showModal()}
+        >
+          {t("add_habit")}
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="card bg-base-200 shadow-xl">
@@ -121,7 +155,7 @@ const HabitCard: React.FC<HabitCardProps> = ({ habit, calculateNextEndDate, fetc
                     data
                   );
                   toast.success(t("update_success"));
-                  fetchHabits(); // Refresh the habits list
+                  fetchHabit(); // Refresh the habit
                   modal.close();
                 }
               };
@@ -265,7 +299,7 @@ const HabitCard: React.FC<HabitCardProps> = ({ habit, calculateNextEndDate, fetc
                 } else {
                   console.log("Habit updated successfully:", data);
                   toast.success(t("update_success"));
-                  fetchHabits(); // Refresh the habits list
+                  fetchHabit(); // Refresh the habit
                   modal.close();
                 }
               };
