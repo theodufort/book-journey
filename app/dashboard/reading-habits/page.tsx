@@ -210,17 +210,19 @@ export default function ReadingHabits() {
             </div>
           </dialog>
         </div>
-        <dialog id="habit_grid_modal" className="modal">
-          <div className="modal-box w-11/12 max-w-5xl">
-            <h3 className="font-bold text-lg mb-4">{t("reading_habit_grid")}</h3>
-            <ReadingHabitGrid habits={habits} />
-            <div className="modal-action">
-              <form method="dialog">
-                <button className="btn">{t("close")}</button>
-              </form>
+        {habits.map((habit) => (
+          <dialog id={`habit_grid_modal_${habit.id}`} className="modal" key={habit.id}>
+            <div className="modal-box w-11/12 max-w-5xl">
+              <h3 className="font-bold text-lg mb-4">{t("reading_habit_grid")}: {habit.description || t("unnamed_habit")}</h3>
+              <ReadingHabitGrid habit={habit} />
+              <div className="modal-action">
+                <form method="dialog">
+                  <button className="btn">{t("close")}</button>
+                </form>
+              </div>
             </div>
-          </div>
-        </dialog>
+          </dialog>
+        ))}
         {habits.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {habits.map((habit) => {
@@ -244,6 +246,14 @@ export default function ReadingHabits() {
                     {habit.description && (
                       <p className="text-sm italic mt-2">{habit.description}</p>
                     )}
+                    <div className="card-actions justify-end mt-4">
+                      <button
+                        className="btn btn-primary btn-sm"
+                        onClick={() => document.getElementById(`habit_grid_modal_${habit.id}`).showModal()}
+                      >
+                        {t("view_grid")}
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
