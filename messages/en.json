@@ -279,6 +279,20 @@
     },
     "ReadingHabits":{
       "title":"Reading Habits",
-      "add_habit": "Add a Habit"
+      "add_habit": "Add a Habit",
+      "add_new_habit": "Add New Habit",
+      "periodicity": "Periodicity",
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "metric": "Metric",
+      "books_read": "Books Read",
+      "pages_read": "Pages Read",
+      "value": "Value",
+      "enter_value": "Enter value",
+      "description": "Description",
+      "enter_description": "Enter description",
+      "save": "Save"
     }
 }
