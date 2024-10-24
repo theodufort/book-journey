@@ -202,7 +202,7 @@ const HabitCard: React.FC = () => {
             </div>
             {/* Add the HabitConsistencyGraph component */}
             <div className="mt-4">
-              <HabitConsistencyGraph habit={habit} days={30} />
+              <HabitConsistencyGraph days={30} />
             </div>
           </div>
         </div>
