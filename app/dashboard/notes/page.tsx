@@ -9,6 +9,8 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
 
 export default function BookNotes() {
   const [bookStickys, setBookStickys] = useState<{
@@ -479,9 +481,12 @@ export default function BookNotes() {
                         </button>
                       </div>
                     </div>
-                    <div ref={notesContainerRef} className="flex flex-col">
+                    <div
+                      ref={notesContainerRef}
+                      className="flex flex-col prose"
+                    >
                       {noteType == "main" ? (
-                        <div className="p-2 h-auto">
+                        <div className="p-2 h-auto prose">
                           {isEditMode ? (
                             <>
                               <textarea
@@ -502,8 +507,12 @@ export default function BookNotes() {
                               />
                             </>
                           ) : (
-                            <div className="w-full h-full p-3 rounded-md bg-base-200 overflow-y-auto">
-                              <ReactMarkdown>
+                            <div className="w-full h-full p-3 rounded-md bg-base-200 overflow-y-auto prose">
+                              <ReactMarkdown
+                                className="prose"
+                                remarkPlugins={[remarkGfm]}
+                                rehypePlugins={[rehypeRaw]}
+                              >
                                 {notes[selectedBook.book_id]?.content ||
                                   t("no_notes_warning")}
                               </ReactMarkdown>
