@@ -294,7 +294,7 @@
       "description": "Description",
       "enter_description": "Enter description",
       "save": "Save",
-      "value_error": "Please enter a value greater than 0.",
+      "value_error": "Please enter a valid number (minimum 1).",
       "insert_error": "Error inserting habit. Please try again.",
       "insert_success": "Habit inserted successfully!"
     }
