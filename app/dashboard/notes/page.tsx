@@ -6,7 +6,7 @@ import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, Fragment } from "react";
 import toast from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -42,6 +42,7 @@ export default function BookNotes() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -541,8 +542,7 @@ export default function BookNotes() {
                                   <button
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      setEditingStickyId(null);
-                                      removeStickyNote(id);
+                                      setDeleteConfirmId(id);
                                     }}
                                     className="btn btn-xs btn-circle btn-ghost"
                                   >
@@ -646,8 +646,42 @@ export default function BookNotes() {
           </div>
         )}
       </section>
+      <DeleteConfirmDialog
+        isOpen={deleteConfirmId !== null}
+        onClose={() => setDeleteConfirmId(null)}
+        onConfirm={() => {
+          if (deleteConfirmId) {
+            setEditingStickyId(null);
+            removeStickyNote(deleteConfirmId);
+            setDeleteConfirmId(null);
+          }
+        }}
+      />
     </main>
   );
+
+  function DeleteConfirmDialog({ isOpen, onClose, onConfirm }: { isOpen: boolean; onClose: () => void; onConfirm: () => void }) {
+    if (!isOpen) return null;
+
+    return (
+      <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
+        <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
+          <div className="flex flex-col items-center">
+            <h3 className="text-lg font-bold mb-2">{t("delete_sticky_title")}</h3>
+            <p className="text-center mb-4">{t("delete_sticky_message")}</p>
+            <div className="flex justify-center">
+              <button className="btn btn-error mr-2" onClick={onConfirm}>
+                {t("delete_confirm")}
+              </button>
+              <button className="btn btn-ghost" onClick={onClose}>
+                {t("delete_cancel")}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 // Add this at the end of the file
