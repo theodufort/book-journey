@@ -4,6 +4,7 @@ import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function ReadingHabits() {
   const t = useTranslations("ReadingHabits");
@@ -17,7 +18,7 @@ export default function ReadingHabits() {
     e.preventDefault();
     const numericValue = Math.max(1, parseInt(value, 10));
     if (isNaN(numericValue)) {
-      alert(t("value_error"));
+      toast.error(t("value_error"));
       return;
     }
 
@@ -38,7 +39,7 @@ export default function ReadingHabits() {
 
       if (error) {
         console.error("Error inserting habit:", error);
-        alert(t("insert_error"));
+        toast.error(t("insert_error"));
       } else {
         console.log("Habit inserted successfully:", data);
         // Close the modal and reset form
@@ -47,7 +48,7 @@ export default function ReadingHabits() {
         setMetric("books_read");
         setValue("");
         setDescription("");
-        alert(t("insert_success"));
+        toast.success(t("insert_success"));
       }
     }
   };
@@ -71,7 +72,7 @@ export default function ReadingHabits() {
         </div>
         <div className="space-y-8">
           <dialog id="my_modal_3" className="modal">
-            <div className="modal-box">
+            <div className="modal-box max-w-min">
               <form onSubmit={handleSubmit}>
                 <button
                   type="button"
@@ -118,7 +119,11 @@ export default function ReadingHabits() {
                     placeholder={t("enter_value")}
                     className="input input-bordered w-full max-w-xs"
                     value={value}
-                    onChange={(e) => setValue(Math.max(1, parseInt(e.target.value, 10)).toString())}
+                    onChange={(e) =>
+                      setValue(
+                        Math.max(1, parseInt(e.target.value, 10)).toString()
+                      )
+                    }
                     min="1"
                     required
                   />
@@ -134,8 +139,8 @@ export default function ReadingHabits() {
                     onChange={(e) => setDescription(e.target.value)}
                   ></textarea>
                 </div>
-                <div className="modal-action">
-                  <button type="submit" className="btn btn-primary">
+                <div className="modal-action mx-auto">
+                  <button type="submit" className="btn btn-primary mx-auto">
                     {t("save")}
                   </button>
                 </div>
