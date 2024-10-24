@@ -20,6 +20,19 @@ export default function ReadingHabits() {
 
   useEffect(() => {
     fetchHabits();
+    // Add the new habit
+    setHabits(prevHabits => [
+      ...prevHabits,
+      {
+        id: 'new-habit-1', // This is a temporary ID
+        user_id: 'current-user', // This will be replaced with the actual user ID
+        periodicity: 'daily',
+        metric: 'books_read',
+        value: '1',
+        description: '',
+        emoji: '📚'
+      }
+    ]);
   }, []);
 
   const fetchHabits = async () => {
