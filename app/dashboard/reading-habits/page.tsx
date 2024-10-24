@@ -2,9 +2,9 @@
 import HeaderDashboard from "@/components/DashboardHeader";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import EmojiPicker from "emoji-picker-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState, useCallback } from "react";
-import EmojiPicker from 'emoji-picker-react';
+import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function ReadingHabits() {
@@ -81,7 +81,7 @@ export default function ReadingHabits() {
     }
   };
 
-  const onEmojiClick = useCallback((emojiObject) => {
+  const onEmojiClick = useCallback((emojiObject: any) => {
     setEmoji(emojiObject.emoji);
     setShowEmojiPicker(false);
   }, []);
