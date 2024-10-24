@@ -125,7 +125,7 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
   if (!habit) {
     return (
       <div className="flex items-center justify-center h-full">
-        <span className="loading loading-spinner loading-lg"></span>
+        <p className="text-lg font-semibold">{t("no_habits_yet")}</p>
       </div>
     );
   }
