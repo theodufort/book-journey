@@ -3,7 +3,8 @@ import HeaderDashboard from "@/components/DashboardHeader";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import EmojiPicker from 'emoji-picker-react';
 import toast from "react-hot-toast";
 
 export default function ReadingHabits() {
@@ -12,6 +13,8 @@ export default function ReadingHabits() {
   const [metric, setMetric] = useState("books_read");
   const [value, setValue] = useState("1");
   const [description, setDescription] = useState("");
+  const [emoji, setEmoji] = useState("📚");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [habits, setHabits] = useState<any[]>([]);
   const supabase = createClientComponentClient<Database>();
 
@@ -56,6 +59,7 @@ export default function ReadingHabits() {
           metric,
           value: numericValue.toString(),
           description: description || null,
+          emoji: emoji,
         },
       ]);
 
@@ -70,11 +74,17 @@ export default function ReadingHabits() {
         setMetric("books_read");
         setValue("");
         setDescription("");
+        setEmoji("📚");
         toast.success(t("insert_success"));
         fetchHabits(); // Refresh the habits list
       }
     }
   };
+
+  const onEmojiClick = useCallback((emojiObject) => {
+    setEmoji(emojiObject.emoji);
+    setShowEmojiPicker(false);
+  }, []);
   return (
     <main className="min-h-screen p-4 sm:p-8 pb-16">
       <section className="max-w-6xl mx-auto space-y-4 sm:space-y-8">
@@ -162,6 +172,26 @@ export default function ReadingHabits() {
                     onChange={(e) => setDescription(e.target.value)}
                   ></textarea>
                 </div>
+                <div className="form-control w-full max-w-xs">
+                  <label className="label">
+                    <span className="label-text">{t("emoji")}</span>
+                  </label>
+                  <div className="flex items-center">
+                    <button
+                      type="button"
+                      className="btn btn-outline"
+                      onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                    >
+                      {emoji}
+                    </button>
+                    <span className="ml-2">{t("click_to_change")}</span>
+                  </div>
+                  {showEmojiPicker && (
+                    <div className="mt-2">
+                      <EmojiPicker onEmojiClick={onEmojiClick} />
+                    </div>
+                  )}
+                </div>
                 <div className="modal-action mx-auto">
                   <button type="submit" className="btn btn-primary mx-auto">
                     {t("save")}
@@ -176,7 +206,10 @@ export default function ReadingHabits() {
             {habits.map((habit) => (
               <div key={habit.id} className="card bg-base-200 shadow-xl">
                 <div className="card-body">
-                  <h2 className="card-title">{t(habit.periodicity)}</h2>
+                  <h2 className="card-title">
+                    <span className="text-2xl mr-2">{habit.emoji}</span>
+                    {t(habit.periodicity)}
+                  </h2>
                   <p>
                     {t(habit.metric)}: {habit.value}
                   </p>

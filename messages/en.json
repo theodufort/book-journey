@@ -297,6 +297,8 @@
       "value_error": "Please enter a valid number (minimum 1).",
       "insert_error": "Error inserting habit. Please try again.",
       "insert_success": "Habit inserted successfully!",
-      "no_habits": "You don't have any reading habits yet. Click 'Add a Habit' to get started!"
+      "no_habits": "You don't have any reading habits yet. Click 'Add a Habit' to get started!",
+      "emoji": "Emoji",
+      "click_to_change": "Click to change"
     }
 }
