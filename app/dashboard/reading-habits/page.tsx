@@ -214,7 +214,7 @@ export default function ReadingHabits() {
                   </h2>
                   <p className="font-bold">
                     {t("goal") +
-                      metricBinding.find((x) => x.key == "reading_list")}
+                      metricBinding.find((x) => x.key === habit.metric)?.label}
                   </p>
                   <p></p>
                   {habit.description && (
