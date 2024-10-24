@@ -399,20 +399,6 @@ export default function ReadingHabits() {
                     />
                     <div className="card-actions justify-end mt-4">
                       <button
-                        className="btn btn-primary btn-sm"
-                        onClick={() => {
-                          const modal = document.getElementById(`habit_modal_${habit.id}`);
-                          const title = document.getElementById(`habit_modal_title_${habit.id}`);
-                          const content = document.getElementById(`habit_modal_content_${habit.id}`);
-                          title.textContent = t("reading_habit_grid");
-                          content.innerHTML = ""; // Clear previous content
-                          // Add view stats content here
-                          modal.showModal();
-                        }}
-                      >
-                        {t("view_stats")}
-                      </button>
-                      <button
                         className="btn btn-secondary btn-sm"
                         onClick={() => {
                           const modal = document.getElementById(`habit_modal_${habit.id}`);
