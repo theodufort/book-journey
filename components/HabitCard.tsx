@@ -103,9 +103,17 @@ const HabitCard: React.FC = () => {
           .from("habits")
           .insert({ ...newHabit, user_id: user.id });
       } else if (modalType === "update") {
+        const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+        const newStreak = [
+          ...(habit.streak || []),
+          { day: today, progress_value: Number(newHabit.value) }
+        ];
         result = await supabase
           .from("habits")
-          .update({ progress_value: Number(newHabit.value) })
+          .update({ 
+            progress_value: Number(newHabit.value),
+            streak: newStreak
+          })
           .eq("id", habit.id);
       } else if (modalType === "modify") {
         result = await supabase
