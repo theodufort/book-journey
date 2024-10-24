@@ -213,10 +213,7 @@ export default function ReadingHabits() {
                   <p>
                     {t("habit_description", {
                       value: habit.value,
-                      metric:
-                        habit.value === "1"
-                          ? t(habit.metric.slice(0, -1))
-                          : t(habit.metric),
+                      metric: t(habit.metric, { count: parseInt(habit.value) }),
                       periodicity: t(habit.periodicity.toLowerCase()),
                     }).replace(/ReadingHabits\./g, "")}
                   </p>
