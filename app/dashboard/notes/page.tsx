@@ -501,7 +501,7 @@ export default function BookNotes() {
                     </div>
                     <div
                       ref={notesContainerRef}
-                      className="flex flex-col prose"
+                      className="flex flex-col prose w-full"
                     >
                       {noteType == "main" ? (
                         <div className="p-2 h-auto prose">
