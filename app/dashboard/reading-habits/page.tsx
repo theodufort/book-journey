@@ -405,8 +405,41 @@ export default function ReadingHabits() {
                           const title = document.getElementById(`habit_modal_title_${habit.id}`);
                           const content = document.getElementById(`habit_modal_content_${habit.id}`);
                           title.textContent = t("update_progress");
-                          content.innerHTML = ""; // Clear previous content
-                          // Add update progress form here
+                          content.innerHTML = `
+                            <form id="update-progress-form-${habit.id}" class="space-y-4">
+                              <div class="form-control">
+                                <label class="label">
+                                  <span class="label-text">${t("progress_value")}</span>
+                                </label>
+                                <input type="number" id="progress-value-${habit.id}" class="input input-bordered" value="${habit.progress_value || 0}" min="0" required />
+                              </div>
+                              <div class="modal-action">
+                                <button type="submit" class="btn btn-primary">${t("save")}</button>
+                              </div>
+                            </form>
+                          `;
+                          
+                          const form = document.getElementById(`update-progress-form-${habit.id}`);
+                          form.onsubmit = async (e) => {
+                            e.preventDefault();
+                            const updatedProgress = {
+                              id: habit.id,
+                              progress_value: (document.getElementById(`progress-value-${habit.id}`) as HTMLInputElement).value,
+                            };
+                            const { data, error } = await supabase
+                              .from('habits')
+                              .update(updatedProgress)
+                              .eq('id', habit.id);
+                            if (error) {
+                              console.error('Error updating progress:', error);
+                              toast.error(t("update_error"));
+                            } else {
+                              console.log('Progress updated successfully:', data);
+                              toast.success(t("update_success"));
+                              fetchHabits(); // Refresh the habits list
+                              modal.close();
+                            }
+                          };
                           modal.showModal();
                         }}
                       >
