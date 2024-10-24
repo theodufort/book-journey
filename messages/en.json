@@ -299,6 +299,10 @@
       "insert_success": "Habit inserted successfully!",
       "no_habits": "You don't have any reading habits yet. Click 'Add a Habit' to get started!",
       "emoji": "Emoji",
-      "click_to_change": "Click to change"
+      "click_to_change": "Click to change",
+      "read": "Read",
+      "per": "per",
+      "book": "book",
+      "page": "page"
     }
 }
