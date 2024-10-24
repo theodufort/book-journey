@@ -210,6 +210,9 @@ export default function ReadingHabits() {
                     <span className="text-2xl mr-2">{habit.emoji}</span>
                     {t(habit.periodicity)}
                   </h2>
+                  <p className="font-bold">
+                    {t("goal")}: {habit.value} {t(habit.metric, { count: parseInt(habit.value) })}
+                  </p>
                   <p>
                     {t("habit_description", {
                       value: habit.value,
@@ -217,7 +220,9 @@ export default function ReadingHabits() {
                       periodicity: t(habit.periodicity.toLowerCase()),
                     }).replace(/ReadingHabits\./g, "")}
                   </p>
-                  {habit.description && <p>{habit.description}</p>}
+                  {habit.description && (
+                    <p className="text-sm italic mt-2">{habit.description}</p>
+                  )}
                 </div>
               </div>
             ))}
