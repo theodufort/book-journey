@@ -77,8 +77,76 @@ const HabitCard: React.FC = () => {
   if (!habit) {
     return (
       <div className="card bg-base-200 shadow-xl border-2 border-dashed border-gray-300 flex items-center justify-center h-48 cursor-pointer" onClick={() => {
-        // TODO: Implement add habit functionality
-        console.log("Add habit clicked");
+        const modal = document.getElementById('habit_modal_new');
+        const title = document.getElementById('habit_modal_title_new');
+        const content = document.getElementById('habit_modal_content_new');
+        title.textContent = t("add_new_habit");
+        content.innerHTML = `
+          <form id="add-habit-form" class="space-y-4">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">${t("periodicity")}</span>
+              </label>
+              <select id="periodicity" class="select select-bordered">
+                <option value="daily">${t("daily")}</option>
+                <option value="weekly">${t("weekly")}</option>
+                <option value="monthly">${t("monthly")}</option>
+                <option value="yearly">${t("yearly")}</option>
+              </select>
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">${t("metric")}</span>
+              </label>
+              <select id="metric" class="select select-bordered">
+                <option value="books_read">${t("metric_books_read")}</option>
+                <option value="pages_read">${t("metric_pages_read")}</option>
+              </select>
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">${t("value")}</span>
+              </label>
+              <input type="number" id="value" class="input input-bordered" min="1" required />
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">${t("description")}</span>
+              </label>
+              <textarea id="description" class="textarea textarea-bordered" placeholder="${t("enter_description")}"></textarea>
+            </div>
+            <div class="modal-action">
+              <button type="submit" class="btn btn-primary">${t("save")}</button>
+            </div>
+          </form>
+        `;
+
+        const form = document.getElementById('add-habit-form');
+        form.onsubmit = async (e) => {
+          e.preventDefault();
+          const newHabit = {
+            periodicity: (document.getElementById('periodicity') as HTMLSelectElement).value,
+            metric: (document.getElementById('metric') as HTMLSelectElement).value,
+            value: (document.getElementById('value') as HTMLInputElement).value,
+            description: (document.getElementById('description') as HTMLTextAreaElement).value,
+          };
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            const { data, error } = await supabase
+              .from('habits')
+              .insert({ ...newHabit, user_id: user.id });
+            if (error) {
+              console.error("Error inserting habit:", error);
+              toast.error(t("insert_error"));
+            } else {
+              console.log("Habit inserted successfully:", data);
+              toast.success(t("insert_success"));
+              fetchHabit(); // Refresh the habit
+              modal.close();
+            }
+          }
+        };
+        modal.showModal();
       }}>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12 text-gray-400">
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -341,3 +409,16 @@ const HabitCard: React.FC = () => {
 };
 
 export default HabitCard;
+
+// Add this at the end of the file, outside of the HabitCard component
+export const HabitModal = () => (
+  <dialog id="habit_modal_new" className="modal">
+    <div className="modal-box">
+      <h3 id="habit_modal_title_new" className="font-bold text-lg"></h3>
+      <div id="habit_modal_content_new"></div>
+    </div>
+    <form method="dialog" className="modal-backdrop">
+      <button>close</button>
+    </form>
+  </dialog>
+);
