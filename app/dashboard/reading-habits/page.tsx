@@ -392,19 +392,28 @@ export default function ReadingHabits() {
               ];
               return (
                 <div key={habit.id} className="card bg-base-200 shadow-xl">
-                  <div className="card-body">
+                  <div className="card-body relative">
                     <h2 className="card-title">
                       <span className="text-2xl mr-2">{habit.emoji}</span>
                       {metricBinding.find((x) => x.key === habit.metric)?.label}
                     </h2>
-                    {/* {habit.description && (
-                      <p className="text-sm italic mt-2">{habit.description}</p>
-                    )} */}
                     <Countdown
                       habit={habit}
                       calculateNextEndDate={calculateNextEndDate}
                     />
                     <div className="card-actions justify-end mt-4">
+                      <div className="absolute bottom-4 left-4">
+                        <div 
+                          className="radial-progress text-primary" 
+                          style={{ 
+                            "--value": ((habit.progress_value || 0) / habit.value) * 100, 
+                            "--size": "3rem"
+                          } as React.CSSProperties} 
+                          role="progressbar"
+                        >
+                          {Math.round(((habit.progress_value || 0) / habit.value) * 100)}%
+                        </div>
+                      </div>
                       <button
                         className="btn btn-secondary btn-sm"
                         onClick={() => {
