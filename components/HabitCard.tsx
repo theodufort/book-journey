@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Countdown from "./Countdown";
-import HabitConsistencyGraph from "./HabitConsistencyGraph";
 
 const HabitCard: React.FC = () => {
   const t = useTranslations("ReadingHabits");
@@ -131,7 +130,7 @@ const HabitCard: React.FC = () => {
   return (
     <>
       {habit ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           <div className="card bg-base-200 shadow-xl">
             <div className="card-body">
               {/* Left Column */}
@@ -200,7 +199,6 @@ const HabitCard: React.FC = () => {
               </div>
             </div>
           </div>
-          <HabitConsistencyGraph days={30} />
         </div>
       ) : (
         // ... (the code for when habit is null remains the same)
