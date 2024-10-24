@@ -215,7 +215,7 @@ export default function ReadingHabits() {
                       value: habit.value,
                       metric: habit.value === "1" ? t(habit.metric.slice(0, -1)) : t(habit.metric),
                       periodicity: t(habit.periodicity.toLowerCase())
-                    })}
+                    }).replace(/ReadingHabits\./g, '')}
                   </p>
                   {habit.description && <p>{habit.description}</p>}
                 </div>

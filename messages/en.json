@@ -303,6 +303,8 @@
       "read": "Read",
       "book": "book",
       "page": "page",
-      "habit_description": "Read {value} {metric} {periodicity}"
+      "habit_description": "Read {value} {metric} {periodicity}",
+      "book": "book | books",
+      "page": "page | pages"
     }
 }
