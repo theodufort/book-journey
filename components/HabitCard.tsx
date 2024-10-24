@@ -34,7 +34,13 @@ const HabitCard: React.FC = () => {
         console.error("Error fetching habit:", error);
         setHabit(null);
       } else {
-        setHabit(data);
+        // Ensure that value and progress_value are numbers
+        const habitData = {
+          ...data,
+          value: Number(data.value),
+          progress_value: Number(data.progress_value),
+        };
+        setHabit(habitData);
       }
     }
   };
@@ -59,7 +65,7 @@ const HabitCard: React.FC = () => {
     }
   };
 
-  const metricBinding: [{ key: string; label: string }] = [
+  const metricBinding: any = [
     {
       key: "books_read",
       label: t("books_read", {
@@ -84,7 +90,7 @@ const HabitCard: React.FC = () => {
     const newHabit = {
       periodicity: formData.get("periodicity") as string,
       metric: formData.get("metric") as string,
-      value: formData.get("value") as string,
+      value: Number(formData.get("value")),
     };
 
     const {
@@ -99,7 +105,7 @@ const HabitCard: React.FC = () => {
       } else if (modalType === "update") {
         result = await supabase
           .from("habits")
-          .update({ progress_value: newHabit.value })
+          .update({ progress_value: Number(newHabit.value) })
           .eq("id", habit.id);
       } else if (modalType === "modify") {
         result = await supabase
@@ -130,80 +136,71 @@ const HabitCard: React.FC = () => {
   return (
     <>
       {habit ? (
-        <div className="grid grid-cols-1 gap-4">
-          <div className="card bg-base-200 shadow-xl">
-            <div className="card-body">
-              {/* Left Column */}
-              <div className="flex flex-col justify-between">
-                {/* Title */}
-                <h2 className="card-title">
-                  {metricBinding.find((x) => x.key === habit.metric)?.label}
-                </h2>
+        <div className="card bg-base-200 shadow-xl max-w-xs">
+          <div className="card-body">
+            {/* Title */}
+            <h2 className="card-title mx-auto">
+              {metricBinding.find((x: any) => x.key === habit.metric)?.label}
+            </h2>
 
-                {/* Buttons */}
-                <div className="card-actions mt-4">
-                  <button
-                    className="btn btn-secondary btn-sm"
-                    onClick={() => openModal("update")}
-                  >
-                    {t("update_progress")}
-                  </button>
-                  <button
-                    className="btn btn-accent btn-sm"
-                    onClick={() => openModal("modify")}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-5 h-5"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"
-                      />
-                    </svg>
-                  </button>
-                </div>
-
-                {/* Countdown */}
-                <div className="mt-4">
-                  <Countdown
-                    habit={habit}
-                    calculateNextEndDate={calculateNextEndDate}
-                  />
-                </div>
+            {/* Radial Progress */}
+            <div className="flex justify-center mt-4">
+              <div
+                className="radial-progress text-primary"
+                style={
+                  {
+                    "--value":
+                      ((habit.progress_value || 0) / habit.value) * 100,
+                    "--size": "5rem", // Adjust size as needed
+                  } as React.CSSProperties
+                }
+                role="progressbar"
+              >
+                {Math.round(((habit.progress_value || 0) / habit.value) * 100)}%
               </div>
+            </div>
 
-              {/* Right Column */}
-              <div className="flex justify-center items-center">
-                <div
-                  className="radial-progress bg-primary text-primary-content border-primary border-4"
-                  style={
-                    {
-                      "--value":
-                        ((habit.progress_value || 0) / habit.value) * 100,
-                      "--size": "6rem", // Adjust size as needed
-                    } as React.CSSProperties
-                  }
-                  role="progressbar"
+            {/* Countdown */}
+            <div className="mt-4 mx-auto">
+              <Countdown
+                habit={habit}
+                calculateNextEndDate={calculateNextEndDate}
+              />
+            </div>
+
+            {/* Buttons */}
+            <div className="card-actions justify-center mt-4">
+              <button
+                className="btn btn-secondary btn-sm"
+                onClick={() => openModal("update")}
+              >
+                {t("update_progress")}
+              </button>
+              <button
+                className="btn btn-accent btn-sm"
+                onClick={() => openModal("modify")}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-5 h-5"
                 >
-                  {Math.round(
-                    ((habit.progress_value || 0) / habit.value) * 100
-                  )}
-                  %
-                </div>
-              </div>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"
+                  />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
       ) : (
-        // ... (the code for when habit is null remains the same)
         <div
-          className="card bg-base-200 shadow-xl border-2 border-dashed border-gray-300 flex items-center justify-center h-48 cursor-pointer"
+          className="card bg-base-200 shadow-xl border-2 border-dashed border-gray-300 flex items-center justify-center h-48 cursor-pointer max-w-xs"
           onClick={() => openModal("new")}
           role="button"
           tabIndex={0}
