@@ -211,11 +211,11 @@ export default function ReadingHabits() {
                     {t(habit.periodicity)}
                   </h2>
                   <p>
-                    {`${t("read")} ${habit.value} ${
-                      habit.value === "1"
-                        ? t(habit.metric.slice(0, -1))
-                        : t(habit.metric)
-                    } ${t(habit.periodicity.toLowerCase())}`}
+                    {t("habit_description", {
+                      value: habit.value,
+                      metric: habit.value === "1" ? t(habit.metric.slice(0, -1)) : t(habit.metric),
+                      periodicity: t(habit.periodicity.toLowerCase())
+                    })}
                   </p>
                   {habit.description && <p>{habit.description}</p>}
                 </div>
