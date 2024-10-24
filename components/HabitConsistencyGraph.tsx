@@ -3,6 +3,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { addDays, format, startOfDay, endOfDay, eachDayOfInterval } from 'date-fns';
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
+import { useTranslations } from "next-intl";
 
 interface HabitConsistencyGraphProps {
   days: number;
@@ -11,6 +12,7 @@ interface HabitConsistencyGraphProps {
 const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({ days }) => {
   const [habit, setHabit] = useState<any>(null);
   const supabase = createClientComponentClient<Database>();
+  const t = useTranslations("ReadingHabits");
 
   useEffect(() => {
     fetchHabit();
@@ -63,16 +65,21 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({ days }) =
   }
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <LineChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} />
-      </LineChart>
-    </ResponsiveContainer>
+    <div className="card bg-base-200 shadow-xl">
+      <div className="card-body">
+        <h2 className="card-title">{t("consistency_graph")}</h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
   );
 };
 
