@@ -1,14 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { addDays, format, startOfDay, endOfDay, eachDayOfInterval } from 'date-fns';
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Database } from "@/types/supabase";
 
 interface HabitConsistencyGraphProps {
-  habit: any;
   days: number;
 }
 
-const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({ habit, days }) => {
+const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({ days }) => {
+  const [habit, setHabit] = useState<any>(null);
+  const supabase = createClientComponentClient<Database>();
+
+  useEffect(() => {
+    fetchHabit();
+  }, []);
+
+  const fetchHabit = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) {
+      const { data, error } = await supabase
+        .from("habits")
+        .select("*")
+        .eq("user_id", user.id)
+        .limit(1)
+        .single();
+      if (error) {
+        console.error("Error fetching habit:", error);
+        setHabit(null);
+      } else {
+        setHabit(data);
+      }
+    }
+  };
+
   const generateData = () => {
+    if (!habit) return [];
+
     const endDate = new Date();
     const startDate = addDays(endDate, -days + 1);
     
@@ -27,6 +57,10 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({ habit, da
   };
 
   const data = generateData();
+
+  if (!habit) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <ResponsiveContainer width="100%" height={300}>
