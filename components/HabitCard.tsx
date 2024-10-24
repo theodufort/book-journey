@@ -11,7 +11,9 @@ const HabitCard: React.FC = () => {
   const supabase = createClientComponentClient<Database>();
   const [habit, setHabit] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState<'new' | 'update' | 'modify'>('new');
+  const [modalType, setModalType] = useState<"new" | "update" | "modify">(
+    "new"
+  );
 
   useEffect(() => {
     fetchHabit();
@@ -80,141 +82,177 @@ const HabitCard: React.FC = () => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const newHabit = {
-      periodicity: formData.get('periodicity') as string,
-      metric: formData.get('metric') as string,
-      value: formData.get('value') as string,
-      description: formData.get('description') as string,
+      periodicity: formData.get("periodicity") as string,
+      metric: formData.get("metric") as string,
+      value: formData.get("value") as string,
     };
 
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (user) {
       let result;
-      if (modalType === 'new') {
-        result = await supabase.from('habits').insert({ ...newHabit, user_id: user.id });
-      } else if (modalType === 'update') {
-        result = await supabase.from('habits').update({ progress_value: newHabit.value }).eq('id', habit.id);
-      } else if (modalType === 'modify') {
-        result = await supabase.from('habits').update(newHabit).eq('id', habit.id);
+      if (modalType === "new") {
+        result = await supabase
+          .from("habits")
+          .insert({ ...newHabit, user_id: user.id });
+      } else if (modalType === "update") {
+        result = await supabase
+          .from("habits")
+          .update({ progress_value: newHabit.value })
+          .eq("id", habit.id);
+      } else if (modalType === "modify") {
+        result = await supabase
+          .from("habits")
+          .update(newHabit)
+          .eq("id", habit.id);
       }
 
       const { error } = result;
       if (error) {
         console.error("Error handling habit:", error);
-        toast.error(t(modalType === 'new' ? "insert_error" : "update_error"));
+        toast.error(t(modalType === "new" ? "insert_error" : "update_error"));
       } else {
-        toast.success(t(modalType === 'new' ? "insert_success" : "update_success"));
+        toast.success(
+          t(modalType === "new" ? "insert_success" : "update_success")
+        );
         fetchHabit();
         setIsModalOpen(false);
       }
     }
   };
 
-  if (!habit) {
-    return (
-      <div 
-        className="card bg-base-200 shadow-xl border-2 border-dashed border-gray-300 flex items-center justify-center h-48 cursor-pointer" 
-        onClick={() => {
-          setModalType('new');
-          setIsModalOpen(true);
-        }}
-        role="button"
-        tabIndex={0}
-        onKeyPress={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            setModalType('new');
-            setIsModalOpen(true);
-          }
-        }}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12 text-gray-400">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-        </svg>
-        <p className="mt-2 text-gray-500">{t("add_habit")}</p>
-      </div>
-    );
-  }
-
-  const openModal = (type: 'new' | 'update' | 'modify') => {
+  const openModal = (type: "new" | "update" | "modify") => {
     setModalType(type);
     setIsModalOpen(true);
   };
 
   return (
     <>
-      <div className="card bg-base-200 shadow-xl">
-        <div className="card-body relative">
-          <h2 className="card-title">
-            <span className="text-2xl mr-2">{habit.emoji}</span>
-            {metricBinding.find((x) => x.key === habit.metric)?.label}
-          </h2>
-          <Countdown
-            habit={habit}
-            calculateNextEndDate={calculateNextEndDate}
-          />
-          <div className="card-actions justify-end mt-4">
-            <div className="absolute bottom-4 left-4">
-              <div
-                className="radial-progress text-primary"
-                style={
-                  {
-                    "--value":
-                      ((habit.progress_value || 0) / habit.value) * 100,
-                    "--size": "3rem",
-                  } as React.CSSProperties
-                }
-                role="progressbar"
-              >
-                {Math.round(
-                  ((habit.progress_value || 0) / habit.value) * 100
-                )}
-                %
+      {habit ? (
+        <div className="card bg-base-200 shadow-xl">
+          <div className="card-body">
+            {/* Grid container with two columns */}
+            <div className="grid grid-cols-2 gap-4">
+              {/* Left Column */}
+              <div className="flex flex-col justify-between">
+                {/* Title */}
+                <h2 className="card-title">
+                  {metricBinding.find((x) => x.key === habit.metric)?.label}
+                </h2>
+
+                {/* Buttons */}
+                <div className="card-actions mt-4">
+                  <button
+                    className="btn btn-secondary btn-sm"
+                    onClick={() => openModal("update")}
+                  >
+                    {t("update_progress")}
+                  </button>
+                  <button
+                    className="btn btn-accent btn-sm"
+                    onClick={() => openModal("modify")}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-5 h-5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Countdown */}
+                <div className="mt-4">
+                  <Countdown
+                    habit={habit}
+                    calculateNextEndDate={calculateNextEndDate}
+                  />
+                </div>
+              </div>
+
+              {/* Right Column */}
+              <div className="flex justify-center items-center">
+                <div
+                  className="radial-progress bg-primary text-primary-content border-primary border-4"
+                  style={
+                    {
+                      "--value":
+                        ((habit.progress_value || 0) / habit.value) * 100,
+                      "--size": "6rem", // Adjust size as needed
+                    } as React.CSSProperties
+                  }
+                  role="progressbar"
+                >
+                  {Math.round(
+                    ((habit.progress_value || 0) / habit.value) * 100
+                  )}
+                  %
+                </div>
               </div>
             </div>
-            <button
-              className="btn btn-secondary btn-sm"
-              onClick={() => openModal('update')}
-            >
-              {t("update_progress")}
-            </button>
-            <button
-              className="btn btn-accent btn-sm"
-              onClick={() => openModal('modify')}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                />
-              </svg>
-            </button>
           </div>
         </div>
-      </div>
+      ) : (
+        // ... (the code for when habit is null remains the same)
+        <div
+          className="card bg-base-200 shadow-xl border-2 border-dashed border-gray-300 flex items-center justify-center h-48 cursor-pointer"
+          onClick={() => openModal("new")}
+          role="button"
+          tabIndex={0}
+          onKeyPress={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              openModal("new");
+            }
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-12 h-12 text-gray-400"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 4.5v15m7.5-7.5h-15"
+            />
+          </svg>
+          <p className="mt-2 text-gray-500">{t("add_habit")}</p>
+        </div>
+      )}
 
+      {/* Modal code remains the same */}
       {isModalOpen && (
-        <dialog open className="modal">
+        <div className={`modal ${isModalOpen ? "modal-open" : ""}`}>
           <div className="modal-box">
             <h3 className="font-bold text-lg">
-              {modalType === 'new' && t("add_new_habit")}
-              {modalType === 'update' && t("update_progress")}
-              {modalType === 'modify' && t("modify_habit")}
+              {modalType === "new" && t("add_new_habit")}
+              {modalType === "update" && t("update_progress")}
+              {modalType === "modify" && t("modify_habit")}
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
-              {(modalType === 'new' || modalType === 'modify') && (
+              {(modalType === "new" || modalType === "modify") && (
                 <>
                   <div className="form-control">
                     <label className="label">
                       <span className="label-text">{t("periodicity")}</span>
                     </label>
-                    <select name="periodicity" className="select select-bordered" defaultValue={habit?.periodicity}>
+                    <select
+                      name="periodicity"
+                      className="select select-bordered"
+                      defaultValue={habit?.periodicity}
+                    >
                       <option value="daily">{t("daily")}</option>
                       <option value="weekly">{t("weekly")}</option>
                       <option value="monthly">{t("monthly")}</option>
@@ -225,32 +263,55 @@ const HabitCard: React.FC = () => {
                     <label className="label">
                       <span className="label-text">{t("metric")}</span>
                     </label>
-                    <select name="metric" className="select select-bordered" defaultValue={habit?.metric}>
-                      <option value="books_read">{t("metric_books_read")}</option>
-                      <option value="pages_read">{t("metric_pages_read")}</option>
+                    <select
+                      name="metric"
+                      className="select select-bordered"
+                      defaultValue={habit?.metric}
+                    >
+                      <option value="books_read">
+                        {t("metric_books_read")}
+                      </option>
+                      <option value="pages_read">
+                        {t("metric_pages_read")}
+                      </option>
                     </select>
-                  </div>
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text">{t("description")}</span>
-                    </label>
-                    <textarea name="description" className="textarea textarea-bordered" placeholder={t("enter_description")} defaultValue={habit?.description}></textarea>
                   </div>
                 </>
               )}
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">{modalType === 'update' ? t("progress_value") : t("value")}</span>
+                  <span className="label-text">
+                    {modalType === "update" ? t("progress_value") : t("value")}
+                  </span>
                 </label>
-                <input type="number" name="value" className="input input-bordered" min="1" required defaultValue={modalType === 'update' ? habit?.progress_value : habit?.value} />
+                <input
+                  type="number"
+                  name="value"
+                  className="input input-bordered"
+                  min="1"
+                  required
+                  defaultValue={
+                    modalType === "update"
+                      ? habit?.progress_value
+                      : habit?.value
+                  }
+                />
               </div>
               <div className="modal-action">
-                <button type="submit" className="btn btn-primary">{t("save")}</button>
-                <button type="button" className="btn" onClick={() => setIsModalOpen(false)}>{t("close")}</button>
+                <button type="submit" className="btn btn-primary">
+                  {t("save")}
+                </button>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  {t("close")}
+                </button>
               </div>
             </form>
           </div>
-        </dialog>
+        </div>
       )}
     </>
   );
