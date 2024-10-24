@@ -134,6 +134,11 @@ const HabitCard: React.FC = () => {
     );
   }
 
+  const openModal = (type: 'new' | 'update' | 'modify') => {
+    setModalType(type);
+    setIsModalOpen(true);
+  };
+
   return (
     <>
       <div className="card bg-base-200 shadow-xl">
@@ -167,19 +172,13 @@ const HabitCard: React.FC = () => {
             </div>
             <button
               className="btn btn-secondary btn-sm"
-              onClick={() => {
-                setModalType('update');
-                setIsModalOpen(true);
-              }}
+              onClick={() => openModal('update')}
             >
               {t("update_progress")}
             </button>
             <button
               className="btn btn-accent btn-sm"
-              onClick={() => {
-                setModalType('modify');
-                setIsModalOpen(true);
-              }}
+              onClick={() => openModal('modify')}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
