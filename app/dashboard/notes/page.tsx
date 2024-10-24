@@ -7,6 +7,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
 
 export default function BookNotes() {
@@ -178,11 +179,11 @@ export default function BookNotes() {
   };
 
   const copyStickyLink = (id: string) => {
-    const link = `/sticky-note/${id}`;
+    const link = process.env.NEXT_PUBLIC_BASE_URL + `/sticky-note/${id}`;
     navigator.clipboard
       .writeText(link)
       .then(() => {
-        alert("Link copied to clipboard!");
+        toast.success("Link copied to clipboard!");
       })
       .catch((err) => {
         console.error("Failed to copy link: ", err);
@@ -565,34 +566,21 @@ export default function BookNotes() {
                           {editingStickyId && isEditMode && (
                             <>
                               <div className="flex items-center justify-between mb-2">
-                                <Switch.Group>
-                                  <div className="flex items-center">
-                                    <Switch.Label className="mr-4">
-                                      Public
-                                    </Switch.Label>
-                                    <Switch
+                                <div className="form-control">
+                                  <label className="label cursor-pointer">
+                                    <span className="label-text">Share:</span>
+                                    <input
+                                      type="checkbox"
                                       checked={
                                         bookStickys[editingStickyId].isPublic
                                       }
                                       onChange={() =>
                                         toggleStickyPublic(editingStickyId)
                                       }
-                                      className={`${
-                                        bookStickys[editingStickyId].isPublic
-                                          ? "bg-blue-600"
-                                          : "bg-gray-200"
-                                      } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2`}
-                                    >
-                                      <span
-                                        className={`${
-                                          bookStickys[editingStickyId].isPublic
-                                            ? "translate-x-6"
-                                            : "translate-x-1"
-                                        } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-                                      />
-                                    </Switch>
-                                  </div>
-                                </Switch.Group>
+                                      className={`toggle toggle-primary ml-5`}
+                                    />
+                                  </label>
+                                </div>
                                 {bookStickys[editingStickyId].isPublic && (
                                   <button
                                     onClick={() =>
