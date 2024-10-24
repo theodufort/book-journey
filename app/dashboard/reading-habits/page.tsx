@@ -1,9 +1,48 @@
 "use client";
 import HeaderDashboard from "@/components/DashboardHeader";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Database } from "@/types/supabase";
 
 export default function ReadingHabits() {
   const t = useTranslations("ReadingHabits");
+  const [periodicity, setPeriodicity] = useState("daily");
+  const [metric, setMetric] = useState("books_read");
+  const [value, setValue] = useState("");
+  const [description, setDescription] = useState("");
+  const supabase = createClientComponentClient<Database>();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (user) {
+      const { data, error } = await supabase.from("habits").insert([
+        {
+          user_id: user.id,
+          periodicity,
+          metric,
+          value,
+          description: description || null,
+        },
+      ]);
+
+      if (error) {
+        console.error("Error inserting habit:", error);
+      } else {
+        console.log("Habit inserted successfully:", data);
+        // Close the modal and reset form
+        document.getElementById("my_modal_3").close();
+        setPeriodicity("daily");
+        setMetric("books_read");
+        setValue("");
+        setDescription("");
+      }
+    }
+  };
   return (
     <main className="min-h-screen p-4 sm:p-8 pb-16">
       <section className="max-w-6xl mx-auto space-y-4 sm:space-y-8">
@@ -25,16 +64,73 @@ export default function ReadingHabits() {
         <div className="space-y-8">
           <dialog id="my_modal_3" className="modal">
             <div className="modal-box">
-              <form method="dialog">
-                {/* if there is a button in form, it will close the modal */}
-                <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              <form onSubmit={handleSubmit}>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                  onClick={() => document.getElementById("my_modal_3").close()}
+                >
                   ✕
                 </button>
+                <h3 className="font-bold text-lg">{t("add_new_habit")}</h3>
+                <div className="form-control w-full max-w-xs">
+                  <label className="label">
+                    <span className="label-text">{t("periodicity")}</span>
+                  </label>
+                  <select
+                    className="select select-bordered"
+                    value={periodicity}
+                    onChange={(e) => setPeriodicity(e.target.value)}
+                  >
+                    <option value="daily">{t("daily")}</option>
+                    <option value="weekly">{t("weekly")}</option>
+                    <option value="monthly">{t("monthly")}</option>
+                    <option value="yearly">{t("yearly")}</option>
+                  </select>
+                </div>
+                <div className="form-control w-full max-w-xs">
+                  <label className="label">
+                    <span className="label-text">{t("metric")}</span>
+                  </label>
+                  <select
+                    className="select select-bordered"
+                    value={metric}
+                    onChange={(e) => setMetric(e.target.value)}
+                  >
+                    <option value="books_read">{t("books_read")}</option>
+                    <option value="pages_read">{t("pages_read")}</option>
+                  </select>
+                </div>
+                <div className="form-control w-full max-w-xs">
+                  <label className="label">
+                    <span className="label-text">{t("value")}</span>
+                  </label>
+                  <input
+                    type="number"
+                    placeholder={t("enter_value")}
+                    className="input input-bordered w-full max-w-xs"
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-control w-full max-w-xs">
+                  <label className="label">
+                    <span className="label-text">{t("description")}</span>
+                  </label>
+                  <textarea
+                    className="textarea textarea-bordered h-24"
+                    placeholder={t("enter_description")}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  ></textarea>
+                </div>
+                <div className="modal-action">
+                  <button type="submit" className="btn btn-primary">
+                    {t("save")}
+                  </button>
+                </div>
               </form>
-              <h3 className="font-bold text-lg">Hello!</h3>
-              <p className="py-4">
-                Press ESC key or click on ✕ button to close
-              </p>
             </div>
           </dialog>
         </div>
