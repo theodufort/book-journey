@@ -419,8 +419,70 @@ export default function ReadingHabits() {
                           const title = document.getElementById(`habit_modal_title_${habit.id}`);
                           const content = document.getElementById(`habit_modal_content_${habit.id}`);
                           title.textContent = t("modify_habit");
-                          content.innerHTML = ""; // Clear previous content
-                          // Add modify habit form here
+                          content.innerHTML = `
+                            <form id="modify-habit-form-${habit.id}" class="space-y-4">
+                              <div class="form-control">
+                                <label class="label">
+                                  <span class="label-text">${t("periodicity")}</span>
+                                </label>
+                                <select id="periodicity-${habit.id}" class="select select-bordered">
+                                  <option value="daily" ${habit.periodicity === 'daily' ? 'selected' : ''}>${t("daily")}</option>
+                                  <option value="weekly" ${habit.periodicity === 'weekly' ? 'selected' : ''}>${t("weekly")}</option>
+                                  <option value="monthly" ${habit.periodicity === 'monthly' ? 'selected' : ''}>${t("monthly")}</option>
+                                  <option value="yearly" ${habit.periodicity === 'yearly' ? 'selected' : ''}>${t("yearly")}</option>
+                                </select>
+                              </div>
+                              <div class="form-control">
+                                <label class="label">
+                                  <span class="label-text">${t("metric")}</span>
+                                </label>
+                                <select id="metric-${habit.id}" class="select select-bordered">
+                                  <option value="books_read" ${habit.metric === 'books_read' ? 'selected' : ''}>${t("metric_books_read")}</option>
+                                  <option value="pages_read" ${habit.metric === 'pages_read' ? 'selected' : ''}>${t("metric_pages_read")}</option>
+                                </select>
+                              </div>
+                              <div class="form-control">
+                                <label class="label">
+                                  <span class="label-text">${t("value")}</span>
+                                </label>
+                                <input type="number" id="value-${habit.id}" class="input input-bordered" value="${habit.value}" min="1" required />
+                              </div>
+                              <div class="form-control">
+                                <label class="label">
+                                  <span class="label-text">${t("description")}</span>
+                                </label>
+                                <textarea id="description-${habit.id}" class="textarea textarea-bordered" placeholder="${t("enter_description")}">${habit.description || ''}</textarea>
+                              </div>
+                              <div class="modal-action">
+                                <button type="submit" class="btn btn-primary">${t("save")}</button>
+                              </div>
+                            </form>
+                          `;
+                          
+                          const form = document.getElementById(`modify-habit-form-${habit.id}`);
+                          form.onsubmit = async (e) => {
+                            e.preventDefault();
+                            const updatedHabit = {
+                              id: habit.id,
+                              periodicity: (document.getElementById(`periodicity-${habit.id}`) as HTMLSelectElement).value,
+                              metric: (document.getElementById(`metric-${habit.id}`) as HTMLSelectElement).value,
+                              value: (document.getElementById(`value-${habit.id}`) as HTMLInputElement).value,
+                              description: (document.getElementById(`description-${habit.id}`) as HTMLTextAreaElement).value,
+                            };
+                            const { data, error } = await supabase
+                              .from('habits')
+                              .update(updatedHabit)
+                              .eq('id', habit.id);
+                            if (error) {
+                              console.error('Error updating habit:', error);
+                              toast.error(t("update_error"));
+                            } else {
+                              console.log('Habit updated successfully:', data);
+                              toast.success(t("update_success"));
+                              fetchHabits(); // Refresh the habits list
+                              modal.close();
+                            }
+                          };
                           modal.showModal();
                         }}
                       >
