@@ -310,6 +310,7 @@
       "metric_pages_read": "Pages Read",
       "update_error": "Error updating habit. Please try again.",
       "update_success": "Habit updated successfully!",
-      "progress_value": "Progress Value"
+      "progress_value": "Progress Value",
+      "consistency_graph": "Consistency Graph (Last 30 Days)"
     }
 }
