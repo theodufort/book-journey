@@ -3,7 +3,7 @@ import HeaderDashboard from "@/components/DashboardHeader";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 
 export default function ReadingHabits() {
@@ -12,7 +12,27 @@ export default function ReadingHabits() {
   const [metric, setMetric] = useState("books_read");
   const [value, setValue] = useState("1");
   const [description, setDescription] = useState("");
+  const [habits, setHabits] = useState<any[]>([]);
   const supabase = createClientComponentClient<Database>();
+
+  useEffect(() => {
+    fetchHabits();
+  }, []);
+
+  const fetchHabits = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data, error } = await supabase
+        .from("habits")
+        .select("*")
+        .eq("user_id", user.id);
+      if (error) {
+        console.error("Error fetching habits:", error);
+      } else {
+        setHabits(data);
+      }
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,6 +69,7 @@ export default function ReadingHabits() {
         setValue("");
         setDescription("");
         toast.success(t("insert_success"));
+        fetchHabits(); // Refresh the habits list
       }
     }
   };
@@ -147,6 +168,17 @@ export default function ReadingHabits() {
               </form>
             </div>
           </dialog>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {habits.map((habit) => (
+            <div key={habit.id} className="card bg-base-200 shadow-xl">
+              <div className="card-body">
+                <h2 className="card-title">{t(habit.periodicity)}</h2>
+                <p>{t(habit.metric)}: {habit.value}</p>
+                {habit.description && <p>{habit.description}</p>}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
     </main>
