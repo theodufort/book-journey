@@ -307,6 +307,8 @@
       "close": "Close",
       "unnamed_habit": "Unnamed Habit",
       "metric_books_read": "Books Read",
-      "metric_pages_read": "Pages Read"
+      "metric_pages_read": "Pages Read",
+      "update_error": "Error updating habit. Please try again.",
+      "update_success": "Habit updated successfully!"
     }
 }
