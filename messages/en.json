@@ -303,6 +303,7 @@
       "goal": "Goal: ",
       "view_grid": "View Grid",
       "reading_habit_grid": "Reading Habit Grid",
-      "close": "Close"
+      "close": "Close",
+      "unnamed_habit": "Unnamed Habit"
     }
 }
