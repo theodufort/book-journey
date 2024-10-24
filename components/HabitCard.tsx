@@ -131,10 +131,9 @@ const HabitCard: React.FC = () => {
   return (
     <>
       {habit ? (
-        <div className="card bg-base-200 shadow-xl">
-          <div className="card-body">
-            {/* Grid container with two columns */}
-            <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="card bg-base-200 shadow-xl">
+            <div className="card-body">
               {/* Left Column */}
               <div className="flex flex-col justify-between">
                 {/* Title */}
@@ -201,6 +200,7 @@ const HabitCard: React.FC = () => {
               </div>
             </div>
           </div>
+          <HabitConsistencyGraph days={30} />
         </div>
       ) : (
         // ... (the code for when habit is null remains the same)
