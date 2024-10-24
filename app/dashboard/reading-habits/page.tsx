@@ -52,7 +52,7 @@ const Countdown = ({ habit, calculateNextEndDate }: any) => {
     <div className="grid grid-flow-col gap-5 text-center auto-cols-max">
       <div className="flex flex-col">
         <span className="countdown font-mono text-5xl" style={{ "--value": timeLeft.days } as React.CSSProperties}>
-          {timeLeft.days.toString().padStart(3, '0')}
+          {timeLeft.days > 99 ? timeLeft.days.toString() : timeLeft.days.toString().padStart(2, '0')}
         </span>
         days
       </div>
