@@ -73,11 +73,12 @@
     },
     "HeaderDashboard":{
       "link1":"Dashboard",
-      "link2":"Reading List",
-      "link3":"Reading Notes",
-      "link4":"Reading Recommendations",
-      "link5":"Reading Rewards",
-      "link6":"Support"
+      "link2":"List",
+      "link3":"Notes",
+      "link4":"Recommendations",
+      "link5":"Rewards",
+      "link6":"Support",
+      "link7": "Habits"
     },
     "ButtonAccount":{
       "profile": "Profile",
@@ -275,5 +276,9 @@
     "BookShareButton":{
       "label":"Share",
       "message": "Copied to Clipboard!"
+    },
+    "ReadingHabits":{
+      "title":"Reading Habits",
+      "add_habit": "Add a Habit"
     }
 }
