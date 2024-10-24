@@ -200,10 +200,6 @@ const HabitCard: React.FC = () => {
                 </div>
               </div>
             </div>
-            {/* Add the HabitConsistencyGraph component */}
-            <div className="mt-4">
-              <HabitConsistencyGraph days={30} />
-            </div>
           </div>
         </div>
       ) : (
