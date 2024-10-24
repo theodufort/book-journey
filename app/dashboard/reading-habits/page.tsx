@@ -211,7 +211,7 @@ export default function ReadingHabits() {
                     {t(habit.periodicity)}
                   </h2>
                   <p>
-                    {t(habit.metric)}: {habit.value}
+                    {`${t('read')} ${habit.value} ${habit.value === '1' ? t(habit.metric.slice(0, -1)) : t(habit.metric)} ${t('per')} ${t(habit.periodicity.toLowerCase())}`}
                   </p>
                   {habit.description && <p>{habit.description}</p>}
                 </div>
