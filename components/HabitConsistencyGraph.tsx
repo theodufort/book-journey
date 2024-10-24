@@ -122,17 +122,14 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
 
   const data = generateData();
 
-  if (!habit) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <p className="text-lg font-semibold">{t("no_habits_yet")}</p>
-      </div>
-    );
-  }
-
   return (
     <div className="card bg-base-200 shadow-xl h-full">
       <div className="card-body h-full flex flex-col">
+        {!habit ? (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-lg font-semibold">{t("no_habits_yet")}</p>
+          </div>
+        ) : (
         {/* Title and Date Range Buttons Inline on larger screens */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-2 md:space-y-0">
           <h2 className="card-title text-center md:justify-start">
@@ -183,6 +180,7 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
             </LineChart>
           </ResponsiveContainer>
         </div>
+        )}
       </div>
     </div>
   );
