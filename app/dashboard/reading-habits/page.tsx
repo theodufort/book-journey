@@ -346,52 +346,18 @@ export default function ReadingHabits() {
             },
           ];
           return (
-            <dialog
-              id={`habit_grid_modal_${habit.id}`}
-              className="modal"
-              key={habit.id}
-            >
+            <dialog id={`habit_modal_${habit.id}`} className="modal" key={habit.id}>
               <div className="modal-box">
                 <form method="dialog">
-                  {/* if there is a button in form, it will close the modal */}
                   <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
                     ✕
                   </button>
                 </form>
-                <h3 className="font-bold text-lg mb-4">
+                <h3 className="font-bold text-lg mb-4" id={`habit_modal_title_${habit.id}`}>
                   {metricBinding.find((x) => x.key === habit.metric)?.label ||
                     t("unnamed_habit")}
                 </h3>
-              </div>
-            </dialog>
-
-            <dialog
-              id={`habit_progress_modal_${habit.id}`}
-              className="modal"
-            >
-              <div className="modal-box">
-                <form method="dialog">
-                  <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                    ✕
-                  </button>
-                </form>
-                <h3 className="font-bold text-lg mb-4">{t("update_progress")}</h3>
-                {/* Add form for updating progress here */}
-              </div>
-            </dialog>
-
-            <dialog
-              id={`habit_modify_modal_${habit.id}`}
-              className="modal"
-            >
-              <div className="modal-box">
-                <form method="dialog">
-                  <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                    ✕
-                  </button>
-                </form>
-                <h3 className="font-bold text-lg mb-4">{t("modify_habit")}</h3>
-                {/* Add form for modifying habit here */}
+                <div id={`habit_modal_content_${habit.id}`}></div>
               </div>
             </dialog>
           );
@@ -434,31 +400,43 @@ export default function ReadingHabits() {
                     <div className="card-actions justify-end mt-4">
                       <button
                         className="btn btn-primary btn-sm"
-                        onClick={() =>
-                          document
-                            .getElementById(`habit_grid_modal_${habit.id}`)
-                            .showModal()
-                        }
+                        onClick={() => {
+                          const modal = document.getElementById(`habit_modal_${habit.id}`);
+                          const title = document.getElementById(`habit_modal_title_${habit.id}`);
+                          const content = document.getElementById(`habit_modal_content_${habit.id}`);
+                          title.textContent = t("reading_habit_grid");
+                          content.innerHTML = ""; // Clear previous content
+                          // Add view stats content here
+                          modal.showModal();
+                        }}
                       >
                         {t("view_stats")}
                       </button>
                       <button
                         className="btn btn-secondary btn-sm"
-                        onClick={() =>
-                          document
-                            .getElementById(`habit_progress_modal_${habit.id}`)
-                            .showModal()
-                        }
+                        onClick={() => {
+                          const modal = document.getElementById(`habit_modal_${habit.id}`);
+                          const title = document.getElementById(`habit_modal_title_${habit.id}`);
+                          const content = document.getElementById(`habit_modal_content_${habit.id}`);
+                          title.textContent = t("update_progress");
+                          content.innerHTML = ""; // Clear previous content
+                          // Add update progress form here
+                          modal.showModal();
+                        }}
                       >
                         {t("update_progress")}
                       </button>
                       <button
                         className="btn btn-accent btn-sm"
-                        onClick={() =>
-                          document
-                            .getElementById(`habit_modify_modal_${habit.id}`)
-                            .showModal()
-                        }
+                        onClick={() => {
+                          const modal = document.getElementById(`habit_modal_${habit.id}`);
+                          const title = document.getElementById(`habit_modal_title_${habit.id}`);
+                          const content = document.getElementById(`habit_modal_content_${habit.id}`);
+                          title.textContent = t("modify_habit");
+                          content.innerHTML = ""; // Clear previous content
+                          // Add modify habit form here
+                          modal.showModal();
+                        }}
                       >
                         {t("modify_habit")}
                       </button>
