@@ -101,7 +101,7 @@ const HabitCard: React.FC = () => {
       if (modalType === "new") {
         result = await supabase
           .from("habits")
-          .insert({ ...newHabit, user_id: user.id });
+          .insert({ ...newHabit, user_id: user.id, progress_value: 0 });
       } else if (modalType === "update") {
         const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
         const newStreak = [
