@@ -109,25 +109,36 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
 
     const data = dateRange.map((date) => {
       // Log the current date we're checking and the streak entries
-      console.log('Checking date:', format(date, 'yyyy-MM-dd'));
-      console.log('Available streak entries:', habit.streak.map((entry: { day: string }) => entry.day));
-      
-      // Find all entries for this day
-      const entriesForDay = habit.streak.filter((entry: { day: string; progress_value: number }) => {
-        // Use format to compare dates as strings in local timezone
-        const entryDateStr = format(new Date(entry.day), 'yyyy-MM-dd');
-        const currentDateStr = format(date, 'yyyy-MM-dd');
-        
-        console.log(`Comparing dates: entry=${entryDateStr} current=${currentDateStr}`);
-        return entryDateStr === currentDateStr;
-      });
-      
-      // Get the last entry for the day (if any exist)
-      const progressForDay = entriesForDay.length > 0 
-        ? entriesForDay[entriesForDay.length - 1] 
-        : null;
+      console.log(
+        "Available streak entries:",
+        habit.streak.map((entry: { day: string }) => entry.day)
+      );
 
-      console.log(`Date ${format(date, 'yyyy-MM-dd')} has ${entriesForDay.length} entries, last value: ${progressForDay?.progress_value}`);
+      // Find all entries for this day
+      const entriesForDay = habit.streak.filter(
+        (entry: { day: string; progress_value: number }) => {
+          // Use format to compare dates as strings in local timezone
+          const entryDateStr = format(entry.day, "yyyy-MM-dd");
+          const currentDateStr = format(date, "yyyy-MM-dd");
+
+          console.log(
+            `Comparing dates: entry=${entryDateStr} current=${currentDateStr}`
+          );
+          return entryDateStr === currentDateStr;
+        }
+      );
+
+      // Get the last entry for the day (if any exist)
+      const progressForDay =
+        entriesForDay.length > 0
+          ? entriesForDay[entriesForDay.length - 1]
+          : null;
+
+      console.log(
+        `Date ${format(date, "yyyy-MM-dd")} has ${
+          entriesForDay.length
+        } entries, last value: ${progressForDay?.progress_value}`
+      );
       const dataPoint = {
         date: format(date, "MMM dd"),
         value: progressForDay ? Number(progressForDay.progress_value) : 0,
