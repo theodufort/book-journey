@@ -34,12 +34,14 @@ const HabitCard: React.FC = () => {
         console.error("Error fetching habit:", error);
         setHabit(null);
       } else {
+        console.log(data);
         // Ensure that value and progress_value are numbers
         const habitData = {
           ...data,
           value: Number(data.value),
           progress_value: Number(data.progress_value),
         };
+        console.log(habitData);
         setHabit(habitData);
       }
     }
@@ -101,7 +103,14 @@ const HabitCard: React.FC = () => {
       if (modalType === "new") {
         result = await supabase
           .from("habits")
-          .insert({ ...newHabit, user_id: user.id, progress_value: 0 });
+          .insert({ ...newHabit, user_id: user.id, progress_value: 0 })
+          .select();
+        const today = new Date().toISOString().split("T")[0];
+        await supabase.rpc("append_habit_streak", {
+          habit_id: result.data[0].id,
+          day: today,
+          progress_value: 0,
+        });
       } else if (modalType === "update") {
         const today = new Date().toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
         const newStreak = [
@@ -115,6 +124,18 @@ const HabitCard: React.FC = () => {
             streak: newStreak,
           })
           .eq("id", habit.id);
+        const { data: appendHabitData, error: appendHabitEror } =
+          await supabase.rpc("append_habit_streak", {
+            habit_id: habit.id,
+            day: today,
+            progress_value: Number(newHabit.value),
+          });
+
+        if (appendHabitEror) {
+          console.error("Error appending habit streak:", appendHabitEror);
+        }
+
+        console.log("Successfully appended habit streak:", appendHabitData);
       } else if (modalType === "modify") {
         result = await supabase
           .from("habits")
@@ -144,7 +165,7 @@ const HabitCard: React.FC = () => {
   return (
     <>
       {habit ? (
-        <div className="card bg-base-200 shadow-xl max-w-xs">
+        <div className="card bg-base-200 shadow-xl w-full h-auto">
           <div className="card-body">
             {/* Title */}
             <h2 className="card-title mx-auto">
@@ -159,7 +180,7 @@ const HabitCard: React.FC = () => {
                   {
                     "--value":
                       ((habit.progress_value || 0) / habit.value) * 100,
-                    "--size": "5rem", // Adjust size as needed
+                    "--size": "10rem", // Adjust size as needed
                   } as React.CSSProperties
                 }
                 role="progressbar"
@@ -169,12 +190,12 @@ const HabitCard: React.FC = () => {
             </div>
 
             {/* Countdown */}
-            <div className="mt-4 mx-auto">
+            {/* <div className="mt-4 mx-auto">
               <Countdown
                 habit={habit}
                 calculateNextEndDate={calculateNextEndDate}
               />
-            </div>
+            </div> */}
 
             {/* Buttons */}
             <div className="card-actions justify-center mt-4">
@@ -208,7 +229,7 @@ const HabitCard: React.FC = () => {
         </div>
       ) : (
         <div
-          className="card bg-base-200 shadow-xl border-2 border-dashed border-gray-300 flex items-center justify-center h-48 cursor-pointer max-w-xs"
+          className="card bg-base-200 shadow-xl border-2 border-dashed h-48 border-gray-300 flex items-center justify-center cursor-pointer w-full"
           onClick={() => openModal("new")}
           role="button"
           tabIndex={0}
