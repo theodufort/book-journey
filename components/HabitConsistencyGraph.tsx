@@ -160,16 +160,20 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
               )}
             </div>
             {/* Chart */}
-            <div className="flex-1 mt-4 min-h-[200px]">
-              <ResponsiveContainer width="100%" height="100%">
+            <div style={{ width: '100%', height: 300 }} className="mt-4">
+              <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={data}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis
                     dataKey="date"
                     tick={{ fontSize: 12 }}
                     interval={selectedDays > 14 ? 2 : 0}
+                    height={50}
                   />
-                  <YAxis domain={["dataMin - 1", "dataMax + 1"]} />
+                  <YAxis 
+                    domain={[0, 'auto']}
+                    allowDecimals={false}
+                  />
                   <Tooltip />
                   <Legend />
                   <Line
