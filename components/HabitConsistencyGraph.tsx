@@ -83,38 +83,26 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
       } else {
         setHabit(habitData);
 
-        // Fetch progress data
-        const { data: progressEntries, error: progressError } = await supabase
-          .from("habits")
-          .select("*")
-          .eq("id", habitData.id);
-
-        if (progressError) {
-          console.error("Error fetching progress data:", progressError);
-          setProgressData([]);
-        } else {
-          setProgressData(progressEntries);
-        }
+        // No need to fetch additional progress data since it's in the streak array
       }
     }
   };
 
   const generateData = () => {
-    if (!habit) return [];
+    if (!habit || !habit.streak) return [];
 
     const endDate = new Date();
     const startDate = addDays(endDate, -selectedDays + 1);
-
     const dateRange = eachDayOfInterval({ start: startDate, end: endDate });
 
     return dateRange.map((date) => {
-      const progressForDay = progressData.find((p: any) =>
-        isSameDay(new Date(p.date), date)
+      const progressForDay = habit.streak.find((entry: { day: string, progress_value: number }) => 
+        isSameDay(new Date(entry.day), date)
       );
 
       return {
         date: format(date, "MMM dd"),
-        value: progressForDay ? Number(progressForDay.value) : 0,
+        value: progressForDay ? progressForDay.progress_value : 0,
         target: Number(habit.value),
       };
     });
