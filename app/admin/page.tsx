@@ -18,6 +18,7 @@ import {
 export default function Admin() {
   const [activityData, setActivityData] = useState<any[]>([]);
   const [userStats, setUserStats] = useState<any>(null);
+  const [userGrowthData, setUserGrowthData] = useState<any[]>([]);
   const supabase = createClientComponentClient();
 
   useEffect(() => {
@@ -76,30 +77,6 @@ export default function Admin() {
     setActivityData(chartData);
   }
 
-  async function fetchUserGrowthData() {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("created_at")
-      .order("created_at", { ascending: true });
-
-    if (error) {
-      console.error("Error fetching user growth data:", error);
-      return;
-    }
-
-    const userCounts = data.reduce((acc: any, user: any) => {
-      const date = new Date(user.created_at).toISOString().split("T")[0];
-      acc[date] = (acc[date] || 0) + 1;
-      return acc;
-    }, {});
-
-    const chartData = Object.entries(userCounts).map(([date, count]) => ({
-      date,
-      users: count,
-    }));
-
-    setUserGrowthData(chartData);
-  }
 
   async function fetchUserStats() {
     const { count: usersWithBooks, error: error1 } = await supabase
