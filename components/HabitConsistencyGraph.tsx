@@ -102,7 +102,9 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
     }
 
     const endDate = new Date();
-    const startDate = addDays(endDate, -selectedDays + 1);
+    endDate.setHours(23, 59, 59, 999); // Set to end of current day
+    const startDate = addDays(endDate, -(selectedDays - 1));
+    startDate.setHours(0, 0, 0, 0); // Set to start of first day
     const dateRange = eachDayOfInterval({ start: startDate, end: endDate });
 
     const data = dateRange.map((date) => {
