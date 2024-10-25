@@ -127,47 +127,6 @@ export default function Admin() {
     });
   }
 
-  async function fetchUserRetentionData() {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("created_at, last_sign_in_at")
-      .order("created_at", { ascending: true });
-
-    if (error) {
-      console.error("Error fetching user retention data:", error);
-      return;
-    }
-
-    const retentionData = data.reduce((acc: any, user: any) => {
-      const createdDate = new Date(user.created_at).toISOString().split("T")[0];
-      const lastSignInDate = user.last_sign_in_at
-        ? new Date(user.last_sign_in_at).toISOString().split("T")[0]
-        : null;
-
-      if (!acc[createdDate]) {
-        acc[createdDate] = { totalUsers: 0, activeUsers: 0 };
-      }
-
-      acc[createdDate].totalUsers++;
-
-      if (lastSignInDate && lastSignInDate !== createdDate) {
-        acc[createdDate].activeUsers++;
-      }
-
-      return acc;
-    }, {});
-
-    const chartData = Object.entries(retentionData).map(
-      ([date, data]: [string, any]) => ({
-        date,
-        totalUsers: data.totalUsers,
-        activeUsers: data.activeUsers,
-        retentionRate: (data.activeUsers / data.totalUsers) * 100,
-      })
-    );
-
-    setUserRetentionData(chartData);
-  }
 
   return (
     <div>
