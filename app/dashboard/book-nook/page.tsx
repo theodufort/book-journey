@@ -1,3 +1,4 @@
+"use client";
 import HeaderDashboard from "@/components/DashboardHeader";
 
 export default function BookNook() {
