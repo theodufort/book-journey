@@ -116,6 +116,9 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
     startDate.setHours(0, 0, 0, 0); // Set to start of first day
     const dateRange = eachDayOfInterval({ start: startDate, end: endDate });
 
+    // Initialize lastKnownValue outside the map function to persist across days
+    let lastKnownValue = 0;
+
     const data = dateRange.map((date) => {
       // Log the current date we're checking and the streak entries
       console.log(
@@ -149,16 +152,12 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
         } entries, last value: ${progressForDay?.progress_value}`
       );
 
-      // Track last known value outside the data array
-      let lastKnownValue = 0;
-
       let value = 0;
       if (progressForDay) {
         value = Number(progressForDay.progress_value);
-        lastKnownValue = value; // Update last known value
+        lastKnownValue = value; // Update last known value when we have an entry
       } else {
-        // Use the last known value
-        value = lastKnownValue;
+        value = lastKnownValue; // Use the last known value for days without entries
       }
 
       const dataPoint = {
