@@ -311,10 +311,12 @@
       "update_error": "Error updating habit. Please try again.",
       "update_success": "Habit updated successfully!",
       "progress_value": "Progress Value",
-      "consistency_graph": "Consistency Graph (Last 30 Days)",
+      "consistency_graph": "Consistency Graph (Last {days} Days)",
       "consistency_line_chart": "Consistency Line Chart",
       "progress_bar_chart": "Progress Bar Chart",
       "actual": "Actual",
-      "target": "Target"
+      "target": "Target",
+      "days": "Days",
+      "no_habits_yet": "Create a habit to get started."
     }
 }

@@ -501,7 +501,7 @@ export default function BookNotes() {
                     </div>
                     <div
                       ref={notesContainerRef}
-                      className="flex flex-col prose w-full"
+                      className="flex flex-col prose w-full m-auto"
                     >
                       {noteType == "main" ? (
                         <div className="p-2 h-auto prose">
@@ -509,7 +509,7 @@ export default function BookNotes() {
                             <>
                               <textarea
                                 className="w-full p-3 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical min-h-[200px]"
-                                style={{ width: '100%' }}
+                                style={{ width: "100%" }}
                                 value={
                                   notes[selectedBook.book_id]?.content || ""
                                 }
@@ -621,7 +621,7 @@ export default function BookNotes() {
                               </div>
                               <textarea
                                 className="mt-1 p-2 w-full text-sm rounded resize-vertical min-h-[100px]"
-                                style={{ width: '100%' }}
+                                style={{ width: "100%" }}
                                 value={bookStickys[editingStickyId].content}
                                 onChange={(e) => {
                                   setBookStickys((prev) => ({

@@ -103,16 +103,16 @@ const HabitCard: React.FC = () => {
           .from("habits")
           .insert({ ...newHabit, user_id: user.id, progress_value: 0 });
       } else if (modalType === "update") {
-        const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+        const today = new Date().toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
         const newStreak = [
           ...(habit.streak || []),
-          { day: today, progress_value: Number(newHabit.value) }
+          { day: today, progress_value: Number(newHabit.value) },
         ];
         result = await supabase
           .from("habits")
-          .update({ 
+          .update({
             progress_value: Number(newHabit.value),
-            streak: newStreak
+            streak: newStreak,
           })
           .eq("id", habit.id);
       } else if (modalType === "modify") {
@@ -140,7 +140,7 @@ const HabitCard: React.FC = () => {
     setModalType(type);
     setIsModalOpen(true);
   };
-
+  console.log(habit);
   return (
     <>
       {habit ? (
