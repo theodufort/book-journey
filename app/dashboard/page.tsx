@@ -7,7 +7,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 export default function Dashboard() {
   const t = useTranslations("Dashboard");
@@ -21,6 +21,11 @@ export default function Dashboard() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [showOnboard, setShowOnboard] = useState(false);
+  const [habitRefreshTrigger, setHabitRefreshTrigger] = useState(0);
+
+  const handleHabitChange = useCallback(() => {
+    setHabitRefreshTrigger(prev => prev + 1);
+  }, []);
   const router = useRouter();
 
   const getUser = async () => {
@@ -181,14 +186,14 @@ export default function Dashboard() {
           {/* Habit Card (1/4 width) */}
           <div className="md:col-span-1">
             <div className="h-full flex">
-              <HabitCard />
+              <HabitCard onHabitChange={handleHabitChange} />
             </div>
           </div>
 
           {/* Habit Consistency Graph (3/4 width) */}
           <div className="md:col-span-3">
             <div className="h-full">
-              <HabitConsistencyGraph initialDays={7} />
+              <HabitConsistencyGraph initialDays={7} key={habitRefreshTrigger} />
             </div>
           </div>
         </div>
