@@ -1571,6 +1571,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      append_habit_streak: {
+        Args: {
+          habit_id: string
+          day: string
+          progress_value: number
+        }
+        Returns: undefined
+      }
       check_book_exists: {
         Args: {
           p_isbn_13: string
