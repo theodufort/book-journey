@@ -786,15 +786,7 @@ export type Database = {
           title?: string
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "blog_articles_isbn_13_fkey"
-            columns: ["isbn_13"]
-            isOneToOne: false
-            referencedRelation: "books"
-            referencedColumns: ["isbn_13"]
-          },
-        ]
+        Relationships: []
       }
       blog_categories: {
         Row: {
@@ -932,6 +924,47 @@ export type Database = {
           },
         ]
       }
+      habits: {
+        Row: {
+          created_at: string
+          id: string
+          metric: string
+          periodicity: string
+          progress_value: number
+          streak: Json[] | null
+          user_id: string | null
+          value: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          metric: string
+          periodicity: string
+          progress_value?: number
+          streak?: Json[] | null
+          user_id?: string | null
+          value?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          metric?: string
+          periodicity?: string
+          progress_value?: number
+          streak?: Json[] | null
+          user_id?: string | null
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "habits_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       indie_authors: {
         Row: {
           author_id: string
@@ -978,6 +1011,13 @@ export type Database = {
             columns: ["author_id"]
             isOneToOne: true
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "indie_authors_author_id_fkey1"
+            columns: ["author_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1030,6 +1070,32 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "indie_authors"
             referencedColumns: ["author_id"]
+          },
+        ]
+      }
+      indie_authors_books_links: {
+        Row: {
+          book_id: string
+          label: string
+          link: string
+        }
+        Insert: {
+          book_id?: string
+          label: string
+          link: string
+        }
+        Update: {
+          book_id?: string
+          label?: string
+          link?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "indie_authors_books_links_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: true
+            referencedRelation: "indie_authors_books"
+            referencedColumns: ["book_id"]
           },
         ]
       }
@@ -1201,6 +1267,7 @@ export type Database = {
           book_id: string
           finished_at: string | null
           id: number
+          pages_read: number
           pointsAwardedFinished: boolean
           pointsAwardedRating: boolean
           pointsAwardedTextReview: boolean
@@ -1217,6 +1284,7 @@ export type Database = {
           book_id: string
           finished_at?: string | null
           id?: number
+          pages_read?: number
           pointsAwardedFinished?: boolean
           pointsAwardedRating?: boolean
           pointsAwardedTextReview?: boolean
@@ -1233,6 +1301,7 @@ export type Database = {
           book_id?: string
           finished_at?: string | null
           id?: number
+          pages_read?: number
           pointsAwardedFinished?: boolean
           pointsAwardedRating?: boolean
           pointsAwardedTextReview?: boolean
@@ -1307,6 +1376,47 @@ export type Database = {
           },
         ]
       }
+      sticky_notes: {
+        Row: {
+          book_id: string
+          content: string
+          created_at: string
+          id: string
+          is_public: boolean
+          label: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          book_id: string
+          content: string
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          label: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          book_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          label?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sticky_notes_user_id_fkey1"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_activity: {
         Row: {
           activity_type: string | null
@@ -1335,6 +1445,32 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "user_activity_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_connection_activity: {
+        Row: {
+          active_at: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          active_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          active_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_connection_activity_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -1461,6 +1597,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      append_habit_streak: {
+        Args: {
+          habit_id: string
+          day: string
+          progress_value: number
+        }
+        Returns: undefined
+      }
       check_book_exists: {
         Args: {
           p_isbn_13: string
