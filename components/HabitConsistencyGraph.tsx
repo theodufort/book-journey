@@ -81,9 +81,9 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
         console.error("Error fetching habit:", habitError);
         setHabit(null);
       } else {
-        console.log('Fetched habit data:', habitData);
+        console.log("Fetched habit data:", habitData);
         if (habitData?.streak) {
-          console.log('Streak data:', habitData.streak);
+          console.log("Streak data:", habitData.streak);
         }
         setHabit(habitData);
       }
@@ -92,12 +92,12 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
 
   const generateData = () => {
     if (!habit) {
-      console.log('No habit data available');
+      console.log("No habit data available");
       return [];
     }
-    
+
     if (!habit.streak || !Array.isArray(habit.streak)) {
-      console.log('Streak data missing or invalid:', habit.streak);
+      console.log("Streak data missing or invalid:", habit.streak);
       return [];
     }
 
@@ -106,10 +106,11 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
     const dateRange = eachDayOfInterval({ start: startDate, end: endDate });
 
     const data = dateRange.map((date) => {
-      const progressForDay = habit.streak.find((entry: { day: string, progress_value: number }) => 
-        isSameDay(new Date(entry.day), date)
+      const progressForDay = habit.streak.find(
+        (entry: { day: string; progress_value: number }) =>
+          isSameDay(new Date(entry.day), date)
       );
-
+      console.log(progressForDay);
       const dataPoint = {
         date: format(date, "MMM dd"),
         value: progressForDay ? Number(progressForDay.progress_value) : 0,
@@ -118,7 +119,7 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
       return dataPoint;
     });
 
-    console.log('Generated graph data:', data);
+    console.log("Generated graph data:", data);
     return data;
   };
 
@@ -160,7 +161,7 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
               )}
             </div>
             {/* Chart */}
-            <div style={{ width: '100%', height: 300 }} className="mt-4">
+            <div style={{ width: "100%", height: 300 }} className="mt-4">
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={data}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -170,10 +171,7 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
                     interval={selectedDays > 14 ? 2 : 0}
                     height={50}
                   />
-                  <YAxis 
-                    domain={[0, 'auto']}
-                    allowDecimals={false}
-                  />
+                  <YAxis domain={[0, "auto"]} allowDecimals={false} />
                   <Tooltip />
                   <Legend />
                   <Line
