@@ -7,11 +7,12 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+const supabase = createClientComponentClient<Database>();
 
 export default function Dashboard() {
   const t = useTranslations("Dashboard");
-  const supabase = createClientComponentClient<Database>();
   const [currentlyReading, setCurrentlyReading] = useState([]);
   const [stats, setStats] = useState<{
     books_read: number;
@@ -22,11 +23,51 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [showOnboard, setShowOnboard] = useState(false);
   const [habitRefreshTrigger, setHabitRefreshTrigger] = useState(0);
+  const router = useRouter();
+
+  const logUserActivity = async () => {
+    if (!user) return;
+
+    // Fetch the latest active_at entry for this user
+    const { data, error } = await supabase
+      .from("user_connection_activity")
+      .select("active_at")
+      .eq("user_id", user.id)
+      .order("active_at", { ascending: false })
+      .limit(1);
+
+    if (error) {
+      console.error("Error fetching user activity:", error);
+      return;
+    }
+
+    const now: any = new Date();
+    let shouldInsert = true;
+
+    if (data && data.length > 0) {
+      const lastActiveAt: any = new Date(data[0].active_at);
+      const timeDifference = now - lastActiveAt;
+
+      // Check if more than 1 hour has passed
+      if (timeDifference <= 60 * 60 * 1000) {
+        shouldInsert = false;
+      }
+    }
+
+    if (shouldInsert) {
+      const { error: insertError } = await supabase
+        .from("user_connection_activity")
+        .insert([{ user_id: user.id, active_at: now.toISOString() }]);
+
+      if (insertError) {
+        console.error("Error inserting user activity:", insertError);
+      }
+    }
+  };
 
   const handleHabitChange = useCallback(() => {
     setHabitRefreshTrigger((prev) => prev + 1);
   }, []);
-  const router = useRouter();
 
   const getUser = async () => {
     const { data } = await supabase.auth.getUser();
@@ -35,11 +76,18 @@ export default function Dashboard() {
 
   useEffect(() => {
     getUser();
-  }, [supabase]);
+  }, []); // Empty dependency array ensures this runs once
+
+  const hasLoggedActivity = useRef(false);
 
   useEffect(() => {
     if (user) {
       fetchDashboardData();
+
+      if (!hasLoggedActivity.current) {
+        logUserActivity();
+        hasLoggedActivity.current = true;
+      }
     } else {
       setLoading(false);
     }

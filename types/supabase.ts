@@ -1452,6 +1452,32 @@ export type Database = {
           },
         ]
       }
+      user_connection_activity: {
+        Row: {
+          active_at: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          active_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          active_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_connection_activity_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_point_streak: {
         Row: {
           day1: string | null
