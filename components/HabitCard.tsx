@@ -141,10 +141,23 @@ const HabitCard: React.FC<HabitCardProps> = ({ onHabitChange }) => {
 
         console.log("Successfully appended habit streak:", appendHabitData);
       } else if (modalType === "modify") {
-        result = await supabase
-          .from("habits")
-          .update(newHabit)
-          .eq("id", habit.id);
+        // If metric type has changed, reset the streak
+        if (newHabit.metric !== habit.metric) {
+          const today = new Date().toISOString().split("T")[0];
+          result = await supabase
+            .from("habits")
+            .update({
+              ...newHabit,
+              progress_value: 0,
+              streak: [{ day: today, progress_value: 0 }]
+            })
+            .eq("id", habit.id);
+        } else {
+          result = await supabase
+            .from("habits")
+            .update(newHabit)
+            .eq("id", habit.id);
+        }
       }
 
       const { error } = result;
