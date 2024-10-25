@@ -1,12 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { differenceInSeconds } from 'date-fns';
+import { differenceInSeconds } from "date-fns";
+import React, { useEffect, useRef, useState } from "react";
 
 interface CountdownProps {
   habit: any;
   calculateNextEndDate: (habit: any) => Date;
 }
 
-const Countdown: React.FC<CountdownProps> = ({ habit, calculateNextEndDate }) => {
+const Countdown: React.FC<CountdownProps> = ({
+  habit,
+  calculateNextEndDate,
+}) => {
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -46,7 +49,7 @@ const Countdown: React.FC<CountdownProps> = ({ habit, calculateNextEndDate }) =>
     <div className="grid grid-flow-col gap-5 text-center auto-cols-max">
       <div className="flex flex-col">
         <span
-          className="countdown font-mono text-5xl"
+          className="countdown font-mono text-xl"
           style={{ "--value": timeLeft.days } as React.CSSProperties}
         >
           {timeLeft.days > 99
@@ -57,7 +60,7 @@ const Countdown: React.FC<CountdownProps> = ({ habit, calculateNextEndDate }) =>
       </div>
       <div className="flex flex-col">
         <span
-          className="countdown font-mono text-5xl"
+          className="countdown font-mono text-xl"
           style={{ "--value": timeLeft.hours } as React.CSSProperties}
         >
           {timeLeft.hours.toString().padStart(2, "0")}
@@ -66,7 +69,7 @@ const Countdown: React.FC<CountdownProps> = ({ habit, calculateNextEndDate }) =>
       </div>
       <div className="flex flex-col">
         <span
-          className="countdown font-mono text-5xl"
+          className="countdown font-mono text-xl"
           style={{ "--value": timeLeft.minutes } as React.CSSProperties}
         >
           {timeLeft.minutes.toString().padStart(2, "0")}
@@ -75,7 +78,7 @@ const Countdown: React.FC<CountdownProps> = ({ habit, calculateNextEndDate }) =>
       </div>
       <div className="flex flex-col">
         <span
-          className="countdown font-mono text-5xl"
+          className="countdown font-mono text-xl"
           style={{ "--value": timeLeft.seconds } as React.CSSProperties}
         >
           {timeLeft.seconds.toString().padStart(2, "0")}

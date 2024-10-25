@@ -77,7 +77,8 @@
     "link3": "Notes de Lecture",
     "link4": "Recommandations de Lecture",
     "link5": "Récompenses de Lecture",
-    "link6":"Support"
+    "link6":"Support",
+    "link7": "Habitudes"
   },
   "ButtonAccount": {
     "profile": "Profil",
@@ -137,7 +138,15 @@
     "enter_notes_placeholder": "Entrez vos notes ici...",
     "no_notes_warning": "Pas encore de notes.",
     "select_book": "Sélectionnez un livre pour ajouter des notes",
-    "not_saved_warning": "Pas encore enregistré"
+    "not_saved_warning": "Pas encore enregistré",
+    "cancel":"Retour",
+    "view_stickys": "Voir les Notes Rapides",
+    "tab1":"Note Principales",
+    "tab2": "Notes Rapides",
+    "add_sticky": "Ajouter une note rapide",
+    "delete_sticky_title":"Supprimer cette note?",
+    "delete_confirm": "Supprimer",
+    "delete_cancel": "Retour"
   },
   "BookRecommendations": {
     "title": "Recommandations de Livres",
@@ -267,5 +276,8 @@
   "BookShareButton":{
       "label":"Partager",
       "message": "Copié au presse-papiers!"
-    }
+  },
+  "ReadingHabits":{
+      "title":"Habitude de Lecture"
+  }
 }

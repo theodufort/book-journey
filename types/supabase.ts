@@ -924,6 +924,47 @@ export type Database = {
           },
         ]
       }
+      habits: {
+        Row: {
+          created_at: string
+          id: string
+          metric: string
+          periodicity: string
+          progress_value: number
+          streak: Json[] | null
+          user_id: string | null
+          value: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          metric: string
+          periodicity: string
+          progress_value?: number
+          streak?: Json[] | null
+          user_id?: string | null
+          value?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          metric?: string
+          periodicity?: string
+          progress_value?: number
+          streak?: Json[] | null
+          user_id?: string | null
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "habits_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       indie_authors: {
         Row: {
           author_id: string

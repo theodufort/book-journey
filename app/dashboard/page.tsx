@@ -1,6 +1,7 @@
 "use client";
 import HeaderDashboard from "@/components/DashboardHeader";
-import StreakRewardSystem from "@/components/StreakRewardSystem";
+import HabitCard from "@/components/HabitCard";
+import HabitConsistencyGraph from "@/components/HabitConsistencyGraph";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
@@ -21,10 +22,12 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [showOnboard, setShowOnboard] = useState(false);
   const router = useRouter();
+
   const getUser = async () => {
     const { data } = await supabase.auth.getUser();
     setUser(data.user);
   };
+
   useEffect(() => {
     getUser();
   }, [supabase]);
@@ -47,13 +50,12 @@ export default function Dashboard() {
         .select("onboarded")
         .eq("user_id", user.id)
         .single();
-      console.log("Onboarded: " + onboarded);
-      console.log(error);
+
       if (onboarded != true) {
         setShowOnboard(true);
       }
     } catch {
-      console.log("error checking onboarded");
+      console.log("Error checking onboarded status.");
     }
     try {
       const { data: readingListResponse } = await supabase
@@ -100,12 +102,13 @@ export default function Dashboard() {
         console.error("Error fetching reading stats:", statsResponse.error);
       }
 
-      const { count, error } = await supabase
+      const { count } = await supabase
         .from("reading_list")
         .select("*", { count: "exact", head: true })
         .eq("status", "Finished")
         .eq("user_id", user.id);
-      // Always set default stats, whether there's an error or no data
+
+      // Set default stats
       setStats({
         books_read: count || 0,
         pages_read: statsResponse.data?.pages_read || 0,
@@ -132,15 +135,7 @@ export default function Dashboard() {
         <div className="sticky top-0 z-50 bg-base-100">
           <HeaderDashboard />
         </div>
-        {/* {user && showOnboard ? (
-          <OnboardingPopup
-            isOpen={true}
-            onClose={function (): void {
-              setShowOnboard(false);
-            }}
-            userId={user.id}
-          />
-        ) : null} */}
+
         <h1 className="text-3xl md:text-4xl font-extrabold">{t("title")}</h1>
 
         {/* Reading Stats */}
@@ -180,22 +175,20 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-        <div className="card bg-base-200 shadow-xl ">
-          <div className="card-body">
-            {/* <h2 className="card-title text-xl md:text-2xl font-bold">
-              Point Streak{" "}
-              <Image src={"/coin.png"} height={25} width={25} alt="coin" />
-            </h2> */}
 
-            <div className="m-auto">
-              <StreakRewardSystem
-                onUpdate={() => {
-                  getUser();
-                }}
-              />
-              <p className="m-auto mt-5 block text-lg opacity-90 text-center">
-                {t("points_catch")}
-              </p>
+        {/* Habit Card and Habit Consistency Graph */}
+        <div className="grid md:grid-cols-4 grid-cols-1 gap-4 items-stretch">
+          {/* Habit Card (1/4 width) */}
+          <div className="md:col-span-1">
+            <div className="h-full">
+              <HabitCard />
+            </div>
+          </div>
+
+          {/* Habit Consistency Graph (3/4 width) */}
+          <div className="md:col-span-3">
+            <div className="h-full">
+              <HabitConsistencyGraph initialDays={7} />
             </div>
           </div>
         </div>
