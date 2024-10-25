@@ -6,7 +6,11 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Countdown from "./Countdown";
 
-const HabitCard: React.FC = () => {
+interface HabitCardProps {
+  onHabitChange?: () => void;
+}
+
+const HabitCard: React.FC<HabitCardProps> = ({ onHabitChange }) => {
   const t = useTranslations("ReadingHabits");
   const supabase = createClientComponentClient<Database>();
   const [habit, setHabit] = useState<any>(null);
@@ -153,6 +157,7 @@ const HabitCard: React.FC = () => {
         );
         fetchHabit();
         setIsModalOpen(false);
+        onHabitChange?.();
       }
     }
   };
