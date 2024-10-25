@@ -101,8 +101,14 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
       return [];
     }
 
-    const endDate = new Date();
-    endDate.setHours(23, 59, 59, 999); // Set to end of current day
+    // Find the latest date in streak entries
+    const latestStreakDate = habit.streak.reduce((latest: Date, entry: { day: string }) => {
+      const entryDate = new Date(entry.day);
+      return entryDate > latest ? entryDate : latest;
+    }, new Date(0));
+
+    const endDate = latestStreakDate;
+    endDate.setHours(23, 59, 59, 999); // Set to end of day
     const startDate = addDays(endDate, -(selectedDays - 1));
     startDate.setHours(0, 0, 0, 0); // Set to start of first day
     const dateRange = eachDayOfInterval({ start: startDate, end: endDate });
