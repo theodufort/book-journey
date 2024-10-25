@@ -62,7 +62,12 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
 
   useEffect(() => {
     fetchHabitAndProgress();
-  }, []);
+    // Log the habit data whenever it changes
+    if (habit) {
+      console.log('Current habit data:', habit);
+      console.log('Streak data:', habit.streak);
+    }
+  }, [habit]);
 
   const fetchHabitAndProgress = async () => {
     const {
@@ -89,23 +94,35 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
   };
 
   const generateData = () => {
-    if (!habit || !habit.streak) return [];
+    if (!habit) {
+      console.log('No habit data available');
+      return [];
+    }
+    
+    if (!habit.streak || !Array.isArray(habit.streak)) {
+      console.log('Streak data missing or invalid:', habit.streak);
+      return [];
+    }
 
     const endDate = new Date();
     const startDate = addDays(endDate, -selectedDays + 1);
     const dateRange = eachDayOfInterval({ start: startDate, end: endDate });
 
-    return dateRange.map((date) => {
+    const data = dateRange.map((date) => {
       const progressForDay = habit.streak.find((entry: { day: string, progress_value: number }) => 
         isSameDay(new Date(entry.day), date)
       );
 
-      return {
+      const dataPoint = {
         date: format(date, "MMM dd"),
-        value: progressForDay ? progressForDay.progress_value : 0,
+        value: progressForDay ? Number(progressForDay.progress_value) : 0,
         target: Number(habit.value),
       };
+      return dataPoint;
     });
+
+    console.log('Generated graph data:', data);
+    return data;
   };
 
   const data = generateData();
