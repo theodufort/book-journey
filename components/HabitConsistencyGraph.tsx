@@ -146,13 +146,16 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
         } entries, last value: ${progressForDay?.progress_value}`
       );
 
-      // If no entry for this day, use the last known value
+      // Track last known value outside the data array
+      static let lastKnownValue = 0;
+      
       let value = 0;
       if (progressForDay) {
         value = Number(progressForDay.progress_value);
-      } else if (data.length > 0) {
-        // Use the last known value from previous days
-        value = data[data.length - 1].value;
+        lastKnownValue = value; // Update last known value
+      } else {
+        // Use the last known value
+        value = lastKnownValue;
       }
 
       const dataPoint = {
