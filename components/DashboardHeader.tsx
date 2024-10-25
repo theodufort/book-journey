@@ -200,14 +200,14 @@ const HeaderDashboard = () => {
                   🏆 {t("link5")}
                 </Link>
               </li>
-              <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
+              {/* <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
                 <Link
                   href="/dashboard/reading-habits"
                   className="flex items-center space-x-3 p-2 align-middle text-lg"
                 >
                   🎯 {t("link7")}
                 </Link>
-              </li>
+              </li> */}
             </div>
 
             {/* Footer with referral link and buttons */}
