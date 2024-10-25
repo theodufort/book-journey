@@ -27,17 +27,39 @@ export default function Admin() {
   }, []);
 
   async function fetchActivityData() {
-    const { data: connections, error } = await supabase
+    // Fetch all users with their creation dates
+    const { data: users, error: usersError } = await supabase
+      .from('profiles')
+      .select('created_at')
+      .order('created_at', { ascending: true });
+
+    if (usersError) {
+      console.error("Error fetching users:", usersError);
+      return;
+    }
+
+    // Fetch activity data for active users
+    const { data: connections, error: activityError } = await supabase
       .from('user_connection_activity')
       .select('active_at, user_id')
       .order('active_at', { ascending: true });
 
-    if (error) {
-      console.error("Error fetching activity data:", error);
+    if (activityError) {
+      console.error("Error fetching activity data:", activityError);
       return;
     }
 
-    // Group connections by date
+    // Create a map of dates to track cumulative signups
+    const signupsByDate = users.reduce((acc: any, user: any) => {
+      const date = new Date(user.created_at).toISOString().split('T')[0];
+      if (!acc[date]) {
+        acc[date] = 0;
+      }
+      acc[date]++;
+      return acc;
+    }, {});
+
+    // Create a map for daily activity
     const dailyActivity = connections.reduce((acc: any, connection: any) => {
       const date = new Date(connection.active_at).toISOString().split('T')[0];
       if (!acc[date]) {
@@ -47,14 +69,21 @@ export default function Admin() {
       return acc;
     }, {});
 
-    // Calculate metrics for each date
-    const chartData = Object.entries(dailyActivity).map(([date, users]: [string, any]) => {
-      const totalUsers = users.size;
-      
-      // Calculate daily active users
-      const dailyActiveUsers = users.size;
+    // Get all unique dates from both signups and activity
+    const allDates = [...new Set([
+      ...Object.keys(signupsByDate),
+      ...Object.keys(dailyActivity)
+    ])].sort();
 
-      // Calculate weekly active users (users who logged in within the last 7 days)
+    // Calculate cumulative metrics for each date
+    let cumulativeUsers = 0;
+    const chartData = allDates.map(date => {
+      // Add new signups to cumulative total
+      cumulativeUsers += (signupsByDate[date] || 0);
+
+      // Calculate daily and weekly active users
+      const dailyActiveUsers = dailyActivity[date]?.size || 0;
+      
       const weeklyActiveUsers = new Set();
       const currentDate = new Date(date);
       const weekAgo = new Date(currentDate);
@@ -68,7 +97,7 @@ export default function Admin() {
 
       return {
         date,
-        totalUsers,
+        totalUsers: cumulativeUsers,
         dailyActiveUsers,
         weeklyActiveUsers: weeklyActiveUsers.size,
       };
