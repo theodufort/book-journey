@@ -171,7 +171,7 @@ const HabitCard: React.FC<HabitCardProps> = ({ onHabitChange }) => {
     <>
       {habit ? (
         <div className="card bg-base-200 shadow-xl w-full h-auto">
-          <div className="card-body">
+          <div className="card-body justify-between">
             {/* Title */}
             <h2 className="card-title mx-auto">
               {metricBinding.find((x: any) => x.key === habit.metric)?.label}
