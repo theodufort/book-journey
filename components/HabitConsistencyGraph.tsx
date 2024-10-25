@@ -106,11 +106,20 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
     const dateRange = eachDayOfInterval({ start: startDate, end: endDate });
 
     const data = dateRange.map((date) => {
-      const progressForDay = habit.streak.find(
-        (entry: { day: string; progress_value: number }) =>
-          isSameDay(new Date(entry.day), date)
-      );
-      console.log(progressForDay);
+      // Log the current date we're checking and the streak entries
+      console.log('Checking date:', format(date, 'yyyy-MM-dd'));
+      console.log('Available streak entries:', habit.streak.map((entry: { day: string }) => entry.day));
+      
+      const progressForDay = habit.streak.find((entry: { day: string; progress_value: number }) => {
+        const entryDate = new Date(entry.day);
+        const isMatch = isSameDay(entryDate, date);
+        console.log('Comparing:', {
+          entryDate: format(entryDate, 'yyyy-MM-dd'),
+          checkingDate: format(date, 'yyyy-MM-dd'),
+          isMatch
+        });
+        return isMatch;
+      });
       const dataPoint = {
         date: format(date, "MMM dd"),
         value: progressForDay ? Number(progressForDay.progress_value) : 0,
