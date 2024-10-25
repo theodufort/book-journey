@@ -114,12 +114,7 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
       
       // Find all entries for this day
       const entriesForDay = habit.streak.filter((entry: { day: string; progress_value: number }) => {
-        const entryDate = new Date(entry.day);
-        const currentDate = new Date(date);
-        // Normalize both dates to start of day for comparison
-        entryDate.setHours(0, 0, 0, 0);
-        currentDate.setHours(0, 0, 0, 0);
-        return entryDate.getTime() === currentDate.getTime();
+        return format(new Date(entry.day), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd');
       });
       
       // Get the last entry for the day (if any exist)
