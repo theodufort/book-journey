@@ -62,12 +62,7 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
 
   useEffect(() => {
     fetchHabitAndProgress();
-    // Log the habit data whenever it changes
-    if (habit) {
-      console.log('Current habit data:', habit);
-      console.log('Streak data:', habit.streak);
-    }
-  }, [habit]);
+  }, []);
 
   const fetchHabitAndProgress = async () => {
     const {
@@ -86,9 +81,11 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
         console.error("Error fetching habit:", habitError);
         setHabit(null);
       } else {
+        console.log('Fetched habit data:', habitData);
+        if (habitData?.streak) {
+          console.log('Streak data:', habitData.streak);
+        }
         setHabit(habitData);
-
-        // No need to fetch additional progress data since it's in the streak array
       }
     }
   };
