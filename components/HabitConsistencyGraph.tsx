@@ -145,9 +145,19 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
           entriesForDay.length
         } entries, last value: ${progressForDay?.progress_value}`
       );
+
+      // If no entry for this day, use the last known value
+      let value = 0;
+      if (progressForDay) {
+        value = Number(progressForDay.progress_value);
+      } else if (data.length > 0) {
+        // Use the last known value from previous days
+        value = data[data.length - 1].value;
+      }
+
       const dataPoint = {
         date: format(date, "MMM dd"),
-        value: progressForDay ? Number(progressForDay.progress_value) : 0,
+        value: value,
         target: Number(habit.value),
       };
       return dataPoint;
