@@ -102,10 +102,13 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
     }
 
     // Find the latest date in streak entries
-    const latestStreakDate = habit.streak.reduce((latest: Date, entry: { day: string }) => {
-      const entryDate = new Date(entry.day);
-      return entryDate > latest ? entryDate : latest;
-    }, new Date(0));
+    const latestStreakDate = habit.streak.reduce(
+      (latest: Date, entry: { day: string }) => {
+        const entryDate = new Date(entry.day);
+        return entryDate > latest ? entryDate : latest;
+      },
+      new Date(0)
+    );
 
     const endDate = latestStreakDate;
     endDate.setHours(23, 59, 59, 999); // Set to end of day
@@ -147,8 +150,8 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
       );
 
       // Track last known value outside the data array
-      static let lastKnownValue = 0;
-      
+      let lastKnownValue = 0;
+
       let value = 0;
       if (progressForDay) {
         value = Number(progressForDay.progress_value);
