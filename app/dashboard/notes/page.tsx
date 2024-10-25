@@ -484,7 +484,7 @@ export default function BookNotes() {
                       </div>
                       <div className="grid grid-cols-2 gap-2">
                         <button
-                          className="py-2 my-2 btn btn-sm btn-info"
+                          className="py-2 my-2 btn btn-sm btn-primary"
                           onClick={handleSaveButtonClick}
                         >
                           {isEditMode ? t("save_view_label") : t("edit_label")}
