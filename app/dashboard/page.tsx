@@ -180,7 +180,7 @@ export default function Dashboard() {
         <div className="grid md:grid-cols-4 grid-cols-1 gap-4 items-stretch">
           {/* Habit Card (1/4 width) */}
           <div className="md:col-span-1">
-            <div className="h-full">
+            <div className="h-full flex">
               <HabitCard />
             </div>
           </div>
