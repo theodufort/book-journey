@@ -16,16 +16,65 @@ import {
 } from "recharts";
 
 export default function Admin() {
-  const [userGrowthData, setUserGrowthData] = useState<any[]>([]);
-  const [userRetentionData, setUserRetentionData] = useState<any[]>([]);
+  const [activityData, setActivityData] = useState<any[]>([]);
   const [userStats, setUserStats] = useState<any>(null);
   const supabase = createClientComponentClient();
 
   useEffect(() => {
-    fetchUserGrowthData();
-    fetchUserRetentionData();
+    fetchActivityData();
     fetchUserStats();
   }, []);
+
+  async function fetchActivityData() {
+    const { data: connections, error } = await supabase
+      .from('user_connection_activity')
+      .select('active_at, user_id')
+      .order('active_at', { ascending: true });
+
+    if (error) {
+      console.error("Error fetching activity data:", error);
+      return;
+    }
+
+    // Group connections by date
+    const dailyActivity = connections.reduce((acc: any, connection: any) => {
+      const date = new Date(connection.active_at).toISOString().split('T')[0];
+      if (!acc[date]) {
+        acc[date] = new Set();
+      }
+      acc[date].add(connection.user_id);
+      return acc;
+    }, {});
+
+    // Calculate metrics for each date
+    const chartData = Object.entries(dailyActivity).map(([date, users]: [string, any]) => {
+      const totalUsers = users.size;
+      
+      // Calculate daily active users
+      const dailyActiveUsers = users.size;
+
+      // Calculate weekly active users (users who logged in within the last 7 days)
+      const weeklyActiveUsers = new Set();
+      const currentDate = new Date(date);
+      const weekAgo = new Date(currentDate);
+      weekAgo.setDate(weekAgo.getDate() - 7);
+
+      Object.entries(dailyActivity).forEach(([activityDate, activityUsers]: [string, any]) => {
+        if (new Date(activityDate) >= weekAgo && new Date(activityDate) <= currentDate) {
+          activityUsers.forEach((userId: string) => weeklyActiveUsers.add(userId));
+        }
+      });
+
+      return {
+        date,
+        totalUsers,
+        dailyActiveUsers,
+        weeklyActiveUsers: weeklyActiveUsers.size,
+      };
+    });
+
+    setActivityData(chartData);
+  }
 
   async function fetchUserGrowthData() {
     const { data, error } = await supabase
@@ -146,39 +195,35 @@ export default function Admin() {
             </CardContent>
           </Card>
         </div>
-        <Card>
+        <Card className="mb-8">
           <CardHeader>
-            <CardTitle>User Retention</CardTitle>
+            <CardTitle>User Activity Metrics</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-[400px]">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={userRetentionData}>
+                <LineChart data={activityData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="date" />
-                  <YAxis yAxisId="left" />
-                  <YAxis yAxisId="right" orientation="right" />
+                  <YAxis />
                   <Tooltip />
                   <Legend />
                   <Line
-                    yAxisId="left"
                     type="monotone"
                     dataKey="totalUsers"
                     name="Total Users"
                     stroke="#8884d8"
                   />
                   <Line
-                    yAxisId="left"
                     type="monotone"
-                    dataKey="activeUsers"
-                    name="Active Users"
+                    dataKey="dailyActiveUsers"
+                    name="Daily Active Users"
                     stroke="#82ca9d"
                   />
                   <Line
-                    yAxisId="right"
                     type="monotone"
-                    dataKey="retentionRate"
-                    name="Retention Rate (%)"
+                    dataKey="weeklyActiveUsers"
+                    name="Weekly Active Users"
                     stroke="#ffc658"
                   />
                 </LineChart>
