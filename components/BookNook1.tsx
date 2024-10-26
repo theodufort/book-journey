@@ -363,11 +363,11 @@ export default function BookNook1() {
                       <div className="flex items-center gap-2">
                         {!isTimerRunning ? (
                           <>
-                            <label className="input input-bordered flex items-center gap-2">
+                            <label className="input input-bordered flex items-center gap-2 w-auto">
                               <input
                                 type="number"
                                 value={timerMinutes}
-                                className="grow max-w-min"
+                                className="grow"
                                 onChange={(e) =>
                                   setTimerMinutes(
                                     Math.max(1, parseInt(e.target.value) || 1)
@@ -387,7 +387,7 @@ export default function BookNook1() {
                                 setIsTimerRunning(true);
                               }}
                             >
-                              Start Timer
+                              Start Session
                             </button>
                           </>
                         ) : (
