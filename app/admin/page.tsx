@@ -19,7 +19,9 @@ export default function Admin() {
   const [activityData, setActivityData] = useState<any[]>([]);
   const [userStats, setUserStats] = useState<any>(null);
   const [userGrowthData, setUserGrowthData] = useState<any[]>([]);
-  const [activeUsers, setActiveUsers] = useState<{email: string, connections: number}[]>([]);
+  const [activeUsers, setActiveUsers] = useState<
+    { email: string; connections: number }[]
+  >([]);
   const supabase = createClientComponentClient();
 
   useEffect(() => {
@@ -30,9 +32,9 @@ export default function Admin() {
   async function fetchActivityData() {
     // Fetch all users with their creation dates
     const { data: users, error: usersError } = await supabase
-      .from('profiles')
-      .select('created_at')
-      .order('created_at', { ascending: true });
+      .from("profiles")
+      .select("created_at")
+      .order("created_at", { ascending: true });
 
     if (usersError) {
       console.error("Error fetching users:", usersError);
@@ -41,9 +43,9 @@ export default function Admin() {
 
     // Fetch activity data for active users
     const { data: connections, error: activityError } = await supabase
-      .from('user_connection_activity')
-      .select('active_at, user_id, profiles(email)')
-      .order('active_at', { ascending: true });
+      .from("user_connection_activity")
+      .select("active_at, user_id, profiles(email)")
+      .order("active_at", { ascending: true });
 
     if (activityError) {
       console.error("Error fetching activity data:", activityError);
@@ -52,7 +54,7 @@ export default function Admin() {
 
     // Create a map of dates to track cumulative signups
     const signupsByDate = users.reduce((acc: any, user: any) => {
-      const date = new Date(user.created_at).toISOString().split('T')[0];
+      const date = new Date(user.created_at).toISOString().split("T")[0];
       if (!acc[date]) {
         acc[date] = 0;
       }
@@ -62,7 +64,7 @@ export default function Admin() {
 
     // Create a map for daily activity
     const dailyActivity = connections.reduce((acc: any, connection: any) => {
-      const date = new Date(connection.active_at).toISOString().split('T')[0];
+      const date = new Date(connection.active_at).toISOString().split("T")[0];
       if (!acc[date]) {
         acc[date] = new Set();
       }
@@ -71,30 +73,39 @@ export default function Admin() {
     }, {});
 
     // Get all unique dates from both signups and activity
-    const allDates = [...new Set([
-      ...Object.keys(signupsByDate),
-      ...Object.keys(dailyActivity)
-    ])].sort();
+    const allDates = [
+      ...new Set([
+        ...Object.keys(signupsByDate),
+        ...Object.keys(dailyActivity),
+      ]),
+    ].sort();
 
     // Calculate cumulative metrics for each date
     let cumulativeUsers = 0;
-    const chartData = allDates.map(date => {
+    const chartData = allDates.map((date) => {
       // Add new signups to cumulative total
-      cumulativeUsers += (signupsByDate[date] || 0);
+      cumulativeUsers += signupsByDate[date] || 0;
 
       // Calculate daily and weekly active users
       const dailyActiveUsers = dailyActivity[date]?.size || 0;
-      
+
       const weeklyActiveUsers = new Set();
       const currentDate = new Date(date);
       const weekAgo = new Date(currentDate);
       weekAgo.setDate(weekAgo.getDate() - 7);
 
-      Object.entries(dailyActivity).forEach(([activityDate, activityUsers]: [string, any]) => {
-        if (new Date(activityDate) >= weekAgo && new Date(activityDate) <= currentDate) {
-          activityUsers.forEach((userId: string) => weeklyActiveUsers.add(userId));
+      Object.entries(dailyActivity).forEach(
+        ([activityDate, activityUsers]: [string, any]) => {
+          if (
+            new Date(activityDate) >= weekAgo &&
+            new Date(activityDate) <= currentDate
+          ) {
+            activityUsers.forEach((userId: string) =>
+              weeklyActiveUsers.add(userId)
+            );
+          }
         }
-      });
+      );
 
       return {
         date,
@@ -107,30 +118,32 @@ export default function Admin() {
     // Calculate most active users in the last week
     const now = new Date();
     const weekAgo = new Date(now.setDate(now.getDate() - 7));
-    
+
     const userConnections = connections
-      .filter(conn => new Date(conn.active_at) >= weekAgo)
-      .reduce((acc: {[key: string]: {email: string, count: number}}, conn) => {
-        const email = conn.profiles?.email || 'Unknown';
-        if (!acc[conn.user_id]) {
-          acc[conn.user_id] = {email, count: 0};
-        }
-        acc[conn.user_id].count++;
-        return acc;
-      }, {});
+      .filter((conn) => new Date(conn.active_at) >= weekAgo)
+      .reduce(
+        (acc: { [key: string]: { email: string; count: number } }, conn) => {
+          const email = conn.profiles[0]?.email || "Unknown";
+          if (!acc[conn.user_id]) {
+            acc[conn.user_id] = { email, count: 0 };
+          }
+          acc[conn.user_id].count++;
+          return acc;
+        },
+        {}
+      );
 
     const sortedActiveUsers = Object.values(userConnections)
       .sort((a, b) => b.count - a.count)
       .slice(0, 10)
-      .map(({email, count}) => ({
+      .map(({ email, count }) => ({
         email,
-        connections: count
+        connections: count,
       }));
 
     setActiveUsers(sortedActiveUsers);
     setActivityData(chartData);
   }
-
 
   async function fetchUserStats() {
     const { count: usersWithBooks, error: error1 } = await supabase
@@ -157,7 +170,6 @@ export default function Admin() {
       usersWithoutBooks,
     });
   }
-
 
   return (
     <div>
@@ -230,8 +242,12 @@ export default function Admin() {
               <table className="w-full text-sm text-left text-gray-500">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                   <tr>
-                    <th scope="col" className="px-6 py-3">Email</th>
-                    <th scope="col" className="px-6 py-3">Connections</th>
+                    <th scope="col" className="px-6 py-3">
+                      Email
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Connections
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
