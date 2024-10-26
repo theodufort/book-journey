@@ -1215,6 +1215,7 @@ export type Database = {
           last_sign_in_at: string | null
           raw_app_meta_data: Json | null
           raw_user_meta_data: Json | null
+          username: string | null
         }
         Insert: {
           created_at?: string | null
@@ -1224,6 +1225,7 @@ export type Database = {
           last_sign_in_at?: string | null
           raw_app_meta_data?: Json | null
           raw_user_meta_data?: Json | null
+          username?: string | null
         }
         Update: {
           created_at?: string | null
@@ -1233,6 +1235,7 @@ export type Database = {
           last_sign_in_at?: string | null
           raw_app_meta_data?: Json | null
           raw_user_meta_data?: Json | null
+          username?: string | null
         }
         Relationships: [
           {

@@ -226,7 +226,9 @@ export default function Profile() {
           <div className="space-y-4">
             <div className="form-control w-full max-w-md">
               <label className="label">
-                <span className="label-text font-semibold">{t("username")}</span>
+                <span className="label-text font-semibold">
+                  {t("username")}
+                </span>
               </label>
               <div className="flex gap-2">
                 <input
@@ -236,10 +238,7 @@ export default function Profile() {
                   className="input input-bordered w-full"
                   placeholder={t("enter_username")}
                 />
-                <button 
-                  className="btn btn-primary"
-                  onClick={updateProfile}
-                >
+                <button className="btn btn-primary" onClick={updateProfile}>
                   {t("update")}
                 </button>
               </div>
