@@ -452,15 +452,29 @@ export default function BookNook1() {
                                 sec
                               </div>
                             </div>
-                            <button
-                              className="btn btn-error btn-sm"
-                              onClick={() => {
-                                setIsTimerRunning(false);
-                                setTimerEndTime(null);
-                              }}
-                            >
-                              Stop
-                            </button>
+                            <div className="flex gap-2">
+                              <button
+                                className="btn btn-success btn-sm"
+                                onClick={() => {
+                                  const newEndTime = new Date(
+                                    timerEndTime!.getTime() + timerMinutes * 60 * 1000
+                                  );
+                                  setTimerEndTime(newEndTime);
+                                  toast.success(`Added ${timerMinutes} minutes to session`);
+                                }}
+                              >
+                                +{timerMinutes}min
+                              </button>
+                              <button
+                                className="btn btn-error btn-sm"
+                                onClick={() => {
+                                  setIsTimerRunning(false);
+                                  setTimerEndTime(null);
+                                }}
+                              >
+                                Stop
+                              </button>
+                            </div>
                           </>
                         )}
                       </div>
