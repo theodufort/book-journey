@@ -4,6 +4,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function BookNook1() {
   const t = useTranslations("BookNook");
@@ -26,6 +27,9 @@ export default function BookNook1() {
   const [editingStickyId, setEditingStickyId] = useState<string | null>(null);
   const [isEditMode, setIsEditMode] = useState(true);
   const [editedContent, setEditedContent] = useState("");
+  const [startPage, setStartPage] = useState("");
+  const [endPage, setEndPage] = useState("");
+  const [newNoteContent, setNewNoteContent] = useState("");
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
@@ -325,25 +329,85 @@ export default function BookNook1() {
               <div className="grid md:grid-rows-1 md:grid-cols-3 gap-2 items-center">
                 <label className="form-control w-full max-w-xs">
                   <input
-                    type="text"
+                    type="number"
                     placeholder="Start page"
                     className="input input-bordered w-full max-w-xs"
+                    value={startPage}
+                    onChange={(e) => setStartPage(e.target.value)}
+                    min="1"
                   />
                 </label>
                 <label className="form-control w-full max-w-xs">
                   <input
-                    type="text"
+                    type="number"
                     placeholder="End page"
                     className="input input-bordered w-full max-w-xs"
+                    value={endPage}
+                    onChange={(e) => setEndPage(e.target.value)}
+                    min="1"
                   />
                 </label>
-                <button className="btn btn-active btn-primary m-auto w-full">
+                <button 
+                  className="btn btn-active btn-primary m-auto w-full"
+                  onClick={async () => {
+                    if (!startPage || !endPage || !newNoteContent.trim() || !selectedBook || !user) {
+                      toast.error("Please fill in all fields");
+                      return;
+                    }
+
+                    const start = parseInt(startPage);
+                    const end = parseInt(endPage);
+                    
+                    if (start > end) {
+                      toast.error("Start page cannot be greater than end page");
+                      return;
+                    }
+
+                    try {
+                      const { data, error } = await supabase
+                        .from("sticky_notes")
+                        .insert({
+                          user_id: user.id,
+                          book_id: selectedBook.id,
+                          label: `page ${start}-${end}`,
+                          content: newNoteContent,
+                        })
+                        .select();
+
+                      if (error) {
+                        console.error("Error adding sticky note:", error);
+                        toast.error("Failed to add sticky note");
+                      } else if (data && data[0]) {
+                        setBookStickys((prev) => ({
+                          ...prev,
+                          [data[0].id]: {
+                            content: data[0].content,
+                            lastUpdated: data[0].updated_at,
+                            createdAt: data[0].created_at,
+                            label: data[0].label,
+                            isEditing: false,
+                            isPublic: false,
+                          },
+                        }));
+                        setStartPage("");
+                        setEndPage("");
+                        setNewNoteContent("");
+                        toast.success("Sticky note added!");
+                      }
+                    } catch (error) {
+                      console.error("Unexpected error:", error);
+                      toast.error("An unexpected error occurred");
+                    }
+                  }}
+                >
                   {t("add_sticky_note")}
                 </button>
               </div>
               <textarea
                 className="textarea textarea-primary h-full min-h-[8rem]"
                 placeholder="This will go in a new sticky note..."
+                value={newNoteContent}
+                onChange={(e) => setNewNoteContent(e.target.value)}
               ></textarea>
             </div>
           </div>
