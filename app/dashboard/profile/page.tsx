@@ -104,9 +104,23 @@ export default function Profile() {
   async function fetchProfile() {
     if (!user) return;
 
+    // Fetch username from profiles
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("username")
+      .eq("id", user.id)
+      .single();
+
+    if (profileError) {
+      console.error("Error fetching profile:", profileError);
+    } else {
+      setUsername(profile?.username || "");
+    }
+
+    // Fetch other preferences
     const { data: preferences, error: preferencesError } = await supabase
       .from("user_preferences")
-      .select("preferred_categories, username, bio, profile_picture_url")
+      .select("preferred_categories, bio, profile_picture_url")
       .eq("user_id", user.id)
       .single();
 
@@ -114,7 +128,6 @@ export default function Profile() {
       console.error("Error fetching preferences:", preferencesError);
     } else {
       setPreferredCategories(preferences?.preferred_categories || []);
-      setUsername(preferences?.username || "");
       setBio(preferences?.bio || "");
       setProfilePictureUrl(preferences?.profile_picture_url || "");
     }
@@ -163,12 +176,24 @@ export default function Profile() {
   async function updateProfile() {
     if (!user) return;
 
+    // Update username in profiles table
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .update({ username })
+      .eq("id", user.id);
+
+    if (profileError) {
+      console.error("Error updating profile:", profileError);
+      toast.error(t("error_updating_profile"));
+      return;
+    }
+
+    // Update other preferences
     const { error: preferencesError } = await supabase
       .from("user_preferences")
       .upsert({
         user_id: user.id,
         preferred_categories: preferredCategories,
-        username,
         bio,
         profile_picture_url: profilePictureUrl,
       });
