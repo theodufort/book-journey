@@ -397,15 +397,7 @@ export default function BookNotes() {
             <span className="loading loading-spinner loading-lg"></span>
           </main>
         ) : (
-          <div 
-            className="bg-base-200 shadow-md rounded-lg overflow-hidden"
-            style={{ 
-              backgroundImage: "url('/safe-spaces/1.png')",
-              backgroundPosition: 'center',
-              backgroundSize: 'cover',
-              backgroundRepeat: 'no-repeat'
-            }}
-          >
+          <div className="bg-base-200 shadow-md rounded-lg overflow-hidden">
             <div className="flex flex-col md:flex-row">
               <div className="w-full md:w-1/3 md:border-r">
                 <div className="p-4 bg-base-200 border-b">
@@ -550,36 +542,42 @@ export default function BookNotes() {
                         <div className="flex flex-col gap-2">
                           <div className="flex flex-wrap gap-2">
                             {Object.entries(bookStickys).length === 0 ? (
-                              <div className="text-gray-500">No sticky notes yet. Create one using the input above!</div>
-                            ) : (
-                              Object.entries(bookStickys).map(([id, sticky]) => (
-                              <div key={id} className="flex flex-col">
-                                <div
-                                  className={`badge ${
-                                    editingStickyId === id
-                                      ? "badge-warning"
-                                      : "badge-secondary"
-                                  } gap-1 h-auto inline-flex items-center px-2 py-1 cursor-pointer`}
-                                  style={{ flexBasis: "auto" }}
-                                >
-                                  <span
-                                    className="mr-1 whitespace-normal break-words flex-grow text-left"
-                                    onClick={() => toggleStickyEdit(id)}
-                                  >
-                                    {sticky.label}
-                                  </span>
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setDeleteConfirmId(id);
-                                    }}
-                                    className="btn btn-xs btn-circle btn-ghost"
-                                  >
-                                    ×
-                                  </button>
-                                </div>
+                              <div className="text-gray-500">
+                                No sticky notes yet. Create one using the input
+                                above!
                               </div>
-                            )))}
+                            ) : (
+                              Object.entries(bookStickys).map(
+                                ([id, sticky]) => (
+                                  <div key={id} className="flex flex-col">
+                                    <div
+                                      className={`badge ${
+                                        editingStickyId === id
+                                          ? "badge-warning"
+                                          : "badge-secondary"
+                                      } gap-1 h-auto inline-flex items-center px-2 py-1 cursor-pointer`}
+                                      style={{ flexBasis: "auto" }}
+                                    >
+                                      <span
+                                        className="mr-1 whitespace-normal break-words flex-grow text-left"
+                                        onClick={() => toggleStickyEdit(id)}
+                                      >
+                                        {sticky.label}
+                                      </span>
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setDeleteConfirmId(id);
+                                        }}
+                                        className="btn btn-xs btn-circle btn-ghost"
+                                      >
+                                        ×
+                                      </button>
+                                    </div>
+                                  </div>
+                                )
+                              )
+                            )}
                             <div className="badge badge-outline gap-1 h-auto inline-flex items-center px-2 py-1">
                               <input
                                 type="text"
@@ -632,7 +630,10 @@ export default function BookNotes() {
                               </div>
                               <textarea
                                 className="mt-1 p-2 w-full text-sm rounded resize-none overflow-y-auto"
-                                style={{ width: "100%", height: 'calc(100vh - 16rem)' }}
+                                style={{
+                                  width: "100%",
+                                  height: "calc(100vh - 16rem)",
+                                }}
                                 value={bookStickys[editingStickyId].content}
                                 onChange={(e) => {
                                   setBookStickys((prev) => ({
