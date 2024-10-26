@@ -12,7 +12,7 @@ export default function BookNook1() {
   const [loading, setLoading] = useState(true);
   const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
-
+  const [pagesRead, setPagesRead] = useState(0);
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
@@ -86,6 +86,40 @@ export default function BookNook1() {
       setLoading(false);
     }
   }
+  const updatePagesRead = async (newPagesRead: number) => {
+    if (user) {
+      const { error } = await supabase
+        .from("reading_list")
+        .update({ pages_read: newPagesRead })
+        .eq("user_id", user.id)
+        .eq("book_id", selectedBook);
+
+      if (error) {
+        console.error("Error updating pages read:", error);
+      } else {
+        setPagesRead(newPagesRead);
+      }
+    }
+  };
+  useEffect(() => {
+    const fetchPagesRead = async () => {
+      if (user) {
+        const { data, error } = await supabase
+          .from("reading_list")
+          .select("pages_read")
+          .eq("user_id", user.id)
+          .eq("book_id", selectedBook)
+          .single();
+
+        if (error) {
+          console.error("Error fetching pages read:", error);
+        } else {
+          setPagesRead(data?.pages_read || 0);
+        }
+      }
+    };
+    fetchPagesRead();
+  }, [user, selectedBook, supabase]);
   return (
     <div className="card h-full w-full">
       <div className="card-body grid md:grid-cols-2 md:grid-rows-1">
@@ -116,21 +150,40 @@ export default function BookNook1() {
                   <p className="mt-2 text-gray-500">{t("choose_book")}</p>
                 </div>
               ) : (
-                <div>
-                  <figure className="p-10 md:w-1/5 mb-auto relative">
+                <div className="grid grid-cols-2 gap-4">
+                  <figure className="relative">
                     <img
                       src={
-                        selectedBook.imageLinks?.thumbnail ||
+                        selectedBook.volumeInfo.imageLinks?.thumbnail ||
                         "/placeholder-book-cover.jpg"
                       }
-                      alt={selectedBook.title || "Book cover"}
+                      alt={selectedBook.volumeInfo.title || "Book cover"}
                       className="rounded-lg md:w-full object-cover"
                     />
                   </figure>
-                  <div className="grid md:grid-cols-2 md:grid-rows-1">
-                    <h2 className="card-title">
-                      {selectedBook.title || "Untitled"}
-                    </h2>
+                  <div>
+                    <p>
+                      <b>{t("page_label")}:</b>{" "}
+                      {!selectedBook.volumeInfo.pageCount ? (
+                        "?"
+                      ) : (
+                        <span className="badge badge-primary">
+                          <input
+                            type="number"
+                            value={pagesRead}
+                            onChange={(e) => {
+                              const newValue = Number(e.target.value);
+                              setPagesRead(newValue);
+                              updatePagesRead(newValue);
+                            }}
+                            className="bg-transparent text-center"
+                            min="0"
+                            max={selectedBook.volumeInfo.pageCount || 9999}
+                          />
+                          / {selectedBook.volumeInfo.pageCount || "?"}
+                        </span>
+                      )}
+                    </p>
                   </div>
                 </div>
               )}
