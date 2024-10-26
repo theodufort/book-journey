@@ -198,11 +198,11 @@ export default function BookNook1() {
   return (
     <div
       className="card h-full w-full bg-base-200/80"
-      style={{ 
+      style={{
         backgroundImage: "url('/safe-spaces/1.png')",
-        backgroundPosition: 'center',
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat'
+        backgroundPosition: "center",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
       }}
     >
       <div className="card-body grid md:grid-cols-2 md:grid-rows-1">
@@ -244,7 +244,7 @@ export default function BookNook1() {
                   {isEditMode ? (
                     <textarea
                       className="textarea textarea-bordered w-full resize-none overflow-y-auto"
-                      style={{ height: 'calc(100vh - 32rem)' }}
+                      style={{ height: "calc(100vh - 32rem)" }}
                       value={editedContent}
                       onChange={(e) => setEditedContent(e.target.value)}
                     />
@@ -363,20 +363,26 @@ export default function BookNook1() {
                       <div className="flex items-center gap-2">
                         {!isTimerRunning ? (
                           <>
-                            <div className="join">
+                            <label className="input input-bordered flex items-center gap-2">
                               <input
                                 type="number"
                                 value={timerMinutes}
-                                onChange={(e) => setTimerMinutes(Math.max(1, parseInt(e.target.value) || 1))}
-                                className="input input-bordered w-20 join-item"
+                                className="grow max-w-min"
+                                onChange={(e) =>
+                                  setTimerMinutes(
+                                    Math.max(1, parseInt(e.target.value) || 1)
+                                  )
+                                }
                                 min="1"
                               />
-                              <span className="join-item btn btn-disabled">min</span>
-                            </div>
-                            <button 
+                              <span className="badge badge-info">min</span>
+                            </label>
+                            <button
                               className="btn btn-primary btn-sm"
                               onClick={() => {
-                                const endTime = new Date(Date.now() + timerMinutes * 60 * 1000);
+                                const endTime = new Date(
+                                  Date.now() + timerMinutes * 60 * 1000
+                                );
                                 setTimerEndTime(endTime);
                                 setIsTimerRunning(true);
                               }}
@@ -389,24 +395,64 @@ export default function BookNook1() {
                             <div className="grid grid-flow-col gap-2 text-center auto-cols-max">
                               <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
                                 <span className="countdown font-mono text-2xl">
-                                  <span style={{ "--value": Math.max(0, Math.floor((timerEndTime!.getTime() - Date.now()) / 3600000)) } as any}></span>
+                                  <span
+                                    style={
+                                      {
+                                        "--value": Math.max(
+                                          0,
+                                          Math.floor(
+                                            (timerEndTime!.getTime() -
+                                              Date.now()) /
+                                              3600000
+                                          )
+                                        ),
+                                      } as any
+                                    }
+                                  ></span>
                                 </span>
                                 hrs
                               </div>
                               <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
                                 <span className="countdown font-mono text-2xl">
-                                  <span style={{ "--value": Math.max(0, Math.floor((timerEndTime!.getTime() - Date.now()) / 60000) % 60) } as any}></span>
+                                  <span
+                                    style={
+                                      {
+                                        "--value": Math.max(
+                                          0,
+                                          Math.floor(
+                                            (timerEndTime!.getTime() -
+                                              Date.now()) /
+                                              60000
+                                          ) % 60
+                                        ),
+                                      } as any
+                                    }
+                                  ></span>
                                 </span>
                                 min
                               </div>
                               <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
                                 <span className="countdown font-mono text-2xl">
-                                  <span style={{ "--value": Math.max(0, Math.floor(((timerEndTime!.getTime() - Date.now()) % 60000) / 1000)) } as any}></span>
+                                  <span
+                                    style={
+                                      {
+                                        "--value": Math.max(
+                                          0,
+                                          Math.floor(
+                                            ((timerEndTime!.getTime() -
+                                              Date.now()) %
+                                              60000) /
+                                              1000
+                                          )
+                                        ),
+                                      } as any
+                                    }
+                                  ></span>
                                 </span>
                                 sec
                               </div>
                             </div>
-                            <button 
+                            <button
                               className="btn btn-error btn-sm"
                               onClick={() => {
                                 setIsTimerRunning(false);
@@ -464,62 +510,67 @@ export default function BookNook1() {
                   <button
                     className="btn btn-active btn-primary flex-1"
                     onClick={async () => {
-                    if (
-                      !startPage ||
-                      !endPage ||
-                      !newNoteContent.trim() ||
-                      !selectedBook ||
-                      !user
-                    ) {
-                      toast.error("Please fill in all fields");
-                      return;
-                    }
-
-                    const start = parseInt(startPage);
-                    const end = parseInt(endPage);
-
-                    if (start > end) {
-                      toast.error("Start page cannot be greater than end page");
-                      return;
-                    }
-
-                    try {
-                      const { data, error } = await supabase
-                        .from("sticky_notes")
-                        .insert({
-                          user_id: user.id,
-                          book_id: selectedBook.id,
-                          label: useCustomLabel && customLabel.trim() ? customLabel.trim() : `page ${start}-${end}`,
-                          content: newNoteContent,
-                        })
-                        .select();
-
-                      if (error) {
-                        console.error("Error adding sticky note:", error);
-                        toast.error("Failed to add sticky note");
-                      } else if (data && data[0]) {
-                        setBookStickys((prev) => ({
-                          ...prev,
-                          [data[0].id]: {
-                            content: data[0].content,
-                            lastUpdated: data[0].updated_at,
-                            createdAt: data[0].created_at,
-                            label: data[0].label,
-                            isEditing: false,
-                            isPublic: false,
-                          },
-                        }));
-                        setStartPage("");
-                        setEndPage("");
-                        setNewNoteContent("");
-                        toast.success("Sticky note added!");
+                      if (
+                        !startPage ||
+                        !endPage ||
+                        !newNoteContent.trim() ||
+                        !selectedBook ||
+                        !user
+                      ) {
+                        toast.error("Please fill in all fields");
+                        return;
                       }
-                    } catch (error) {
-                      console.error("Unexpected error:", error);
-                      toast.error("An unexpected error occurred");
-                    }
-                  }}
-                >
+
+                      const start = parseInt(startPage);
+                      const end = parseInt(endPage);
+
+                      if (start > end) {
+                        toast.error(
+                          "Start page cannot be greater than end page"
+                        );
+                        return;
+                      }
+
+                      try {
+                        const { data, error } = await supabase
+                          .from("sticky_notes")
+                          .insert({
+                            user_id: user.id,
+                            book_id: selectedBook.id,
+                            label:
+                              useCustomLabel && customLabel.trim()
+                                ? customLabel.trim()
+                                : `page ${start}-${end}`,
+                            content: newNoteContent,
+                          })
+                          .select();
+
+                        if (error) {
+                          console.error("Error adding sticky note:", error);
+                          toast.error("Failed to add sticky note");
+                        } else if (data && data[0]) {
+                          setBookStickys((prev) => ({
+                            ...prev,
+                            [data[0].id]: {
+                              content: data[0].content,
+                              lastUpdated: data[0].updated_at,
+                              createdAt: data[0].created_at,
+                              label: data[0].label,
+                              isEditing: false,
+                              isPublic: false,
+                            },
+                          }));
+                          setStartPage("");
+                          setEndPage("");
+                          setNewNoteContent("");
+                          toast.success("Sticky note added!");
+                        }
+                      } catch (error) {
+                        console.error("Unexpected error:", error);
+                        toast.error("An unexpected error occurred");
+                      }
+                    }}
+                  >
                     {t("add_sticky_note")}
                   </button>
                   <button
@@ -531,15 +582,26 @@ export default function BookNook1() {
                       }
                     }}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                      />
                     </svg>
                   </button>
                 </div>
               </div>
               <textarea
                 className="textarea textarea-primary resize-none overflow-y-auto"
-                style={{ height: '8rem' }}
+                style={{ height: "8rem" }}
                 placeholder="This will go in a new sticky note..."
                 value={newNoteContent}
                 onChange={(e) => setNewNoteContent(e.target.value)}
