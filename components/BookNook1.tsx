@@ -175,11 +175,11 @@ export default function BookNook1() {
   }, [selectedBook, user]);
   return (
     <div
-      className="card h-full w-full bg-base-200"
+      className="card h-full w-full bg-base-200/80"
       style={{ backgroundImage: "url('/safe-spaces/1.png')" }}
     >
       <div className="card-body grid md:grid-cols-2 md:grid-rows-1">
-        <div className="card h-auto bg-base-200">
+        <div className="card h-auto bg-base-200/80">
           <div className="card-body">
             <h2 className="card-title">Sticky Notes:</h2>
             <div className="flex flex-col gap-2">
@@ -221,7 +221,7 @@ export default function BookNook1() {
                       onChange={(e) => setEditedContent(e.target.value)}
                     />
                   ) : (
-                    <div className="mt-1 p-2 w-full text-sm rounded bg-base-200/50 prose">
+                    <div className="mt-1 p-2 w-full text-sm rounded prose">
                       <ReactMarkdown>
                         {bookStickys[editingStickyId].content}
                       </ReactMarkdown>
@@ -275,9 +275,9 @@ export default function BookNook1() {
             </div>
           </div>
         </div>
-        <div className="grid md:grid-rows-2 md:grid-cols-1">
-          <div className="card h-auto">
-            <div className="card-body pb-0 mb-0">
+        <div className="grid md:grid-rows-2 md:grid-cols-1 gap-2">
+          <div className="card h-auto bg-base-200/80">
+            <div className="card-body pb-0 mb-0 ">
               {selectedBook == null ? (
                 <div className="border-2 border-dashed h-48 border-gray-300 flex items-center justify-center">
                   <svg
@@ -336,7 +336,7 @@ export default function BookNook1() {
               )}
             </div>
           </div>
-          <div className="card h-auto">
+          <div className="card h-auto bg-base-200/80">
             <div className="card-body grid">
               <h2 className="card-title">Fast Note Taker:</h2>
               <div className="grid md:grid-rows-1 md:grid-cols-3 gap-2 items-center">
