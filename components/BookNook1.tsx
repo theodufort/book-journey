@@ -150,8 +150,8 @@ export default function BookNook1() {
                   <p className="mt-2 text-gray-500">{t("choose_book")}</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 gap-4">
-                  <figure className="relative w-32 h-48">
+                <div className="grid grid-cols-[auto,1fr] gap-4">
+                  <figure className="relative w-32 h-48 shrink-0">
                     <img
                       src={
                         selectedBook.volumeInfo.imageLinks?.thumbnail ||
