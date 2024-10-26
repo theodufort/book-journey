@@ -130,7 +130,7 @@ export default function BookNook1() {
         </div>
         <div className="grid md:grid-rows-2 md:grid-cols-1">
           <div className="card h-auto">
-            <div className="card-body p-4">
+            <div className="card-body pb-0 mb-0">
               {selectedBook == null ? (
                 <div className="border-2 border-dashed h-48 border-gray-300 flex items-center justify-center">
                   <svg
@@ -151,7 +151,7 @@ export default function BookNook1() {
                 </div>
               ) : (
                 <div className="grid grid-cols-[auto,1fr] gap-4">
-                  <figure className="relative w-32 h-48 shrink-0">
+                  <figure className="relative w-16 h-24 md:w-32 md:h-48 shrink-0">
                     <img
                       src={
                         selectedBook.volumeInfo.imageLinks?.thumbnail ||
