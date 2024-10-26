@@ -174,7 +174,10 @@ export default function BookNook1() {
     }
   }, [selectedBook, user]);
   return (
-    <div className="card h-full w-full">
+    <div
+      className="card h-full w-full bg-base-200"
+      style={{ backgroundImage: "/safe-spaces/1.png" }}
+    >
       <div className="card-body grid md:grid-cols-2 md:grid-rows-1">
         <div className="card h-auto">
           <div className="card-body">
@@ -182,28 +185,32 @@ export default function BookNook1() {
             <div className="flex flex-col gap-2">
               <div className="flex flex-wrap gap-2">
                 {Object.entries(bookStickys).length === 0 ? (
-                  <div className="text-gray-500">No sticky notes yet. Create one using the Fast Note Taker below!</div>
+                  <div className="text-gray-500">
+                    No sticky notes yet. Create one using the Fast Note Taker
+                    below!
+                  </div>
                 ) : (
                   Object.entries(bookStickys).map(([id, sticky]) => (
-                  <div key={id} className="flex flex-col">
-                    <div
-                      className={`badge ${
-                        editingStickyId === id
-                          ? "badge-warning"
-                          : "badge-secondary"
-                      } gap-1 h-auto inline-flex items-center px-2 py-1 cursor-pointer`}
-                      style={{ flexBasis: "auto" }}
-                      onClick={() => {
-                        setEditingStickyId(id);
-                        setEditedContent(sticky.content);
-                      }}
-                    >
-                      <span className="mr-1 whitespace-normal break-words flex-grow text-left">
-                        {sticky.label}
-                      </span>
+                    <div key={id} className="flex flex-col">
+                      <div
+                        className={`badge ${
+                          editingStickyId === id
+                            ? "badge-warning"
+                            : "badge-secondary"
+                        } gap-1 h-auto inline-flex items-center px-2 py-1 cursor-pointer`}
+                        style={{ flexBasis: "auto" }}
+                        onClick={() => {
+                          setEditingStickyId(id);
+                          setEditedContent(sticky.content);
+                        }}
+                      >
+                        <span className="mr-1 whitespace-normal break-words flex-grow text-left">
+                          {sticky.label}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                )))}
+                  ))
+                )}
               </div>
               {editingStickyId && (
                 <div className="mt-4">
@@ -222,7 +229,7 @@ export default function BookNook1() {
                   )}
                   <div className="flex justify-between mt-2">
                     <button
-                      className="btn btn-sm"
+                      className="btn btn-sm btn-secondary"
                       onClick={() => setIsEditMode(!isEditMode)}
                     >
                       {isEditMode ? "View" : "Edit"}
@@ -241,7 +248,10 @@ export default function BookNook1() {
                               .eq("book_id", selectedBook.id);
 
                             if (error) {
-                              console.error("Error updating sticky note:", error);
+                              console.error(
+                                "Error updating sticky note:",
+                                error
+                              );
                             } else {
                               setBookStickys((prev) => ({
                                 ...prev,
@@ -350,17 +360,23 @@ export default function BookNook1() {
                     min="1"
                   />
                 </label>
-                <button 
+                <button
                   className="btn btn-active btn-primary m-auto w-full"
                   onClick={async () => {
-                    if (!startPage || !endPage || !newNoteContent.trim() || !selectedBook || !user) {
+                    if (
+                      !startPage ||
+                      !endPage ||
+                      !newNoteContent.trim() ||
+                      !selectedBook ||
+                      !user
+                    ) {
                       toast.error("Please fill in all fields");
                       return;
                     }
 
                     const start = parseInt(startPage);
                     const end = parseInt(endPage);
-                    
+
                     if (start > end) {
                       toast.error("Start page cannot be greater than end page");
                       return;
