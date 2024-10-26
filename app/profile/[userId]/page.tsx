@@ -46,12 +46,11 @@ export default function UserProfile({
 
   useEffect(() => {
     async function fetchProfileData() {
-      const { data: userData, error: userError } = await supabase.rpc(
-        "get_user_metadata",
-        {
-          user_id: params.userId,
-        }
-      );
+      const { data: userData, error: userError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', params.userId)
+        .single();
 
       if (userError) {
         console.error("Error fetching profile:", userError);
