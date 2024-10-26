@@ -221,7 +221,7 @@ export default function BookNook1() {
                       onChange={(e) => setEditedContent(e.target.value)}
                     />
                   ) : (
-                    <div className="mt-1 p-2 w-full text-sm rounded bg-base-200 prose">
+                    <div className="mt-1 p-2 w-full text-sm rounded bg-base-200/50 prose">
                       <ReactMarkdown>
                         {bookStickys[editingStickyId].content}
                       </ReactMarkdown>
