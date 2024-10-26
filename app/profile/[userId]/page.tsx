@@ -128,8 +128,8 @@ export default function UserProfile({
 
   return (
     <main className="min-h-screen p-4 md:p-8 pb-24">
-      <section className="max-w-full md:max-w-6xl mx-auto space-y-6">
-        <div className="bg-base-100 rounded-box p-8">
+      <section className="max-w-full md:max-w-6xl mx-auto space-y-6 p-5">
+        <div className="bg-base-100 rounded-box">
           <div className="flex items-center space-x-8">
             <div className="avatar">
               <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
@@ -154,13 +154,16 @@ export default function UserProfile({
             </div>
           </div>
         </div>
-        <div className="bg-base-100 rounded-box p-8">
+        <div className="bg-base-100 rounded-box">
           <h2 className="text-2xl font-bold mb-4">Read Books</h2>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-0">
             {filteredReadBooks.map((book) => (
               <div key={book.book_id} className="aspect-[2/3]">
                 <Image
-                  src={book.data.volumeInfo.imageLinks?.thumbnail || '/book-placeholder.png'}
+                  src={
+                    book.data.volumeInfo.imageLinks?.thumbnail ||
+                    "/book-placeholder.png"
+                  }
                   alt={book.data.volumeInfo.title}
                   width={128}
                   height={192}
