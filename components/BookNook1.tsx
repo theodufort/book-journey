@@ -360,13 +360,16 @@ export default function BookNook1() {
                       <div className="flex items-center gap-2">
                         {!isTimerRunning ? (
                           <>
-                            <input
-                              type="number"
-                              value={timerMinutes}
-                              onChange={(e) => setTimerMinutes(Math.max(1, parseInt(e.target.value) || 1))}
-                              className="input input-bordered w-20"
-                              min="1"
-                            />
+                            <div className="join">
+                              <input
+                                type="number"
+                                value={timerMinutes}
+                                onChange={(e) => setTimerMinutes(Math.max(1, parseInt(e.target.value) || 1))}
+                                className="input input-bordered w-20 join-item"
+                                min="1"
+                              />
+                              <span className="join-item btn btn-disabled">min</span>
+                            </div>
                             <button 
                               className="btn btn-primary btn-sm"
                               onClick={() => {
