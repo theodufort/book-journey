@@ -7,18 +7,12 @@ import { useEffect, useState } from "react";
 
 export default function BookNook1() {
   const t = useTranslations("BookNook");
-  const [selectedBook, setSelectedBook] = useState(null);
+  const [selectedBook, setSelectedBook] = useState<Volume | null>(null);
   const [readingList, setReadingList] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
-  useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user);
-    };
-    getUser();
-  }, [supabase]);
+
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
@@ -74,13 +68,16 @@ export default function BookNook1() {
         // Filter out any null results from failed fetches
         const validBookDetails = bookDetails.filter((book) => book != null);
         if (validBookDetails.length !== 0) {
+          console.log("Valid book details:", validBookDetails);
           setReadingList(validBookDetails as any);
-          setSelectedBook(validBookDetails[0].data);
+          const firstBook = validBookDetails[0].data;
+          console.log("Setting selected book to:", firstBook);
+          setSelectedBook(firstBook);
         } else {
+          console.log("No valid books found");
           setReadingList([]);
           setSelectedBook(null);
         }
-        console.log(selectedBook);
         setLoading(false);
       }
     } catch (error) {
