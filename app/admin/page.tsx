@@ -44,10 +44,12 @@ export default function Admin() {
     // Fetch activity data for active users
     const { data: connections, error: activityError } = await supabase
       .from("user_connection_activity")
-      .select(`
+      .select(
+        `
         active_at,
         user_id
-      `)
+      `
+      )
       .order("active_at", { ascending: true });
 
     if (activityError) {
@@ -148,18 +150,21 @@ export default function Admin() {
       // Calculate average of all previous growth rates up to this point
       let avgGrowthRate = 0;
       if (index > 0) {
-        const totalGrowth = ((day.totalUsers - chartData[0].totalUsers) / chartData[0].totalUsers) * 100;
+        const totalGrowth =
+          ((day.totalUsers - chartData[0].totalUsers) /
+            chartData[0].totalUsers) *
+          100;
         avgGrowthRate = totalGrowth / index; // Divide by number of periods
       }
-      
+
       return {
         ...day,
-        avgGrowthRate: Number(avgGrowthRate.toFixed(2))
+        avgGrowthRate: Number(avgGrowthRate.toFixed(2)),
       };
     });
 
     setActiveUsers(sortedActiveUsers);
-    setActivityData(dataWithGrowth);
+    setActivityData(dataWithAvgGrowth);
   }
 
   async function fetchUserStats() {
@@ -252,10 +257,14 @@ export default function Admin() {
                     stroke="#ff0000"
                     yAxisId="right"
                   />
-                  <YAxis 
-                    yAxisId="right" 
+                  <YAxis
+                    yAxisId="right"
                     orientation="right"
-                    label={{ value: 'Average Growth Rate %', angle: 90, position: 'insideRight' }}
+                    label={{
+                      value: "Average Growth Rate %",
+                      angle: 90,
+                      position: "insideRight",
+                    }}
                   />
                 </LineChart>
               </ResponsiveContainer>
