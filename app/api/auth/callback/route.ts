@@ -1,10 +1,26 @@
 import config from "@/config";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import axios from "axios";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
-
+const addToConvertKit = async (email: string, first_name: string) => {
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/convertkit/subscribe`,
+      {
+        email_address: email,
+        first_name: first_name || email.split("@")[0],
+      }
+    );
+    if (response.status === 200) {
+      console.log("User added to ConvertKit");
+    }
+  } catch (error) {
+    console.error("Error adding user to ConvertKit:", error);
+  }
+};
 // This route is called after a successful login. It exchanges the code for a session and redirects to the callback URL (see config.js).
 export async function GET(req: NextRequest) {
   const requestUrl = new URL(req.url);
@@ -18,7 +34,7 @@ export async function GET(req: NextRequest) {
     } = await supabase.auth.exchangeCodeForSession(code);
 
     if (user) {
-      // Check for referral code in cookies
+      await addToConvertKit(user.email, user.user_metadata.first_name);
 
       if (ref) {
         // Handle the referral

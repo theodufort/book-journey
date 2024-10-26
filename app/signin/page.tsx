@@ -19,11 +19,11 @@ export default function Login() {
   const ref = searchParams.get("ref");
   const t = useTranslations("Signin");
 
-  const addToConvertKit = async (emailSub: string) => {
+  const addToConvertKit = async () => {
     try {
       const response = await axios.post("/api/convertkit/subscribe", {
-        email_address: emailSub,
-        first_name: null,
+        email_address: email,
+        first_name: email.split("@")[0],
       });
       if (response.status === 200) {
         console.log("User added to ConvertKit");
@@ -49,6 +49,8 @@ export default function Login() {
       const redirectURL =
         window.location.origin +
         `/api/auth/callback${ref ? "?ref=" + ref : ""}`;
+      // Add user to ConvertKit after sending magic link
+      await addToConvertKit();
       if (type === "oauth") {
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider,
@@ -56,10 +58,6 @@ export default function Login() {
             redirectTo: redirectURL,
           },
         });
-        if (!error && data) {
-          // Add user to ConvertKit after successful OAuth signup
-          await addToConvertKit(email || "");
-        }
       } else if (type === "magic_link") {
         await supabase.auth.signInWithOtp({
           email,
@@ -71,9 +69,6 @@ export default function Login() {
         toast.success("Check your emails!");
 
         setIsDisabled(true);
-
-        // Add user to ConvertKit after sending magic link
-        await addToConvertKit(email);
       }
     } catch (error) {
       console.log(error);
