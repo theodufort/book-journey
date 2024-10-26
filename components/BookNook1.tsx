@@ -346,27 +346,39 @@ export default function BookNook1() {
           <div className="card h-auto bg-base-200/80">
             <div className="card-body grid">
               <h2 className="card-title">Fast Note Taker:</h2>
-              <div className="grid md:grid-rows-1 md:grid-cols-3 gap-2 items-center">
-                <label className="form-control w-full max-w-xs">
+              <div className="grid md:grid-rows-1 md:grid-cols-[1fr,auto] gap-2 items-center">
+                {useCustomLabel ? (
                   <input
-                    type="number"
-                    placeholder="Start page"
-                    className="input input-bordered w-full max-w-xs"
-                    value={startPage}
-                    onChange={(e) => setStartPage(e.target.value)}
-                    min="1"
+                    type="text"
+                    placeholder="Custom label..."
+                    className="input input-bordered w-full"
+                    value={customLabel}
+                    onChange={(e) => setCustomLabel(e.target.value)}
                   />
-                </label>
-                <label className="form-control w-full max-w-xs">
-                  <input
-                    type="number"
-                    placeholder="End page"
-                    className="input input-bordered w-full max-w-xs"
-                    value={endPage}
-                    onChange={(e) => setEndPage(e.target.value)}
-                    min="1"
-                  />
-                </label>
+                ) : (
+                  <>
+                    <label className="form-control w-full">
+                      <div className="join w-full">
+                        <input
+                          type="number"
+                          placeholder="Start page"
+                          className="input input-bordered join-item w-1/2"
+                          value={startPage}
+                          onChange={(e) => setStartPage(e.target.value)}
+                          min="1"
+                        />
+                        <input
+                          type="number"
+                          placeholder="End page"
+                          className="input input-bordered join-item w-1/2"
+                          value={endPage}
+                          onChange={(e) => setEndPage(e.target.value)}
+                          min="1"
+                        />
+                      </div>
+                    </label>
+                  </>
+                )}
                 <div className="flex gap-2">
                   <button
                     className="btn btn-active btn-primary flex-1"
@@ -444,15 +456,6 @@ export default function BookNook1() {
                   </button>
                 </div>
               </div>
-              {useCustomLabel && (
-                <input
-                  type="text"
-                  placeholder="Custom label..."
-                  className="input input-bordered w-full"
-                  value={customLabel}
-                  onChange={(e) => setCustomLabel(e.target.value)}
-                />
-              )}
               <textarea
                 className="textarea textarea-primary h-full min-h-[8rem]"
                 placeholder="This will go in a new sticky note..."
