@@ -44,7 +44,11 @@ export default function Admin() {
     // Fetch activity data for active users
     const { data: connections, error: activityError } = await supabase
       .from("user_connection_activity")
-      .select("active_at, user_id, profiles(email)")
+      .select(`
+        active_at,
+        user_id,
+        profiles!inner(email)
+      `)
       .order("active_at", { ascending: true });
 
     if (activityError) {
@@ -123,7 +127,7 @@ export default function Admin() {
       .filter((conn) => new Date(conn.active_at) >= weekAgo)
       .reduce(
         (acc: { [key: string]: { email: string; count: number } }, conn) => {
-          const email = conn.profiles[0]?.email || "Unknown";
+          const email = conn.profiles?.email || "Unknown";
           if (!acc[conn.user_id]) {
             acc[conn.user_id] = { email, count: 0 };
           }
