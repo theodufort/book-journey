@@ -179,6 +179,8 @@ export default function BookNook1() {
     }
   }, [selectedBook, user]);
 
+  const [, setForceUpdate] = useState({});
+
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isTimerRunning && timerEndTime) {
@@ -188,6 +190,7 @@ export default function BookNook1() {
           setTimerEndTime(null);
           toast.success("Reading timer completed!");
         }
+        setForceUpdate({}); // Force re-render every second
       }, 1000);
     }
     return () => clearInterval(interval);
