@@ -23,7 +23,7 @@ export default function Login() {
     try {
       const response = await axios.post("/api/convertkit/subscribe", {
         email_address: emailSub,
-        first_name: emailSub.split("@")[0], // Use part before @ as first name
+        first_name: null,
       });
       if (response.status === 200) {
         console.log("User added to ConvertKit");
