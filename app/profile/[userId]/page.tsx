@@ -1,7 +1,6 @@
 "use client";
 
-import { BookAvatarNoDetails } from "@/components/BookAvatarNoDetails";
-import { BookAvatarPublic } from "@/components/BookAvatarPublic";
+import { useInView } from "react-intersection-observer";
 import { Volume } from "@/interfaces/GoogleAPI";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -15,6 +14,11 @@ export default function UserProfile({
 }) {
   const [profile, setProfile] = useState(null);
   const [readBooks, setReadBooks] = useState([]);
+  const [visibleBooks, setVisibleBooks] = useState(24); // Initial load of 24 books
+  const { ref, inView } = useInView({
+    threshold: 0,
+    triggerOnce: false,
+  });
   const [toReadBooks, setToReadBooks] = useState([]);
   const [readingBooks, setReadingBooks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -110,6 +114,12 @@ export default function UserProfile({
     fetchProfileData();
   }, [params.userId, supabase]);
 
+  useEffect(() => {
+    if (inView) {
+      setVisibleBooks((prev) => Math.min(prev + 24, filteredReadBooks.length));
+    }
+  }, [inView, filteredReadBooks.length]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -157,7 +167,7 @@ export default function UserProfile({
         <div className="bg-base-100 rounded-box">
           <h2 className="text-2xl font-bold mb-4">Read Books</h2>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-0">
-            {filteredReadBooks.map((book) => (
+            {filteredReadBooks.slice(0, visibleBooks).map((book) => (
               <div key={book.book_id} className="aspect-[2/3]">
                 <Image
                   src={
@@ -172,6 +182,11 @@ export default function UserProfile({
               </div>
             ))}
           </div>
+          {filteredReadBooks.length > visibleBooks && (
+            <div ref={ref} className="w-full h-10 flex items-center justify-center">
+              <div className="loading loading-spinner loading-md"></div>
+            </div>
+          )}
         </div>
       </section>
     </main>
