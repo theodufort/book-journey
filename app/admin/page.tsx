@@ -110,21 +110,11 @@ export default function Admin() {
         }
       );
 
-      // Calculate growth rate percentage compared to previous day
-      const previousDayIndex = allDates.indexOf(date) - 1;
-      const previousDayUsers = previousDayIndex >= 0 
-        ? chartData[previousDayIndex].totalUsers 
-        : cumulativeUsers;
-      const growthRate = previousDayUsers > 0
-        ? ((cumulativeUsers - previousDayUsers) / previousDayUsers) * 100
-        : 0;
-
       return {
         date,
         totalUsers: cumulativeUsers,
         dailyActiveUsers,
         weeklyActiveUsers: weeklyActiveUsers.size,
-        growthRate: Number(growthRate.toFixed(2)),
       };
     });
 
@@ -153,8 +143,21 @@ export default function Admin() {
         connections: count,
       }));
 
+    // Calculate growth rates after we have the complete chartData
+    const dataWithGrowth = chartData.map((day, index) => {
+      const previousDay = index > 0 ? chartData[index - 1] : null;
+      const growthRate = previousDay
+        ? ((day.totalUsers - previousDay.totalUsers) / previousDay.totalUsers) * 100
+        : 0;
+      
+      return {
+        ...day,
+        growthRate: Number(growthRate.toFixed(2))
+      };
+    });
+
     setActiveUsers(sortedActiveUsers);
-    setActivityData(chartData);
+    setActivityData(dataWithGrowth);
   }
 
   async function fetchUserStats() {
