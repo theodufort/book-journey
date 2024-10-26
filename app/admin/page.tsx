@@ -19,6 +19,7 @@ export default function Admin() {
   const [activityData, setActivityData] = useState<any[]>([]);
   const [userStats, setUserStats] = useState<any>(null);
   const [userGrowthData, setUserGrowthData] = useState<any[]>([]);
+  const [activeUsers, setActiveUsers] = useState<{email: string, connections: number}[]>([]);
   const supabase = createClientComponentClient();
 
   useEffect(() => {
@@ -41,7 +42,7 @@ export default function Admin() {
     // Fetch activity data for active users
     const { data: connections, error: activityError } = await supabase
       .from('user_connection_activity')
-      .select('active_at, user_id')
+      .select('active_at, user_id, profiles(email)')
       .order('active_at', { ascending: true });
 
     if (activityError) {
@@ -193,6 +194,31 @@ export default function Admin() {
                   />
                 </LineChart>
               </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Most Active Users (Last 7 Days)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="relative overflow-x-auto">
+              <table className="w-full text-sm text-left text-gray-500">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+                  <tr>
+                    <th scope="col" className="px-6 py-3">Email</th>
+                    <th scope="col" className="px-6 py-3">Connections</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {activeUsers.map((user, index) => (
+                    <tr key={index} className="bg-white border-b">
+                      <td className="px-6 py-4">{user.email}</td>
+                      <td className="px-6 py-4">{user.connections}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </CardContent>
         </Card>
