@@ -46,8 +46,7 @@ export default function Admin() {
       .from("user_connection_activity")
       .select(`
         active_at,
-        user_id,
-        profiles!inner(email)
+        user_id
       `)
       .order("active_at", { ascending: true });
 
@@ -126,10 +125,9 @@ export default function Admin() {
     const userConnections = connections
       .filter((conn) => new Date(conn.active_at) >= weekAgo)
       .reduce(
-        (acc: { [key: string]: { email: string; count: number } }, conn) => {
-          const email = conn.profiles?.email || "Unknown";
+        (acc: { [key: string]: { userId: string; count: number } }, conn) => {
           if (!acc[conn.user_id]) {
-            acc[conn.user_id] = { email, count: 0 };
+            acc[conn.user_id] = { userId: conn.user_id, count: 0 };
           }
           acc[conn.user_id].count++;
           return acc;
@@ -140,8 +138,8 @@ export default function Admin() {
     const sortedActiveUsers = Object.values(userConnections)
       .sort((a, b) => b.count - a.count)
       .slice(0, 10)
-      .map(({ email, count }) => ({
-        email,
+      .map(({ userId, count }) => ({
+        userId,
         connections: count,
       }));
 
@@ -247,7 +245,7 @@ export default function Admin() {
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                   <tr>
                     <th scope="col" className="px-6 py-3">
-                      Email
+                      User ID
                     </th>
                     <th scope="col" className="px-6 py-3">
                       Connections
@@ -257,7 +255,7 @@ export default function Admin() {
                 <tbody>
                   {activeUsers.map((user, index) => (
                     <tr key={index} className="bg-white border-b">
-                      <td className="px-6 py-4">{user.email}</td>
+                      <td className="px-6 py-4">{user.userId}</td>
                       <td className="px-6 py-4">{user.connections}</td>
                     </tr>
                   ))}
