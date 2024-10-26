@@ -526,7 +526,7 @@ export default function BookNotes() {
                               />
                             </>
                           ) : (
-                            <div className="w-full h-full p-3 rounded-md bg-base-200 overflow-y-auto prose">
+                            <div className="w-full h-full p-3 rounded-md bg-base-200/50 overflow-y-auto prose">
                               <ReactMarkdown
                                 className="prose"
                                 remarkPlugins={[remarkGfm]}
