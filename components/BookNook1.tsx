@@ -33,6 +33,9 @@ export default function BookNook1() {
   const [newNoteContent, setNewNoteContent] = useState("");
   const [customLabel, setCustomLabel] = useState("");
   const [useCustomLabel, setUseCustomLabel] = useState(false);
+  const [timerMinutes, setTimerMinutes] = useState(25);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [timerEndTime, setTimerEndTime] = useState<Date | null>(null);
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
@@ -175,6 +178,20 @@ export default function BookNook1() {
       fetchStickyNotes(selectedBook.id);
     }
   }, [selectedBook, user]);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isTimerRunning && timerEndTime) {
+      interval = setInterval(() => {
+        if (Date.now() >= timerEndTime.getTime()) {
+          setIsTimerRunning(false);
+          setTimerEndTime(null);
+          toast.success("Reading timer completed!");
+        }
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isTimerRunning, timerEndTime]);
   return (
     <div
       className="card h-full w-full bg-base-200/80"
@@ -339,6 +356,47 @@ export default function BookNook1() {
                         </span>
                       )}
                     </p>
+                    <div className="mt-4">
+                      <div className="flex items-center gap-2">
+                        {!isTimerRunning ? (
+                          <>
+                            <input
+                              type="number"
+                              value={timerMinutes}
+                              onChange={(e) => setTimerMinutes(Math.max(1, parseInt(e.target.value) || 1))}
+                              className="input input-bordered w-20"
+                              min="1"
+                            />
+                            <button 
+                              className="btn btn-primary btn-sm"
+                              onClick={() => {
+                                const endTime = new Date(Date.now() + timerMinutes * 60 * 1000);
+                                setTimerEndTime(endTime);
+                                setIsTimerRunning(true);
+                              }}
+                            >
+                              Start Timer
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <span className="countdown font-mono text-2xl">
+                              <span style={{ "--value": Math.max(0, Math.floor((timerEndTime!.getTime() - Date.now()) / 60000)) } as any}></span>:
+                              <span style={{ "--value": Math.max(0, Math.floor(((timerEndTime!.getTime() - Date.now()) % 60000) / 1000)) } as any}></span>
+                            </span>
+                            <button 
+                              className="btn btn-error btn-sm"
+                              onClick={() => {
+                                setIsTimerRunning(false);
+                                setTimerEndTime(null);
+                              }}
+                            >
+                              Stop
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
