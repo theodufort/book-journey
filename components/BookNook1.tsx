@@ -73,14 +73,13 @@ export default function BookNook1() {
         );
         // Filter out any null results from failed fetches
         const validBookDetails = bookDetails.filter((book) => book != null);
-        if (validBookDetails.length != 0) {
+        if (validBookDetails.length !== 0) {
           setReadingList(validBookDetails as any);
-          setSelectedBook(readingList[0]);
+          setSelectedBook(validBookDetails[0].data);
         } else {
           setReadingList([]);
           setSelectedBook(null);
         }
-        console.log(readingList[0]);
         setLoading(false);
       }
     } catch (error) {
