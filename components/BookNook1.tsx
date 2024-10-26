@@ -380,10 +380,26 @@ export default function BookNook1() {
                           </>
                         ) : (
                           <>
-                            <span className="countdown font-mono text-2xl">
-                              <span style={{ "--value": Math.max(0, Math.floor((timerEndTime!.getTime() - Date.now()) / 60000)) } as any}></span>:
-                              <span style={{ "--value": Math.max(0, Math.floor(((timerEndTime!.getTime() - Date.now()) % 60000) / 1000)) } as any}></span>
-                            </span>
+                            <div className="grid grid-flow-col gap-2 text-center auto-cols-max">
+                              <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+                                <span className="countdown font-mono text-2xl">
+                                  <span style={{ "--value": Math.max(0, Math.floor((timerEndTime!.getTime() - Date.now()) / 3600000)) } as any}></span>
+                                </span>
+                                hrs
+                              </div>
+                              <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+                                <span className="countdown font-mono text-2xl">
+                                  <span style={{ "--value": Math.max(0, Math.floor((timerEndTime!.getTime() - Date.now()) / 60000) % 60) } as any}></span>
+                                </span>
+                                min
+                              </div>
+                              <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+                                <span className="countdown font-mono text-2xl">
+                                  <span style={{ "--value": Math.max(0, Math.floor(((timerEndTime!.getTime() - Date.now()) % 60000) / 1000)) } as any}></span>
+                                </span>
+                                sec
+                              </div>
+                            </div>
                             <button 
                               className="btn btn-error btn-sm"
                               onClick={() => {
