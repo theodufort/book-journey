@@ -212,7 +212,7 @@ export default function BookNook1() {
                 </button>
               </div>
               <textarea
-                className="textarea textarea-primary"
+                className="textarea textarea-primary h-full min-h-[8rem]"
                 placeholder="This will go in a new sticky note..."
               ></textarea>
             </div>
