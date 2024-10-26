@@ -5,6 +5,7 @@ import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import ReactMarkdown from "react-markdown";
 
 export default function BookNook1() {
   const t = useTranslations("BookNook");
@@ -213,8 +214,10 @@ export default function BookNook1() {
                       onChange={(e) => setEditedContent(e.target.value)}
                     />
                   ) : (
-                    <div className="mt-1 p-2 w-full text-sm rounded bg-base-200">
-                      {bookStickys[editingStickyId].content}
+                    <div className="mt-1 p-2 w-full text-sm rounded bg-base-200 prose">
+                      <ReactMarkdown>
+                        {bookStickys[editingStickyId].content}
+                      </ReactMarkdown>
                     </div>
                   )}
                   <div className="flex justify-between mt-2">
