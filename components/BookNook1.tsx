@@ -130,7 +130,7 @@ export default function BookNook1() {
         </div>
         <div className="grid md:grid-rows-2 md:grid-cols-1">
           <div className="card h-auto">
-            <div className="card-body pb-0">
+            <div className="card-body pb-0 mb-0">
               {selectedBook == null ? (
                 <div className="border-2 border-dashed h-48 border-gray-300 flex items-center justify-center">
                   <svg
