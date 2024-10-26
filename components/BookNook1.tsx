@@ -151,14 +151,14 @@ export default function BookNook1() {
                 </div>
               ) : (
                 <div className="grid grid-cols-2 gap-4">
-                  <figure className="relative">
+                  <figure className="relative w-32 h-48">
                     <img
                       src={
                         selectedBook.volumeInfo.imageLinks?.thumbnail ||
                         "/placeholder-book-cover.jpg"
                       }
                       alt={selectedBook.volumeInfo.title || "Book cover"}
-                      className="rounded-lg md:w-full object-cover"
+                      className="rounded-lg object-cover w-full h-full"
                     />
                   </figure>
                   <div>
