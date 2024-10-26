@@ -104,6 +104,30 @@ export default function Admin() {
       };
     });
 
+    // Calculate most active users in the last week
+    const now = new Date();
+    const weekAgo = new Date(now.setDate(now.getDate() - 7));
+    
+    const userConnections = connections
+      .filter(conn => new Date(conn.active_at) >= weekAgo)
+      .reduce((acc: {[key: string]: {email: string, count: number}}, conn) => {
+        const email = conn.profiles?.email || 'Unknown';
+        if (!acc[conn.user_id]) {
+          acc[conn.user_id] = {email, count: 0};
+        }
+        acc[conn.user_id].count++;
+        return acc;
+      }, {});
+
+    const sortedActiveUsers = Object.values(userConnections)
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10)
+      .map(({email, count}) => ({
+        email,
+        connections: count
+      }));
+
+    setActiveUsers(sortedActiveUsers);
     setActivityData(chartData);
   }
 
