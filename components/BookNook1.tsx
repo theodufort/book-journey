@@ -176,7 +176,12 @@ export default function BookNook1() {
   return (
     <div
       className="card h-full w-full bg-base-200/80"
-      style={{ backgroundImage: "url('/safe-spaces/1.png')" }}
+      style={{ 
+        backgroundImage: "url('/safe-spaces/1.png')",
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat'
+      }}
     >
       <div className="card-body grid md:grid-cols-2 md:grid-rows-1">
         <div className="card h-auto bg-base-200/80">
