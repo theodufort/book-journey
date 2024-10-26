@@ -80,6 +80,7 @@ export default function BookNook1() {
           setReadingList([]);
           setSelectedBook(null);
         }
+        console.log(selectedBook);
         setLoading(false);
       }
     } catch (error) {
