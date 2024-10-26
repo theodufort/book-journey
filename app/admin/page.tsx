@@ -110,11 +110,21 @@ export default function Admin() {
         }
       );
 
+      // Calculate growth rate percentage compared to previous day
+      const previousDayIndex = allDates.indexOf(date) - 1;
+      const previousDayUsers = previousDayIndex >= 0 
+        ? chartData[previousDayIndex].totalUsers 
+        : cumulativeUsers;
+      const growthRate = previousDayUsers > 0
+        ? ((cumulativeUsers - previousDayUsers) / previousDayUsers) * 100
+        : 0;
+
       return {
         date,
         totalUsers: cumulativeUsers,
         dailyActiveUsers,
         weeklyActiveUsers: weeklyActiveUsers.size,
+        growthRate: Number(growthRate.toFixed(2)),
       };
     });
 
@@ -229,6 +239,18 @@ export default function Admin() {
                     dataKey="weeklyActiveUsers"
                     name="Weekly Active Users"
                     stroke="#ffc658"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="growthRate"
+                    name="Growth Rate %"
+                    stroke="#ff0000"
+                    yAxisId="right"
+                  />
+                  <YAxis 
+                    yAxisId="right" 
+                    orientation="right"
+                    label={{ value: 'Growth Rate %', angle: 90, position: 'insideRight' }}
                   />
                 </LineChart>
               </ResponsiveContainer>
