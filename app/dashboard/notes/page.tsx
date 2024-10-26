@@ -631,8 +631,8 @@ export default function BookNotes() {
                                 )}
                               </div>
                               <textarea
-                                className="mt-1 p-2 w-full text-sm rounded resize-vertical min-h-[100px]"
-                                style={{ width: "100%" }}
+                                className="mt-1 p-2 w-full text-sm rounded resize-vertical min-h-[200px]"
+                                style={{ width: "100%", height: 'calc(100vh - 16rem)' }}
                                 value={bookStickys[editingStickyId].content}
                                 onChange={(e) => {
                                   setBookStickys((prev) => ({
