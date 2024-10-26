@@ -20,7 +20,7 @@ export default function Admin() {
   const [userStats, setUserStats] = useState<any>(null);
   const [userGrowthData, setUserGrowthData] = useState<any[]>([]);
   const [activeUsers, setActiveUsers] = useState<
-    { email: string; connections: number }[]
+    { userId: string; connections: number }[]
   >([]);
   const supabase = createClientComponentClient();
 
