@@ -458,10 +458,13 @@ export default function BookNook1() {
                                   className="btn btn-success btn-sm join-item"
                                   onClick={() => {
                                     const newEndTime = new Date(
-                                      timerEndTime!.getTime() + timerMinutes * 60 * 1000
+                                      timerEndTime!.getTime() +
+                                        timerMinutes * 60 * 1000
                                     );
                                     setTimerEndTime(newEndTime);
-                                    toast.success(`Added ${timerMinutes} minutes to session`);
+                                    toast.success(
+                                      `Added ${timerMinutes} minutes to session`
+                                    );
                                   }}
                                 >
                                   +{timerMinutes}min
@@ -473,7 +476,9 @@ export default function BookNook1() {
                                       timerEndTime!.getTime() + 10 * 60 * 1000
                                     );
                                     setTimerEndTime(newEndTime);
-                                    toast.success('Added 10 minutes to session');
+                                    toast.success(
+                                      "Added 10 minutes to session"
+                                    );
                                   }}
                                 >
                                   +10min
@@ -486,7 +491,7 @@ export default function BookNook1() {
                                   setTimerEndTime(null);
                                 }}
                               >
-                                Stop
+                                End Session
                               </button>
                             </div>
                           </>

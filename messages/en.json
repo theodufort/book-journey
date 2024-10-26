@@ -206,7 +206,11 @@
     },
     "Profile":{
       "title":"Profile",
-      "public_profile":"View public profile"
+      "public_profile":"View public profile",
+      "enter_username": "enter username",
+      "username": "Change Username",
+      "update": "Update Username",
+      "profile_updated": "Profile username successfully updated!"
     },
     "CategorySelection":{
       "title":"Categories",
@@ -318,5 +322,10 @@
       "target": "Target",
       "days": "Days",
       "no_habits_yet": "Create a habit to get started."
+    },
+    "BookNook":{
+      "choose_book":"Start by choosing a book",
+      "page_label":"Page Count",
+      "add_sticky_note":"Add Sticky Note"
     }
 }
