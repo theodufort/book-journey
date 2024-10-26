@@ -143,16 +143,18 @@ export default function Admin() {
         connections: count,
       }));
 
-    // Calculate growth rates after we have the complete chartData
-    const dataWithGrowth = chartData.map((day, index) => {
-      const previousDay = index > 0 ? chartData[index - 1] : null;
-      const growthRate = previousDay
-        ? ((day.totalUsers - previousDay.totalUsers) / previousDay.totalUsers) * 100
-        : 0;
+    // Calculate average growth rate
+    const dataWithAvgGrowth = chartData.map((day, index) => {
+      // Calculate average of all previous growth rates up to this point
+      let avgGrowthRate = 0;
+      if (index > 0) {
+        const totalGrowth = ((day.totalUsers - chartData[0].totalUsers) / chartData[0].totalUsers) * 100;
+        avgGrowthRate = totalGrowth / index; // Divide by number of periods
+      }
       
       return {
         ...day,
-        growthRate: Number(growthRate.toFixed(2))
+        avgGrowthRate: Number(avgGrowthRate.toFixed(2))
       };
     });
 
@@ -245,15 +247,15 @@ export default function Admin() {
                   />
                   <Line
                     type="monotone"
-                    dataKey="growthRate"
-                    name="Growth Rate %"
+                    dataKey="avgGrowthRate"
+                    name="Avg Growth Rate %"
                     stroke="#ff0000"
                     yAxisId="right"
                   />
                   <YAxis 
                     yAxisId="right" 
                     orientation="right"
-                    label={{ value: 'Growth Rate %', angle: 90, position: 'insideRight' }}
+                    label={{ value: 'Average Growth Rate %', angle: 90, position: 'insideRight' }}
                   />
                 </LineChart>
               </ResponsiveContainer>
