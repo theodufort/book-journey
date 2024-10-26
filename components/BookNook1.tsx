@@ -179,7 +179,7 @@ export default function BookNook1() {
       style={{ backgroundImage: "url('/safe-spaces/1.png')" }}
     >
       <div className="card-body grid md:grid-cols-2 md:grid-rows-1">
-        <div className="card h-auto">
+        <div className="card h-auto bg-base-200">
           <div className="card-body">
             <h2 className="card-title">Sticky Notes:</h2>
             <div className="flex flex-col gap-2">
