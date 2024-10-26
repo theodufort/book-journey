@@ -13,6 +13,17 @@ export default function BookNook1() {
   const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
   const [pagesRead, setPagesRead] = useState(0);
+  const [bookStickys, setBookStickys] = useState<{
+    [bookId: string]: {
+      content: string;
+      lastUpdated: string | null;
+      createdAt: string | null;
+      label: string;
+      isEditing: boolean;
+      isPublic: boolean;
+    };
+  }>({});
+  const [editingStickyId, setEditingStickyId] = useState<string | null>(null);
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
@@ -120,12 +131,73 @@ export default function BookNook1() {
     };
     fetchPagesRead();
   }, [user, selectedBook, supabase]);
+
+  const fetchStickyNotes = async (book_id: string) => {
+    try {
+      const { data: stickyNotesData, error: stickyNotesError } = await supabase
+        .from("sticky_notes")
+        .select("id, content, created_at, updated_at, label, is_public")
+        .eq("book_id", book_id)
+        .eq("user_id", user?.id);
+      if (stickyNotesError) {
+        console.error("Error fetching sticky notes:", stickyNotesError);
+        setBookStickys({});
+      } else {
+        const stickyNotesObj = stickyNotesData.reduce((acc: any, item: any) => {
+          acc[item.id] = {
+            content: item.content,
+            lastUpdated: item.updated_at,
+            createdAt: item.created_at,
+            label: item.label,
+            isEditing: false,
+            isPublic: item.is_public,
+          };
+          return acc;
+        }, {});
+        setBookStickys(stickyNotesObj);
+      }
+    } catch (error) {
+      console.error("Unexpected error:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedBook && user) {
+      fetchStickyNotes(selectedBook.id);
+    }
+  }, [selectedBook, user]);
   return (
     <div className="card h-full w-full">
       <div className="card-body grid md:grid-cols-2 md:grid-rows-1">
         <div className="card h-auto">
           <div className="card-body">
             <h2 className="card-title">Sticky Notes:</h2>
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-wrap gap-2">
+                {Object.entries(bookStickys).map(([id, sticky]) => (
+                  <div key={id} className="flex flex-col">
+                    <div
+                      className={`badge ${
+                        editingStickyId === id
+                          ? "badge-warning"
+                          : "badge-secondary"
+                      } gap-1 h-auto inline-flex items-center px-2 py-1 cursor-pointer`}
+                      style={{ flexBasis: "auto" }}
+                      onClick={() => setEditingStickyId(id)}
+                    >
+                      <span className="mr-1 whitespace-normal break-words flex-grow text-left">
+                        {sticky.label}
+                      </span>
+                    </div>
+                    {editingStickyId === id && (
+                      <div className="mt-1 p-2 w-full text-sm rounded bg-base-200">
+                        {sticky.content}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
         <div className="grid md:grid-rows-2 md:grid-cols-1">
