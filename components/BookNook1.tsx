@@ -24,6 +24,8 @@ export default function BookNook1() {
     };
   }>({});
   const [editingStickyId, setEditingStickyId] = useState<string | null>(null);
+  const [isEditMode, setIsEditMode] = useState(true);
+  const [editedContent, setEditedContent] = useState("");
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
@@ -183,20 +185,73 @@ export default function BookNook1() {
                           : "badge-secondary"
                       } gap-1 h-auto inline-flex items-center px-2 py-1 cursor-pointer`}
                       style={{ flexBasis: "auto" }}
-                      onClick={() => setEditingStickyId(id)}
+                      onClick={() => {
+                        setEditingStickyId(id);
+                        setEditedContent(sticky.content);
+                      }}
                     >
                       <span className="mr-1 whitespace-normal break-words flex-grow text-left">
                         {sticky.label}
                       </span>
                     </div>
-                    {editingStickyId === id && (
-                      <div className="mt-1 p-2 w-full text-sm rounded bg-base-200">
-                        {sticky.content}
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
+              {editingStickyId && (
+                <div className="mt-4">
+                  {isEditMode ? (
+                    <textarea
+                      className="textarea textarea-bordered w-full min-h-[100px]"
+                      value={editedContent}
+                      onChange={(e) => setEditedContent(e.target.value)}
+                    />
+                  ) : (
+                    <div className="mt-1 p-2 w-full text-sm rounded bg-base-200">
+                      {bookStickys[editingStickyId].content}
+                    </div>
+                  )}
+                  <div className="flex justify-between mt-2">
+                    <button
+                      className="btn btn-sm"
+                      onClick={() => setIsEditMode(!isEditMode)}
+                    >
+                      {isEditMode ? "View" : "Edit"}
+                    </button>
+                    {isEditMode && (
+                      <button
+                        className="btn btn-sm btn-primary"
+                        onClick={async () => {
+                          if (!selectedBook || !user) return;
+                          try {
+                            const { error } = await supabase
+                              .from("sticky_notes")
+                              .update({ content: editedContent })
+                              .eq("id", editingStickyId)
+                              .eq("user_id", user.id)
+                              .eq("book_id", selectedBook.id);
+
+                            if (error) {
+                              console.error("Error updating sticky note:", error);
+                            } else {
+                              setBookStickys((prev) => ({
+                                ...prev,
+                                [editingStickyId]: {
+                                  ...prev[editingStickyId],
+                                  content: editedContent,
+                                },
+                              }));
+                            }
+                          } catch (error) {
+                            console.error("Unexpected error:", error);
+                          }
+                        }}
+                      >
+                        Save
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
