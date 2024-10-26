@@ -12,6 +12,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 type Friend = {
   id: string;
   name: string;
@@ -31,7 +32,6 @@ export default function Profile() {
   const [profilePictureUrl, setProfilePictureUrl] = useState("");
   const [friends, setFriends] = useState<Friend[]>([]);
   const [friendRequests, setFriendRequests] = useState([]);
-  const [isUpdated, setIsUpdated] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -163,7 +163,6 @@ export default function Profile() {
   async function updateProfile() {
     if (!user) return;
 
-    setIsUpdated(false);
     const { error: preferencesError } = await supabase
       .from("user_preferences")
       .upsert({
@@ -176,9 +175,9 @@ export default function Profile() {
 
     if (preferencesError) {
       console.error("Error updating preferences:", preferencesError);
+      toast.error(t("error_updating_profile"));
     } else {
-      setIsUpdated(true);
-      setTimeout(() => setIsUpdated(false), 3000);
+      toast.success(t("profile_updated"));
     }
   }
 
@@ -219,11 +218,6 @@ export default function Profile() {
                   {t("update")}
                 </button>
               </div>
-              {isUpdated && (
-                <span className="text-success text-sm mt-2">
-                  {t("profile_updated")}
-                </span>
-              )}
             </div>
             <LanguagePreferences userId={user.id} />
           </div>
