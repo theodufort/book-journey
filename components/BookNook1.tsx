@@ -363,20 +363,20 @@ export default function BookNook1() {
                       <div className="flex items-center gap-2">
                         {!isTimerRunning ? (
                           <>
-                            <label className="input input-bordered flex items-center gap-2">
+                            <div className="join">
                               <input
                                 type="number"
                                 value={timerMinutes}
-                                className="grow max-w-min"
                                 onChange={(e) =>
                                   setTimerMinutes(
                                     Math.max(1, parseInt(e.target.value) || 1)
                                   )
                                 }
+                                className="input input-bordered w-20 join-item"
                                 min="1"
                               />
-                              <span className="badge badge-info">min</span>
-                            </label>
+                              <span className="join-item btn btn-disabled">min</span>
+                            </div>
                             <button
                               className="btn btn-primary btn-sm"
                               onClick={() => {
