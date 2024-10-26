@@ -223,7 +223,7 @@ export default function BookNook1() {
                 <div className="mt-4">
                   {isEditMode ? (
                     <textarea
-                      className="textarea textarea-bordered w-full min-h-[200px]"
+                      className="textarea textarea-bordered w-full resize-none overflow-y-auto"
                       style={{ height: 'calc(100vh - 32rem)' }}
                       value={editedContent}
                       onChange={(e) => setEditedContent(e.target.value)}
@@ -458,7 +458,8 @@ export default function BookNook1() {
                 </div>
               </div>
               <textarea
-                className="textarea textarea-primary h-full min-h-[8rem]"
+                className="textarea textarea-primary resize-none overflow-y-auto"
+                style={{ height: '8rem' }}
                 placeholder="This will go in a new sticky note..."
                 value={newNoteContent}
                 onChange={(e) => setNewNoteContent(e.target.value)}
