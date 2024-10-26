@@ -541,7 +541,10 @@ export default function BookNotes() {
                       ) : (
                         <div className="flex flex-col gap-2">
                           <div className="flex flex-wrap gap-2">
-                            {Object.entries(bookStickys).map(([id, sticky]) => (
+                            {Object.entries(bookStickys).length === 0 ? (
+                              <div className="text-gray-500">No sticky notes yet. Create one using the input above!</div>
+                            ) : (
+                              Object.entries(bookStickys).map(([id, sticky]) => (
                               <div key={id} className="flex flex-col">
                                 <div
                                   className={`badge ${
@@ -568,7 +571,7 @@ export default function BookNotes() {
                                   </button>
                                 </div>
                               </div>
-                            ))}
+                            )))}
                             <div className="badge badge-outline gap-1 h-auto inline-flex items-center px-2 py-1">
                               <input
                                 type="text"
