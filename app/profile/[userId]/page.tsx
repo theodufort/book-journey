@@ -159,7 +159,7 @@ export default function UserProfile({
                 {profile.raw_user_meta_data?.full_name || "Anonymous Reader"}
               </h1>
               <p className="text-xl text-base-content/70">
-                @{profile.raw_user_meta_data?.username || profile.id}
+                @{profile?.username || profile.id}
               </p>
             </div>
           </div>
@@ -183,7 +183,10 @@ export default function UserProfile({
             ))}
           </div>
           {filteredReadBooks.length > visibleBooks && (
-            <div ref={ref} className="w-full h-10 flex items-center justify-center">
+            <div
+              ref={ref}
+              className="w-full h-10 flex items-center justify-center"
+            >
               <div className="loading loading-spinner loading-md"></div>
             </div>
           )}
