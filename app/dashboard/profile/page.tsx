@@ -198,7 +198,36 @@ export default function Profile() {
             </button>
           ) : null}
         </div>
-        {user ? <LanguagePreferences userId={user.id} /> : null}
+        {user ? (
+          <div className="space-y-4">
+            <div className="form-control w-full max-w-md">
+              <label className="label">
+                <span className="label-text font-semibold">{t("username")}</span>
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="input input-bordered w-full"
+                  placeholder={t("enter_username")}
+                />
+                <button 
+                  className="btn btn-primary"
+                  onClick={updateProfile}
+                >
+                  {t("update")}
+                </button>
+              </div>
+              {isUpdated && (
+                <span className="text-success text-sm mt-2">
+                  {t("profile_updated")}
+                </span>
+              )}
+            </div>
+            <LanguagePreferences userId={user.id} />
+          </div>
+        ) : null}
         {user ? <CategorySelection userId={user.id} /> : null}
         <div>
           <ImportFromApps />
