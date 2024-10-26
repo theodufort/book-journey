@@ -397,7 +397,15 @@ export default function BookNotes() {
             <span className="loading loading-spinner loading-lg"></span>
           </main>
         ) : (
-          <div className="bg-base-200 shadow-md rounded-lg overflow-hidden">
+          <div 
+            className="bg-base-200 shadow-md rounded-lg overflow-hidden"
+            style={{ 
+              backgroundImage: "url('/safe-spaces/1.png')",
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat'
+            }}
+          >
             <div className="flex flex-col md:flex-row">
               <div className="w-full md:w-1/3 md:border-r">
                 <div className="p-4 bg-base-200 border-b">
