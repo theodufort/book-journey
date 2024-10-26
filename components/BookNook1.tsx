@@ -176,7 +176,10 @@ export default function BookNook1() {
             <h2 className="card-title">Sticky Notes:</h2>
             <div className="flex flex-col gap-2">
               <div className="flex flex-wrap gap-2">
-                {Object.entries(bookStickys).map(([id, sticky]) => (
+                {Object.entries(bookStickys).length === 0 ? (
+                  <div className="text-gray-500">No sticky notes yet. Create one using the Fast Note Taker below!</div>
+                ) : (
+                  Object.entries(bookStickys).map(([id, sticky]) => (
                   <div key={id} className="flex flex-col">
                     <div
                       className={`badge ${
@@ -195,7 +198,7 @@ export default function BookNook1() {
                       </span>
                     </div>
                   </div>
-                ))}
+                )))}
               </div>
               {editingStickyId && (
                 <div className="mt-4">
