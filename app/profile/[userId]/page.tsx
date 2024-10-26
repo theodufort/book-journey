@@ -154,7 +154,22 @@ export default function UserProfile({
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
+        <div className="bg-base-100 rounded-box p-8">
+          <h2 className="text-2xl font-bold mb-4">Read Books</h2>
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-0">
+            {filteredReadBooks.map((book) => (
+              <div key={book.book_id} className="aspect-[2/3]">
+                <Image
+                  src={book.data.volumeInfo.imageLinks?.thumbnail || '/book-placeholder.png'}
+                  alt={book.data.volumeInfo.title}
+                  width={128}
+                  height={192}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
     </main>
   );
