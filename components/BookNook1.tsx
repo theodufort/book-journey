@@ -453,18 +453,32 @@ export default function BookNook1() {
                               </div>
                             </div>
                             <div className="flex gap-2">
-                              <button
-                                className="btn btn-success btn-sm"
-                                onClick={() => {
-                                  const newEndTime = new Date(
-                                    timerEndTime!.getTime() + timerMinutes * 60 * 1000
-                                  );
-                                  setTimerEndTime(newEndTime);
-                                  toast.success(`Added ${timerMinutes} minutes to session`);
-                                }}
-                              >
-                                +{timerMinutes}min
-                              </button>
+                              <div className="join">
+                                <button
+                                  className="btn btn-success btn-sm join-item"
+                                  onClick={() => {
+                                    const newEndTime = new Date(
+                                      timerEndTime!.getTime() + timerMinutes * 60 * 1000
+                                    );
+                                    setTimerEndTime(newEndTime);
+                                    toast.success(`Added ${timerMinutes} minutes to session`);
+                                  }}
+                                >
+                                  +{timerMinutes}min
+                                </button>
+                                <button
+                                  className="btn btn-success btn-sm join-item"
+                                  onClick={() => {
+                                    const newEndTime = new Date(
+                                      timerEndTime!.getTime() + 10 * 60 * 1000
+                                    );
+                                    setTimerEndTime(newEndTime);
+                                    toast.success('Added 10 minutes to session');
+                                  }}
+                                >
+                                  +10min
+                                </button>
+                              </div>
                               <button
                                 className="btn btn-error btn-sm"
                                 onClick={() => {
