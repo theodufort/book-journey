@@ -130,7 +130,7 @@ export default function BookNook1() {
         </div>
         <div className="grid md:grid-rows-2 md:grid-cols-1">
           <div className="card h-auto">
-            <div className="card-body">
+            <div className="card-body pb-0">
               {selectedBook == null ? (
                 <div className="border-2 border-dashed h-48 border-gray-300 flex items-center justify-center">
                   <svg
@@ -167,7 +167,7 @@ export default function BookNook1() {
                       {!selectedBook.volumeInfo.pageCount ? (
                         "?"
                       ) : (
-                        <span className="badge badge-primary">
+                        <span className="badge badge-primary ml-auto">
                           <input
                             type="number"
                             value={pagesRead}
@@ -208,7 +208,7 @@ export default function BookNook1() {
                   />
                 </label>
                 <button className="btn btn-active btn-primary m-auto w-full">
-                  Primary
+                  {t("add_sticky_note")}
                 </button>
               </div>
               <textarea
