@@ -168,13 +168,13 @@ export default function BookNook1() {
                   </option>
                 ))}
               </select>
-              <div className="flex items-center gap-2">
+              {/* <div className="flex items-center gap-2">
                 <Clock size={18} />
                 <span className="font-mono">
                   {Math.floor(timer / 60)}:
                   {(timer % 60).toString().padStart(2, "0")}
                 </span>
-              </div>
+              </div> */}
             </div>
           </div>
 
