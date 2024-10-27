@@ -54,8 +54,8 @@ export default function BookNook1() {
   };
 
   return (
-    <div className="h-screen w-full p-2 text-black">
-      <div className="flex flex-col md:flex-row h-[calc(100vh-1rem)] rounded shadow-lg bg-[#FFF2D7]/90">
+    <div className="h-[calc(100vh-4rem)] w-full p-2 text-black">
+      <div className="flex flex-col md:flex-row h-full rounded shadow-lg bg-[#FFF2D7]/90">
         {/* Left Column: Note-taking Section */}
         <div className="flex-1 flex flex-col p-2">
           {/* Tabs for Daily Note and Recap */}
