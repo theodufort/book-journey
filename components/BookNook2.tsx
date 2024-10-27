@@ -206,26 +206,64 @@ export default function BookNook1() {
             </div>
           </div>
 
+        </div>
+
+        {/* Right Column: Stickies / Quick Notes */}
+        <div className="w-80 flex-shrink-0 p-2 border-l flex flex-col h-full">
+          <div className="flex-none space-y-4">
+            <h2 className="text-lg font-semibold">Stickies / Quick Notes</h2>
+
+            <div className="space-y-3">
+              <input
+                type="text"
+                placeholder="Search notes..."
+                className="input input-bordered w-full"
+              />
+              <div className="flex gap-2">
+                <button className="btn btn-sm btn-outline">Translate</button>
+                <button className="btn btn-sm btn-outline">Look Up</button>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex-1 overflow-y-auto mt-4 pr-2">
+            <div className="space-y-3">
+              {bookStickys.map((sticky) => (
+                <div
+                  key={sticky.id}
+                  className="card card-bordered p-3 relative"
+                >
+                  <div className="line-clamp-3">
+                    <ReactMarkdown>{sticky.content}</ReactMarkdown>
+                  </div>
+                  <div className="absolute bottom-2 right-2 flex flex-row items-end">
+                    <span className="text-xs opacity-70">{sticky.label}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Bottom Action - Log Session / Bookmark */}
-          <div className="mt-2 flex gap-2">
-            <div className="join">
+          <div className="mt-4 space-y-2">
+            <div className="join w-full">
               <input
                 type="number"
-                className="join-item input input-bordered w-32 text-white"
+                className="join-item input input-bordered w-1/2 text-white"
                 placeholder="Page Start"
                 value={startPage || ""}
                 onChange={(e) => setStartPage(Number(e.target.value))}
               />
               <input
                 type="number"
-                className="join-item input input-bordered w-32 text-white"
+                className="join-item input input-bordered w-1/2 text-white"
                 placeholder="Page End"
                 value={endPage || ""}
                 onChange={(e) => setEndPage(Number(e.target.value))}
               />
             </div>
             <button
-              className="btn btn-primary flex-1"
+              className="btn btn-primary w-full"
               onClick={async () => {
                 if (!user || !selectedBook) {
                   toast.error("No book selected");
@@ -265,43 +303,6 @@ export default function BookNook1() {
             >
               Log Session
             </button>
-          </div>
-        </div>
-
-        {/* Right Column: Stickies / Quick Notes */}
-        <div className="w-80 flex-shrink-0 p-2 border-l flex flex-col h-full">
-          <div className="flex-none space-y-4">
-            <h2 className="text-lg font-semibold">Stickies / Quick Notes</h2>
-
-            <div className="space-y-3">
-              <input
-                type="text"
-                placeholder="Search notes..."
-                className="input input-bordered w-full"
-              />
-              <div className="flex gap-2">
-                <button className="btn btn-sm btn-outline">Translate</button>
-                <button className="btn btn-sm btn-outline">Look Up</button>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex-1 overflow-y-auto mt-4 pr-2">
-            <div className="space-y-3">
-              {bookStickys.map((sticky) => (
-                <div
-                  key={sticky.id}
-                  className="card card-bordered p-3 relative"
-                >
-                  <div className="line-clamp-3">
-                    <ReactMarkdown>{sticky.content}</ReactMarkdown>
-                  </div>
-                  <div className="absolute bottom-2 right-2 flex flex-row items-end">
-                    <span className="text-xs opacity-70">{sticky.label}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </div>
