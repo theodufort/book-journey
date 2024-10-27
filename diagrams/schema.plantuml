@@ -1,4 +1,4 @@
-@startuml
+@startuml schema
 
 ' Auth Schema Tables
 entity "auth.users" as auth_users {
