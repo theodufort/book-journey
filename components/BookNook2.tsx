@@ -24,6 +24,7 @@ export default function BookNook1() {
   const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
   const [bookStickys, setBookStickys] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [newNoteContent, setNewNoteContent] = useState("");
   const [tab, setTab] = useState("Daily Note");
   const [timer, setTimer] = useState(1800); // 30 minutes in seconds
@@ -218,6 +219,8 @@ export default function BookNook1() {
                 type="text"
                 placeholder="Search notes..."
                 className="input input-bordered w-full"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
               <div className="flex gap-2">
                 <button className="btn btn-sm btn-outline">Translate</button>
@@ -228,7 +231,12 @@ export default function BookNook1() {
 
           <div className="flex-1 overflow-y-auto mt-4 pr-2">
             <div className="space-y-3">
-              {bookStickys.map((sticky) => (
+              {bookStickys
+                .filter((sticky) => 
+                  sticky.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                  sticky.label.toLowerCase().includes(searchQuery.toLowerCase())
+                )
+                .map((sticky) => (
                 <div
                   key={sticky.id}
                   className="card card-bordered p-3 relative"
