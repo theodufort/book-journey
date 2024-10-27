@@ -105,6 +105,14 @@ export default function BookNook1() {
       );
 
       setReadingList(booksWithDetails);
+      
+      // Automatically select the first book if available
+      if (booksWithDetails.length > 0) {
+        setSelectedBook({
+          id: booksWithDetails[0].book_id,
+          volumeInfo: booksWithDetails[0].volumeInfo || {},
+        });
+      }
     } catch (error) {
       console.error("Error fetching reading list:", error);
       toast.error("Failed to fetch reading list");
