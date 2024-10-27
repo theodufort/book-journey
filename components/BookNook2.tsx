@@ -55,10 +55,7 @@ export default function BookNook1() {
 
   return (
     <div className="h-full w-full p-4 text-black">
-      <div
-        className="flex flex-col md:flex-row h-full rounded shadow-lg"
-        style={{ backgroundColor: "#D8AE7E" }}
-      >
+      <div className="flex flex-col md:flex-row h-full rounded shadow-lg bg-[#FFF2D7]/90">
         {/* Left Column: Note-taking Section */}
         <div className="flex-1 flex flex-col p-4">
           {/* Tabs for Daily Note and Recap */}
@@ -94,24 +91,16 @@ export default function BookNook1() {
                 <textarea
                   className="flex-1 w-full textarea textarea-primary"
                   style={{ backgroundColor: "#FFF2D7" }}
-                  placeholder="# Characters
-
-# Plot
-
-# Thoughts
-
-Or free form..."
+                  placeholder="Write here..."
                 />
-                <div className="absolute bottom-4 left-6 text-sm opacity-70">
-                  P. {currentPage}
-                </div>
               </div>
             )}
             {tab === "Recap" && (
-              <div className="h-full">
+              <div className="h-full flex flex-col">
                 <h2 className="text-xl font-semibold mb-4">Recap</h2>
                 <textarea
-                  className="w-full h-[calc(100%-2rem)] bg-transparent resize-none focus:outline-none"
+                  className="flex-1 w-full textarea textarea-primary"
+                  style={{ backgroundColor: "#FFF2D7" }}
                   placeholder="Write your recap here..."
                 />
               </div>
@@ -120,9 +109,7 @@ Or free form..."
 
           {/* Bottom Action - Log Session / Bookmark */}
           <div className="mt-4">
-            <button className="btn btn-primary btn-block">
-              Log Session / Bookmark
-            </button>
+            <button className="btn btn-primary btn-block">Log Session</button>
           </div>
         </div>
 
