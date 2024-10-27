@@ -294,7 +294,7 @@ export default function BookNook1() {
               <input
                 type="text"
                 placeholder="Search notes..."
-                className="input input-bordered w-full"
+                className="input input-bordered w-full text-white"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
