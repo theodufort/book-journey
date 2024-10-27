@@ -13,7 +13,11 @@ import { Database } from "@/types/supabase";
 export default function BookNook1() {
   const t = useTranslations("BookNook");
   const [selectedBook, setSelectedBook] = useState<Volume | null>(null);
-  const [readingList, setReadingList] = useState<any[]>([]);
+  const [readingList, setReadingList] = useState<Array<{
+    book_id: string;
+    title?: string;
+    volumeInfo?: any;
+  }>>([]);
   const [loading, setLoading] = useState(true);
   const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
@@ -62,6 +66,18 @@ export default function BookNook1() {
     fetchStickys();
   }, [fetchStickys]);
 
+  const fetchBookDetails = async (bookId: string) => {
+    try {
+      const response = await fetch(`/api/books/${bookId}/v3`);
+      if (!response.ok) throw new Error('Failed to fetch book details');
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching book details:', error);
+      return null;
+    }
+  };
+
   async function fetchReadingList(userId: string) {
     setLoading(true);
     try {
@@ -72,7 +88,20 @@ export default function BookNook1() {
         .eq("user_id", userId);
 
       if (error) throw error;
-      setReadingList(readingListData || []);
+
+      // Fetch book details for each book in reading list
+      const booksWithDetails = await Promise.all(
+        (readingListData || []).map(async (book) => {
+          const details = await fetchBookDetails(book.book_id);
+          return {
+            ...book,
+            title: details?.volumeInfo?.title || 'Untitled Book',
+            volumeInfo: details?.volumeInfo
+          };
+        })
+      );
+
+      setReadingList(booksWithDetails);
     } catch (error) {
       console.error("Error fetching reading list:", error);
       toast.error("Failed to fetch reading list");
@@ -117,10 +146,15 @@ export default function BookNook1() {
                 className="select select-bordered select-sm"
                 value={selectedBook?.id || ""}
                 onChange={(e) => {
-                  const book = readingList.find(
-                    (b) => b.book_id === e.target.value
-                  );
-                  setSelectedBook(book || null);
+                  const book = readingList.find(b => b.book_id === e.target.value);
+                  if (book) {
+                    setSelectedBook({
+                      id: book.book_id,
+                      volumeInfo: book.volumeInfo || {}
+                    });
+                  } else {
+                    setSelectedBook(null);
+                  }
                 }}
               >
                 <option value="">Select a book...</option>
