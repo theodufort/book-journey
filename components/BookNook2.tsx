@@ -191,11 +191,11 @@ export default function BookNook1() {
 
   return (
     <div className="h-[calc(100vh-6rem)] w-full p-1 text-black">
-      <div className="flex flex-col md:flex-row h-full rounded shadow-lg bg-[#FFF2D7]/90">
+      <div className="flex flex-col md:flex-row h-full rounded shadow-lg bg-[#FFF2D7]/90 overflow-y-auto md:overflow-hidden">
         {/* Left Column: Note-taking Section */}
-        <div className="flex-1 flex flex-col p-2">
+        <div className="flex-1 flex flex-col p-2 min-h-[50vh] md:min-h-0">
           {/* Tabs for Daily Note and review */}
-          <div className="flex justify-between items-center mb-2">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 md:gap-0 mb-2">
             <div className="tabs tabs-boxed">
               <button
                 onClick={() => setTab("Daily Note")}
@@ -210,9 +210,9 @@ export default function BookNook1() {
                 Review
               </button>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 w-full md:w-auto">
               <select
-                className="select select-bordered select-sm text-white"
+                className="select select-bordered select-sm text-white w-full md:w-auto"
                 value={selectedBook?.id || ""}
                 onChange={(e) => {
                   const book = readingList.find(
@@ -299,7 +299,7 @@ export default function BookNook1() {
         </div>
 
         {/* Right Column: Stickies / Quick Notes */}
-        <div className="w-80 flex-shrink-0 p-2 border-l flex flex-col h-full">
+        <div className="w-full md:w-80 flex-shrink-0 p-2 md:border-l border-t md:border-t-0 flex flex-col h-full">
           <div className="flex-none space-y-4">
             <h2 className="text-lg font-semibold">Stickies / Quick Notes</h2>
 
