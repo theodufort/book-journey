@@ -68,6 +68,7 @@ export default function BookNook1() {
       const { data: readingListData, error } = await supabase
         .from("reading_list")
         .select("*")
+        .eq("status", "Reading")
         .eq("user_id", userId);
 
       if (error) throw error;
@@ -116,14 +117,16 @@ export default function BookNook1() {
                 className="select select-bordered select-sm"
                 value={selectedBook?.id || ""}
                 onChange={(e) => {
-                  const book = readingList.find((b) => b.book_id === e.target.value);
+                  const book = readingList.find(
+                    (b) => b.book_id === e.target.value
+                  );
                   setSelectedBook(book || null);
                 }}
               >
                 <option value="">Select a book...</option>
                 {readingList.map((book) => (
                   <option key={book.book_id} value={book.book_id}>
-                    {book.title || 'Untitled Book'}
+                    {book.title || "Untitled Book"}
                   </option>
                 ))}
               </select>
