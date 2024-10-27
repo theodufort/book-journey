@@ -33,8 +33,8 @@ export default function BookNook1() {
   const [startPage, setStartPage] = useState<number>(0);
   const [endPage, setEndPage] = useState<number>(0);
   const [dailyNoteContent, setDailyNoteContent] = useState("");
-  const [recapContent, setRecapContent] = useState("");
-  const [isLoadingRecap, setIsLoadingRecap] = useState(false);
+  const [reviewContent, setreviewContent] = useState("");
+  const [isLoadingreview, setIsLoadingreview] = useState(false);
 
   const fetchStickys = useCallback(async () => {
     if (!user || !selectedBook) return;
@@ -70,21 +70,20 @@ export default function BookNook1() {
   useEffect(() => {
     fetchStickys();
     if (selectedBook && user) {
-      loadRecap();
+      loadreview();
     }
   }, [fetchStickys, selectedBook, user]);
 
-  const loadRecap = async () => {
+  const loadreview = async () => {
     if (!user || !selectedBook) return;
 
-    setIsLoadingRecap(true);
+    setIsLoadingreview(true);
     try {
       const { data, error } = await supabase
         .from("book_notes")
         .select("*")
         .eq("user_id", user.id)
         .eq("book_id", selectedBook.id)
-        .eq("type", "recap")
         .single();
 
       if (error && error.code !== "PGRST116") {
@@ -92,16 +91,16 @@ export default function BookNook1() {
         throw error;
       }
 
-      setRecapContent(data?.notes || "");
+      setreviewContent(data?.notes || "");
     } catch (error) {
-      console.error("Error loading recap:", error);
-      toast.error("Failed to load recap");
+      console.error("Error loading review:", error);
+      toast.error("Failed to load review");
     } finally {
-      setIsLoadingRecap(false);
+      setIsLoadingreview(false);
     }
   };
 
-  const saveRecap = async () => {
+  const savereview = async () => {
     if (!user || !selectedBook) {
       toast.error("No book selected");
       return;
@@ -112,19 +111,18 @@ export default function BookNook1() {
         {
           user_id: user.id,
           book_id: selectedBook.id,
-          content: recapContent,
-          type: "recap",
+          notes: reviewContent,
         },
         {
-          onConflict: "user_id,book_id,type",
+          onConflict: "user_id,book_id",
         }
       );
 
       if (error) throw error;
-      toast.success("Recap saved successfully!");
+      toast.success("Review saved successfully!");
     } catch (error) {
-      console.error("Error saving recap:", error);
-      toast.error("Failed to save recap");
+      console.error("Error saving review:", error);
+      toast.error("Failed to save review");
     }
   };
 
@@ -195,7 +193,7 @@ export default function BookNook1() {
       <div className="flex flex-col md:flex-row h-full rounded shadow-lg bg-[#FFF2D7]/90">
         {/* Left Column: Note-taking Section */}
         <div className="flex-1 flex flex-col p-2">
-          {/* Tabs for Daily Note and Recap */}
+          {/* Tabs for Daily Note and review */}
           <div className="flex justify-between items-center mb-2">
             <div className="tabs tabs-boxed">
               <button
@@ -205,10 +203,10 @@ export default function BookNook1() {
                 Daily Note
               </button>
               <button
-                onClick={() => setTab("Recap")}
-                className={`tab ${tab === "Recap" ? "tab-active" : ""}`}
+                onClick={() => setTab("review")}
+                className={`tab ${tab === "review" ? "tab-active" : ""}`}
               >
-                Recap
+                Review
               </button>
             </div>
             <div className="flex items-center gap-4">
@@ -246,7 +244,7 @@ export default function BookNook1() {
             </div>
           </div>
 
-          {/* Daily Note or Recap Content */}
+          {/* Daily Note or review Content */}
           <div className="flex-1 flex gap-2 h-full">
             <div className="flex-1 card card-bordered p-3 relative h-full">
               {tab === "Daily Note" && (
@@ -261,25 +259,25 @@ export default function BookNook1() {
                   />
                 </div>
               )}
-              {tab === "Recap" && (
+              {tab === "review" && (
                 <div className="h-full flex flex-col">
                   <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-semibold">Recap</h2>
+                    <h2 className="text-xl font-semibold">Review</h2>
                     <button
                       className="btn btn-primary btn-sm"
-                      onClick={saveRecap}
-                      disabled={isLoadingRecap}
+                      onClick={savereview}
+                      disabled={isLoadingreview}
                     >
-                      Save Recap
+                      Save review
                     </button>
                   </div>
                   <textarea
                     className="flex-1 w-full textarea textarea-primary"
                     style={{ backgroundColor: "#FFF2D7" }}
-                    placeholder="Write your recap here..."
-                    value={recapContent}
-                    onChange={(e) => setRecapContent(e.target.value)}
-                    disabled={isLoadingRecap}
+                    placeholder="Write your review here..."
+                    value={reviewContent}
+                    onChange={(e) => setreviewContent(e.target.value)}
+                    disabled={isLoadingreview}
                   />
                 </div>
               )}
@@ -306,13 +304,14 @@ export default function BookNook1() {
           <div className="flex-1 overflow-y-auto mt-4 pr-2">
             <div className="space-y-3">
               {bookStickys
-                .filter((sticky) => 
-                  sticky.content
-                    .toLowerCase()
-                    .includes(searchQuery.toLowerCase()) ||
-                  sticky.label
-                    .toLowerCase()
-                    .includes(searchQuery.toLowerCase())
+                .filter(
+                  (sticky) =>
+                    sticky.content
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase()) ||
+                    sticky.label
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase())
                 )
                 .map((sticky) => (
                   <div

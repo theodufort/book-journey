@@ -1,5 +1,5 @@
 "use client";
-import BookNook1 from "@/components/BookNook1";
+import BookNook2 from "@/components/BookNook2";
 import HeaderDashboard from "@/components/DashboardHeader";
 
 export default function BookNook() {
@@ -9,7 +9,7 @@ export default function BookNook() {
         <div className="sticky top-0 z-50 bg-base-100 h-full">
           <HeaderDashboard />
         </div>
-        <BookNook1 />
+        <BookNook2 />
       </section>
     </main>
   );
