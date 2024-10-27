@@ -60,29 +60,21 @@ export default function BookNook1() {
         <div className="flex-1 flex flex-col p-4">
           {/* Tabs for Daily Note and Recap */}
           <div className="flex justify-between items-center mb-4">
-            <div className="flex gap-4">
+            <div class="tabs tabs-boxed">
               <button
                 onClick={() => setTab("Daily Note")}
-                className={`${
-                  tab === "Daily Note"
-                    ? "bg-blue-100 text-blue-600 rounded-t-lg"
-                    : "text-gray-500"
-                } px-4 py-2 font-medium transition-colors`}
+                className={`tab ${tab === "Daily Note" ? "tab-active" : ""}`}
               >
                 Daily Note
               </button>
               <button
                 onClick={() => setTab("Recap")}
-                className={`${
-                  tab === "Recap"
-                    ? "bg-blue-100 text-blue-600 rounded-t-lg"
-                    : "text-gray-500"
-                } px-4 py-2 font-medium transition-colors`}
+                className={`tab ${tab === "Recap" ? "tab-active" : ""}`}
               >
                 Recap
               </button>
             </div>
-            <div className="flex items-center gap-2 text-gray-600">
+            <div className="flex items-center gap-2">
               <Clock size={18} />
               <span className="font-mono">
                 {Math.floor(timer / 60)}:{(timer % 60).toString().padStart(2, '0')}
@@ -91,10 +83,10 @@ export default function BookNook1() {
           </div>
 
           {/* Daily Note or Recap Content */}
-          <div className="flex-1 border bg-white p-6 rounded-lg shadow-sm relative">
+          <div className="flex-1 card card-bordered p-6 relative">
             {tab === "Daily Note" && (
               <div className="h-full flex flex-col">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">Daily Note</h2>
+                <h2 className="text-xl font-semibold mb-4">Daily Note</h2>
                 <textarea
                   className="flex-1 w-full bg-transparent resize-none focus:outline-none"
                   placeholder="# Characters
@@ -105,14 +97,14 @@ export default function BookNook1() {
 
 Or free form..."
                 />
-                <div className="absolute bottom-4 left-6 text-sm text-gray-500">
+                <div className="absolute bottom-4 left-6 text-sm opacity-70">
                   P. {currentPage}
                 </div>
               </div>
             )}
             {tab === "Recap" && (
               <div className="h-full">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">Recap</h2>
+                <h2 className="text-xl font-semibold mb-4">Recap</h2>
                 <textarea
                   className="w-full h-[calc(100%-2rem)] bg-transparent resize-none focus:outline-none"
                   placeholder="Write your recap here..."
@@ -123,7 +115,7 @@ Or free form..."
 
           {/* Bottom Action - Log Session / Bookmark */}
           <div className="mt-4">
-            <button className="btn btn-primary w-full">
+            <button className="btn btn-primary btn-block">
               Log Session / Bookmark
             </button>
           </div>
@@ -132,35 +124,35 @@ Or free form..."
         {/* Right Column: Stickies / Quick Notes */}
         <div className="w-80 flex-shrink-0 p-4 border-l">
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-gray-800">Stickies / Quick Notes</h2>
+            <h2 className="text-lg font-semibold">Stickies / Quick Notes</h2>
             
             <div className="space-y-3">
               <input
                 type="text"
                 placeholder="Search notes..."
-                className="w-full px-3 py-2 border rounded-lg text-sm"
+                className="input input-bordered w-full"
               />
               <div className="flex gap-2">
-                <button className="px-3 py-1.5 text-sm bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100">
+                <button className="btn btn-sm btn-outline">
                   Translate
                 </button>
-                <button className="px-3 py-1.5 text-sm bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100">
+                <button className="btn btn-sm btn-outline">
                   Look Up
                 </button>
               </div>
             </div>
 
             <div className="space-y-2">
-              <h3 className="text-sm font-medium text-gray-700">Things to ponder...</h3>
+              <h3 className="text-sm font-medium">Things to ponder...</h3>
               <textarea
-                className="w-full px-3 py-2 border rounded-lg text-sm min-h-[80px] bg-yellow-50"
+                className="textarea textarea-bordered w-full min-h-[80px]"
                 placeholder="Add new note..."
                 value={newNoteContent}
                 onChange={(e) => setNewNoteContent(e.target.value)}
               />
               <button
                 onClick={addStickyNote}
-                className="w-full px-3 py-2 bg-yellow-100 text-yellow-700 rounded-lg text-sm hover:bg-yellow-200"
+                className="btn btn-block btn-sm"
               >
                 Add Note
               </button>
@@ -170,10 +162,10 @@ Or free form..."
               {[1, 2, 3, 4, 5].map((index) => (
                 <div
                   key={index}
-                  className="p-3 bg-yellow-50 rounded-lg shadow-sm relative"
+                  className="card card-bordered p-3 relative"
                 >
                   <p className="text-sm">Note {index}</p>
-                  <span className="absolute bottom-2 right-2 text-xs text-gray-500">
+                  <span className="absolute bottom-2 right-2 text-xs opacity-70">
                     P. {index}
                   </span>
                 </div>
