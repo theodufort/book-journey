@@ -84,27 +84,43 @@ export default function BookNook1() {
           </div>
 
           {/* Daily Note or Recap Content */}
-          <div className="flex-1 card card-bordered p-6 relative">
-            {tab === "Daily Note" && (
-              <div className="h-full flex flex-col">
-                <h2 className="text-xl font-semibold mb-4">Daily Note</h2>
-                <textarea
-                  className="flex-1 w-full textarea textarea-primary"
-                  style={{ backgroundColor: "#FFF2D7" }}
-                  placeholder="Write here..."
-                />
-              </div>
-            )}
-            {tab === "Recap" && (
-              <div className="h-full flex flex-col">
-                <h2 className="text-xl font-semibold mb-4">Recap</h2>
-                <textarea
-                  className="flex-1 w-full textarea textarea-primary"
-                  style={{ backgroundColor: "#FFF2D7" }}
-                  placeholder="Write your recap here..."
-                />
-              </div>
-            )}
+          <div className="flex-1 flex gap-4">
+            <div className="flex-1 card card-bordered p-6 relative">
+              {tab === "Daily Note" && (
+                <div className="h-full flex flex-col">
+                  <h2 className="text-xl font-semibold mb-4">Daily Note</h2>
+                  <textarea
+                    className="flex-1 w-full textarea textarea-primary"
+                    style={{ backgroundColor: "#FFF2D7" }}
+                    placeholder="Write here..."
+                  />
+                </div>
+              )}
+              {tab === "Recap" && (
+                <div className="h-full flex flex-col">
+                  <h2 className="text-xl font-semibold mb-4">Recap</h2>
+                  <textarea
+                    className="flex-1 w-full textarea textarea-primary"
+                    style={{ backgroundColor: "#FFF2D7" }}
+                    placeholder="Write your recap here..."
+                  />
+                </div>
+              )}
+            </div>
+            
+            {/* Things to Ponder Section */}
+            <div className="w-64 card card-bordered p-4">
+              <h3 className="text-sm font-medium mb-2">Things to ponder...</h3>
+              <textarea
+                className="textarea textarea-bordered w-full flex-1"
+                placeholder="Add new note..."
+                value={newNoteContent}
+                onChange={(e) => setNewNoteContent(e.target.value)}
+              />
+              <button onClick={addStickyNote} className="btn btn-sm mt-2">
+                Add Note
+              </button>
+            </div>
           </div>
 
           {/* Bottom Action - Log Session / Bookmark */}
@@ -130,18 +146,6 @@ export default function BookNook1() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <h3 className="text-sm font-medium">Things to ponder...</h3>
-              <textarea
-                className="textarea textarea-bordered w-full min-h-[80px]"
-                placeholder="Add new note..."
-                value={newNoteContent}
-                onChange={(e) => setNewNoteContent(e.target.value)}
-              />
-              <button onClick={addStickyNote} className="btn btn-block btn-sm">
-                Add Note
-              </button>
-            </div>
 
             <div className="space-y-3">
               {[1, 2, 3, 4, 5].map((index) => (
