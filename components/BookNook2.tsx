@@ -269,8 +269,8 @@ export default function BookNook1() {
         </div>
 
         {/* Right Column: Stickies / Quick Notes */}
-        <div className="w-80 flex-shrink-0 p-2 border-l">
-          <div className="space-y-4">
+        <div className="w-80 flex-shrink-0 p-2 border-l flex flex-col h-full">
+          <div className="flex-none space-y-4">
             <h2 className="text-lg font-semibold">Stickies / Quick Notes</h2>
 
             <div className="space-y-3">
@@ -284,14 +284,18 @@ export default function BookNook1() {
                 <button className="btn btn-sm btn-outline">Look Up</button>
               </div>
             </div>
+          </div>
 
+          <div className="flex-1 overflow-y-auto mt-4 pr-2">
             <div className="space-y-3">
               {bookStickys.map((sticky) => (
                 <div
                   key={sticky.id}
                   className="card card-bordered p-3 relative"
                 >
-                  <ReactMarkdown>{sticky.content}</ReactMarkdown>
+                  <div className="line-clamp-3">
+                    <ReactMarkdown>{sticky.content}</ReactMarkdown>
+                  </div>
                   <div className="absolute bottom-2 right-2 flex flex-row items-end">
                     <span className="text-xs opacity-70">{sticky.label}</span>
                   </div>
