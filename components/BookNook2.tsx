@@ -54,10 +54,10 @@ export default function BookNook1() {
   };
 
   return (
-    <div className="min-h-screen w-full p-4 text-black">
-      <div className="flex flex-col md:flex-row min-h-[calc(100vh-2rem)] rounded shadow-lg bg-[#FFF2D7]/90">
+    <div className="h-screen w-full p-2 text-black">
+      <div className="flex flex-col md:flex-row h-[calc(100vh-1rem)] rounded shadow-lg bg-[#FFF2D7]/90">
         {/* Left Column: Note-taking Section */}
-        <div className="flex-1 flex flex-col p-4">
+        <div className="flex-1 flex flex-col p-2">
           {/* Tabs for Daily Note and Recap */}
           <div className="flex justify-between items-center mb-4">
             <div className="tabs tabs-boxed">
@@ -84,8 +84,8 @@ export default function BookNook1() {
           </div>
 
           {/* Daily Note or Recap Content */}
-          <div className="flex-1 flex gap-4 h-full">
-            <div className="flex-1 card card-bordered p-6 relative h-full">
+          <div className="flex-1 flex gap-2 h-full">
+            <div className="flex-1 card card-bordered p-3 relative h-full">
               {tab === "Daily Note" && (
                 <div className="h-full flex flex-col">
                   <h2 className="text-xl font-semibold mb-4">Daily Note</h2>
@@ -130,7 +130,7 @@ export default function BookNook1() {
         </div>
 
         {/* Right Column: Stickies / Quick Notes */}
-        <div className="w-80 flex-shrink-0 p-4 border-l">
+        <div className="w-80 flex-shrink-0 p-2 border-l">
           <div className="space-y-4">
             <h2 className="text-lg font-semibold">Stickies / Quick Notes</h2>
 
