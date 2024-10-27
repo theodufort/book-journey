@@ -243,6 +243,7 @@ export default function BookNook1() {
               </div> */}
             </div>
           </div>
+          )}
 
           {/* Daily Note or Recap Content */}
           <div className="flex-1 flex gap-2 h-full">
@@ -298,10 +299,10 @@ export default function BookNook1() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <div className="flex gap-2">
+              {/* <div className="flex gap-2">
                 <button className="btn btn-sm btn-outline">Translate</button>
                 <button className="btn btn-sm btn-outline">Look Up</button>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -395,7 +396,6 @@ export default function BookNook1() {
               Log Session
             </button>
           </div>
-          )}
         </div>
       </div>
     </div>
