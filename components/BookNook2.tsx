@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { Clock } from "lucide-react";
 import {
   User,
   createClientComponentClient,
@@ -19,6 +20,9 @@ export default function BookNook1() {
   const [bookStickys, setBookStickys] = useState<Record<string, any>>({});
   const [newNoteContent, setNewNoteContent] = useState("");
   const [tab, setTab] = useState("Daily Note");
+  const [timer, setTimer] = useState(1800); // 30 minutes in seconds
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [currentPage, setCurrentPage] = useState(123);
 
   useEffect(() => {
     const getUser = async () => {
@@ -55,37 +59,66 @@ export default function BookNook1() {
         {/* Left Column: Note-taking Section */}
         <div className="flex-1 flex flex-col p-4">
           {/* Tabs for Daily Note and Recap */}
-          <div className="flex justify-between mb-4">
+          <div className="flex justify-between items-center mb-4">
             <div className="flex gap-4">
               <button
                 onClick={() => setTab("Daily Note")}
                 className={`${
                   tab === "Daily Note"
-                    ? "text-blue-600 border-b-2"
+                    ? "bg-blue-100 text-blue-600 rounded-t-lg"
                     : "text-gray-500"
-                } px-2`}
+                } px-4 py-2 font-medium transition-colors`}
               >
                 Daily Note
               </button>
-              <button onClick={() => setTab("Recap")}>Recap</button>
+              <button
+                onClick={() => setTab("Recap")}
+                className={`${
+                  tab === "Recap"
+                    ? "bg-blue-100 text-blue-600 rounded-t-lg"
+                    : "text-gray-500"
+                } px-4 py-2 font-medium transition-colors`}
+              >
+                Recap
+              </button>
+            </div>
+            <div className="flex items-center gap-2 text-gray-600">
+              <Clock size={18} />
+              <span className="font-mono">
+                {Math.floor(timer / 60)}:{(timer % 60).toString().padStart(2, '0')}
+              </span>
             </div>
           </div>
 
           {/* Daily Note or Recap Content */}
-          <div className="flex-1 border p-4 rounded-lg">
+          <div className="flex-1 border bg-white p-6 rounded-lg shadow-sm relative">
             {tab === "Daily Note" && (
-              <div>
-                <h2 className="text-lg font-semibold">Daily Note</h2>
-                <p className="mt-2">We can have templates:</p>
-                <div className="mt-2 space-y-1">
-                  <p># Characters</p>
-                  <p># Plot</p>
-                  <p># Thoughts</p>
-                  <p>Or free form...</p>
+              <div className="h-full flex flex-col">
+                <h2 className="text-xl font-semibold text-gray-800 mb-4">Daily Note</h2>
+                <textarea
+                  className="flex-1 w-full bg-transparent resize-none focus:outline-none"
+                  placeholder="# Characters
+
+# Plot
+
+# Thoughts
+
+Or free form..."
+                />
+                <div className="absolute bottom-4 left-6 text-sm text-gray-500">
+                  P. {currentPage}
                 </div>
               </div>
             )}
-            {tab === "Recap" && <p>Recap content here...</p>}
+            {tab === "Recap" && (
+              <div className="h-full">
+                <h2 className="text-xl font-semibold text-gray-800 mb-4">Recap</h2>
+                <textarea
+                  className="w-full h-[calc(100%-2rem)] bg-transparent resize-none focus:outline-none"
+                  placeholder="Write your recap here..."
+                />
+              </div>
+            )}
           </div>
 
           {/* Bottom Action - Log Session / Bookmark */}
@@ -97,30 +130,54 @@ export default function BookNook1() {
         </div>
 
         {/* Right Column: Stickies / Quick Notes */}
-        <div className="w-64 flex-shrink-0 p-4">
-          <div>
-            <h2 className="text-lg font-semibold">Stickies / Quick Notes</h2>
-            <div className="mt-2 space-y-2">
+        <div className="w-80 flex-shrink-0 p-4 border-l">
+          <div className="space-y-4">
+            <h2 className="text-lg font-semibold text-gray-800">Stickies / Quick Notes</h2>
+            
+            <div className="space-y-3">
+              <input
+                type="text"
+                placeholder="Search notes..."
+                className="w-full px-3 py-2 border rounded-lg text-sm"
+              />
+              <div className="flex gap-2">
+                <button className="px-3 py-1.5 text-sm bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100">
+                  Translate
+                </button>
+                <button className="px-3 py-1.5 text-sm bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100">
+                  Look Up
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-gray-700">Things to ponder...</h3>
               <textarea
-                className="textarea w-full"
+                className="w-full px-3 py-2 border rounded-lg text-sm min-h-[80px] bg-yellow-50"
                 placeholder="Add new note..."
                 value={newNoteContent}
                 onChange={(e) => setNewNoteContent(e.target.value)}
               />
               <button
                 onClick={addStickyNote}
-                className="btn btn-sm btn-secondary w-full"
+                className="w-full px-3 py-2 bg-yellow-100 text-yellow-700 rounded-lg text-sm hover:bg-yellow-200"
               >
                 Add Note
               </button>
             </div>
-          </div>
 
-          <div className="mt-4">
-            <h3 className="text-sm font-medium">Things to ponder...</h3>
-            <div className="mt-2 space-y-1">
-              <p>What is the meaning of life?</p>
-              {/* Additional ponder entries */}
+            <div className="space-y-3">
+              {[1, 2, 3, 4, 5].map((index) => (
+                <div
+                  key={index}
+                  className="p-3 bg-yellow-50 rounded-lg shadow-sm relative"
+                >
+                  <p className="text-sm">Note {index}</p>
+                  <span className="absolute bottom-2 right-2 text-xs text-gray-500">
+                    P. {index}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
