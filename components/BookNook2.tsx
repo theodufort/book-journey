@@ -91,7 +91,7 @@ export default function BookNook1() {
         throw error;
       }
 
-      setRecapContent(data?.content || "");
+      setRecapContent(data?.notes || "");
     } catch (error) {
       console.error("Error loading recap:", error);
       toast.error("Failed to load recap");
@@ -243,7 +243,6 @@ export default function BookNook1() {
               </div> */}
             </div>
           </div>
-          )}
 
           {/* Daily Note or Recap Content */}
           <div className="flex-1 flex gap-2 h-full">
