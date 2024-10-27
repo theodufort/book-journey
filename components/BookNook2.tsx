@@ -84,8 +84,8 @@ export default function BookNook1() {
           </div>
 
           {/* Daily Note or Recap Content */}
-          <div className="flex-1 flex gap-4">
-            <div className="flex-1 card card-bordered p-6 relative">
+          <div className="flex-1 flex gap-4 h-full">
+            <div className="flex-1 card card-bordered p-6 relative h-full">
               {tab === "Daily Note" && (
                 <div className="h-full flex flex-col">
                   <h2 className="text-xl font-semibold mb-4">Daily Note</h2>
@@ -109,7 +109,7 @@ export default function BookNook1() {
             </div>
             
             {/* Things to Ponder Section */}
-            <div className="w-64 card card-bordered p-4">
+            <div className="w-64 card card-bordered p-4 h-full">
               <h3 className="text-sm font-medium mb-2">Things to ponder...</h3>
               <textarea
                 className="textarea textarea-bordered w-full flex-1"
