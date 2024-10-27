@@ -395,6 +395,7 @@ export default function BookNook1() {
               Log Session
             </button>
           </div>
+          )}
         </div>
       </div>
     </div>
