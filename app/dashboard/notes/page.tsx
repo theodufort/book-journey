@@ -294,7 +294,13 @@ export default function BookNotes() {
         );
         // Filter out any null results from failed fetches
         const validBookDetails = bookDetails.filter((book) => book != null);
-        setReadingList(validBookDetails as ReadingListItem[]);
+        // Sort books - 'reading' status first
+        const sortedBooks = validBookDetails.sort((a, b) => {
+          if (a?.status === 'reading' && b?.status !== 'reading') return -1;
+          if (a?.status !== 'reading' && b?.status === 'reading') return 1;
+          return 0;
+        });
+        setReadingList(sortedBooks as ReadingListItem[]);
       }
     } catch (error) {
       console.error("Unexpected error:", error);
