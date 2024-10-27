@@ -66,15 +66,15 @@ export default function BookNook1() {
     setLoading(true);
     try {
       const { data: readingListData, error } = await supabase
-        .from('reading_list')
-        .select('*')
-        .eq('user_id', userId);
+        .from("reading_list")
+        .select("*")
+        .eq("user_id", userId);
 
       if (error) throw error;
       setReadingList(readingListData || []);
     } catch (error) {
-      console.error('Error fetching reading list:', error);
-      toast.error('Failed to fetch reading list');
+      console.error("Error fetching reading list:", error);
+      toast.error("Failed to fetch reading list");
     } finally {
       setLoading(false);
     }
@@ -112,11 +112,11 @@ export default function BookNook1() {
               </button>
             </div>
             <div className="flex items-center gap-4">
-              <select 
+              <select
                 className="select select-bordered select-sm"
                 value={selectedBook?.id || ""}
                 onChange={(e) => {
-                  const book = readingList.find(b => b.id === e.target.value);
+                  const book = readingList.find((b) => b.id === e.target.value);
                   setSelectedBook(book || null);
                 }}
               >
@@ -198,7 +198,7 @@ export default function BookNook1() {
               />
             </div>
             <button
-              className="btn btn-primary btn-sm flex-1"
+              className="btn btn-primary flex-1"
               onClick={async () => {
                 if (!user || !selectedBook) {
                   toast.error("No book selected");
