@@ -29,19 +29,19 @@ export default function BookNook1() {
 
   const fetchStickys = useCallback(async () => {
     if (!user || !selectedBook) return;
-    
+
     const { data, error } = await supabase
-      .from('sticky')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('book_id', selectedBook.id)
-      .order('created_at', { ascending: false });
-      
+      .from("sticky_notes")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("book_id", selectedBook.id)
+      .order("created_at", { ascending: false });
+
     if (error) {
-      console.error('Error fetching stickys:', error);
+      console.error("Error fetching stickys:", error);
       return;
     }
-    
+
     setBookStickys(data || []);
   }, [user, selectedBook, supabase]);
 
@@ -168,7 +168,7 @@ export default function BookNook1() {
                 onChange={(e) => setEndPage(Number(e.target.value))}
               />
             </div>
-            <button 
+            <button
               className="btn btn-primary btn-sm flex-1"
               onClick={async () => {
                 if (!user || !selectedBook) {
@@ -184,18 +184,16 @@ export default function BookNook1() {
                   return;
                 }
 
-                const today = new Date().toISOString().split('T')[0];
+                const today = new Date().toISOString().split("T")[0];
                 const label = `${today}-${startPage}-${endPage}`;
 
-                const { error } = await supabase
-                  .from('sticky')
-                  .insert({
-                    user_id: user.id,
-                    book_id: selectedBook.id,
-                    content: dailyNoteContent,
-                    label: label,
-                    page: endPage
-                  });
+                const { error } = await supabase.from("sticky_notes").insert({
+                  user_id: user.id,
+                  book_id: selectedBook.id,
+                  content: dailyNoteContent,
+                  label: label,
+                  page: endPage,
+                });
 
                 if (error) {
                   toast.error("Failed to log session");
@@ -233,15 +231,14 @@ export default function BookNook1() {
 
             <div className="space-y-3">
               {bookStickys.map((sticky) => (
-                <div key={sticky.id} className="card card-bordered p-3 relative">
+                <div
+                  key={sticky.id}
+                  className="card card-bordered p-3 relative"
+                >
                   <p className="text-sm">{sticky.content}</p>
                   <div className="absolute bottom-2 right-2 flex flex-col items-end">
-                    <span className="text-xs opacity-70">
-                      {sticky.label}
-                    </span>
-                    <span className="text-xs opacity-70">
-                      P. {sticky.page}
-                    </span>
+                    <span className="text-xs opacity-70">{sticky.label}</span>
+                    <span className="text-xs opacity-70">P. {sticky.page}</span>
                   </div>
                 </div>
               ))}
