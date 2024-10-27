@@ -325,7 +325,28 @@
     },
     "BookNook":{
       "choose_book":"Start by choosing a book",
-      "page_label":"Page Count",
+      "page_label":"Page Count", 
       "add_sticky_note":"Add Sticky Note"
+    },
+    "BookNook2":{
+      "daily_note": "Daily Note",
+      "review": "Review",
+      "select_book": "Select a book...",
+      "untitled_book": "Untitled Book",
+      "write_here": "Write here...",
+      "write_review": "Write your review here...",
+      "save_view": "Save & View",
+      "edit": "Edit",
+      "stickies_title": "Stickies / Quick Notes",
+      "search_notes": "Search notes...",
+      "page_start": "Page Start",
+      "page_end": "Page End",
+      "log_session": "Log Session",
+      "error_no_book": "No book selected",
+      "error_invalid_pages": "Please enter valid page numbers greater than 0",
+      "error_start_end_pages": "Start page must be less than or equal to end page",
+      "error_empty_note": "Please write a daily note before logging",
+      "error_log_session": "Failed to log session",
+      "success_log_session": "Session logged successfully!"
     }
 }

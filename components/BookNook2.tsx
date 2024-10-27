@@ -11,7 +11,7 @@ import { Volume } from "@/interfaces/GoogleAPI";
 import { Database } from "@/types/supabase";
 
 export default function BookNook1() {
-  const t = useTranslations("BookNook");
+  const t = useTranslations("BookNook2");
   const [selectedBook, setSelectedBook] = useState<any>(null);
   const [readingList, setReadingList] = useState<
     Array<{
@@ -228,10 +228,10 @@ export default function BookNook1() {
                   }
                 }}
               >
-                <option value="">Select a book...</option>
+                <option value="">{t('select_book')}</option>
                 {readingList.map((book) => (
                   <option key={book.book_id} value={book.book_id}>
-                    {book.title || "Untitled Book"}
+                    {book.title || t('untitled_book')}
                   </option>
                 ))}
               </select>
