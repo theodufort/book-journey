@@ -42,6 +42,8 @@ export default function BookNotes() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [editLabelId, setEditLabelId] = useState<string | null>(null);
+  const [newLabel, setNewLabel] = useState("");
 
   const [editingStickyId, setEditingStickyId] = useState<string | null>(null);
 
@@ -596,7 +598,9 @@ export default function BookNotes() {
                                         }}
                                         className="btn btn-xs btn-circle btn-ghost"
                                       >
-                                        ×
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                          <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                                        </svg>
                                       </button>
                                     </div>
                                   </div>
@@ -721,23 +725,94 @@ export default function BookNotes() {
     onClose: () => void;
     onConfirm: () => void;
   }) {
-    if (!isOpen) return null;
+    if (!isOpen || !deleteConfirmId) return null;
+
+    const sticky = bookStickys[deleteConfirmId];
+    const isEditing = editLabelId === deleteConfirmId;
+
+    const handleSaveLabel = async () => {
+      if (!selectedBook || !newLabel.trim()) return;
+
+      try {
+        const { error } = await supabase
+          .from("sticky_notes")
+          .update({ label: newLabel })
+          .eq("id", deleteConfirmId)
+          .eq("user_id", user?.id);
+
+        if (error) {
+          console.error("Error updating sticky label:", error);
+        } else {
+          setBookStickys((prev) => ({
+            ...prev,
+            [deleteConfirmId]: {
+              ...prev[deleteConfirmId],
+              label: newLabel,
+            },
+          }));
+          setEditLabelId(null);
+          onClose();
+        }
+      } catch (error) {
+        console.error("Unexpected error:", error);
+      }
+    };
 
     return (
       <div className="fixed inset-0 z-50 overflow-auto flex bg-opacity-50 modal modal-open">
         <div className="relative p-8 bg-base-200 m-auto flex-col flex rounded-lg mx-auto">
           <div className="flex flex-col items-center">
-            <h3 className="text-lg font-bold mb-2">
-              {t("delete_sticky_title")}
+            <h3 className="text-lg font-bold mb-4">
+              {isEditing ? "Edit Sticky Note Label" : "Sticky Note Options"}
             </h3>
-            <div className="flex justify-center">
-              <button className="btn btn-error mr-2" onClick={onConfirm}>
-                {t("delete_confirm")}
-              </button>
-              <button className="btn btn-ghost" onClick={onClose}>
-                {t("delete_cancel")}
-              </button>
-            </div>
+            {isEditing ? (
+              <>
+                <input
+                  type="text"
+                  value={newLabel}
+                  onChange={(e) => setNewLabel(e.target.value)}
+                  className="input input-bordered w-full mb-4"
+                  placeholder="Enter new label"
+                />
+                <div className="flex justify-center gap-2">
+                  <button 
+                    className="btn btn-primary" 
+                    onClick={handleSaveLabel}
+                    disabled={!newLabel.trim()}
+                  >
+                    Save
+                  </button>
+                  <button 
+                    className="btn btn-ghost" 
+                    onClick={() => {
+                      setEditLabelId(null);
+                      setNewLabel("");
+                      onClose();
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="flex flex-col gap-2 w-full">
+                <button 
+                  className="btn btn-primary w-full"
+                  onClick={() => {
+                    setEditLabelId(deleteConfirmId);
+                    setNewLabel(sticky.label);
+                  }}
+                >
+                  Edit Label
+                </button>
+                <button className="btn btn-error w-full" onClick={onConfirm}>
+                  Delete Note
+                </button>
+                <button className="btn btn-ghost w-full" onClick={onClose}>
+                  Cancel
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
