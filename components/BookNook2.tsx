@@ -116,14 +116,14 @@ export default function BookNook1() {
                 className="select select-bordered select-sm"
                 value={selectedBook?.id || ""}
                 onChange={(e) => {
-                  const book = readingList.find((b) => b.id === e.target.value);
+                  const book = readingList.find((b) => b.book_id === e.target.value);
                   setSelectedBook(book || null);
                 }}
               >
                 <option value="">Select a book...</option>
                 {readingList.map((book) => (
-                  <option key={book.id} value={book.id}>
-                    {book.volumeInfo.title}
+                  <option key={book.book_id} value={book.book_id}>
+                    {book.title || 'Untitled Book'}
                   </option>
                 ))}
               </select>
