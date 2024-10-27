@@ -55,12 +55,15 @@ export default function BookNook1() {
 
   return (
     <div className="h-full w-full p-4">
-      <div className="flex flex-col md:flex-row h-full rounded shadow-lg">
+      <div
+        className="flex flex-col md:flex-row h-full rounded shadow-lg"
+        style={{ backgroundColor: "#D8AE7E" }}
+      >
         {/* Left Column: Note-taking Section */}
         <div className="flex-1 flex flex-col p-4">
           {/* Tabs for Daily Note and Recap */}
           <div className="flex justify-between items-center mb-4">
-            <div class="tabs tabs-boxed">
+            <div className="tabs tabs-boxed">
               <button
                 onClick={() => setTab("Daily Note")}
                 className={`tab ${tab === "Daily Note" ? "tab-active" : ""}`}
@@ -77,7 +80,8 @@ export default function BookNook1() {
             <div className="flex items-center gap-2">
               <Clock size={18} />
               <span className="font-mono">
-                {Math.floor(timer / 60)}:{(timer % 60).toString().padStart(2, '0')}
+                {Math.floor(timer / 60)}:
+                {(timer % 60).toString().padStart(2, "0")}
               </span>
             </div>
           </div>
@@ -88,7 +92,8 @@ export default function BookNook1() {
               <div className="h-full flex flex-col">
                 <h2 className="text-xl font-semibold mb-4">Daily Note</h2>
                 <textarea
-                  className="flex-1 w-full bg-transparent resize-none focus:outline-none"
+                  className="flex-1 w-full textarea textarea-primary"
+                  style={{ backgroundColor: "#FFF2D7" }}
                   placeholder="# Characters
 
 # Plot
@@ -125,7 +130,7 @@ Or free form..."
         <div className="w-80 flex-shrink-0 p-4 border-l">
           <div className="space-y-4">
             <h2 className="text-lg font-semibold">Stickies / Quick Notes</h2>
-            
+
             <div className="space-y-3">
               <input
                 type="text"
@@ -133,12 +138,8 @@ Or free form..."
                 className="input input-bordered w-full"
               />
               <div className="flex gap-2">
-                <button className="btn btn-sm btn-outline">
-                  Translate
-                </button>
-                <button className="btn btn-sm btn-outline">
-                  Look Up
-                </button>
+                <button className="btn btn-sm btn-outline">Translate</button>
+                <button className="btn btn-sm btn-outline">Look Up</button>
               </div>
             </div>
 
@@ -150,20 +151,14 @@ Or free form..."
                 value={newNoteContent}
                 onChange={(e) => setNewNoteContent(e.target.value)}
               />
-              <button
-                onClick={addStickyNote}
-                className="btn btn-block btn-sm"
-              >
+              <button onClick={addStickyNote} className="btn btn-block btn-sm">
                 Add Note
               </button>
             </div>
 
             <div className="space-y-3">
               {[1, 2, 3, 4, 5].map((index) => (
-                <div
-                  key={index}
-                  className="card card-bordered p-3 relative"
-                >
+                <div key={index} className="card card-bordered p-3 relative">
                   <p className="text-sm">Note {index}</p>
                   <span className="absolute bottom-2 right-2 text-xs opacity-70">
                     P. {index}
