@@ -130,14 +130,14 @@ export default function BookNook1() {
             <div className="join">
               <input
                 type="number"
-                className="join-item input input-bordered input-sm w-20"
+                className="join-item input input-bordered w-24"
                 placeholder="Page Start"
                 value={startPage || ""}
                 onChange={(e) => setStartPage(Number(e.target.value))}
               />
               <input
                 type="number"
-                className="join-item input input-bordered input-sm w-20"
+                className="join-item input input-bordered w-24"
                 placeholder="Page End"
                 value={endPage || ""}
                 onChange={(e) => setEndPage(Number(e.target.value))}
