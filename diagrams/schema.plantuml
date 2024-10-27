@@ -1,42 +1,83 @@
 @startuml
 
-entity "indie_authors" as Author {
-    author_id: SERIAL [PK]
-    author_name: text
-    birth_date: DATE
-    first_book_published_year: INT
-    personal_favorite_genres: text
-    main_writing_genres: text
-    type_of_books: text
-    picture_link: text
-    website: text
-    books_written: INT
-    social_media_id: SERIAL [FK]
-    user_id: UUID [FK]
+' Auth Schema Tables
+entity "auth.users" as auth_users {
+  * id : uuid
+  --
+  email : text
+  encrypted_password : text
+  email_confirmed_at : timestamp
+  invited_at : timestamp
+  confirmation_token : text
+  confirmation_sent_at : timestamp
+  recovery_token : text
+  recovery_sent_at : timestamp
+  email_change_token_new : text
+  email_change_token_current : text
+  email_change_confirm_status : integer
+  banned_until : timestamp
+  reauthentication_token : text
+  reauthentication_sent_at : timestamp
+  is_super_admin : boolean
+  phone : text
+  phone_confirmed_at : timestamp
+  phone_change_token : text
+  phone_change_sent_at : timestamp
+  email_change : text
+  email_change_sent_at : timestamp
+  deleted_at : timestamp
+  is_sso_user : boolean
+  raw_app_meta_data : jsonb
+  raw_user_meta_data : jsonb
+  created_at : timestamp
+  updated_at : timestamp
+  last_sign_in_at : timestamp
+  role : text
 }
 
-entity "indie_authors_social" as SocialMedia {
-    social_media_id: SERIAL [PK]
-    social_media_name: text
-    link: text
+' Public Schema Tables
+entity "indie_authors" {
+  * author_id : uuid [FK]
+  --
+  name : text
+  birth_date : date
+  first_book_published_year : text
+  personal_favorite_genres : text[]
+  main_writing_genres : text[]
+  type_of_books : text[]
+  picture_link : text
+  website : text
+  presentation : text
+  is_approved : boolean
 }
 
-entity "indie_authors_books" as AuthorBook {
-    author_id: SERIAL [FK]
-    book_id: SERIAL [PK]
-    release_date: timestamp
-    title: text
-    description: text
-    categories: text[]
-    cover_image_small_link: text
-    cover_image_medium_link: text
-    cover_image_large_link: text
+entity "indie_authors_social" {
+  * social_media_id : uuid
+  --
+  author_id : uuid [FK]
+  social_media_name : text
+  link : text
 }
 
-Author "1" -- "*"  SocialMedia
-Author "1" -- "*" AuthorBook
+entity "indie_authors_books" {
+  * book_id : text
+  --
+  author_id : uuid [FK]
+  title : text
+  description : text
+  categories : text[]
+  cover_image_small_link : text
+  cover_image_large_link : text
+  release_date : timestamp
+  is_approved : boolean
+}
 
-' Entities
+entity "indie_authors_books_links" {
+  * book_id : text [FK]
+  --
+  label : text
+  link : text
+}
 
 entity "ai_conversations" {
   * id : uuid
@@ -47,8 +88,8 @@ entity "ai_conversations" {
 }
 
 entity "article_categories" {
-  * article_id : integer
-  * category_id : integer
+  * article_id : integer [FK]
+  * category_id : integer [FK]
 }
 
 entity "blog_articles" {
@@ -77,7 +118,7 @@ entity "blog_categories" {
 entity "book_notes" {
   * id : integer
   --
-  user_id : uuid
+  user_id : uuid [FK]
   book_id : text
   notes : text
   created_at : timestamp
@@ -92,7 +133,7 @@ entity "books" {
 }
 
 entity "books_like" {
-  * id : text
+  * id : text [FK]
   --
   books : text[]
 }
@@ -100,9 +141,21 @@ entity "books_like" {
 entity "friends" {
   * id : integer
   --
-  user_id : uuid
-  friend_id : uuid
+  user_id : uuid [FK]
+  friend_id : uuid [FK]
   status : text
+  created_at : timestamp
+}
+
+entity "habits" {
+  * id : uuid
+  --
+  user_id : uuid [FK]
+  metric : text
+  periodicity : text
+  value : numeric
+  progress_value : numeric
+  streak : jsonb[]
   created_at : timestamp
 }
 
@@ -119,11 +172,10 @@ entity "libraries" {
   created_at : timestamp
 }
 
-
 entity "point_transactions" {
   * id : integer
   --
-  user_id : uuid
+  user_id : uuid [FK]
   points : integer
   type : text
   description : text
@@ -131,13 +183,14 @@ entity "point_transactions" {
 }
 
 entity "profiles" {
-  * id : uuid
+  * id : uuid [FK]
   --
   created_at : timestamp
   last_sign_in_at : timestamp
   raw_app_meta_data : jsonb
   raw_user_meta_data : jsonb
   email : text
+  username : text
   inactivity_email_sent : boolean
 }
 
@@ -151,11 +204,12 @@ entity "quotes" {
 entity "reading_list" {
   * id : integer
   --
-  user_id : uuid
+  user_id : uuid [FK]
   book_id : text
   status : text
-  rating : numeric(3,1)
+  rating : numeric
   review : text
+  pages_read : integer
   toread_at : timestamp
   pointsAwardedFinished : boolean
   pointsAwardedRating : boolean
@@ -167,25 +221,50 @@ entity "reading_list" {
 }
 
 entity "reading_stats" {
-  * user_id : uuid
+  * user_id : uuid [FK]
   --
   books_read : integer
   pages_read : integer
   reading_time_minutes : integer
 }
 
+entity "referrals" {
+  * referrer_id : uuid [FK]
+  --
+  referred_id : uuid
+}
+
+entity "sticky_notes" {
+  * id : uuid
+  --
+  user_id : uuid [FK]
+  book_id : text
+  label : text
+  content : text
+  is_public : boolean
+  created_at : timestamp
+  updated_at : timestamp
+}
+
 entity "user_activity" {
   * id : integer
   --
-  user_id : uuid
+  user_id : uuid [FK]
   activity_type : text
   details : jsonb
   created_at : timestamp
   updated_at : timestamp
 }
 
+entity "user_connection_activity" {
+  * id : uuid
+  --
+  user_id : uuid [FK]
+  active_at : timestamp
+}
+
 entity "user_point_streak" {
-  * user_id : uuid
+  * user_id : uuid [FK]
   --
   day1 : timestamp
   day2 : timestamp
@@ -198,14 +277,15 @@ entity "user_point_streak" {
 }
 
 entity "user_points" {
-  * user_id : uuid
+  * user_id : uuid [FK]
   --
   points_earned : integer
+  points_earned_referrals : integer
   points_redeemed : integer
 }
 
 entity "user_preferences" {
-  * user_id : uuid
+  * user_id : uuid [FK]
   --
   preferred_categories : text[]
   username : text
@@ -216,45 +296,33 @@ entity "user_preferences" {
   preferred_book_language : text
 }
 
-entity "users" as auth_users {
-  * id : uuid
-  --
-  -- other fields not specified
-}
-
 ' Relationships
-auth_users ||--o{ Author : "author_id"
+auth_users ||--o| indie_authors : "author_id"
+indie_authors ||--o{ indie_authors_social : "author_id"
+indie_authors ||--o{ indie_authors_books : "author_id"
+indie_authors_books ||--|| indie_authors_books_links : "book_id"
 
 auth_users ||--o{ book_notes : "user_id"
-
 books ||--o{ book_notes : "book_id"
-
 books ||--o{ reading_list : "book_id"
+books ||--|| books_like : "isbn_13"
 
 auth_users ||--|| profiles : "id"
-
 auth_users ||--|| reading_stats : "user_id"
-
 auth_users ||--|| user_point_streak : "user_id"
-
 auth_users ||--|| user_points : "user_id"
-
 auth_users ||--|| user_preferences : "user_id"
-
 auth_users ||--o{ friends : "user_id"
-
 auth_users ||--o{ friends : "friend_id"
-
 auth_users ||--o{ point_transactions : "user_id"
-
 auth_users ||--o{ reading_list : "user_id"
-
 auth_users ||--o{ user_activity : "user_id"
-
-books ||--o{ blog_articles : "isbn_13"
+auth_users ||--o{ habits : "user_id"
+auth_users ||--o{ sticky_notes : "user_id"
+auth_users ||--o{ user_connection_activity : "user_id"
+auth_users ||--o{ referrals : "referrer_id"
 
 blog_articles ||--o{ article_categories : "article_id"
-
 blog_categories ||--o{ article_categories : "category_id"
 
 @enduml
