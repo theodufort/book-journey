@@ -33,6 +33,8 @@ export default function BookNook1() {
   const [startPage, setStartPage] = useState<number>(0);
   const [endPage, setEndPage] = useState<number>(0);
   const [dailyNoteContent, setDailyNoteContent] = useState("");
+  const [recapContent, setRecapContent] = useState("");
+  const [isLoadingRecap, setIsLoadingRecap] = useState(false);
 
   const fetchStickys = useCallback(async () => {
     if (!user || !selectedBook) return;
@@ -67,7 +69,62 @@ export default function BookNook1() {
 
   useEffect(() => {
     fetchStickys();
-  }, [fetchStickys]);
+    if (selectedBook && user) {
+      loadRecap();
+    }
+  }, [fetchStickys, selectedBook, user]);
+
+  const loadRecap = async () => {
+    if (!user || !selectedBook) return;
+    
+    setIsLoadingRecap(true);
+    try {
+      const { data, error } = await supabase
+        .from("book_notes")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("book_id", selectedBook.id)
+        .eq("type", "recap")
+        .single();
+
+      if (error && error.code !== 'PGRST116') { // PGRST116 is "not found"
+        throw error;
+      }
+
+      setRecapContent(data?.content || "");
+    } catch (error) {
+      console.error("Error loading recap:", error);
+      toast.error("Failed to load recap");
+    } finally {
+      setIsLoadingRecap(false);
+    }
+  };
+
+  const saveRecap = async () => {
+    if (!user || !selectedBook) {
+      toast.error("No book selected");
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from("book_notes")
+        .upsert({
+          user_id: user.id,
+          book_id: selectedBook.id,
+          content: recapContent,
+          type: "recap"
+        }, {
+          onConflict: 'user_id,book_id,type'
+        });
+
+      if (error) throw error;
+      toast.success("Recap saved successfully!");
+    } catch (error) {
+      console.error("Error saving recap:", error);
+      toast.error("Failed to save recap");
+    }
+  };
 
   const fetchBookDetails = async (bookId: string) => {
     try {
@@ -186,6 +243,7 @@ export default function BookNook1() {
               </div> */}
             </div>
           </div>
+          )}
 
           {/* Daily Note or Recap Content */}
           <div className="flex-1 flex gap-2 h-full">
@@ -204,11 +262,23 @@ export default function BookNook1() {
               )}
               {tab === "Recap" && (
                 <div className="h-full flex flex-col">
-                  <h2 className="text-xl font-semibold mb-4">Recap</h2>
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-semibold">Recap</h2>
+                    <button 
+                      className="btn btn-primary btn-sm"
+                      onClick={saveRecap}
+                      disabled={isLoadingRecap}
+                    >
+                      Save Recap
+                    </button>
+                  </div>
                   <textarea
                     className="flex-1 w-full textarea textarea-primary"
                     style={{ backgroundColor: "#FFF2D7" }}
                     placeholder="Write your recap here..."
+                    value={recapContent}
+                    onChange={(e) => setRecapContent(e.target.value)}
+                    disabled={isLoadingRecap}
                   />
                 </div>
               )}
@@ -264,8 +334,9 @@ export default function BookNook1() {
             </div>
           </div>
 
-          {/* Bottom Action - Log Session / Bookmark */}
-          <div className="mt-4 space-y-2">
+          {/* Bottom Action - Log Session / Bookmark - Only show on Daily Note tab */}
+          {tab === "Daily Note" && (
+            <div className="mt-4 space-y-2">
             <div className="join w-full">
               <input
                 type="number"
