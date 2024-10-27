@@ -23,6 +23,8 @@ export default function BookNook1() {
   const [timer, setTimer] = useState(1800); // 30 minutes in seconds
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [currentPage, setCurrentPage] = useState(123);
+  const [startPage, setStartPage] = useState<number>(0);
+  const [endPage, setEndPage] = useState<number>(0);
 
   useEffect(() => {
     const getUser = async () => {
@@ -124,8 +126,24 @@ export default function BookNook1() {
           </div>
 
           {/* Bottom Action - Log Session / Bookmark */}
-          <div className="mt-2">
-            <button className="btn btn-primary btn-block">Log Session</button>
+          <div className="mt-2 flex gap-2">
+            <div className="join">
+              <input 
+                type="number" 
+                className="join-item input input-bordered input-sm w-20" 
+                placeholder="From"
+                value={startPage || ''}
+                onChange={(e) => setStartPage(Number(e.target.value))}
+              />
+              <input 
+                type="number" 
+                className="join-item input input-bordered input-sm w-20" 
+                placeholder="To"
+                value={endPage || ''}
+                onChange={(e) => setEndPage(Number(e.target.value))}
+              />
+            </div>
+            <button className="btn btn-primary btn-sm flex-1">Log Session</button>
           </div>
         </div>
 
