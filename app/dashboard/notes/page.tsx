@@ -730,13 +730,15 @@ export default function BookNotes() {
     const sticky = bookStickys[deleteConfirmId];
     const isEditing = editLabelId === deleteConfirmId;
 
+    const [tempLabel, setTempLabel] = useState(sticky.label);
+
     const handleSaveLabel = async () => {
-      if (!selectedBook || !newLabel.trim()) return;
+      if (!selectedBook || !tempLabel.trim()) return;
 
       try {
         const { error } = await supabase
           .from("sticky_notes")
-          .update({ label: newLabel })
+          .update({ label: tempLabel })
           .eq("id", deleteConfirmId)
           .eq("user_id", user?.id);
 
@@ -747,7 +749,7 @@ export default function BookNotes() {
             ...prev,
             [deleteConfirmId]: {
               ...prev[deleteConfirmId],
-              label: newLabel,
+              label: tempLabel,
             },
           }));
           setEditLabelId(null);
@@ -769,8 +771,8 @@ export default function BookNotes() {
               <>
                 <input
                   type="text"
-                  value={newLabel}
-                  onChange={(e) => setNewLabel(e.target.value)}
+                  value={tempLabel}
+                  onChange={(e) => setTempLabel(e.target.value)}
                   className="input input-bordered w-full mb-4"
                   placeholder="Enter new label"
                 />
@@ -778,7 +780,7 @@ export default function BookNotes() {
                   <button 
                     className="btn btn-primary" 
                     onClick={handleSaveLabel}
-                    disabled={!newLabel.trim()}
+                    disabled={!tempLabel.trim()}
                   >
                     Save
                   </button>
@@ -800,7 +802,7 @@ export default function BookNotes() {
                   className="btn btn-primary w-full"
                   onClick={() => {
                     setEditLabelId(deleteConfirmId);
-                    setNewLabel(sticky.label);
+                    setTempLabel(sticky.label);
                   }}
                 >
                   Edit Label
