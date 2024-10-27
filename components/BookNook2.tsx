@@ -355,8 +355,12 @@ export default function BookNook1() {
                     toast.error("No book selected");
                     return;
                   }
-                  if (!startPage || !endPage) {
-                    toast.error("Please enter both start and end pages");
+                  if (!startPage || !endPage || startPage <= 0 || endPage <= 0) {
+                    toast.error("Please enter valid page numbers greater than 0");
+                    return;
+                  }
+                  if (startPage > endPage) {
+                    toast.error("Start page must be less than or equal to end page");
                     return;
                   }
                   if (!dailyNoteContent.trim()) {
