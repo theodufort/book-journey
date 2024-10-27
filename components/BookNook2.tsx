@@ -26,6 +26,7 @@ export default function BookNook1() {
   const [bookStickys, setBookStickys] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [newNoteContent, setNewNoteContent] = useState("");
+  const [filterType, setFilterType] = useState<"all" | "today" | "week" | "month">("all");
   const [tab, setTab] = useState("Daily Note");
   const [timer, setTimer] = useState(1800); // 30 minutes in seconds
   const [isTimerRunning, setIsTimerRunning] = useState(false);
@@ -299,25 +300,45 @@ export default function BookNook1() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              {/* <div className="flex gap-2">
-                <button className="btn btn-sm btn-outline">Translate</button>
-                <button className="btn btn-sm btn-outline">Look Up</button>
-              </div> */}
+              <select 
+                className="select select-bordered w-full"
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value as "all" | "today" | "week" | "month")}
+              >
+                <option value="all">All Notes</option>
+                <option value="today">Today</option>
+                <option value="week">This Week</option>
+                <option value="month">This Month</option>
+              </select>
             </div>
           </div>
 
           <div className="flex-1 overflow-y-auto mt-4 pr-2">
             <div className="space-y-3">
               {bookStickys
-                .filter(
-                  (sticky) =>
-                    sticky.content
-                      .toLowerCase()
-                      .includes(searchQuery.toLowerCase()) ||
-                    sticky.label
-                      .toLowerCase()
-                      .includes(searchQuery.toLowerCase())
-                )
+                .filter((sticky) => {
+                  const matchesSearch = 
+                    sticky.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    sticky.label.toLowerCase().includes(searchQuery.toLowerCase());
+                  
+                  if (!matchesSearch) return false;
+
+                  const noteDate = new Date(sticky.created_at);
+                  const today = new Date();
+                  const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+                  const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+                  switch (filterType) {
+                    case "today":
+                      return noteDate.toDateString() === today.toDateString();
+                    case "week":
+                      return noteDate >= weekAgo;
+                    case "month":
+                      return noteDate >= monthAgo;
+                    default:
+                      return true;
+                  }
+                })
                 .map((sticky) => (
                   <div
                     key={sticky.id}
