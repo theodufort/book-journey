@@ -64,8 +64,20 @@ export default function BookNook1() {
 
   async function fetchReadingList(userId: string) {
     setLoading(true);
-    // Fetch logic for reading list...
-    setLoading(false);
+    try {
+      const { data: readingListData, error } = await supabase
+        .from('reading_list')
+        .select('*')
+        .eq('user_id', userId);
+
+      if (error) throw error;
+      setReadingList(readingListData || []);
+    } catch (error) {
+      console.error('Error fetching reading list:', error);
+      toast.error('Failed to fetch reading list');
+    } finally {
+      setLoading(false);
+    }
   }
 
   const addStickyNote = async () => {
@@ -99,12 +111,29 @@ export default function BookNook1() {
                 Recap
               </button>
             </div>
-            <div className="flex items-center gap-2">
-              <Clock size={18} />
-              <span className="font-mono">
-                {Math.floor(timer / 60)}:
-                {(timer % 60).toString().padStart(2, "0")}
-              </span>
+            <div className="flex items-center gap-4">
+              <select 
+                className="select select-bordered select-sm"
+                value={selectedBook?.id || ""}
+                onChange={(e) => {
+                  const book = readingList.find(b => b.id === e.target.value);
+                  setSelectedBook(book || null);
+                }}
+              >
+                <option value="">Select a book...</option>
+                {readingList.map((book) => (
+                  <option key={book.id} value={book.id}>
+                    {book.volumeInfo.title}
+                  </option>
+                ))}
+              </select>
+              <div className="flex items-center gap-2">
+                <Clock size={18} />
+                <span className="font-mono">
+                  {Math.floor(timer / 60)}:
+                  {(timer % 60).toString().padStart(2, "0")}
+                </span>
+              </div>
             </div>
           </div>
 
