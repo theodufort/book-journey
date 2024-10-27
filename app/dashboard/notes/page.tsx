@@ -389,6 +389,12 @@ export default function BookNotes() {
         await saveNote();
       } else if (noteType === "sticky") {
         await saveStickyNote();
+        // Preserve the selected sticky note when switching to view mode
+        if (editingStickyId) {
+          const currentStickyId = editingStickyId;
+          setEditingStickyId(null);
+          setTimeout(() => setEditingStickyId(currentStickyId), 0);
+        }
       }
     }
     setIsEditMode(!isEditMode);
