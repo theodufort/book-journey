@@ -13,11 +13,13 @@ import { Database } from "@/types/supabase";
 export default function BookNook1() {
   const t = useTranslations("BookNook");
   const [selectedBook, setSelectedBook] = useState<Volume | null>(null);
-  const [readingList, setReadingList] = useState<Array<{
-    book_id: string;
-    title?: string;
-    volumeInfo?: any;
-  }>>([]);
+  const [readingList, setReadingList] = useState<
+    Array<{
+      book_id: string;
+      title?: string;
+      volumeInfo?: any;
+    }>
+  >([]);
   const [loading, setLoading] = useState(true);
   const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
@@ -69,11 +71,11 @@ export default function BookNook1() {
   const fetchBookDetails = async (bookId: string) => {
     try {
       const response = await fetch(`/api/books/${bookId}/v3`);
-      if (!response.ok) throw new Error('Failed to fetch book details');
+      if (!response.ok) throw new Error("Failed to fetch book details");
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('Error fetching book details:', error);
+      console.error("Error fetching book details:", error);
       return null;
     }
   };
@@ -95,8 +97,8 @@ export default function BookNook1() {
           const details = await fetchBookDetails(book.book_id);
           return {
             ...book,
-            title: details?.volumeInfo?.title || 'Untitled Book',
-            volumeInfo: details?.volumeInfo
+            title: details?.volumeInfo?.title || "Untitled Book",
+            volumeInfo: details?.volumeInfo,
           };
         })
       );
@@ -143,14 +145,16 @@ export default function BookNook1() {
             </div>
             <div className="flex items-center gap-4">
               <select
-                className="select select-bordered select-sm"
+                className="select select-bordered select-sm text-white"
                 value={selectedBook?.id || ""}
                 onChange={(e) => {
-                  const book = readingList.find(b => b.book_id === e.target.value);
+                  const book = readingList.find(
+                    (b) => b.book_id === e.target.value
+                  );
                   if (book) {
                     setSelectedBook({
                       id: book.book_id,
-                      volumeInfo: book.volumeInfo || {}
+                      volumeInfo: book.volumeInfo || {},
                     });
                   } else {
                     setSelectedBook(null);
@@ -199,20 +203,6 @@ export default function BookNook1() {
                   />
                 </div>
               )}
-            </div>
-
-            {/* Things to Ponder Section */}
-            <div className="w-64 card card-bordered p-4 h-full">
-              <h3 className="text-sm font-medium mb-2">Things to ponder...</h3>
-              <textarea
-                className="textarea textarea-bordered w-full flex-1"
-                placeholder="Add new note..."
-                value={newNoteContent}
-                onChange={(e) => setNewNoteContent(e.target.value)}
-              />
-              <button onClick={addStickyNote} className="btn btn-sm mt-2">
-                Add Note
-              </button>
             </div>
           </div>
 
@@ -301,10 +291,9 @@ export default function BookNook1() {
                   key={sticky.id}
                   className="card card-bordered p-3 relative"
                 >
-                  <p className="text-sm">{sticky.content}</p>
-                  <div className="absolute bottom-2 right-2 flex flex-col items-end">
+                  <ReactMarkdown>{sticky.content}</ReactMarkdown>
+                  <div className="absolute bottom-2 right-2 flex flex-row items-end">
                     <span className="text-xs opacity-70">{sticky.label}</span>
-                    <span className="text-xs opacity-70">P. {sticky.page}</span>
                   </div>
                 </div>
               ))}
