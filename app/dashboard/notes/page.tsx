@@ -296,8 +296,8 @@ export default function BookNotes() {
         const validBookDetails = bookDetails.filter((book) => book != null);
         // Sort books - 'reading' status first
         const sortedBooks = validBookDetails.sort((a, b) => {
-          if (a?.status === 'reading' && b?.status !== 'reading') return -1;
-          if (a?.status !== 'reading' && b?.status === 'reading') return 1;
+          if (a?.status === "reading" && b?.status !== "reading") return -1;
+          if (a?.status !== "reading" && b?.status === "reading") return 1;
           return 0;
         });
         setReadingList(sortedBooks as ReadingListItem[]);
@@ -488,21 +488,41 @@ export default function BookNotes() {
                             : t("not_saved_warning")}
                         </p>
                       </div>
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-2 gap-2 justify-center">
                         <button
-                          className="py-2 my-2 btn btn-sm btn-primary"
+                          className="my-2 btn btn-primary"
                           onClick={handleSaveButtonClick}
                         >
                           {isEditMode ? t("save_view_label") : t("edit_label")}
                         </button>
-                        <button
-                          className="py-2 my-2 btn btn-sm btn-success"
-                          onClick={() => {
-                            setNoteType(noteType == "main" ? "sticky" : "main");
-                          }}
-                        >
-                          {noteType == "main" ? t("tab1") : t("tab2")}
-                        </button>
+                        <div className="join my-auto w-auto">
+                          <input
+                            className={`join-item btn w-1/2 ${
+                              noteType == "main" ? "btn-success" : "btn-neutral"
+                            }`}
+                            checked={noteType == "main"}
+                            type="radio"
+                            name="main"
+                            aria-label={t("tab1")}
+                            onClick={() => {
+                              setNoteType("main");
+                            }}
+                          />
+                          <input
+                            className={`join-item btn w-1/2 ${
+                              noteType == "sticky"
+                                ? "btn-success"
+                                : "btn-neutral"
+                            }`}
+                            checked={noteType == "sticky"}
+                            type="radio"
+                            name="sticky"
+                            aria-label={t("tab2")}
+                            onClick={() => {
+                              setNoteType("sticky");
+                            }}
+                          />
+                        </div>
                       </div>
                     </div>
                     <div
