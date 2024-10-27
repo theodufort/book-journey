@@ -286,7 +286,8 @@ export default function BookNook1() {
                   book_id: selectedBook.id,
                   content: dailyNoteContent,
                   label: label,
-                  page: endPage,
+                  start_page: startPage,
+                  end_page: endPage,
                 });
 
                 if (error) {
