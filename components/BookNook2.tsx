@@ -35,6 +35,7 @@ export default function BookNook1() {
   const [dailyNoteContent, setDailyNoteContent] = useState("");
   const [reviewContent, setreviewContent] = useState("");
   const [isLoadingreview, setIsLoadingreview] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(true);
 
   const fetchStickys = useCallback(async () => {
     if (!user || !selectedBook) return;
@@ -264,21 +265,33 @@ export default function BookNook1() {
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-semibold">Review</h2>
                     <button
-                      className="btn btn-primary btn-sm"
-                      onClick={savereview}
+                      className={`btn btn-sm ${isEditMode ? 'btn-primary' : 'btn-secondary'}`}
+                      onClick={() => {
+                        if (isEditMode) {
+                          savereview().then(() => setIsEditMode(false));
+                        } else {
+                          setIsEditMode(true);
+                        }
+                      }}
                       disabled={isLoadingreview}
                     >
-                      Save review
+                      {isEditMode ? 'Save & View' : 'Edit'}
                     </button>
                   </div>
-                  <textarea
-                    className="flex-1 w-full textarea textarea-primary"
-                    style={{ backgroundColor: "#FFF2D7" }}
-                    placeholder="Write your review here..."
-                    value={reviewContent}
-                    onChange={(e) => setreviewContent(e.target.value)}
-                    disabled={isLoadingreview}
-                  />
+                  {isEditMode ? (
+                    <textarea
+                      className="flex-1 w-full textarea textarea-primary"
+                      style={{ backgroundColor: "#FFF2D7" }}
+                      placeholder="Write your review here..."
+                      value={reviewContent}
+                      onChange={(e) => setreviewContent(e.target.value)}
+                      disabled={isLoadingreview}
+                    />
+                  ) : (
+                    <div className="flex-1 overflow-y-auto prose prose-sm max-w-none">
+                      <ReactMarkdown>{reviewContent}</ReactMarkdown>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
