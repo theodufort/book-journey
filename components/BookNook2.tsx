@@ -26,7 +26,9 @@ export default function BookNook1() {
   const [bookStickys, setBookStickys] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [newNoteContent, setNewNoteContent] = useState("");
-  const [filterType, setFilterType] = useState<"all" | "today" | "week" | "month">("all");
+  const [filterType, setFilterType] = useState<
+    "all" | "today" | "week" | "month"
+  >("all");
   const [tab, setTab] = useState("Daily Note");
   const [timer, setTimer] = useState(1800); // 30 minutes in seconds
   const [isTimerRunning, setIsTimerRunning] = useState(false);
@@ -77,7 +79,7 @@ export default function BookNook1() {
 
   const loadRecap = async () => {
     if (!user || !selectedBook) return;
-    
+
     setIsLoadingRecap(true);
     try {
       const { data, error } = await supabase
@@ -88,7 +90,8 @@ export default function BookNook1() {
         .eq("type", "recap")
         .single();
 
-      if (error && error.code !== 'PGRST116') { // PGRST116 is "not found"
+      if (error && error.code !== "PGRST116") {
+        // PGRST116 is "not found"
         throw error;
       }
 
@@ -108,16 +111,17 @@ export default function BookNook1() {
     }
 
     try {
-      const { data, error } = await supabase
-        .from("book_notes")
-        .upsert({
+      const { data, error } = await supabase.from("book_notes").upsert(
+        {
           user_id: user.id,
           book_id: selectedBook.id,
           content: recapContent,
-          type: "recap"
-        }, {
-          onConflict: 'user_id,book_id,type'
-        });
+          type: "recap",
+        },
+        {
+          onConflict: "user_id,book_id,type",
+        }
+      );
 
       if (error) throw error;
       toast.success("Recap saved successfully!");
@@ -244,7 +248,6 @@ export default function BookNook1() {
               </div> */}
             </div>
           </div>
-          )}
 
           {/* Daily Note or Recap Content */}
           <div className="flex-1 flex gap-2 h-full">
@@ -265,7 +268,7 @@ export default function BookNook1() {
                 <div className="h-full flex flex-col">
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-semibold">Recap</h2>
-                    <button 
+                    <button
                       className="btn btn-primary btn-sm"
                       onClick={saveRecap}
                       disabled={isLoadingRecap}
@@ -300,10 +303,14 @@ export default function BookNook1() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <select 
+              <select
                 className="select select-bordered w-full"
                 value={filterType}
-                onChange={(e) => setFilterType(e.target.value as "all" | "today" | "week" | "month")}
+                onChange={(e) =>
+                  setFilterType(
+                    e.target.value as "all" | "today" | "week" | "month"
+                  )
+                }
               >
                 <option value="all">All Notes</option>
                 <option value="today">Today</option>
@@ -317,16 +324,24 @@ export default function BookNook1() {
             <div className="space-y-3">
               {bookStickys
                 .filter((sticky) => {
-                  const matchesSearch = 
-                    sticky.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    sticky.label.toLowerCase().includes(searchQuery.toLowerCase());
-                  
+                  const matchesSearch =
+                    sticky.content
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase()) ||
+                    sticky.label
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase());
+
                   if (!matchesSearch) return false;
 
                   const noteDate = new Date(sticky.created_at);
                   const today = new Date();
-                  const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-                  const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+                  const weekAgo = new Date(
+                    today.getTime() - 7 * 24 * 60 * 60 * 1000
+                  );
+                  const monthAgo = new Date(
+                    today.getTime() - 30 * 24 * 60 * 60 * 1000
+                  );
 
                   switch (filterType) {
                     case "today":
@@ -358,65 +373,66 @@ export default function BookNook1() {
           {/* Bottom Action - Log Session / Bookmark - Only show on Daily Note tab */}
           {tab === "Daily Note" && (
             <div className="mt-4 space-y-2">
-            <div className="join w-full">
-              <input
-                type="number"
-                className="join-item input input-bordered w-1/2 text-white"
-                placeholder="Page Start"
-                value={startPage || ""}
-                onChange={(e) => setStartPage(Number(e.target.value))}
-              />
-              <input
-                type="number"
-                className="join-item input input-bordered w-1/2 text-white"
-                placeholder="Page End"
-                value={endPage || ""}
-                onChange={(e) => setEndPage(Number(e.target.value))}
-              />
+              <div className="join w-full">
+                <input
+                  type="number"
+                  className="join-item input input-bordered w-1/2 text-white"
+                  placeholder="Page Start"
+                  value={startPage || ""}
+                  onChange={(e) => setStartPage(Number(e.target.value))}
+                />
+                <input
+                  type="number"
+                  className="join-item input input-bordered w-1/2 text-white"
+                  placeholder="Page End"
+                  value={endPage || ""}
+                  onChange={(e) => setEndPage(Number(e.target.value))}
+                />
+              </div>
+              <button
+                className="btn btn-primary w-full"
+                onClick={async () => {
+                  if (!user || !selectedBook) {
+                    toast.error("No book selected");
+                    return;
+                  }
+                  if (!startPage || !endPage) {
+                    toast.error("Please enter both start and end pages");
+                    return;
+                  }
+                  if (!dailyNoteContent.trim()) {
+                    toast.error("Please write a daily note before logging");
+                    return;
+                  }
+
+                  const today = new Date().toISOString().split("T")[0];
+                  const label = `${today}-${startPage}-${endPage}`;
+
+                  const { error } = await supabase.from("sticky_notes").insert({
+                    user_id: user.id,
+                    book_id: selectedBook.id,
+                    content: dailyNoteContent,
+                    label: label,
+                    start_page: startPage,
+                    end_page: endPage,
+                  });
+
+                  if (error) {
+                    toast.error("Failed to log session");
+                    console.error(error);
+                    return;
+                  }
+
+                  toast.success("Session logged successfully!");
+                  setDailyNoteContent("");
+                  setNewNoteContent("");
+                  fetchStickys();
+                }}
+              >
+                Log Session
+              </button>
             </div>
-            <button
-              className="btn btn-primary w-full"
-              onClick={async () => {
-                if (!user || !selectedBook) {
-                  toast.error("No book selected");
-                  return;
-                }
-                if (!startPage || !endPage) {
-                  toast.error("Please enter both start and end pages");
-                  return;
-                }
-                if (!dailyNoteContent.trim()) {
-                  toast.error("Please write a daily note before logging");
-                  return;
-                }
-
-                const today = new Date().toISOString().split("T")[0];
-                const label = `${today}-${startPage}-${endPage}`;
-
-                const { error } = await supabase.from("sticky_notes").insert({
-                  user_id: user.id,
-                  book_id: selectedBook.id,
-                  content: dailyNoteContent,
-                  label: label,
-                  start_page: startPage,
-                  end_page: endPage,
-                });
-
-                if (error) {
-                  toast.error("Failed to log session");
-                  console.error(error);
-                  return;
-                }
-
-                toast.success("Session logged successfully!");
-                setDailyNoteContent("");
-                setNewNoteContent("");
-                fetchStickys();
-              }}
-            >
-              Log Session
-            </button>
-          </div>
+          )}
         </div>
       </div>
     </div>
