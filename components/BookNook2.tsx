@@ -54,7 +54,7 @@ export default function BookNook1() {
   };
 
   return (
-    <div className="h-[calc(100vh-4rem)] w-full p-2 text-black">
+    <div className="h-[calc(100vh-5rem)] w-full p-1 text-black">
       <div className="flex flex-col md:flex-row h-full rounded shadow-lg bg-[#FFF2D7]/90">
         {/* Left Column: Note-taking Section */}
         <div className="flex-1 flex flex-col p-2">
