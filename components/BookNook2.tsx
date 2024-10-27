@@ -54,7 +54,7 @@ export default function BookNook1() {
   };
 
   return (
-    <div className="h-full w-full p-4">
+    <div className="h-full w-full p-4 text-black">
       <div
         className="flex flex-col md:flex-row h-full rounded shadow-lg"
         style={{ backgroundColor: "#D8AE7E" }}
