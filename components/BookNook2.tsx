@@ -12,7 +12,7 @@ import { Database } from "@/types/supabase";
 
 export default function BookNook1() {
   const t = useTranslations("BookNook");
-  const [selectedBook, setSelectedBook] = useState<Volume | null>(null);
+  const [selectedBook, setSelectedBook] = useState<any>(null);
   const [readingList, setReadingList] = useState<
     Array<{
       book_id: string;
@@ -105,7 +105,7 @@ export default function BookNook1() {
       );
 
       setReadingList(booksWithDetails);
-      
+
       // Automatically select the first book if available
       if (booksWithDetails.length > 0) {
         setSelectedBook({
@@ -214,7 +214,6 @@ export default function BookNook1() {
               )}
             </div>
           </div>
-
         </div>
 
         {/* Right Column: Stickies / Quick Notes */}
@@ -240,23 +239,28 @@ export default function BookNook1() {
           <div className="flex-1 overflow-y-auto mt-4 pr-2">
             <div className="space-y-3">
               {bookStickys
-                .filter((sticky) => 
-                  sticky.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                  sticky.label.toLowerCase().includes(searchQuery.toLowerCase())
+                .filter(
+                  (sticky) =>
+                    sticky.content
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase()) ||
+                    sticky.label
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase())
                 )
                 .map((sticky) => (
-                <div
-                  key={sticky.id}
-                  className="card card-bordered p-3 relative"
-                >
-                  <div className="line-clamp-3">
-                    <ReactMarkdown>{sticky.content}</ReactMarkdown>
+                  <div
+                    key={sticky.id}
+                    className="card card-bordered p-3 relative"
+                  >
+                    <div className="line-clamp-3">
+                      <ReactMarkdown>{sticky.content}</ReactMarkdown>
+                    </div>
+                    <div className="absolute bottom-2 right-2 flex flex-row items-end">
+                      <span className="text-xs opacity-70">{sticky.label}</span>
+                    </div>
                   </div>
-                  <div className="absolute bottom-2 right-2 flex flex-row items-end">
-                    <span className="text-xs opacity-70">{sticky.label}</span>
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
 
