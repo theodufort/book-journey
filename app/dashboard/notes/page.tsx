@@ -535,7 +535,6 @@ export default function BookNotes() {
                             <>
                               <textarea
                                 className="w-full p-3 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical min-h-[200px]"
-                                style={{ width: "100%" }}
                                 value={
                                   notes[selectedBook.book_id]?.content || ""
                                 }
