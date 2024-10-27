@@ -109,7 +109,7 @@ export default function BookNook1() {
                 </div>
               )}
             </div>
-            
+
             {/* Things to Ponder Section */}
             <div className="w-64 card card-bordered p-4 h-full">
               <h3 className="text-sm font-medium mb-2">Things to ponder...</h3>
@@ -128,22 +128,24 @@ export default function BookNook1() {
           {/* Bottom Action - Log Session / Bookmark */}
           <div className="mt-2 flex gap-2">
             <div className="join">
-              <input 
-                type="number" 
-                className="join-item input input-bordered input-sm w-20" 
-                placeholder="From"
-                value={startPage || ''}
+              <input
+                type="number"
+                className="join-item input input-bordered input-sm w-20"
+                placeholder="Page Start"
+                value={startPage || ""}
                 onChange={(e) => setStartPage(Number(e.target.value))}
               />
-              <input 
-                type="number" 
-                className="join-item input input-bordered input-sm w-20" 
-                placeholder="To"
-                value={endPage || ''}
+              <input
+                type="number"
+                className="join-item input input-bordered input-sm w-20"
+                placeholder="Page End"
+                value={endPage || ""}
                 onChange={(e) => setEndPage(Number(e.target.value))}
               />
             </div>
-            <button className="btn btn-primary btn-sm flex-1">Log Session</button>
+            <button className="btn btn-primary btn-sm flex-1">
+              Log Session
+            </button>
           </div>
         </div>
 
@@ -163,7 +165,6 @@ export default function BookNook1() {
                 <button className="btn btn-sm btn-outline">Look Up</button>
               </div>
             </div>
-
 
             <div className="space-y-3">
               {[1, 2, 3, 4, 5].map((index) => (
