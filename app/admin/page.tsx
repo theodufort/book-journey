@@ -33,7 +33,7 @@ export default function Admin() {
     // Fetch all users with their creation dates
     const { data: users, error: usersError } = await supabase
       .from("profiles")
-      .select("created_at")
+      .select("id, created_at")
       .order("created_at", { ascending: true });
 
     if (usersError) {
@@ -67,13 +67,26 @@ export default function Admin() {
       return acc;
     }, {});
 
-    // Create a map for daily activity
+    // Create a map of user signup dates
+    const userSignupDates = users.reduce((acc: any, user: any) => {
+      const userId = user.id;
+      const signupDate = new Date(user.created_at).toISOString().split("T")[0];
+      acc[userId] = signupDate;
+      return acc;
+    }, {});
+
+    // Create a map for daily activity, excluding signup days
     const dailyActivity = connections.reduce((acc: any, connection: any) => {
       const date = new Date(connection.active_at).toISOString().split("T")[0];
-      if (!acc[date]) {
-        acc[date] = new Set();
+      const userSignupDate = userSignupDates[connection.user_id];
+      
+      // Only count activity if it's not on the signup date
+      if (date !== userSignupDate) {
+        if (!acc[date]) {
+          acc[date] = new Set();
+        }
+        acc[date].add(connection.user_id);
       }
-      acc[date].add(connection.user_id);
       return acc;
     }, {});
 
