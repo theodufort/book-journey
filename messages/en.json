@@ -329,6 +329,27 @@
       "add_sticky_note":"Add Sticky Note"
     },
     "BookNook2":{
+      "daily_note": "Note Quotidienne",
+      "review": "Critique",
+      "select_book": "Sélectionner un livre...",
+      "untitled_book": "Livre Sans Titre",
+      "write_here": "Écrivez ici...",
+      "write_review": "Écrivez votre critique ici...",
+      "save_view": "Enregistrer & Voir",
+      "edit": "Modifier",
+      "stickies_title": "Notes Rapides",
+      "search_notes": "Rechercher des notes...",
+      "page_start": "Page Début",
+      "page_end": "Page Fin",
+      "log_session": "Enregistrer la Session",
+      "error_no_book": "Aucun livre sélectionné",
+      "error_invalid_pages": "Veuillez entrer des numéros de page valides supérieurs à 0",
+      "error_start_end_pages": "La page de début doit être inférieure ou égale à la page de fin",
+      "error_empty_note": "Veuillez écrire une note quotidienne avant d'enregistrer",
+      "error_log_session": "Échec de l'enregistrement de la session",
+      "success_log_session": "Session enregistrée avec succès!"
+    },
+    "BookNook2":{
       "daily_note": "Daily Note",
       "review": "Review",
       "select_book": "Select a book...",
