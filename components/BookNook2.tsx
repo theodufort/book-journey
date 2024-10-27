@@ -54,12 +54,12 @@ export default function BookNook1() {
   };
 
   return (
-    <div className="h-[calc(100vh-5rem)] w-full p-1 text-black">
+    <div className="h-[calc(100vh-6rem)] w-full p-1 text-black">
       <div className="flex flex-col md:flex-row h-full rounded shadow-lg bg-[#FFF2D7]/90">
         {/* Left Column: Note-taking Section */}
         <div className="flex-1 flex flex-col p-2">
           {/* Tabs for Daily Note and Recap */}
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between items-center mb-2">
             <div className="tabs tabs-boxed">
               <button
                 onClick={() => setTab("Daily Note")}
@@ -124,7 +124,7 @@ export default function BookNook1() {
           </div>
 
           {/* Bottom Action - Log Session / Bookmark */}
-          <div className="mt-4">
+          <div className="mt-2">
             <button className="btn btn-primary btn-block">Log Session</button>
           </div>
         </div>
