@@ -25,6 +25,7 @@ export default function BookNook1() {
   const [currentPage, setCurrentPage] = useState(123);
   const [startPage, setStartPage] = useState<number>(0);
   const [endPage, setEndPage] = useState<number>(0);
+  const [dailyNoteContent, setDailyNoteContent] = useState("");
 
   const fetchStickys = useCallback(async () => {
     if (!user || !selectedBook) return;
@@ -117,6 +118,8 @@ export default function BookNook1() {
                     className="flex-1 w-full textarea textarea-primary"
                     style={{ backgroundColor: "#FFF2D7" }}
                     placeholder="Write here..."
+                    value={dailyNoteContent}
+                    onChange={(e) => setDailyNoteContent(e.target.value)}
                   />
                 </div>
               )}
@@ -168,8 +171,16 @@ export default function BookNook1() {
             <button 
               className="btn btn-primary btn-sm flex-1"
               onClick={async () => {
-                if (!user || !selectedBook || !startPage || !endPage) {
-                  toast.error("Please fill in all fields");
+                if (!user || !selectedBook) {
+                  toast.error("No book selected");
+                  return;
+                }
+                if (!startPage || !endPage) {
+                  toast.error("Please enter both start and end pages");
+                  return;
+                }
+                if (!dailyNoteContent.trim()) {
+                  toast.error("Please write a daily note before logging");
                   return;
                 }
 
@@ -181,7 +192,7 @@ export default function BookNook1() {
                   .insert({
                     user_id: user.id,
                     book_id: selectedBook.id,
-                    content: newNoteContent,
+                    content: dailyNoteContent,
                     label: label,
                     page: endPage
                   });
@@ -193,6 +204,7 @@ export default function BookNook1() {
                 }
 
                 toast.success("Session logged successfully!");
+                setDailyNoteContent("");
                 setNewNoteContent("");
                 fetchStickys();
               }}
