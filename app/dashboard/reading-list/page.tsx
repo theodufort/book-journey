@@ -18,9 +18,9 @@ export default function ReadingList() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [expandedSections, setExpandedSections] = useState({
-    "To Read": true,
+    "To Read": false,
     Reading: true,
-    Finished: true,
+    Finished: false,
     DNF: false,
   });
 
