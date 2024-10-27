@@ -132,6 +132,17 @@ entity "books" {
   added_at : timestamp
 }
 
+entity "books_modifications" {
+  * id : uuid
+  --
+  isbn_13 : text
+  user_id : uuid [FK]
+  is_reviewed : boolean
+  title : text
+  description : text
+  page_count : integer
+}
+
 entity "books_like" {
   * id : text [FK]
   --
@@ -306,6 +317,8 @@ auth_users ||--o{ book_notes : "user_id"
 books ||--o{ book_notes : "book_id"
 books ||--o{ reading_list : "book_id"
 books ||--|| books_like : "isbn_13"
+books ||--o{ books_modifications : "isbn_13"
+auth_users ||--o{ books_modifications : "user_id"
 
 auth_users ||--|| profiles : "id"
 auth_users ||--|| reading_stats : "user_id"
