@@ -20,8 +20,14 @@ interface BookModification {
 }
 
 export default function ReviewDetail({ params }: { params: { id: string } }) {
-  const [modification, setModification] = useState<BookModification | null>(null);
-  const [apiResponses, setApiResponses] = useState<APIResponse>({ v1: null, v2: null, v3: null });
+  const [modification, setModification] = useState<BookModification | null>(
+    null
+  );
+  const [apiResponses, setApiResponses] = useState<APIResponse>({
+    v1: null,
+    v2: null,
+    v3: null,
+  });
   const [isLoading, setIsLoading] = useState(true);
   const supabase = createClientComponentClient();
   const router = useRouter();
@@ -46,15 +52,15 @@ export default function ReviewDetail({ params }: { params: { id: string } }) {
 
         // Fetch from all three API versions
         const [v1Response, v2Response, v3Response] = await Promise.all([
-          fetch(`/api/books/${data.isbn_13}`).then(res => res.json()),
-          fetch(`/api/books/${data.isbn_13}/v2`).then(res => res.json()),
-          fetch(`/api/books/${data.isbn_13}/v3`).then(res => res.json())
+          fetch(`/api/books/${data.isbn_13}`).then((res) => res.json()),
+          fetch(`/api/books/${data.isbn_13}/v2`).then((res) => res.json()),
+          fetch(`/api/books/${data.isbn_13}/v3`).then((res) => res.json()),
         ]);
 
         setApiResponses({
           v1: v1Response,
           v2: v2Response,
-          v3: v3Response
+          v3: v3Response,
         });
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -73,10 +79,10 @@ export default function ReviewDetail({ params }: { params: { id: string } }) {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Review Modification Request</h1>
-      <div className="card bg-base-100 shadow-xl">
+      <div className="card bg-base-200 shadow-xl">
         <div className="card-body">
           <h2 className="card-title">ISBN: {modification.isbn_13}</h2>
-          
+
           {modification.title && (
             <div className="mb-4">
               <h3 className="font-bold">Title Change:</h3>
@@ -103,7 +109,7 @@ export default function ReviewDetail({ params }: { params: { id: string } }) {
           </div>
 
           <div className="card-actions justify-end mt-4">
-            <button 
+            <button
               className="btn btn-primary"
               onClick={() => router.push("/admin/books/review")}
             >
@@ -114,7 +120,7 @@ export default function ReviewDetail({ params }: { params: { id: string } }) {
       </div>
 
       <div className="grid grid-cols-3 gap-4 mt-8">
-        <div className="card bg-base-100 shadow-xl">
+        <div className="card bg-base-200 shadow-xl">
           <div className="card-body">
             <h2 className="card-title">API v1 Response</h2>
             {isLoading ? (
@@ -127,7 +133,7 @@ export default function ReviewDetail({ params }: { params: { id: string } }) {
           </div>
         </div>
 
-        <div className="card bg-base-100 shadow-xl">
+        <div className="card bg-base-200 shadow-xl">
           <div className="card-body">
             <h2 className="card-title">API v2 Response</h2>
             {isLoading ? (
@@ -140,7 +146,7 @@ export default function ReviewDetail({ params }: { params: { id: string } }) {
           </div>
         </div>
 
-        <div className="card bg-base-100 shadow-xl">
+        <div className="card bg-base-200 shadow-xl">
           <div className="card-body">
             <h2 className="card-title">API v3 Response</h2>
             {isLoading ? (
