@@ -104,15 +104,12 @@ export async function GET(request: NextRequest) {
       items: transformedBooks,
       totalItems: data.total,
     };
-
-    // Cache the search results
-    // const { error: insertError } = await supabase
-    //   .from("books")
-    //   .insert({ isbn_13: cacheKey, data: result });
-
-    // if (insertError) {
-    //   console.error("Error caching search results:", insertError);
-    // }
+    transformedBooks.forEach(async (x: any) => {
+      // Cache the transformed book data
+      const { error: insertError } = await supabase
+        .from("books")
+        .upsert({ isbn_13: `${x.id}`, data: x });
+    });
 
     // Return the transformed data
     return NextResponse.json(result);
