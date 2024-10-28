@@ -1,8 +1,9 @@
 "use client";
 
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/app/admin/layout";
 
 interface APIResponse {
   v1: any;
@@ -43,10 +44,6 @@ export default function ReviewDetail({ params }: { params: { id: string } }) {
   const [isUpdating, setIsUpdating] = useState(false);
 
   // Initialize the Supabase client
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
   const router = useRouter();
 
   const handleInputChange = (

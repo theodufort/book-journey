@@ -1,8 +1,13 @@
 import config from "@/config";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
+export const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 // This is a server-side component to ensure the user is logged in.
 // If not, it will redirect to the login page.
