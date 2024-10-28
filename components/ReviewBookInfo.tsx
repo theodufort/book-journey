@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import toast from "react-hot-toast";
 
 interface BookModification {
   isbn_13: string;
@@ -18,14 +19,11 @@ export default function ReviewBookInfo({ isbn }: { isbn: string }) {
     page_count: undefined,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState("");
   const supabase = createClientComponentClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setMessage("");
-
     try {
       const { error } = await supabase
         .from("books_modifications")
@@ -33,7 +31,7 @@ export default function ReviewBookInfo({ isbn }: { isbn: string }) {
 
       if (error) throw error;
 
-      setMessage("Modification submitted successfully!");
+      toast.success("Modification submitted successfully!");
       setModification({
         isbn_13: isbn,
         title: "",
@@ -47,7 +45,7 @@ export default function ReviewBookInfo({ isbn }: { isbn: string }) {
         modalElement.close();
       }
     } catch (error) {
-      setMessage("Error submitting modification. Please try again.");
+      toast.error("Error submitting modification. Please try again.");
       console.error("Error:", error);
     } finally {
       setIsSubmitting(false);
@@ -119,11 +117,6 @@ export default function ReviewBookInfo({ isbn }: { isbn: string }) {
               />
             </div>
 
-            {message && (
-              <div className={`alert ${message.includes("Error") ? "alert-error" : "alert-success"}`}>
-                {message}
-              </div>
-            )}
 
             <div className="modal-action">
               <button
