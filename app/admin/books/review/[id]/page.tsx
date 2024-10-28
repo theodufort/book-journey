@@ -3,7 +3,7 @@
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/app/admin/layout";
+import { supabase } from "@/app/admin/adminSupabaseClient";
 
 interface APIResponse {
   v1: any;
