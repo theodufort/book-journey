@@ -57,12 +57,24 @@ export default function ReviewDetail({ params }: { params: { id: string } }) {
   const handleUpdate = async () => {
     setIsUpdating(true);
     try {
-      const updateData: any = {};
-      if (updateFields.title) updateData.title = updateFields.title;
-      if (updateFields.description)
-        updateData.description = updateFields.description;
-      if (updateFields.page_count)
-        updateData.page_count = parseInt(updateFields.page_count);
+      // First get the current data
+      const { data: currentBook, error: fetchError } = await supabase
+        .from('books')
+        .select('data')
+        .eq('id', params.id)
+        .single();
+
+      if (fetchError) throw fetchError;
+
+      // Create new data object with updates
+      const newData = { ...currentBook.data };
+      if (updateFields.title) newData.title = updateFields.title;
+      if (updateFields.description) newData.description = updateFields.description;
+      if (updateFields.page_count) newData.page_count = parseInt(updateFields.page_count);
+
+      const updateData = {
+        data: newData
+      };
 
       const { error } = await supabase
         .from("books")

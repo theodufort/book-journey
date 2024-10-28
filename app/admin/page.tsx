@@ -22,12 +22,26 @@ export default function Admin() {
   const [activeUsers, setActiveUsers] = useState<
     { userId: string; connections: number }[]
   >([]);
+  const [topCategoriesByPurchases, setTopCategoriesByPurchases] = useState<
+    { categories: string[]; purchase_count: number }[]
+  >([]);
   const supabase = createClientComponentClient();
 
   useEffect(() => {
     fetchActivityData();
     fetchUserStats();
+    fetchTopCategoriesByPurchases();
   }, []);
+
+  async function fetchTopCategoriesByPurchases() {
+    try {
+      const response = await fetch('/api/books/top-categories-by-purchases');
+      const data = await response.json();
+      setTopCategoriesByPurchases(data);
+    } catch (error) {
+      console.error('Error fetching top categories by purchases:', error);
+    }
+  }
 
   async function fetchActivityData() {
     // Fetch all users with their creation dates
