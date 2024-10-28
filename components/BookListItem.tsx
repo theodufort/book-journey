@@ -608,13 +608,13 @@ export default function BookListItem({
             alt={book.title || "Book cover"}
             className="rounded-lg md:w-full object-cover"
           />
+          <ReviewBookInfo
+            isbn={
+              book.industryIdentifiers?.find((id) => id.type === "ISBN_13")
+                ?.identifier
+            }
+          />
         </figure>
-        <ReviewBookInfo
-          isbn={
-            book.industryIdentifiers?.find((id) => id.type === "ISBN_13")
-              ?.identifier
-          }
-        />
         <div className="card-body md:w-2/3">
           <div className="grid md:grid-cols-2 md:grid-rows-1">
             <h2 className="card-title">{book.title || "Untitled"}</h2>
