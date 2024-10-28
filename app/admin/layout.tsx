@@ -1,10 +1,8 @@
 import config from "@/config";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
-import { supabase } from "./adminSupabaseClient";
 
 // This is a server-side component to ensure the user is logged in.
 // If not, it will redirect to the login page.
@@ -16,6 +14,7 @@ export default async function LayoutPrivate({
 }: {
   children: ReactNode;
 }) {
+  const supabase = createServerComponentClient({ cookies });
   const allowsEmails = ["theodufort05@gmail.com"];
 
   const {

@@ -2,6 +2,7 @@
 
 import AdminHeader from "@/components/AdminHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from "react";
 import {
   CartesianGrid,
@@ -13,7 +14,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { supabase } from "./adminSupabaseClient";
 
 export default function Admin() {
   const [activityData, setActivityData] = useState<any[]>([]);
@@ -25,7 +25,7 @@ export default function Admin() {
   const [topCategoriesByPurchases, setTopCategoriesByPurchases] = useState<
     { categories: string[]; purchase_count: number }[]
   >([]);
-
+  const supabase = createClientComponentClient();
   useEffect(() => {
     fetchActivityData();
     fetchUserStats();
