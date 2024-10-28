@@ -11,7 +11,13 @@ interface BookModification {
   page_count?: number;
 }
 
-export default function ReviewBookInfo({ isbn }: { isbn: string }) {
+export default function ReviewBookInfo({
+  isbn,
+  userid,
+}: {
+  isbn: string;
+  userid: string;
+}) {
   const [modification, setModification] = useState<BookModification>({
     isbn_13: isbn,
     title: "",
@@ -38,9 +44,11 @@ export default function ReviewBookInfo({ isbn }: { isbn: string }) {
         description: "",
         page_count: undefined,
       });
-      
+
       // Close the modal after successful submission
-      const modalElement = document.getElementById("review_modal") as HTMLDialogElement;
+      const modalElement = document.getElementById(
+        "review_modal"
+      ) as HTMLDialogElement;
       if (modalElement) {
         modalElement.close();
       }
@@ -54,10 +62,12 @@ export default function ReviewBookInfo({ isbn }: { isbn: string }) {
 
   return (
     <>
-      <button 
-        className="btn btn-primary btn-sm mt-2 block" 
+      <button
+        className="btn btn-primary btn-sm mt-2 block"
         onClick={() => {
-          const modalElement = document.getElementById("review_modal") as HTMLDialogElement;
+          const modalElement = document.getElementById(
+            "review_modal"
+          ) as HTMLDialogElement;
           if (modalElement) {
             modalElement.showModal();
           }
@@ -68,7 +78,9 @@ export default function ReviewBookInfo({ isbn }: { isbn: string }) {
 
       <dialog id="review_modal" className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg mb-4">Submit Book Information Update</h3>
+          <h3 className="font-bold text-lg mb-4">
+            Submit Book Information Update
+          </h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="form-control">
               <label className="label">
@@ -93,7 +105,10 @@ export default function ReviewBookInfo({ isbn }: { isbn: string }) {
                 rows={3}
                 value={modification.description || ""}
                 onChange={(e) =>
-                  setModification({ ...modification, description: e.target.value })
+                  setModification({
+                    ...modification,
+                    description: e.target.value,
+                  })
                 }
               />
             </div>
@@ -116,7 +131,6 @@ export default function ReviewBookInfo({ isbn }: { isbn: string }) {
                 }}
               />
             </div>
-
 
             <div className="modal-action">
               <button
