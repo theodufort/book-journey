@@ -13,7 +13,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { supabase } from "./layout";
 
 export default function Admin() {
   const [activityData, setActivityData] = useState<any[]>([]);

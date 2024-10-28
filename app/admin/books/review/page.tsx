@@ -3,7 +3,7 @@
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { supabase } from "../../layout";
+import { supabase } from "../../adminSupabaseClient";
 
 interface BookModification {
   id: number;
