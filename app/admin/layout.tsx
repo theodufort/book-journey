@@ -19,7 +19,6 @@ export default async function LayoutPrivate({
 }: {
   children: ReactNode;
 }) {
-  const supabase = createServerComponentClient({ cookies });
   const allowsEmails = ["theodufort05@gmail.com"];
 
   const {
