@@ -3,6 +3,7 @@
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { supabase } from "../../layout";
 
 interface BookModification {
   id: number;
@@ -15,7 +16,6 @@ interface BookModification {
 
 export default function BooksReview() {
   const [modifications, setModifications] = useState<BookModification[]>([]);
-  const supabase = createClientComponentClient();
 
   useEffect(() => {
     async function fetchModifications() {
@@ -36,7 +36,9 @@ export default function BooksReview() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Book Information Modification Requests</h1>
+      <h1 className="text-2xl font-bold mb-4">
+        Book Information Modification Requests
+      </h1>
       <div className="overflow-x-auto">
         <table className="table w-full">
           <thead>
@@ -50,10 +52,12 @@ export default function BooksReview() {
           </thead>
           <tbody>
             {modifications.map((mod) => (
-              <tr 
+              <tr
                 key={mod.id}
                 className="hover:bg-base-200 cursor-pointer"
-                onClick={() => window.location.href = `/admin/books/review/${mod.id}`}
+                onClick={() =>
+                  (window.location.href = `/admin/books/review/${mod.id}`)
+                }
               >
                 <td>{mod.id}</td>
                 <td>{mod.isbn_13}</td>
