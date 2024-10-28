@@ -3,7 +3,6 @@
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/app/admin/adminSupabaseClient";
 
 interface APIResponse {
   v1: any;
@@ -27,6 +26,7 @@ interface UpdateFields {
 }
 
 export default function ReviewDetail({ params }: { params: { id: string } }) {
+  const supabase = createClientComponentClient();
   const [modification, setModification] = useState<BookModification | null>(
     null
   );

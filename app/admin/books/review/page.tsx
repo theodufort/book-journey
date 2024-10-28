@@ -2,8 +2,6 @@
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { supabase } from "../../adminSupabaseClient";
 
 interface BookModification {
   id: number;
@@ -16,7 +14,7 @@ interface BookModification {
 
 export default function BooksReview() {
   const [modifications, setModifications] = useState<BookModification[]>([]);
-
+  const supabase = createClientComponentClient();
   useEffect(() => {
     async function fetchModifications() {
       const { data, error } = await supabase
