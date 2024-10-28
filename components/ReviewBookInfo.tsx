@@ -57,7 +57,7 @@ export default function ReviewBookInfo({ isbn }: { isbn: string }) {
   return (
     <>
       <button 
-        className="btn btn-primary btn-sm mt-2" 
+        className="btn btn-primary btn-sm mt-2 block" 
         onClick={() => {
           const modalElement = document.getElementById("review_modal") as HTMLDialogElement;
           if (modalElement) {
