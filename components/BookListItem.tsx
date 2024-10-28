@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import BookSharebutton from "./BookShareButton";
 import CongratulationsModal from "./CongratulationsModal";
 import ViewSellers from "./ViewSellers";
+import ReviewBookInfo from "./ReviewBookInfo";
 export default function BookListItem({
   status,
   item,
@@ -608,6 +609,12 @@ export default function BookListItem({
             className="rounded-lg md:w-full object-cover"
           />
         </figure>
+        <ReviewBookInfo
+          isbn={
+            book.industryIdentifiers?.find((id) => id.type === "ISBN_13")
+              ?.identifier
+          }
+        />
         <div className="card-body md:w-2/3">
           <div className="grid md:grid-cols-2 md:grid-rows-1">
             <h2 className="card-title">{book.title || "Untitled"}</h2>
