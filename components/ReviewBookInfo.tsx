@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useTranslations } from "next-intl";
 import toast from "react-hot-toast";
 
 interface BookModification {
@@ -18,6 +19,7 @@ export default function ReviewBookInfo({
   isbn: string;
   userid: string;
 }) {
+  const t = useTranslations("ReviewBookInfo");
   const [modification, setModification] = useState<BookModification>({
     isbn_13: isbn,
     title: "",
@@ -37,7 +39,7 @@ export default function ReviewBookInfo({
 
       if (error) throw error;
 
-      toast.success("Modification submitted successfully!");
+      toast.success(t("success"));
       setModification({
         isbn_13: isbn,
         title: "",
@@ -53,7 +55,7 @@ export default function ReviewBookInfo({
         modalElement.close();
       }
     } catch (error) {
-      toast.error("Error submitting modification. Please try again.");
+      toast.error(t("error"));
       console.error("Error:", error);
     } finally {
       setIsSubmitting(false);
@@ -73,18 +75,18 @@ export default function ReviewBookInfo({
           }
         }}
       >
-        Report Missing Info
+        {t("button")}
       </button>
 
       <dialog id="review_modal" className="modal">
         <div className="modal-box">
           <h3 className="font-bold text-lg mb-4">
-            Submit Book Information Update
+            {t("title")}
           </h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="form-control">
               <label className="label">
-                <span className="label-text">Title</span>
+                <span className="label-text">{t("field_title")}</span>
               </label>
               <input
                 type="text"
@@ -98,7 +100,7 @@ export default function ReviewBookInfo({
 
             <div className="form-control">
               <label className="label">
-                <span className="label-text">Description</span>
+                <span className="label-text">{t("field_description")}</span>
               </label>
               <textarea
                 className="textarea textarea-bordered"
@@ -115,7 +117,7 @@ export default function ReviewBookInfo({
 
             <div className="form-control">
               <label className="label">
-                <span className="label-text">Page Count</span>
+                <span className="label-text">{t("field_pagecount")}</span>
               </label>
               <input
                 type="number"
@@ -138,10 +140,10 @@ export default function ReviewBookInfo({
                 className="btn btn-primary"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Submitting..." : "Submit Update"}
+                {isSubmitting ? t("submitting") : t("submit")}
               </button>
               <form method="dialog">
-                <button className="btn">Close</button>
+                <button className="btn">{t("close")}</button>
               </form>
             </div>
           </form>

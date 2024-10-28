@@ -281,6 +281,18 @@
       "label":"Share",
       "message": "Copied to Clipboard!"
     },
+    "ReviewBookInfo":{
+      "button": "Report Missing Info",
+      "title": "Submit Book Information Update",
+      "field_title": "Title",
+      "field_description": "Description", 
+      "field_pagecount": "Page Count",
+      "submit": "Submit Update",
+      "submitting": "Submitting...",
+      "close": "Close",
+      "success": "Modification submitted successfully!",
+      "error": "Error submitting modification. Please try again."
+    },
     "ReadingHabits":{
       "title":"Reading Habits",
       "add_habit": "Add a Habit",
