@@ -611,6 +611,7 @@ export default function BookListItem({
             />
           </figure>
           <ReviewBookInfo
+            userid={user.id}
             isbn={
               book.industryIdentifiers?.find((id) => id.type === "ISBN_13")
                 ?.identifier
