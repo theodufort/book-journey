@@ -75,13 +75,15 @@ export default function Admin() {
       return acc;
     }, {});
 
-    // Create a map for daily activity, excluding signup days
+    // Create a map for daily activity, only counting activity at least 2 days after signup
     const dailyActivity = connections.reduce((acc: any, connection: any) => {
       const date = new Date(connection.active_at).toISOString().split("T")[0];
-      const userSignupDate = userSignupDates[connection.user_id];
+      const userSignupDate = new Date(userSignupDates[connection.user_id]);
+      const activityDate = new Date(date);
+      const daysDifference = Math.floor((activityDate.getTime() - userSignupDate.getTime()) / (1000 * 60 * 60 * 24));
       
-      // Only count activity if it's not on the signup date
-      if (date !== userSignupDate) {
+      // Only count activity if it's at least 2 days after the signup date
+      if (daysDifference >= 2) {
         if (!acc[date]) {
           acc[date] = new Set();
         }
