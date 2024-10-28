@@ -108,7 +108,7 @@ export async function GET(request: NextRequest) {
       // Cache the transformed book data
       const { error: insertError } = await supabase
         .from("books")
-        .upsert({ isbn_13: `${x.id}`, data: x });
+        .insert({ isbn_13: `${x.id}`, data: x });
     });
 
     // Return the transformed data
