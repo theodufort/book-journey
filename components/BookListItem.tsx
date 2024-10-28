@@ -649,11 +649,11 @@ export default function BookListItem({
               </div>
             </div>
           </div>
-          <p>
+          <p className="min-h-0 leading-tight">
             <b>{t("author_label")}:</b>{" "}
             {book.authors?.join(", ") || t("unknown_label")}
           </p>
-          <p>
+          <p className="min-h-0 leading-tight">
             <b>{t("page_label")}:</b>{" "}
             {status != "Reading" ? (
               book.pageCount || "?"
