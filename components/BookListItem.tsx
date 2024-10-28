@@ -602,7 +602,7 @@ export default function BookListItem({
   return (
     <>
       <div className="card md:card-side bg-base-100 shadow-xl">
-        <div className="grid md:grid-rows-2 md:grid-cols-1 p-10 md:w-1/5 relative mb-auto">
+        <div className="p-10 md:w-1/5 relative">
           <figure>
             <img
               src={book.imageLinks?.thumbnail || "/placeholder-book-cover.jpg"}
