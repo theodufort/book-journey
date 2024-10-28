@@ -21,7 +21,7 @@ export async function GET(
   const { data: cachedBook, error: cacheError } = await supabase
     .from("books")
     .select("data")
-    .eq("isbn_13", `v3:${id}`)
+    .eq("isbn_13", `${id}`)
     .single();
 
   if (cacheError && cacheError.code !== "PGRST116") {
@@ -96,7 +96,7 @@ export async function GET(
     // Cache the transformed book data
     const { error: insertError } = await supabase
       .from("books")
-      .insert({ isbn_13: `v3:${id}`, data: transformedBookData });
+      .insert({ isbn_13: `${id}`, data: transformedBookData });
 
     if (insertError) {
       console.error("Error caching book data:", insertError);
