@@ -1,8 +1,8 @@
 "use client";
 
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@supabase/supabase-js";
 
 interface APIResponse {
   v1: any;
@@ -41,7 +41,12 @@ export default function ReviewDetail({ params }: { params: { id: string } }) {
     page_count: "",
   });
   const [isUpdating, setIsUpdating] = useState(false);
-  const supabase = createClientComponentClient();
+
+  // Initialize the Supabase client
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
   const router = useRouter();
 
   const handleInputChange = (
@@ -59,27 +64,29 @@ export default function ReviewDetail({ params }: { params: { id: string } }) {
     try {
       // First get the current data
       const { data: currentBook, error: fetchError } = await supabase
-        .from('books')
-        .select('data')
-        .eq('id', params.id)
+        .from("books")
+        .select("data")
+        .eq("isbn_13", modification.isbn_13)
         .single();
-
+      console.log(currentBook);
       if (fetchError) throw fetchError;
 
       // Create new data object with updates
       const newData = { ...currentBook.data };
-      if (updateFields.title) newData.title = updateFields.title;
-      if (updateFields.description) newData.description = updateFields.description;
-      if (updateFields.page_count) newData.page_count = parseInt(updateFields.page_count);
+      if (updateFields.title) newData.volumeInfo.title = updateFields.title;
+      if (updateFields.description)
+        newData.volumeInfo.description = updateFields.description;
+      if (updateFields.page_count)
+        newData.volumeInfo.pageCount = parseInt(updateFields.page_count);
 
       const updateData = {
-        data: newData
+        data: newData,
       };
 
       const { error } = await supabase
         .from("books")
         .update(updateData)
-        .eq("id", params.id);
+        .eq("isbn_13", modification.isbn_13);
       console.log(error);
       if (error) throw error;
 
