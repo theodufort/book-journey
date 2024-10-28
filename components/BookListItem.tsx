@@ -610,15 +610,17 @@ export default function BookListItem({
               className="rounded-lg md:w-full object-cover"
             />
           </figure>
-          {user ? (
-            <ReviewBookInfo
-              userid={user.id}
-              isbn={
-                book.industryIdentifiers?.find((id) => id.type === "ISBN_13")
-                  ?.identifier
-              }
-            />
-          ) : null}
+          <div className="mx-auto mt-2">
+            {user ? (
+              <ReviewBookInfo
+                userid={user.id}
+                isbn={
+                  book.industryIdentifiers?.find((id) => id.type === "ISBN_13")
+                    ?.identifier
+                }
+              />
+            ) : null}
+          </div>
         </div>
         <div className="card-body md:w-2/3">
           <div className="grid md:grid-cols-2 md:grid-rows-1">
