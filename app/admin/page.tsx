@@ -3,6 +3,7 @@
 import AdminHeader from "@/components/AdminHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 import {
   CartesianGrid,
@@ -25,7 +26,10 @@ export default function Admin() {
   const [topCategoriesByPurchases, setTopCategoriesByPurchases] = useState<
     { categories: string[]; purchase_count: number }[]
   >([]);
-  const supabase = createClientComponentClient();
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
 
   useEffect(() => {
     fetchActivityData();
@@ -35,11 +39,11 @@ export default function Admin() {
 
   async function fetchTopCategoriesByPurchases() {
     try {
-      const response = await fetch('/api/books/top-categories-by-purchases');
+      const response = await fetch("/api/books/top-categories-by-purchases");
       const data = await response.json();
       setTopCategoriesByPurchases(data);
     } catch (error) {
-      console.error('Error fetching top categories by purchases:', error);
+      console.error("Error fetching top categories by purchases:", error);
     }
   }
 
@@ -94,8 +98,11 @@ export default function Admin() {
       const date = new Date(connection.active_at).toISOString().split("T")[0];
       const userSignupDate = new Date(userSignupDates[connection.user_id]);
       const activityDate = new Date(date);
-      const daysDifference = Math.floor((activityDate.getTime() - userSignupDate.getTime()) / (1000 * 60 * 60 * 24));
-      
+      const daysDifference = Math.floor(
+        (activityDate.getTime() - userSignupDate.getTime()) /
+          (1000 * 60 * 60 * 24)
+      );
+
       // Only count activity if it's at least 2 days after the signup date
       if (daysDifference >= 2) {
         if (!acc[date]) {
