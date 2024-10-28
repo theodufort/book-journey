@@ -19,6 +19,12 @@ interface BookModification {
   page_count?: number;
 }
 
+interface UpdateFields {
+  title: string;
+  description: string;
+  page_count: string;
+}
+
 export default function ReviewDetail({ params }: { params: { id: string } }) {
   const [modification, setModification] = useState<BookModification | null>(
     null
@@ -29,8 +35,46 @@ export default function ReviewDetail({ params }: { params: { id: string } }) {
     v3: null,
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [updateFields, setUpdateFields] = useState<UpdateFields>({
+    title: '',
+    description: '',
+    page_count: ''
+  });
+  const [isUpdating, setIsUpdating] = useState(false);
   const supabase = createClientComponentClient();
   const router = useRouter();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setUpdateFields(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleUpdate = async () => {
+    setIsUpdating(true);
+    try {
+      const updateData: any = {};
+      if (updateFields.title) updateData.title = updateFields.title;
+      if (updateFields.description) updateData.description = updateFields.description;
+      if (updateFields.page_count) updateData.page_count = parseInt(updateFields.page_count);
+
+      const { error } = await supabase
+        .from('books_modifications')
+        .update(updateData)
+        .eq('id', params.id);
+
+      if (error) throw error;
+      
+      // Refresh the page data
+      router.refresh();
+    } catch (error) {
+      console.error('Error updating modification:', error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -108,13 +152,67 @@ export default function ReviewDetail({ params }: { params: { id: string } }) {
             Submitted on: {new Date(modification.created_at).toLocaleString()}
           </div>
 
-          <div className="card-actions justify-end mt-4">
-            <button
-              className="btn btn-primary"
-              onClick={() => router.push("/admin/books/review")}
-            >
-              Back to List
-            </button>
+          <div className="divider my-4"></div>
+          
+          <div className="flex flex-col gap-4">
+            <h3 className="font-bold">Update Book Information:</h3>
+            
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Title</span>
+              </label>
+              <input
+                type="text"
+                name="title"
+                value={updateFields.title}
+                onChange={handleInputChange}
+                placeholder="Enter new title"
+                className="input input-bordered"
+              />
+            </div>
+
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Description</span>
+              </label>
+              <textarea
+                name="description"
+                value={updateFields.description}
+                onChange={handleInputChange}
+                placeholder="Enter new description"
+                className="textarea textarea-bordered h-24"
+              />
+            </div>
+
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Page Count</span>
+              </label>
+              <input
+                type="number"
+                name="page_count"
+                value={updateFields.page_count}
+                onChange={handleInputChange}
+                placeholder="Enter new page count"
+                className="input input-bordered"
+              />
+            </div>
+
+            <div className="card-actions justify-end mt-4">
+              <button
+                className="btn btn-secondary"
+                onClick={handleUpdate}
+                disabled={isUpdating}
+              >
+                {isUpdating ? 'Updating...' : 'Update Data'}
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={() => router.push("/admin/books/review")}
+              >
+                Back to List
+              </button>
+            </div>
           </div>
         </div>
       </div>
