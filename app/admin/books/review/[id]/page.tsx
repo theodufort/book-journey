@@ -4,6 +4,12 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+interface APIResponse {
+  v1: any;
+  v2: any;
+  v3: any;
+}
+
 interface BookModification {
   id: number;
   created_at: string;
@@ -15,26 +21,49 @@ interface BookModification {
 
 export default function ReviewDetail({ params }: { params: { id: string } }) {
   const [modification, setModification] = useState<BookModification | null>(null);
+  const [apiResponses, setApiResponses] = useState<APIResponse>({ v1: null, v2: null, v3: null });
+  const [isLoading, setIsLoading] = useState(true);
   const supabase = createClientComponentClient();
   const router = useRouter();
 
   useEffect(() => {
-    async function fetchModification() {
-      const { data, error } = await supabase
-        .from("books_modifications")
-        .select("*")
-        .eq("id", params.id)
-        .single();
+    async function fetchData() {
+      setIsLoading(true);
+      try {
+        // Fetch modification data
+        const { data, error } = await supabase
+          .from("books_modifications")
+          .select("*")
+          .eq("id", params.id)
+          .single();
 
-      if (error) {
-        console.error("Error fetching modification:", error);
-        router.push("/admin/books/review");
-      } else {
+        if (error) {
+          console.error("Error fetching modification:", error);
+          router.push("/admin/books/review");
+          return;
+        }
         setModification(data);
+
+        // Fetch from all three API versions
+        const [v1Response, v2Response, v3Response] = await Promise.all([
+          fetch(`/api/books/${data.isbn_13}`).then(res => res.json()),
+          fetch(`/api/books/${data.isbn_13}/v2`).then(res => res.json()),
+          fetch(`/api/books/${data.isbn_13}/v3`).then(res => res.json())
+        ]);
+
+        setApiResponses({
+          v1: v1Response,
+          v2: v2Response,
+          v3: v3Response
+        });
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
       }
     }
 
-    fetchModification();
+    fetchData();
   }, [params.id, supabase, router]);
 
   if (!modification) {
@@ -80,6 +109,47 @@ export default function ReviewDetail({ params }: { params: { id: string } }) {
             >
               Back to List
             </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-4 mt-8">
+        <div className="card bg-base-100 shadow-xl">
+          <div className="card-body">
+            <h2 className="card-title">API v1 Response</h2>
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : (
+              <pre className="text-xs overflow-auto max-h-96">
+                {JSON.stringify(apiResponses.v1, null, 2)}
+              </pre>
+            )}
+          </div>
+        </div>
+
+        <div className="card bg-base-100 shadow-xl">
+          <div className="card-body">
+            <h2 className="card-title">API v2 Response</h2>
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : (
+              <pre className="text-xs overflow-auto max-h-96">
+                {JSON.stringify(apiResponses.v2, null, 2)}
+              </pre>
+            )}
+          </div>
+        </div>
+
+        <div className="card bg-base-100 shadow-xl">
+          <div className="card-body">
+            <h2 className="card-title">API v3 Response</h2>
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : (
+              <pre className="text-xs overflow-auto max-h-96">
+                {JSON.stringify(apiResponses.v3, null, 2)}
+              </pre>
+            )}
           </div>
         </div>
       </div>
