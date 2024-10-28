@@ -36,19 +36,21 @@ export default function ReviewDetail({ params }: { params: { id: string } }) {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [updateFields, setUpdateFields] = useState<UpdateFields>({
-    title: '',
-    description: '',
-    page_count: ''
+    title: "",
+    description: "",
+    page_count: "",
   });
   const [isUpdating, setIsUpdating] = useState(false);
   const supabase = createClientComponentClient();
   const router = useRouter();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setUpdateFields(prev => ({
+    setUpdateFields((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -57,20 +59,22 @@ export default function ReviewDetail({ params }: { params: { id: string } }) {
     try {
       const updateData: any = {};
       if (updateFields.title) updateData.title = updateFields.title;
-      if (updateFields.description) updateData.description = updateFields.description;
-      if (updateFields.page_count) updateData.page_count = parseInt(updateFields.page_count);
+      if (updateFields.description)
+        updateData.description = updateFields.description;
+      if (updateFields.page_count)
+        updateData.page_count = parseInt(updateFields.page_count);
 
       const { error } = await supabase
-        .from('books_modifications')
+        .from("books")
         .update(updateData)
-        .eq('id', params.id);
-
+        .eq("id", params.id);
+      console.log(error);
       if (error) throw error;
-      
+
       // Refresh the page data
       router.refresh();
     } catch (error) {
-      console.error('Error updating modification:', error);
+      console.error("Error updating modification:", error);
     } finally {
       setIsUpdating(false);
     }
@@ -153,10 +157,10 @@ export default function ReviewDetail({ params }: { params: { id: string } }) {
           </div>
 
           <div className="divider my-4"></div>
-          
+
           <div className="flex flex-col gap-4">
             <h3 className="font-bold">Update Book Information:</h3>
-            
+
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Title</span>
@@ -204,7 +208,7 @@ export default function ReviewDetail({ params }: { params: { id: string } }) {
                 onClick={handleUpdate}
                 disabled={isUpdating}
               >
-                {isUpdating ? 'Updating...' : 'Update Data'}
+                {isUpdating ? "Updating..." : "Update Data"}
               </button>
               <button
                 className="btn btn-primary"
