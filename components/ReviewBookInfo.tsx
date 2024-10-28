@@ -108,12 +108,14 @@ export default function ReviewBookInfo({ isbn }: { isbn: string }) {
                 type="number"
                 className="input input-bordered w-full"
                 value={modification.page_count || ""}
-                onChange={(e) =>
+                min="1"
+                onChange={(e) => {
+                  const value = parseInt(e.target.value);
                   setModification({
                     ...modification,
-                    page_count: e.target.value ? parseInt(e.target.value) : undefined,
-                  })
-                }
+                    page_count: value > 0 ? value : undefined,
+                  });
+                }}
               />
             </div>
 
