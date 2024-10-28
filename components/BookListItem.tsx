@@ -602,19 +602,21 @@ export default function BookListItem({
   return (
     <>
       <div className="card md:card-side bg-base-100 shadow-xl">
-        <figure className="p-10 md:w-1/5 mb-auto relative">
-          <img
-            src={book.imageLinks?.thumbnail || "/placeholder-book-cover.jpg"}
-            alt={book.title || "Book cover"}
-            className="rounded-lg md:w-full object-cover"
-          />
+        <div className="grid md:grid-rows-2 md:grid-cols-1 p-10 md:w-1/5 relative mb-auto">
+          <figure>
+            <img
+              src={book.imageLinks?.thumbnail || "/placeholder-book-cover.jpg"}
+              alt={book.title || "Book cover"}
+              className="rounded-lg md:w-full object-cover"
+            />
+          </figure>
           <ReviewBookInfo
             isbn={
               book.industryIdentifiers?.find((id) => id.type === "ISBN_13")
                 ?.identifier
             }
           />
-        </figure>
+        </div>
         <div className="card-body md:w-2/3">
           <div className="grid md:grid-cols-2 md:grid-rows-1">
             <h2 className="card-title">{book.title || "Untitled"}</h2>
