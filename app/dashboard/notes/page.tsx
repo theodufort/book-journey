@@ -256,9 +256,10 @@ export default function BookNotes() {
     }
   };
 
-  const fetchReadingList = async () => {
+  const fetchReadingList = async (newStatus?: string) => {
     setLoading(true);
     try {
+      const filterStatus = newStatus || statusFilter;
       let query = supabase
         .from("reading_list")
         .select(
@@ -269,8 +270,8 @@ export default function BookNotes() {
         )
         .eq("user_id", user?.id);
 
-      if (statusFilter !== 'all') {
-        query = query.eq('status', statusFilter.toLowerCase());
+      if (filterStatus !== 'all') {
+        query = query.eq('status', filterStatus.toLowerCase());
       }
 
       const { data: booksData, error: booksError } = await query;
@@ -435,7 +436,11 @@ export default function BookNotes() {
                     />
                     <select
                       value={statusFilter}
-                      onChange={(e) => setStatusFilter(e.target.value)}
+                      onChange={async (e) => {
+                        const newStatus = e.target.value;
+                        setStatusFilter(newStatus);
+                        await fetchReadingList(newStatus);
+                      }}
                       className="select select-bordered w-full"
                     >
                       <option value="all">All</option>
