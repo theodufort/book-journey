@@ -421,18 +421,18 @@ export default function BookNotes() {
                   <h2 className="text-md md:text-xl font-semibold mb-2">
                     {t("subtitle")}
                   </h2>
-                  <div className="flex gap-2">
+                  <div className="flex flex-col gap-2">
                     <input
                       type="text"
                       placeholder={t("search_label")}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="input input-bordered flex-1"
+                      className="input input-bordered w-full"
                     />
                     <select 
                       value={statusFilter}
                       onChange={(e) => setStatusFilter(e.target.value)}
-                      className="select select-bordered"
+                      className="select select-bordered w-full"
                     >
                       <option value="all">All</option>
                       <option value="reading">Reading</option>
