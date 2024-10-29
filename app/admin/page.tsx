@@ -199,28 +199,23 @@ export default function Admin() {
   }
 
   async function fetchUserStats() {
-    const { count: usersWithBooks, error: error1 } = await supabase
-      .from("reading_list")
-      .select("user_id", { count: "exact", head: true });
-    console.log(usersWithBooks);
-    const { count: totalUsers, error: error2 } = await supabase
+    const { count: totalUsers, error: error1 } = await supabase
       .from("profiles")
       .select("id", { count: "exact", head: true });
-    console.log(totalUsers);
+
+    const { data: usersWithBooks, error: error2 } = await supabase
+      .from("reading_list")
+      .select("COUNT(DISTINCT user_id)")
+      .single();
+
     if (error1 || error2) {
       console.error("Error fetching user stats:", error1 || error2);
       return;
     }
 
-    const usersWithBooksCount = usersWithBooks || 0;
-    const totalUsersCount = totalUsers || 0;
-    console.log(totalUsersCount, usersWithBooksCount);
-    const usersWithoutBooks = totalUsersCount - usersWithBooksCount;
-
     setUserStats({
-      totalUsers: totalUsersCount,
-      usersWithBooks: usersWithBooksCount,
-      usersWithoutBooks,
+      totalUsers: totalUsers || 0,
+      usersWithBooks: usersWithBooks?.count || 0
     });
   }
 
@@ -236,17 +231,6 @@ export default function Admin() {
             </CardHeader>
             <CardContent>
               <p className="text-3xl font-bold">{userStats?.totalUsers || 0}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>With/Without Books</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold">
-                {userStats?.usersWithBooks || 0}/
-                {userStats?.usersWithoutBooks || 0}
-              </p>
             </CardContent>
           </Card>
         </div>
@@ -287,6 +271,12 @@ export default function Admin() {
                     name="Avg Growth Rate %"
                     stroke="#ff0000"
                     yAxisId="right"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="usersWithBooks"
+                    name="Users with Books"
+                    stroke="#ff7f50"
                   />
                   <YAxis
                     yAxisId="right"
