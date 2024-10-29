@@ -221,10 +221,10 @@ export default function Admin() {
       .select("id", { count: "exact", head: true });
 
     // Get users with books by date
-    const { data, error: error2 } = await supabase
-      .rpc("get_cumulative_books_per_users_by_day")
-      .select();
-
+    const { data, error: error2 } = await supabase.rpc(
+      "get_cumulative_books_per_users_by_day"
+    );
+    console.log(data);
     if (error1 || error2) {
       console.error("Error fetching user stats:", error1 || error2);
       return;
@@ -232,7 +232,7 @@ export default function Admin() {
 
     // Since we only get one row, use it as the current total
     const currentTotal = data?.[0]?.cumulative_users || 0;
-    
+
     // Create a date-indexed object with the same total for all dates
     const usersByDate: { [key: string]: number } = {};
     const today = new Date();
@@ -240,8 +240,12 @@ export default function Admin() {
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
     // Fill in the last 30 days with the current total
-    for (let d = new Date(thirtyDaysAgo); d <= today; d.setDate(d.getDate() + 1)) {
-      const dateStr = d.toISOString().split('T')[0];
+    for (
+      let d = new Date(thirtyDaysAgo);
+      d <= today;
+      d.setDate(d.getDate() + 1)
+    ) {
+      const dateStr = d.toISOString().split("T")[0];
       usersByDate[dateStr] = currentTotal;
     }
 
