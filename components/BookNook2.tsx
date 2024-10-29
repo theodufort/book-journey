@@ -70,18 +70,39 @@ export default function BookNook1() {
 
   useEffect(() => {
     fetchStickys();
+    fetchBaseStartPage();
     if (selectedBook && user) {
       loadreview();
     }
   }, [fetchStickys, selectedBook, user]);
 
+  const fetchBaseStartPage = async () => {
+    if (!user || !selectedBook) return;
+    const { data: readingListId, data: readingListIdError } = await supabase
+      .from("reading_list")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("book_id", selectedBook.id)
+      .single();
+
+    const { data: readingSessionData, error: readingSessionError } =
+      await supabase
+        .from("reading_sessions")
+        .select("end_page")
+        .order("end_page", { ascending: false })
+        .eq("reading_list_id", readingListId.id)
+        .limit(1)
+        .single();
+
+    setStartPage(readingSessionData.end_page);
+  };
   const loadreview = async () => {
     if (!user || !selectedBook) return;
 
     setIsLoadingreview(true);
     try {
       const { data, error } = await supabase
-        .from("book_notes")
+        .from("main_notes")
         .select("*")
         .eq("user_id", user.id)
         .eq("book_id", selectedBook.id)
@@ -108,7 +129,7 @@ export default function BookNook1() {
     }
 
     try {
-      const { data, error } = await supabase.from("book_notes").upsert(
+      const { data, error } = await supabase.from("main_notes").upsert(
         {
           user_id: user.id,
           book_id: selectedBook.id,
@@ -189,6 +210,61 @@ export default function BookNook1() {
     setNewNoteContent("");
   };
 
+  async function handleLogSession() {
+    if (!user || !selectedBook) {
+      toast.error("No book selected");
+      return;
+    }
+    if (!startPage || !endPage || startPage <= 0 || endPage <= 0) {
+      toast.error("Please enter valid page numbers greater than 0");
+      return;
+    }
+    if (startPage > endPage) {
+      toast.error("Start page must be less than or equal to end page");
+      return;
+    }
+    if (!dailyNoteContent.trim()) {
+      toast.error("Please write a daily note before logging");
+      return;
+    }
+    const { data: readingListId, data: readingListIdError } = await supabase
+      .from("reading_list")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("book_id", selectedBook.id)
+      .single();
+    const { data: readingSessionData, error: readingSessionError } =
+      await supabase
+        .from("reading_sessions")
+        .insert({
+          reading_list_id: readingListId.id,
+          start_page: startPage,
+          end_page: endPage,
+        })
+        .select()
+        .single();
+    const label = `${startPage}-${endPage}`;
+
+    const { error } = await supabase.from("sticky_notes").insert({
+      user_id: user.id,
+      book_id: selectedBook.id,
+      content: dailyNoteContent,
+      label: label,
+      reading_session_id: readingSessionData.id,
+    });
+
+    if (error) {
+      toast.error("Failed to log session");
+      console.error(error);
+      return;
+    }
+
+    toast.success("Session logged successfully!");
+    setDailyNoteContent("");
+    setNewNoteContent("");
+    fetchStickys();
+  }
+
   return (
     <div className="h-[calc(100vh-6rem)] w-full p-1 text-black">
       <div className="flex flex-col md:flex-row h-full rounded shadow-lg bg-[#FFF2D7]/90 overflow-y-auto md:overflow-hidden">
@@ -228,10 +304,10 @@ export default function BookNook1() {
                   }
                 }}
               >
-                <option value="">{t('select_book')}</option>
+                <option value="">{t("select_book")}</option>
                 {readingList.map((book) => (
                   <option key={book.book_id} value={book.book_id}>
-                    {book.title || t('untitled_book')}
+                    {book.title || t("untitled_book")}
                   </option>
                 ))}
               </select>
@@ -265,7 +341,9 @@ export default function BookNook1() {
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-semibold">Review</h2>
                     <button
-                      className={`btn btn-sm ${isEditMode ? 'btn-primary' : 'btn-secondary'}`}
+                      className={`btn btn-sm ${
+                        isEditMode ? "btn-primary" : "btn-secondary"
+                      }`}
                       onClick={() => {
                         if (isEditMode) {
                           savereview().then(() => setIsEditMode(false));
@@ -275,7 +353,7 @@ export default function BookNook1() {
                       }}
                       disabled={isLoadingreview}
                     >
-                      {isEditMode ? 'Save & View' : 'Edit'}
+                      {isEditMode ? "Save & View" : "Edit"}
                     </button>
                   </div>
                   {isEditMode ? (
@@ -299,7 +377,7 @@ export default function BookNook1() {
         </div>
 
         {/* Right Column: Stickies / Quick Notes */}
-        <div className="w-full md:w-80 flex-shrink-0 p-2 md:border-l border-t md:border-t-0 flex flex-col h-full">
+        <div className="w-full md:w-96 flex-shrink-0 p-2 md:border-l border-t md:border-t-0 flex flex-col h-full">
           <div className="flex-none space-y-4">
             <h2 className="text-lg font-semibold">Stickies / Quick Notes</h2>
 
@@ -329,13 +407,14 @@ export default function BookNook1() {
                 .map((sticky) => (
                   <div
                     key={sticky.id}
-                    className="card card-bordered p-3 relative"
+                    tabIndex={0}
+                    className="collapse collapse-arrow border-base-300 border"
                   >
-                    <div className="line-clamp-3">
-                      <ReactMarkdown>{sticky.content}</ReactMarkdown>
+                    <div className="collapse-title text-xl font-medium">
+                      {sticky.label}
                     </div>
-                    <div className="absolute bottom-2 right-2 flex flex-row items-end">
-                      <span className="text-xs opacity-70">{sticky.label}</span>
+                    <div className="collapse-content">
+                      <ReactMarkdown>{sticky.content}</ReactMarkdown>
                     </div>
                   </div>
                 ))}
@@ -363,47 +442,7 @@ export default function BookNook1() {
               </div>
               <button
                 className="btn btn-primary w-full"
-                onClick={async () => {
-                  if (!user || !selectedBook) {
-                    toast.error("No book selected");
-                    return;
-                  }
-                  if (!startPage || !endPage || startPage <= 0 || endPage <= 0) {
-                    toast.error("Please enter valid page numbers greater than 0");
-                    return;
-                  }
-                  if (startPage > endPage) {
-                    toast.error("Start page must be less than or equal to end page");
-                    return;
-                  }
-                  if (!dailyNoteContent.trim()) {
-                    toast.error("Please write a daily note before logging");
-                    return;
-                  }
-
-                  const today = new Date().toISOString().split("T")[0];
-                  const label = `${today}-${startPage}-${endPage}`;
-
-                  const { error } = await supabase.from("sticky_notes").insert({
-                    user_id: user.id,
-                    book_id: selectedBook.id,
-                    content: dailyNoteContent,
-                    label: label,
-                    start_page: startPage,
-                    end_page: endPage,
-                  });
-
-                  if (error) {
-                    toast.error("Failed to log session");
-                    console.error(error);
-                    return;
-                  }
-
-                  toast.success("Session logged successfully!");
-                  setDailyNoteContent("");
-                  setNewNoteContent("");
-                  fetchStickys();
-                }}
+                onClick={handleLogSession}
               >
                 Log Session
               </button>
