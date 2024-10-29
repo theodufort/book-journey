@@ -62,7 +62,8 @@ export default function BookNotes() {
       const titleMatch = book.data.volumeInfo.title
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
-      const statusMatch = statusFilter === "all" || book.status === statusFilter;
+      const statusMatch =
+        statusFilter === "all" || book.status === statusFilter;
       return titleMatch && statusMatch;
     });
   }, [readingList, searchQuery]);
@@ -429,15 +430,15 @@ export default function BookNotes() {
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="input input-bordered w-full"
                     />
-                    <select 
+                    <select
                       value={statusFilter}
                       onChange={(e) => setStatusFilter(e.target.value)}
                       className="select select-bordered w-full"
                     >
                       <option value="all">All</option>
-                      <option value="reading">Reading</option>
-                      <option value="completed">Completed</option>
-                      <option value="want_to_read">Want to Read</option>
+                      <option value="Reading">Reading</option>
+                      <option value="Finished">Finished</option>
+                      <option value="To Read">To Read</option>
                     </select>
                   </div>
                 </div>
