@@ -1,18 +1,20 @@
-import { useState, useEffect } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { Database } from '@/types/supabase';
-import { User } from '@supabase/auth-helpers-nextjs';
+import { useState, useEffect } from "react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Database } from "@/types/supabase";
+import { User } from "@supabase/auth-helpers-nextjs";
 
 const SuggestImprovementBadge = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const supabase = createClientComponentClient<Database>();
 
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       setUser(user);
     };
     getUser();
@@ -21,44 +23,33 @@ const SuggestImprovementBadge = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user?.email) {
-      alert('Please log in to submit a suggestion');
+      alert("Please log in to submit a suggestion");
       return;
     }
     setIsSubmitting(true);
 
     try {
-      // Send to support_messages table
-      const { error: dbError } = await supabase
-        .from('support_messages')
-        .insert([{ 
-          email: user.email, 
-          message, 
-          type: 'improvement' 
-        }]);
-
-      if (dbError) throw dbError;
-
       // Send email
-      const response = await fetch('/api/email/support', {
-        method: 'POST',
+      const response = await fetch("/api/email/support", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: user.email,
-          name: '',
-          content: message
+          name: "",
+          content: message,
         }),
       });
 
-      if (!response.ok) throw new Error('Failed to send email');
+      if (!response.ok) throw new Error("Failed to send email");
 
       // Reset form
-      setMessage('');
+      setMessage("");
       setIsOpen(false);
-      alert('Thank you for your suggestion!');
+      alert("Thank you for your suggestion!");
     } catch (error) {
-      alert('Error submitting suggestion. Please try again.');
+      alert("Error submitting suggestion. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -79,7 +70,9 @@ const SuggestImprovementBadge = () => {
             <h2 className="text-2xl font-bold mb-4">Suggest an Improvement</h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Suggestion</label>
+                <label className="block text-sm font-medium mb-1">
+                  Suggestion
+                </label>
                 <textarea
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
@@ -100,7 +93,7 @@ const SuggestImprovementBadge = () => {
                   className="btn btn-primary"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Submitting...' : 'Submit'}
+                  {isSubmitting ? "Submitting..." : "Submit"}
                 </button>
               </div>
             </form>
