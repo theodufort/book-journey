@@ -62,7 +62,7 @@ const SuggestImprovementBadge = () => {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 right-4 bg-primary text-white px-4 py-2 rounded-full shadow-lg hover:bg-primary-focus transition-colors duration-200 z-50"
+        className="btn btn-sm fixed bottom-4 right-4 bg-primary text-white px-4 py-2 rounded-full shadow-lg hover:bg-primary-focus transition-colors duration-200 z-50"
       >
         💡 Suggest Improvement
       </button>
