@@ -2,6 +2,7 @@
 
 import ButtonAccount from "@/components/ButtonAccount";
 import config from "@/config";
+import SuggestImprovementBadge from "@/components/SuggestImprovementBadge";
 import { Database } from "@/types/supabase";
 import {
   createClientComponentClient,
@@ -321,6 +322,7 @@ const HeaderDashboard = () => {
           setShowHowToEarnPoints(false);
         }}
       />
+      <SuggestImprovementBadge />
     </div>
   );
 };
