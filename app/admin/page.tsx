@@ -221,32 +221,11 @@ export default function Admin() {
 
     // Process reading list data to get cumulative users with books by date
     const usersByDate: { [key: string]: number } = {};
-    const uniqueUsers = new Set();
-
-    // Get all unique dates from activity data and reading list
-    const allDates = new Set([
-      ...activityData.map((item) => item.date),
-      ...(readingListData?.map(
-        (entry) => new Date(entry.toread_at).toISOString().split("T")[0]
-      ) || []),
-    ]);
-
-    // Sort dates chronologically
-    const sortedDates = Array.from(allDates).sort();
-
-    // For each date, calculate cumulative unique users up to that date
-    sortedDates.forEach((currentDate) => {
-      readingListData?.forEach((entry) => {
-        if (entry.toread_at && entry.user_id) {
-          const entryDate = new Date(entry.toread_at)
-            .toISOString()
-            .split("T")[0];
-          if (entryDate <= currentDate) {
-            uniqueUsers.add(entry.user_id);
-          }
-        }
-      });
-      usersByDate[currentDate] = uniqueUsers.size;
+    
+    // Convert the SQL data into our date-indexed object
+    readingListData?.forEach((entry) => {
+      const date = new Date(entry.date).toISOString().split("T")[0];
+      usersByDate[date] = entry.cumulative_users;
     });
 
     console.log("Users by date:", usersByDate); // Debug log
