@@ -62,9 +62,7 @@ export default function BookNotes() {
       const titleMatch = book.data.volumeInfo.title
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
-      const statusMatch =
-        statusFilter === "all" || book.status === statusFilter;
-      return titleMatch && statusMatch;
+      return titleMatch;
     });
   }, [readingList, searchQuery]);
 
@@ -262,7 +260,7 @@ export default function BookNotes() {
   const fetchReadingList = async () => {
     setLoading(true);
     try {
-      const { data: booksData, error: booksError } = await supabase
+      let query = supabase
         .from("reading_list")
         .select(
           `
@@ -271,6 +269,12 @@ export default function BookNotes() {
         `
         )
         .eq("user_id", user?.id);
+
+      if (statusFilter !== 'all') {
+        query = query.eq('status', statusFilter.toLowerCase());
+      }
+
+      const { data: booksData, error: booksError } = await query;
 
       if (booksError) {
         console.error("Error fetching reading list:", booksError);
@@ -436,9 +440,9 @@ export default function BookNotes() {
                       className="select select-bordered w-full"
                     >
                       <option value="all">All</option>
-                      <option value="Reading">Reading</option>
-                      <option value="Finished">Finished</option>
-                      <option value="To Read">To Read</option>
+                      <option value="reading">Reading</option>
+                      <option value="completed">Completed</option>
+                      <option value="want_to_read">Want to Read</option>
                     </select>
                   </div>
                 </div>
