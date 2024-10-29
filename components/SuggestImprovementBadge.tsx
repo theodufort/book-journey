@@ -27,7 +27,8 @@ const SuggestImprovementBadge = () => {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase
+      // Send to support_messages table
+      const { error: dbError } = await supabase
         .from('support_messages')
         .insert([{ 
           email: user.email, 
@@ -35,7 +36,22 @@ const SuggestImprovementBadge = () => {
           type: 'improvement' 
         }]);
 
-      if (error) throw error;
+      if (dbError) throw dbError;
+
+      // Send email
+      const response = await fetch('/api/email/support', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: user.email,
+          name: '',
+          content: message
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to send email');
 
       // Reset form
       setMessage('');
