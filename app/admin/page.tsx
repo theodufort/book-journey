@@ -223,31 +223,30 @@ export default function Admin() {
     // Process reading list data to get cumulative users with books by date
     const usersByDate: { [key: string]: number } = {};
     const uniqueUsers = new Set();
+    
+    // Get all unique dates from activity data and reading list
+    const allDates = new Set([
+      ...activityData.map(item => item.date),
+      ...(readingListData?.map(entry => 
+        new Date(entry.toread_at).toISOString().split('T')[0]
+      ) || [])
+    ]);
 
-    // Sort the data by date first
-    const sortedData = readingListData?.sort(
-      (a, b) =>
-        new Date(a.toread_at).getTime() - new Date(b.toread_at).getTime()
-    );
+    // Sort dates chronologically
+    const sortedDates = Array.from(allDates).sort();
 
-    sortedData?.forEach((entry) => {
-      if (entry.toread_at && entry.user_id) {
-        const date = new Date(entry.toread_at).toISOString().split("T")[0];
-        uniqueUsers.add(entry.user_id);
-        usersByDate[date] = uniqueUsers.size;
-      }
+    // For each date, calculate cumulative unique users up to that date
+    sortedDates.forEach(currentDate => {
+      readingListData?.forEach(entry => {
+        if (entry.toread_at && entry.user_id) {
+          const entryDate = new Date(entry.toread_at).toISOString().split('T')[0];
+          if (entryDate <= currentDate) {
+            uniqueUsers.add(entry.user_id);
+          }
+        }
+      });
+      usersByDate[currentDate] = uniqueUsers.size;
     });
-
-    // Fill in missing dates with the last known value
-    const dates = Object.keys(usersByDate).sort();
-    let lastValue = 0;
-    for (const date of dates) {
-      if (usersByDate[date] === undefined) {
-        usersByDate[date] = lastValue;
-      } else {
-        lastValue = usersByDate[date];
-      }
-    }
 
     console.log("Users by date:", usersByDate); // Debug log
 
