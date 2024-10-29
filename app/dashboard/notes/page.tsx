@@ -39,17 +39,17 @@ export default function BookNotes() {
   const [noteType, setNoteType] = useState<"main" | "sticky">("main");
   const notesContainerRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("reading");
+  const [statusFilter, setStatusFilter] = useState("Reading");
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [editLabelId, setEditLabelId] = useState<string | null>(null);
   const [newLabel, setNewLabel] = useState("");
-  const [bookCounts, setBookCounts] = useState<{[key: string]: number}>({
+  const [bookCounts, setBookCounts] = useState<{ [key: string]: number }>({
     all: 0,
     reading: 0,
     completed: 0,
-    want_to_read: 0
+    want_to_read: 0,
   });
 
   const [editingStickyId, setEditingStickyId] = useState<string | null>(null);
@@ -64,7 +64,7 @@ export default function BookNotes() {
   const booksPerPage = isMobile ? 3 : 5;
 
   const filteredReadingList = useMemo(() => {
-    return readingList.filter((book) => 
+    return readingList.filter((book) =>
       book.data.volumeInfo.title
         .toLowerCase()
         .includes(searchQuery.toLowerCase())
@@ -276,24 +276,32 @@ export default function BookNotes() {
         )
         .eq("user_id", user?.id);
 
-      if (filterStatus !== 'all') {
-        query = query.eq('status', filterStatus.toLowerCase());
+      if (filterStatus !== "all") {
+        query = query.eq("status", filterStatus);
       }
 
-      const { data: booksData, error: booksError } = await query;
+      const { data: booksData, error: booksError } = await query.order(
+        filterStatus == "Reading"
+          ? "reading_at"
+          : filterStatus == "To Read"
+          ? "toread_at"
+          : "finished_at",
+        {
+          ascending: false,
+        }
+      );
 
-      // Update book counts
       const { data: countData } = await supabase
         .from("reading_list")
-        .select('status')
+        .select("status")
         .eq("user_id", user?.id);
 
       if (countData) {
         const counts = {
           all: countData.length,
-          reading: countData.filter(b => b.status === 'reading').length,
-          completed: countData.filter(b => b.status === 'completed').length,
-          want_to_read: countData.filter(b => b.status === 'want_to_read').length
+          reading: countData.filter((b) => b.status === "Reading").length,
+          completed: countData.filter((b) => b.status === "Finished").length,
+          want_to_read: countData.filter((b) => b.status === "To Read").length,
         };
         setBookCounts(counts);
       }
@@ -466,9 +474,15 @@ export default function BookNotes() {
                       className="select select-bordered w-full"
                     >
                       <option value="all">All ({bookCounts.all})</option>
-                      <option value="reading">Reading ({bookCounts.reading})</option>
-                      <option value="completed">Completed ({bookCounts.completed})</option>
-                      <option value="want_to_read">Want to Read ({bookCounts.want_to_read})</option>
+                      <option value="Reading">
+                        Reading ({bookCounts.reading})
+                      </option>
+                      <option value="Finished">
+                        Completed ({bookCounts.completed})
+                      </option>
+                      <option value="To Read">
+                        Want to Read ({bookCounts.want_to_read})
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -506,7 +520,7 @@ export default function BookNotes() {
                         disabled={currentPage === 1}
                         className="btn btn-lg btn-circle text-2xl"
                       >
-                        ←
+                        ◀
                       </button>
                       <span className="text-sm">
                         {currentPage} / {displayedPages}
@@ -516,7 +530,7 @@ export default function BookNotes() {
                         disabled={currentPage === totalPages}
                         className="btn btn-lg btn-circle text-2xl"
                       >
-                        →
+                        ▶
                       </button>
                     </div>
                   )}
