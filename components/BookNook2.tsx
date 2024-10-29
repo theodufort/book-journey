@@ -263,6 +263,8 @@ export default function BookNook1() {
     setDailyNoteContent("");
     setNewNoteContent("");
     fetchStickys();
+    setStartPage(endPage);
+    setEndPage(0);
   }
 
   return (
