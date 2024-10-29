@@ -205,7 +205,7 @@ const HeaderDashboard = () => {
                   href="/dashboard/book-nook"
                   className="flex items-center space-x-3 p-2 align-middle text-lg"
                 >
-                  ☯ {t("link7")}
+                  ☯️ {t("link7")}
                 </Link>
               </li>
             </div>
