@@ -1,29 +1,46 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Database } from '@/types/supabase';
+import { User } from '@supabase/auth-helpers-nextjs';
 
 const SuggestImprovementBadge = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const supabase = createClientComponentClient<Database>();
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+  }, [supabase]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user?.email) {
+      alert('Please log in to submit a suggestion');
+      return;
+    }
     setIsSubmitting(true);
 
     try {
       const { error } = await supabase
         .from('support_messages')
-        .insert([{ name, email, message, type: 'improvement' }]);
+        .insert([{ 
+          name, 
+          email: user.email, 
+          message, 
+          type: 'improvement' 
+        }]);
 
       if (error) throw error;
 
       // Reset form
       setName('');
-      setEmail('');
       setMessage('');
       setIsOpen(false);
       alert('Thank you for your suggestion!');
@@ -54,16 +71,6 @@ const SuggestImprovementBadge = () => {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="input input-bordered w-full"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Email</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
                   className="input input-bordered w-full"
                   required
                 />
