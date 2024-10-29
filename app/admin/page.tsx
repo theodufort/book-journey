@@ -192,8 +192,19 @@ export default function Admin() {
     // Merge users with books data into activity data
     const finalData = dataWithAvgGrowth.map((day) => {
       const dateStr = day.date;
-      const usersWithBooks = userStats?.usersByDate[dateStr] || 0;
-      console.log(`Date: ${dateStr}, Users with books: ${usersWithBooks}`); // Debug log
+      // Find the closest previous date that has data
+      const availableDates = Object.keys(userStats?.usersByDate || {}).sort();
+      const closestDate = availableDates.reduce((prev, curr) => {
+        if (curr <= dateStr && (!prev || curr > prev)) {
+          return curr;
+        }
+        return prev;
+      }, null);
+      
+      const usersWithBooks = closestDate 
+        ? userStats?.usersByDate[closestDate] 
+        : 0;
+        
       return {
         ...day,
         usersWithBooks: usersWithBooks,
@@ -225,10 +236,11 @@ export default function Admin() {
     // Convert the SQL data into our date-indexed object
     readingListData?.forEach((entry: any) => {
       const date = new Date(entry.date).toISOString().split("T")[0];
-      usersByDate[date] = entry.cumulative_users;
+      usersByDate[date] = entry.cumulative_users || 0;
     });
 
-    console.log("Users by date:", usersByDate); // Debug log
+    console.log("Reading list data:", readingListData); // Debug raw data
+    console.log("Users by date:", usersByDate); // Debug processed data
 
     setUserStats({
       totalUsers: totalUsers || 0,
