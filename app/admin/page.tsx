@@ -221,7 +221,7 @@ export default function Admin() {
       .select("id", { count: "exact", head: true });
 
     // Get users with books by date
-    const { data: readingListData, error: error2 } = await supabase.rpc(
+    const { data, error: error2 } = await supabase.rpc(
       "get_cumulative_books_per_users_by_day"
     );
 
@@ -232,14 +232,14 @@ export default function Admin() {
 
     // Process reading list data to get cumulative users with books by date
     const usersByDate: { [key: string]: number } = {};
-    console.log(readingListData);
+    console.log(data);
     // Convert the SQL data into our date-indexed object
-    readingListData?.forEach((entry: any) => {
+    data?.forEach((entry: any) => {
       const date = new Date(entry.date).toISOString().split("T")[0];
       usersByDate[date] = entry.cumulative_users || 0;
     });
 
-    console.log("Reading list data:", readingListData); // Debug raw data
+    console.log("Reading list data:", data); // Debug raw data
     console.log("Users by date:", usersByDate); // Debug processed data
 
     setUserStats({
