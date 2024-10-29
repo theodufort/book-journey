@@ -39,6 +39,7 @@ export default function BookNotes() {
   const [noteType, setNoteType] = useState<"main" | "sticky">("main");
   const notesContainerRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("reading");
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
@@ -57,11 +58,13 @@ export default function BookNotes() {
   const booksPerPage = isMobile ? 3 : 5;
 
   const filteredReadingList = useMemo(() => {
-    return readingList.filter((book) =>
-      book.data.volumeInfo.title
+    return readingList.filter((book) => {
+      const titleMatch = book.data.volumeInfo.title
         .toLowerCase()
-        .includes(searchQuery.toLowerCase())
-    );
+        .includes(searchQuery.toLowerCase());
+      const statusMatch = statusFilter === "all" || book.status === statusFilter;
+      return titleMatch && statusMatch;
+    });
   }, [readingList, searchQuery]);
 
   const paginatedReadingList = useMemo(() => {
@@ -418,13 +421,25 @@ export default function BookNotes() {
                   <h2 className="text-md md:text-xl font-semibold mb-2">
                     {t("subtitle")}
                   </h2>
-                  <input
-                    type="text"
-                    placeholder={t("search_label")}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="input input-bordered w-full"
-                  />
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder={t("search_label")}
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="input input-bordered flex-1"
+                    />
+                    <select 
+                      value={statusFilter}
+                      onChange={(e) => setStatusFilter(e.target.value)}
+                      className="select select-bordered"
+                    >
+                      <option value="all">All</option>
+                      <option value="reading">Reading</option>
+                      <option value="completed">Completed</option>
+                      <option value="want_to_read">Want to Read</option>
+                    </select>
+                  </div>
                 </div>
                 <div className="flex flex-col h-full">
                   <ul className="divide-y overflow-y-auto">
