@@ -232,11 +232,14 @@ export default function Admin() {
 
     // Convert the array of daily data into a date-indexed object
     const usersByDate: { [key: string]: number } = {};
-    data.forEach((entry) => {
+    data.forEach((entry: any) => {
       usersByDate[entry.date] = entry.cumulative_users;
     });
 
-    console.log("Current total users with books:", data[data.length - 1]?.cumulative_users || 0);
+    console.log(
+      "Current total users with books:",
+      data[data.length - 1]?.cumulative_users || 0
+    );
     console.log("Users by date:", usersByDate);
 
     setUserStats({
