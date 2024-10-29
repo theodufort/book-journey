@@ -45,6 +45,12 @@ export default function BookNotes() {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [editLabelId, setEditLabelId] = useState<string | null>(null);
   const [newLabel, setNewLabel] = useState("");
+  const [bookCounts, setBookCounts] = useState<{[key: string]: number}>({
+    all: 0,
+    reading: 0,
+    completed: 0,
+    want_to_read: 0
+  });
 
   const [editingStickyId, setEditingStickyId] = useState<string | null>(null);
 
@@ -276,6 +282,22 @@ export default function BookNotes() {
 
       const { data: booksData, error: booksError } = await query;
 
+      // Update book counts
+      const { data: countData } = await supabase
+        .from("reading_list")
+        .select('status')
+        .eq("user_id", user?.id);
+
+      if (countData) {
+        const counts = {
+          all: countData.length,
+          reading: countData.filter(b => b.status === 'reading').length,
+          completed: countData.filter(b => b.status === 'completed').length,
+          want_to_read: countData.filter(b => b.status === 'want_to_read').length
+        };
+        setBookCounts(counts);
+      }
+
       if (booksError) {
         console.error("Error fetching reading list:", booksError);
         setReadingList([]);
@@ -443,10 +465,10 @@ export default function BookNotes() {
                       }}
                       className="select select-bordered w-full"
                     >
-                      <option value="all">All</option>
-                      <option value="reading">Reading</option>
-                      <option value="completed">Completed</option>
-                      <option value="want_to_read">Want to Read</option>
+                      <option value="all">All ({bookCounts.all})</option>
+                      <option value="reading">Reading ({bookCounts.reading})</option>
+                      <option value="completed">Completed ({bookCounts.completed})</option>
+                      <option value="want_to_read">Want to Read ({bookCounts.want_to_read})</option>
                     </select>
                   </div>
                 </div>
