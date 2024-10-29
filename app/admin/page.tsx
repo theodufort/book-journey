@@ -221,9 +221,9 @@ export default function Admin() {
       .select("id", { count: "exact", head: true });
 
     // Get users with books by date
-    const { data, error: error2 } = await supabase.rpc(
-      "get_cumulative_books_per_users_by_day"
-    );
+    const { data, error: error2 } = await supabase
+      .rpc("get_cumulative_books_per_users_by_day")
+      .select();
 
     if (error1 || error2) {
       console.error("Error fetching user stats:", error1 || error2);
