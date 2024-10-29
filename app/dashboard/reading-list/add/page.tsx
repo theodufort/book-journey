@@ -127,6 +127,7 @@ export default function AddBook() {
         }
       }
       toast.success("Successfully added book!");
+      router.push("/dashboard/reading-list");
     }
   };
 

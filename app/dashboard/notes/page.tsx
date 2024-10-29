@@ -297,12 +297,12 @@ export default function BookNotes() {
         // Filter out any null results from failed fetches
         const validBookDetails = bookDetails.filter((book) => book != null);
         // Sort books - 'reading' status first
-        const sortedBooks = validBookDetails.sort((a, b) => {
-          if (a?.status === "reading" && b?.status !== "reading") return -1;
-          if (a?.status !== "reading" && b?.status === "reading") return 1;
-          return 0;
-        });
-        setReadingList(sortedBooks as ReadingListItem[]);
+        // const sortedBooks = validBookDetails.sort((a, b) => {
+        //   if (a?.status === "reading" && b?.status !== "reading") return -1;
+        //   if (a?.status !== "reading" && b?.status === "reading") return 1;
+        //   return 0;
+        // });
+        setReadingList(validBookDetails as ReadingListItem[]);
       }
     } catch (error) {
       console.error("Unexpected error:", error);
@@ -604,8 +604,18 @@ export default function BookNotes() {
                                         }}
                                         className="btn btn-xs btn-circle btn-ghost"
                                       >
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                          <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="16"
+                                          height="16"
+                                          viewBox="0 0 24 24"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          strokeWidth="2"
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                        >
+                                          <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
                                         </svg>
                                       </button>
                                     </div>
@@ -783,15 +793,15 @@ export default function BookNotes() {
                   placeholder="Enter new label"
                 />
                 <div className="flex justify-center gap-2">
-                  <button 
-                    className="btn btn-primary" 
+                  <button
+                    className="btn btn-primary"
                     onClick={handleSaveLabel}
                     disabled={!tempLabel.trim()}
                   >
                     Save
                   </button>
-                  <button 
-                    className="btn btn-ghost" 
+                  <button
+                    className="btn btn-ghost"
                     onClick={() => {
                       setEditLabelId(null);
                       setNewLabel("");
@@ -804,7 +814,7 @@ export default function BookNotes() {
               </>
             ) : (
               <div className="flex flex-col gap-2 w-full">
-                <button 
+                <button
                   className="btn btn-primary w-full"
                   onClick={() => {
                     setEditLabelId(deleteConfirmId);
