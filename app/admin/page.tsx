@@ -215,7 +215,7 @@ export default function Admin() {
 
     setUserStats({
       totalUsers: totalUsers || 0,
-      usersWithBooks: usersWithBooks?.count || 0
+      usersWithBooks: usersWithBooks?.count || 0,
     });
   }
 
@@ -224,16 +224,6 @@ export default function Admin() {
       <AdminHeader />
       <div className="container mx-auto p-4">
         <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>Total Users</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold">{userStats?.totalUsers || 0}</p>
-            </CardContent>
-          </Card>
-        </div>
         <Card className="mb-8">
           <CardHeader>
             <CardTitle>User Activity Metrics</CardTitle>
