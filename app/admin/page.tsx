@@ -203,12 +203,15 @@ export default function Admin() {
     // Merge users with books data into activity data
     const finalData = dataWithAvgGrowth.map(day => {
       const dateStr = day.date;
+      const usersWithBooks = userStats?.usersByDate[dateStr] || 0;
+      console.log(`Date: ${dateStr}, Users with books: ${usersWithBooks}`); // Debug log
       return {
         ...day,
-        usersWithBooks: userStats?.usersByDate[dateStr] || 0
+        usersWithBooks: usersWithBooks
       };
     });
 
+    console.log('Final data sample:', finalData.slice(0, 5)); // Debug log
     setActivityData(finalData);
   }
 
@@ -229,20 +232,38 @@ export default function Admin() {
     }
 
     // Process reading list data to get cumulative users with books by date
-    const usersByDate = new Map();
+    const usersByDate: { [key: string]: number } = {};
     const uniqueUsers = new Set();
 
-    readingListData?.forEach((entry) => {
+    // Sort the data by date first
+    const sortedData = readingListData?.sort((a, b) => 
+      new Date(a.toread_at).getTime() - new Date(b.toread_at).getTime()
+    );
+
+    sortedData?.forEach((entry) => {
       if (entry.toread_at && entry.user_id) {
         const date = new Date(entry.toread_at).toISOString().split('T')[0];
         uniqueUsers.add(entry.user_id);
-        usersByDate.set(date, uniqueUsers.size);
+        usersByDate[date] = uniqueUsers.size;
       }
     });
 
+    // Fill in missing dates with the last known value
+    const dates = Object.keys(usersByDate).sort();
+    let lastValue = 0;
+    for (const date of dates) {
+      if (usersByDate[date] === undefined) {
+        usersByDate[date] = lastValue;
+      } else {
+        lastValue = usersByDate[date];
+      }
+    }
+
+    console.log('Users by date:', usersByDate); // Debug log
+
     setUserStats({
       totalUsers: totalUsers || 0,
-      usersByDate: Object.fromEntries(usersByDate),
+      usersByDate: usersByDate,
     });
   }
 
