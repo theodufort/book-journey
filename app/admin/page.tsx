@@ -200,11 +200,11 @@ export default function Admin() {
         }
         return prev;
       }, null);
-      
-      const usersWithBooks = closestDate 
-        ? userStats?.usersByDate[closestDate] 
+
+      const usersWithBooks = closestDate
+        ? userStats?.usersByDate[closestDate]
         : 0;
-        
+
       return {
         ...day,
         usersWithBooks: usersWithBooks,
@@ -232,7 +232,7 @@ export default function Admin() {
 
     // Process reading list data to get cumulative users with books by date
     const usersByDate: { [key: string]: number } = {};
-
+    console.log(readingListData);
     // Convert the SQL data into our date-indexed object
     readingListData?.forEach((entry: any) => {
       const date = new Date(entry.date).toISOString().split("T")[0];
