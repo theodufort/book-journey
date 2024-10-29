@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
 import { User } from "@supabase/auth-helpers-nextjs";
+import { toast } from "react-hot-toast";
 
 const SuggestImprovementBadge = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +24,7 @@ const SuggestImprovementBadge = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user?.email) {
-      alert("Please log in to submit a suggestion");
+      toast.error("Please log in to submit a suggestion");
       return;
     }
     setIsSubmitting(true);
@@ -47,9 +48,9 @@ const SuggestImprovementBadge = () => {
       // Reset form
       setMessage("");
       setIsOpen(false);
-      alert("Thank you for your suggestion!");
+      toast.success("Thank you for your suggestion!");
     } catch (error) {
-      alert("Error submitting suggestion. Please try again.");
+      toast.error("Error submitting suggestion. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
