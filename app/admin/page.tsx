@@ -27,10 +27,15 @@ export default function Admin() {
   >([]);
   const supabase = createClientComponentClient();
   useEffect(() => {
-    fetchActivityData();
     fetchUserStats();
     fetchTopCategoriesByPurchases();
   }, []);
+
+  useEffect(() => {
+    if (userStats) {
+      fetchActivityData();
+    }
+  }, [userStats]);
 
   async function fetchTopCategoriesByPurchases() {
     try {
@@ -196,10 +201,13 @@ export default function Admin() {
 
     setActiveUsers(sortedActiveUsers);
     // Merge users with books data into activity data
-    const finalData = dataWithAvgGrowth.map(day => ({
-      ...day,
-      usersWithBooks: userStats?.usersByDate[day.date] || 0
-    }));
+    const finalData = dataWithAvgGrowth.map(day => {
+      const dateStr = day.date;
+      return {
+        ...day,
+        usersWithBooks: userStats?.usersByDate[dateStr] || 0
+      };
+    });
 
     setActivityData(finalData);
   }
