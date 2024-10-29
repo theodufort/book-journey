@@ -5,7 +5,6 @@ import { User } from '@supabase/auth-helpers-nextjs';
 
 const SuggestImprovementBadge = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [name, setName] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [user, setUser] = useState<User | null>(null);
@@ -31,7 +30,6 @@ const SuggestImprovementBadge = () => {
       const { error } = await supabase
         .from('support_messages')
         .insert([{ 
-          name, 
           email: user.email, 
           message, 
           type: 'improvement' 
@@ -40,7 +38,6 @@ const SuggestImprovementBadge = () => {
       if (error) throw error;
 
       // Reset form
-      setName('');
       setMessage('');
       setIsOpen(false);
       alert('Thank you for your suggestion!');
@@ -65,16 +62,6 @@ const SuggestImprovementBadge = () => {
           <div className="bg-base-100 p-6 rounded-lg shadow-xl max-w-md w-full">
             <h2 className="text-2xl font-bold mb-4">Suggest an Improvement</h2>
             <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Name</label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="input input-bordered w-full"
-                  required
-                />
-              </div>
               <div className="mb-4">
                 <label className="block text-sm font-medium mb-1">Suggestion</label>
                 <textarea
