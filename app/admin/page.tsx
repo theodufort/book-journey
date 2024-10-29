@@ -28,7 +28,6 @@ export default function Admin() {
   const supabase = createClientComponentClient();
   useEffect(() => {
     fetchUserStats();
-    fetchTopCategoriesByPurchases();
   }, []);
 
   useEffect(() => {
@@ -36,16 +35,6 @@ export default function Admin() {
       fetchActivityData();
     }
   }, [userStats]);
-
-  async function fetchTopCategoriesByPurchases() {
-    try {
-      const response = await fetch("/api/books/top-categories-by-purchases");
-      const data = await response.json();
-      setTopCategoriesByPurchases(data);
-    } catch (error) {
-      console.error("Error fetching top categories by purchases:", error);
-    }
-  }
 
   async function fetchActivityData() {
     // Fetch all users with their creation dates
@@ -201,17 +190,17 @@ export default function Admin() {
 
     setActiveUsers(sortedActiveUsers);
     // Merge users with books data into activity data
-    const finalData = dataWithAvgGrowth.map(day => {
+    const finalData = dataWithAvgGrowth.map((day) => {
       const dateStr = day.date;
       const usersWithBooks = userStats?.usersByDate[dateStr] || 0;
       console.log(`Date: ${dateStr}, Users with books: ${usersWithBooks}`); // Debug log
       return {
         ...day,
-        usersWithBooks: usersWithBooks
+        usersWithBooks: usersWithBooks,
       };
     });
 
-    console.log('Final data sample:', finalData.slice(0, 5)); // Debug log
+    console.log("Final data sample:", finalData.slice(0, 5)); // Debug log
     setActivityData(finalData);
   }
 
@@ -236,13 +225,14 @@ export default function Admin() {
     const uniqueUsers = new Set();
 
     // Sort the data by date first
-    const sortedData = readingListData?.sort((a, b) => 
-      new Date(a.toread_at).getTime() - new Date(b.toread_at).getTime()
+    const sortedData = readingListData?.sort(
+      (a, b) =>
+        new Date(a.toread_at).getTime() - new Date(b.toread_at).getTime()
     );
 
     sortedData?.forEach((entry) => {
       if (entry.toread_at && entry.user_id) {
-        const date = new Date(entry.toread_at).toISOString().split('T')[0];
+        const date = new Date(entry.toread_at).toISOString().split("T")[0];
         uniqueUsers.add(entry.user_id);
         usersByDate[date] = uniqueUsers.size;
       }
@@ -259,12 +249,13 @@ export default function Admin() {
       }
     }
 
-    console.log('Users by date:', usersByDate); // Debug log
+    console.log("Users by date:", usersByDate); // Debug log
 
     setUserStats({
       totalUsers: totalUsers || 0,
       usersByDate: usersByDate,
     });
+    console.log(userStats.usersByDate);
   }
 
   return (
