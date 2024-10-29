@@ -115,7 +115,7 @@ entity "blog_categories" {
   description : text
 }
 
-entity "book_notes" {
+entity "main_notes" {
   * id : integer
   --
   user_id : uuid [FK]
@@ -313,8 +313,8 @@ indie_authors ||--o{ indie_authors_social : "author_id"
 indie_authors ||--o{ indie_authors_books : "author_id"
 indie_authors_books ||--|| indie_authors_books_links : "book_id"
 
-auth_users ||--o{ book_notes : "user_id"
-books ||--o{ book_notes : "book_id"
+auth_users ||--o{ main_notes : "user_id"
+books ||--o{ main_notes : "book_id"
 books ||--o{ reading_list : "book_id"
 books ||--|| books_like : "isbn_13"
 books ||--o{ books_modifications : "isbn_13"

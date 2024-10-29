@@ -351,7 +351,7 @@ export default function BookNotes() {
 
   const fetchNotes = async (bookId: string) => {
     const { data, error } = await supabase
-      .from("book_notes")
+      .from("main_notes")
       .select("book_id, notes, updated_at")
       .eq("user_id", user?.id)
       .eq("book_id", bookId)
@@ -385,7 +385,7 @@ export default function BookNotes() {
 
     const noteContent = notes[selectedBook.book_id]?.content || "";
     const updatedAt = new Date().toISOString();
-    const { error } = await supabase.from("book_notes").upsert(
+    const { error } = await supabase.from("main_notes").upsert(
       {
         user_id: user?.id,
         book_id: selectedBook.book_id,

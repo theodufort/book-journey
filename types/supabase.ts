@@ -809,41 +809,6 @@ export type Database = {
         }
         Relationships: []
       }
-      book_notes: {
-        Row: {
-          book_id: string
-          created_at: string | null
-          id: number
-          notes: string | null
-          updated_at: string | null
-          user_id: string | null
-        }
-        Insert: {
-          book_id: string
-          created_at?: string | null
-          id?: number
-          notes?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          book_id?: string
-          created_at?: string | null
-          id?: number
-          notes?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "book_notes_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       books: {
         Row: {
           added_at: string
@@ -1171,6 +1136,41 @@ export type Database = {
         }
         Relationships: []
       }
+      main_notes: {
+        Row: {
+          book_id: string
+          created_at: string | null
+          id: number
+          notes: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          book_id: string
+          created_at?: string | null
+          id?: number
+          notes?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          book_id?: string
+          created_at?: string | null
+          id?: number
+          notes?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "book_notes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       point_transactions: {
         Row: {
           created_at: string | null
@@ -1242,6 +1242,38 @@ export type Database = {
             foreignKeyName: "profiles_id_fkey"
             columns: ["id"]
             isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      questions_notes: {
+        Row: {
+          answer: string | null
+          book_id: string
+          id: string
+          question: string
+          user_id: string
+        }
+        Insert: {
+          answer?: string | null
+          book_id: string
+          id?: string
+          question: string
+          user_id: string
+        }
+        Update: {
+          answer?: string | null
+          book_id?: string
+          id?: string
+          question?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questions_notes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
@@ -1327,6 +1359,41 @@ export type Database = {
           },
         ]
       }
+      reading_sessions: {
+        Row: {
+          end_page: number
+          ended_at: string | null
+          id: string
+          reading_list_id: number
+          start_page: number
+          started_at: string | null
+        }
+        Insert: {
+          end_page: number
+          ended_at?: string | null
+          id?: string
+          reading_list_id: number
+          start_page: number
+          started_at?: string | null
+        }
+        Update: {
+          end_page?: number
+          ended_at?: string | null
+          id?: string
+          reading_list_id?: number
+          start_page?: number
+          started_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reading_sessions_reading_list_id_fkey"
+            columns: ["reading_list_id"]
+            isOneToOne: false
+            referencedRelation: "reading_list"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reading_stats: {
         Row: {
           books_read: number | null
@@ -1388,6 +1455,7 @@ export type Database = {
           id: string
           is_public: boolean
           label: string
+          reading_session_id: string | null
           start_page: number | null
           updated_at: string | null
           user_id: string
@@ -1400,6 +1468,7 @@ export type Database = {
           id?: string
           is_public?: boolean
           label: string
+          reading_session_id?: string | null
           start_page?: number | null
           updated_at?: string | null
           user_id: string
@@ -1412,11 +1481,19 @@ export type Database = {
           id?: string
           is_public?: boolean
           label?: string
+          reading_session_id?: string | null
           start_page?: number | null
           updated_at?: string | null
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "sticky_notes_reading_session_id_fkey"
+            columns: ["reading_session_id"]
+            isOneToOne: false
+            referencedRelation: "reading_sessions"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "sticky_notes_user_id_fkey1"
             columns: ["user_id"]
