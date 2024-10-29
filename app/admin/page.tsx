@@ -221,9 +221,9 @@ export default function Admin() {
 
     // Process reading list data to get cumulative users with books by date
     const usersByDate: { [key: string]: number } = {};
-    
+
     // Convert the SQL data into our date-indexed object
-    readingListData?.forEach((entry) => {
+    readingListData?.forEach((entry: any) => {
       const date = new Date(entry.date).toISOString().split("T")[0];
       usersByDate[date] = entry.cumulative_users;
     });

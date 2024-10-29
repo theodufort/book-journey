@@ -1384,9 +1384,11 @@ export type Database = {
           book_id: string
           content: string
           created_at: string
+          end_page: number | null
           id: string
           is_public: boolean
           label: string
+          start_page: number | null
           updated_at: string | null
           user_id: string
         }
@@ -1394,9 +1396,11 @@ export type Database = {
           book_id: string
           content: string
           created_at?: string
+          end_page?: number | null
           id?: string
           is_public?: boolean
           label: string
+          start_page?: number | null
           updated_at?: string | null
           user_id: string
         }
@@ -1404,9 +1408,11 @@ export type Database = {
           book_id?: string
           content?: string
           created_at?: string
+          end_page?: number | null
           id?: string
           is_public?: boolean
           label?: string
+          start_page?: number | null
           updated_at?: string | null
           user_id?: string
         }
@@ -1669,6 +1675,13 @@ export type Database = {
           image_url: string
           image_alt: string
           published_at: string
+        }[]
+      }
+      get_cumulative_books_per_users_by_day: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          date: string
+          cumulative_users: number
         }[]
       }
       get_full_article_content: {
