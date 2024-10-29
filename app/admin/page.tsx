@@ -195,7 +195,13 @@ export default function Admin() {
     });
 
     setActiveUsers(sortedActiveUsers);
-    setActivityData(dataWithAvgGrowth);
+    // Merge users with books data into activity data
+    const finalData = dataWithAvgGrowth.map(day => ({
+      ...day,
+      usersWithBooks: userStats?.usersByDate[day.date] || 0
+    }));
+
+    setActivityData(finalData);
   }
 
   async function fetchUserStats() {
@@ -203,19 +209,32 @@ export default function Admin() {
       .from("profiles")
       .select("id", { count: "exact", head: true });
 
-    const { data: usersWithBooks, error: error2 } = await supabase
+    // Get users with books by date
+    const { data: readingListData, error: error2 } = await supabase
       .from("reading_list")
-      .select("COUNT(DISTINCT user_id)")
-      .single();
+      .select("user_id, toread_at")
+      .order("toread_at", { ascending: true });
 
     if (error1 || error2) {
       console.error("Error fetching user stats:", error1 || error2);
       return;
     }
 
+    // Process reading list data to get cumulative users with books by date
+    const usersByDate = new Map();
+    const uniqueUsers = new Set();
+
+    readingListData?.forEach((entry) => {
+      if (entry.toread_at && entry.user_id) {
+        const date = new Date(entry.toread_at).toISOString().split('T')[0];
+        uniqueUsers.add(entry.user_id);
+        usersByDate.set(date, uniqueUsers.size);
+      }
+    });
+
     setUserStats({
       totalUsers: totalUsers || 0,
-      usersWithBooks: usersWithBooks?.count || 0,
+      usersByDate: Object.fromEntries(usersByDate),
     });
   }
 
