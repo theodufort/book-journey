@@ -230,26 +230,13 @@ export default function Admin() {
       return;
     }
 
-    // Since we only get one row, use it as the current total
-    const currentTotal = data?.[0]?.cumulative_users || 0;
-
-    // Create a date-indexed object with the same total for all dates
+    // Convert the array of daily data into a date-indexed object
     const usersByDate: { [key: string]: number } = {};
-    const today = new Date();
-    const thirtyDaysAgo = new Date(today);
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    data.forEach((entry) => {
+      usersByDate[entry.date] = entry.cumulative_users;
+    });
 
-    // Fill in the last 30 days with the current total
-    for (
-      let d = new Date(thirtyDaysAgo);
-      d <= today;
-      d.setDate(d.getDate() + 1)
-    ) {
-      const dateStr = d.toISOString().split("T")[0];
-      usersByDate[dateStr] = currentTotal;
-    }
-
-    console.log("Current total users with books:", currentTotal);
+    console.log("Current total users with books:", data[data.length - 1]?.cumulative_users || 0);
     console.log("Users by date:", usersByDate);
 
     setUserStats({
