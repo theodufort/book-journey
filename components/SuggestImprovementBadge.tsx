@@ -48,7 +48,9 @@ const SuggestImprovementBadge = () => {
       // Reset form
       setMessage("");
       setIsOpen(false);
-      toast.success("Thank you for your suggestion!");
+      toast.success(
+        "Thank you for your suggestion! We will repond in the 48h!"
+      );
     } catch (error) {
       toast.error("Error submitting suggestion. Please try again.");
     } finally {

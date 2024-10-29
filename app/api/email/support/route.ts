@@ -9,7 +9,7 @@ export async function POST(request: Request) {
     const { email, name, content } = await request.json();
 
     // Validate input
-    if (!email || !name || !content) {
+    if (!email || !content) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
