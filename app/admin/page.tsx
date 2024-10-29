@@ -210,10 +210,9 @@ export default function Admin() {
       .select("id", { count: "exact", head: true });
 
     // Get users with books by date
-    const { data: readingListData, error: error2 } = await supabase
-      .from("reading_list")
-      .select("user_id, toread_at")
-      .order("toread_at", { ascending: true });
+    const { data: readingListData, error: error2 } = await supabase.rpc(
+      "get_cumulative_books_per_users_by_day"
+    );
 
     if (error1 || error2) {
       console.error("Error fetching user stats:", error1 || error2);
@@ -223,23 +222,25 @@ export default function Admin() {
     // Process reading list data to get cumulative users with books by date
     const usersByDate: { [key: string]: number } = {};
     const uniqueUsers = new Set();
-    
+
     // Get all unique dates from activity data and reading list
     const allDates = new Set([
-      ...activityData.map(item => item.date),
-      ...(readingListData?.map(entry => 
-        new Date(entry.toread_at).toISOString().split('T')[0]
-      ) || [])
+      ...activityData.map((item) => item.date),
+      ...(readingListData?.map(
+        (entry) => new Date(entry.toread_at).toISOString().split("T")[0]
+      ) || []),
     ]);
 
     // Sort dates chronologically
     const sortedDates = Array.from(allDates).sort();
 
     // For each date, calculate cumulative unique users up to that date
-    sortedDates.forEach(currentDate => {
-      readingListData?.forEach(entry => {
+    sortedDates.forEach((currentDate) => {
+      readingListData?.forEach((entry) => {
         if (entry.toread_at && entry.user_id) {
-          const entryDate = new Date(entry.toread_at).toISOString().split('T')[0];
+          const entryDate = new Date(entry.toread_at)
+            .toISOString()
+            .split("T")[0];
           if (entryDate <= currentDate) {
             uniqueUsers.add(entry.user_id);
           }
