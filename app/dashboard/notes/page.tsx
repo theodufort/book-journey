@@ -58,12 +58,11 @@ export default function BookNotes() {
   const booksPerPage = isMobile ? 3 : 5;
 
   const filteredReadingList = useMemo(() => {
-    return readingList.filter((book) => {
-      const titleMatch = book.data.volumeInfo.title
+    return readingList.filter((book) => 
+      book.data.volumeInfo.title
         .toLowerCase()
-        .includes(searchQuery.toLowerCase());
-      return titleMatch;
-    });
+        .includes(searchQuery.toLowerCase())
+    );
   }, [readingList, searchQuery]);
 
   const paginatedReadingList = useMemo(() => {
@@ -96,7 +95,7 @@ export default function BookNotes() {
     if (user) {
       fetchReadingList();
     }
-  }, [user]);
+  }, [user, statusFilter]);
 
   useEffect(() => {
     if (selectedBook && user) {
