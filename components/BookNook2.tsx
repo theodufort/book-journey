@@ -26,7 +26,7 @@ export default function BookNook1() {
   const [bookStickys, setBookStickys] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [newNoteContent, setNewNoteContent] = useState("");
-  const [tab, setTab] = useState("Daily Note");
+  const [tab, setTab] = useState("Quick Note");
   const [timer, setTimer] = useState(1800); // 30 minutes in seconds
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [currentPage, setCurrentPage] = useState(123);
@@ -224,7 +224,7 @@ export default function BookNook1() {
       return;
     }
     if (!dailyNoteContent.trim()) {
-      toast.error("Please write a daily note before logging");
+      toast.error("Please write a quick note before logging");
       return;
     }
     const { data: readingListId, data: readingListIdError } = await supabase
@@ -272,14 +272,14 @@ export default function BookNook1() {
       <div className="flex flex-col md:flex-row h-full rounded shadow-lg bg-[#FFF2D7]/90 overflow-y-auto md:overflow-hidden">
         {/* Left Column: Note-taking Section */}
         <div className="flex-1 flex flex-col p-2 min-h-[50vh] md:min-h-0">
-          {/* Tabs for Daily Note and review */}
+          {/* Tabs for Quick Note and review */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 md:gap-0 mb-2">
             <div className="tabs tabs-boxed">
               <button
-                onClick={() => setTab("Daily Note")}
-                className={`tab ${tab === "Daily Note" ? "tab-active" : ""}`}
+                onClick={() => setTab("Quick Note")}
+                className={`tab ${tab === "Quick Note" ? "tab-active" : ""}`}
               >
-                Daily Note
+                Quick Note
               </button>
               <button
                 onClick={() => setTab("review")}
@@ -323,12 +323,12 @@ export default function BookNook1() {
             </div>
           </div>
 
-          {/* Daily Note or review Content */}
+          {/* Quick Note or review Content */}
           <div className="flex-1 flex gap-2 h-full">
             <div className="flex-1 card card-bordered p-3 relative h-full">
-              {tab === "Daily Note" && (
+              {tab === "Quick Note" && (
                 <div className="h-full flex flex-col">
-                  <h2 className="text-xl font-semibold mb-4">Daily Note</h2>
+                  <h2 className="text-xl font-semibold mb-4">Quick Note</h2>
                   <textarea
                     className="flex-1 w-full textarea textarea-primary"
                     style={{ backgroundColor: "#FFF2D7" }}
@@ -423,8 +423,8 @@ export default function BookNook1() {
             </div>
           </div>
 
-          {/* Bottom Action - Log Session / Bookmark - Only show on Daily Note tab */}
-          {tab === "Daily Note" && (
+          {/* Bottom Action - Log Session / Bookmark - Only show on Quick Note tab */}
+          {tab === "Quick Note" && (
             <div className="mt-4 space-y-2">
               <div className="join w-full">
                 <input
