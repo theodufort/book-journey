@@ -94,7 +94,7 @@ export default function BookNook1() {
         .limit(1)
         .single();
 
-    setStartPage(readingSessionData.end_page);
+    setStartPage(readingSessionData.end_page || 0);
   };
   const loadreview = async () => {
     if (!user || !selectedBook) return;
