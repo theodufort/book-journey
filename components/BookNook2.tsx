@@ -290,7 +290,7 @@ export default function BookNook1() {
             </div>
             <div className="flex items-center gap-4 w-full md:w-auto">
               <select
-                className="select select-bordered select-sm text-white w-full md:w-auto"
+                className="select select-bordered select-sm text-white w-full md:w-auto md:max-w-[200px]"
                 value={selectedBook?.id || ""}
                 onChange={(e) => {
                   const book = readingList.find(
