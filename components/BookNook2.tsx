@@ -241,10 +241,6 @@ export default function BookNook1() {
       toast.error("Start page must be less than or equal to end page");
       return;
     }
-    if (!dailyNoteContent.trim()) {
-      toast.error("Please write a quick note before logging");
-      return;
-    }
     const { data: readingListId, data: readingListIdError } = await supabase
       .from("reading_list")
       .select("id")
