@@ -36,6 +36,8 @@ export default function BookNook1() {
   const [reviewContent, setreviewContent] = useState("");
   const [isLoadingreview, setIsLoadingreview] = useState(false);
   const [isEditMode, setIsEditMode] = useState(true);
+  const [textToTranslate, setTextToTranslate] = useState("");
+  const [targetLang, setTargetLang] = useState("en");
 
   const fetchStickys = useCallback(async () => {
     if (!user || !selectedBook) return;
@@ -383,16 +385,63 @@ export default function BookNook1() {
           <div className="flex-none space-y-4">
             {/* <h2 className="text-lg font-semibold">Stickies / Quick Notes</h2> */}
 
-            {/* <div className="space-y-3">
-              <input
-                type="text"
-                placeholder="Search notes..."
-                className="input input-bordered w-full text-white"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div> */}
-            {/* add translate button */}
+            <div className="space-y-3">
+              <div className="join w-full">
+                <input
+                  type="text"
+                  placeholder="Text to translate..."
+                  className="join-item input input-bordered w-3/4 text-white"
+                  value={textToTranslate}
+                  onChange={(e) => setTextToTranslate(e.target.value)}
+                />
+                <select 
+                  className="join-item select select-bordered w-1/4 text-white"
+                  value={targetLang}
+                  onChange={(e) => setTargetLang(e.target.value)}
+                >
+                  <option value="en">EN</option>
+                  <option value="es">ES</option>
+                  <option value="fr">FR</option>
+                  <option value="de">DE</option>
+                  <option value="it">IT</option>
+                  <option value="pt">PT</option>
+                  <option value="ru">RU</option>
+                  <option value="ja">JA</option>
+                  <option value="ko">KO</option>
+                  <option value="zh">ZH</option>
+                </select>
+              </div>
+              <button 
+                className="btn btn-primary w-full"
+                onClick={async () => {
+                  if (!textToTranslate) return;
+                  
+                  try {
+                    const response = await fetch('http://translate.mybookquest.com:5000/translate', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({
+                        q: textToTranslate,
+                        source: 'auto',
+                        target: targetLang,
+                      }),
+                    });
+
+                    if (!response.ok) throw new Error('Translation failed');
+                    
+                    const data = await response.json();
+                    setTextToTranslate(data.translatedText);
+                  } catch (error) {
+                    console.error('Translation error:', error);
+                    toast.error('Translation failed');
+                  }
+                }}
+              >
+                Translate
+              </button>
+            </div>
           </div>
 
           <div className="flex-1 overflow-y-auto mt-4 pr-2">
