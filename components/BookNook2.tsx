@@ -57,6 +57,7 @@ export default function BookNook1() {
     }
 
     setBookStickys(data || []);
+    console.log(selectedBook);
   }, [user, selectedBook, supabase]);
 
   useEffect(() => {
