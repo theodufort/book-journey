@@ -31,7 +31,9 @@ export default function BookNook1() {
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
-  const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(null);
+  const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(
+    null
+  );
   const [currentPage, setCurrentPage] = useState(123);
   const [startPage, setStartPage] = useState<number>(0);
   const [endPage, setEndPage] = useState<number>(0);
@@ -332,42 +334,79 @@ export default function BookNook1() {
               <div className="flex items-center gap-2">
                 {isTimerRunning ? (
                   <div className="countdown font-mono text-2xl">
-                    <span style={{"--value": Math.abs(hours)} as React.CSSProperties}></span>:
-                    <span style={{"--value": Math.abs(minutes)} as React.CSSProperties}></span>:
-                    <span style={{"--value": Math.abs(seconds)} as React.CSSProperties}>{seconds < 0 ? '-' : ''}</span>
+                    <span
+                      style={
+                        { "--value": Math.abs(hours) } as React.CSSProperties
+                      }
+                    ></span>
+                    :
+                    <span
+                      style={
+                        { "--value": Math.abs(minutes) } as React.CSSProperties
+                      }
+                    ></span>
+                    :
+                    <span
+                      style={
+                        { "--value": Math.abs(seconds) } as React.CSSProperties
+                      }
+                    >
+                      {seconds < 0 ? "-" : ""}
+                    </span>
                   </div>
                 ) : (
                   <div className="join">
-                    <input 
-                      type="number" 
+                    <input
+                      type="number"
                       className="join-item input input-bordered input-sm w-16 text-white"
                       placeholder="HH"
                       min="0"
                       max="99"
-                      value={hours || ''}
-                      onChange={(e) => setHours(Math.min(99, Math.max(0, parseInt(e.target.value) || 0)))}
+                      value={hours || ""}
+                      onChange={(e) =>
+                        setHours(
+                          Math.min(
+                            99,
+                            Math.max(0, parseInt(e.target.value) || 0)
+                          )
+                        )
+                      }
                     />
-                    <input 
+                    <input
                       type="number"
                       className="join-item input input-bordered input-sm w-16 text-white"
                       placeholder="MM"
                       min="0"
                       max="59"
-                      value={minutes || ''}
-                      onChange={(e) => setMinutes(Math.min(59, Math.max(0, parseInt(e.target.value) || 0)))}
+                      value={minutes || ""}
+                      onChange={(e) =>
+                        setMinutes(
+                          Math.min(
+                            59,
+                            Math.max(0, parseInt(e.target.value) || 0)
+                          )
+                        )
+                      }
                     />
-                    <input 
+                    <input
                       type="number"
                       className="join-item input input-bordered input-sm w-16 text-white"
                       placeholder="SS"
                       min="0"
                       max="59"
-                      value={seconds || ''}
-                      onChange={(e) => setSeconds(Math.min(59, Math.max(0, parseInt(e.target.value) || 0)))}
+                      value={seconds || ""}
+                      onChange={(e) =>
+                        setSeconds(
+                          Math.min(
+                            59,
+                            Math.max(0, parseInt(e.target.value) || 0)
+                          )
+                        )
+                      }
                     />
                   </div>
                 )}
-                <button 
+                <button
                   className="btn btn-sm btn-primary"
                   onClick={() => {
                     if (isTimerRunning) {
@@ -378,7 +417,7 @@ export default function BookNook1() {
                       if (hours === 0 && minutes === 0 && seconds === 0) return;
                       setIsTimerRunning(true);
                       const interval = setInterval(() => {
-                        setSeconds(s => {
+                        setSeconds((s) => {
                           if (s === 0) {
                             if (minutes === 0 && hours === 0) {
                               // Timer finished
@@ -386,13 +425,17 @@ export default function BookNook1() {
                               setIsTimerRunning(false);
                               setTimerInterval(null);
                               // Show dialog
-                              (document.getElementById('timer_modal') as HTMLDialogElement)?.showModal();
+                              (
+                                document.getElementById(
+                                  "timer_modal"
+                                ) as HTMLDialogElement
+                              )?.showModal();
                               return 0;
                             }
-                            setMinutes(m => {
+                            setMinutes((m) => {
                               if (m === 0) {
                                 if (hours > 0) {
-                                  setHours(h => h - 1);
+                                  setHours((h) => h - 1);
                                   return 59;
                                 }
                                 return 0;
@@ -408,7 +451,7 @@ export default function BookNook1() {
                     }
                   }}
                 >
-                  {isTimerRunning ? 'Stop' : 'Start'}
+                  {isTimerRunning ? "Stop" : "Start"}
                 </button>
               </div>
             </div>
@@ -633,30 +676,36 @@ export default function BookNook1() {
       {/* Timer finished modal */}
       <dialog id="timer_modal" className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg">Timer Finished!</h3>
-          <p className="py-4">Would you like to extend the timer or log your session?</p>
+          <h3 className="font-bold text-lg">Reading Session Finished!</h3>
+          <p className="py-4">
+            Would you like to extend the timer or log your session?
+          </p>
           <div className="modal-action">
             <form method="dialog" className="flex gap-2">
-              <button 
+              <button
                 className="btn btn-primary"
                 onClick={() => {
                   // Add 15 minutes and restart
-                  setMinutes(m => m + 15);
+                  setMinutes((m) => m + 15);
                   setIsTimerRunning(true);
                   const interval = setInterval(() => {
-                    setSeconds(s => {
+                    setSeconds((s) => {
                       if (s === 0) {
                         if (minutes === 0 && hours === 0) {
                           if (timerInterval) clearInterval(timerInterval);
                           setIsTimerRunning(false);
                           setTimerInterval(null);
-                          (document.getElementById('timer_modal') as HTMLDialogElement)?.showModal();
+                          (
+                            document.getElementById(
+                              "timer_modal"
+                            ) as HTMLDialogElement
+                          )?.showModal();
                           return 0;
                         }
-                        setMinutes(m => {
+                        setMinutes((m) => {
                           if (m === 0) {
                             if (hours > 0) {
-                              setHours(h => h - 1);
+                              setHours((h) => h - 1);
                               return 59;
                             }
                             return 0;
@@ -673,7 +722,7 @@ export default function BookNook1() {
               >
                 Add 15 Minutes
               </button>
-              <button 
+              <button
                 className="btn"
                 onClick={() => {
                   handleLogSession();
