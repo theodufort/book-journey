@@ -680,15 +680,40 @@ export default function BookNook1() {
           <p className="py-4">
             Would you like to extend the timer or log your session?
           </p>
-          <div className="modal-action">
-            <form method="dialog" className="flex gap-2">
-              <button
-                className="btn btn-primary"
-                onClick={() => {
-                  // Add 15 minutes and restart
-                  setMinutes((m) => m + 15);
-                  setIsTimerRunning(true);
-                  const interval = setInterval(() => {
+          <div className="space-y-4">
+            <div className="join w-full">
+              <input
+                type="number"
+                className="join-item input input-bordered w-1/3 text-white"
+                placeholder="Hours"
+                min="0"
+                max="99"
+                onChange={(e) => setHours(Math.min(99, Math.max(0, parseInt(e.target.value) || 0)))}
+              />
+              <input
+                type="number"
+                className="join-item input input-bordered w-1/3 text-white"
+                placeholder="Minutes"
+                min="0"
+                max="59"
+                onChange={(e) => setMinutes(Math.min(59, Math.max(0, parseInt(e.target.value) || 0)))}
+              />
+              <input
+                type="number"
+                className="join-item input input-bordered w-1/3 text-white"
+                placeholder="Seconds"
+                min="0"
+                max="59"
+                onChange={(e) => setSeconds(Math.min(59, Math.max(0, parseInt(e.target.value) || 0)))}
+              />
+            </div>
+            <div className="modal-action">
+              <form method="dialog" className="flex gap-2">
+                <button
+                  className="btn btn-primary"
+                  onClick={() => {
+                    setIsTimerRunning(true);
+                    const interval = setInterval(() => {
                     setSeconds((s) => {
                       if (s === 0) {
                         if (minutes === 0 && hours === 0) {
@@ -720,7 +745,7 @@ export default function BookNook1() {
                   setTimerInterval(interval);
                 }}
               >
-                Add 15 Minutes
+                Start Timer
               </button>
               <button
                 className="btn"
