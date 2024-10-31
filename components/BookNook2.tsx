@@ -462,33 +462,35 @@ export default function BookNook1() {
             <div className="space-y-3">
               {bookStickys.length === 0 ? (
                 <div className="text-center p-4 bg-base-200 rounded-lg">
-                  <p className="text-gray-500">No notes yet. Start by adding a quick note!</p>
+                  <p>No notes yet. Start by adding a quick note!</p>
                 </div>
-              ) : bookStickys
-                .filter(
-                  (sticky) =>
-                    sticky.content
-                      .toLowerCase()
-                      .includes(searchQuery.toLowerCase()) ||
-                    sticky.label
-                      .toLowerCase()
-                      .includes(searchQuery.toLowerCase())
-                )
-                .map((sticky) => (
-                  <div
-                    key={sticky.id}
-                    tabIndex={0}
-                    className="collapse collapse-arrow border-base-300 border"
-                  >
-                    <input type="checkbox" />
-                    <div className="collapse-title text-xl font-medium">
-                      {sticky.label}
+              ) : (
+                bookStickys
+                  .filter(
+                    (sticky) =>
+                      sticky.content
+                        .toLowerCase()
+                        .includes(searchQuery.toLowerCase()) ||
+                      sticky.label
+                        .toLowerCase()
+                        .includes(searchQuery.toLowerCase())
+                  )
+                  .map((sticky) => (
+                    <div
+                      key={sticky.id}
+                      tabIndex={0}
+                      className="collapse collapse-arrow border-base-300 border"
+                    >
+                      <input type="checkbox" />
+                      <div className="collapse-title text-xl font-medium">
+                        {sticky.label}
+                      </div>
+                      <div className="collapse-content">
+                        <ReactMarkdown>{sticky.content}</ReactMarkdown>
+                      </div>
                     </div>
-                    <div className="collapse-content">
-                      <ReactMarkdown>{sticky.content}</ReactMarkdown>
-                    </div>
-                  </div>
-                ))}
+                  ))
+              )}
             </div>
           </div>
 
