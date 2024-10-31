@@ -55,10 +55,7 @@ export default function BookNook1() {
       console.error("Error fetching stickys:", error);
       return;
     }
-    console.log("Fetched bookStickys:", data);
     setBookStickys(data || []);
-    console.log("Fetched bookStickys:", data);
-    console.log(selectedBook);
   }, [user, selectedBook, supabase]);
 
   useEffect(() => {
@@ -476,7 +473,9 @@ export default function BookNook1() {
                 </div>
               ) : bookStickys.length === 0 ? (
                 <div className="h-full flex items-center justify-center">
-                  <p>No notes yet. Start by adding a quick note!</p>
+                  <p className="m-auto">
+                    No notes yet. Start by adding a quick note!
+                  </p>
                 </div>
               ) : (
                 bookStickys
