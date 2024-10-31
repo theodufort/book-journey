@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
 import { Volume } from "@/interfaces/GoogleAPI";
 import { Database } from "@/types/supabase";
+import CongratulationsModalSession from "./CongratulationsModalSession";
 
 export default function BookNook1() {
   const t = useTranslations("BookNook2");
@@ -46,6 +47,8 @@ export default function BookNook1() {
   const [targetLang, setTargetLang] = useState("en");
   const [isTranslating, setIsTranslating] = useState(false);
   const [customLabel, setCustomLabel] = useState("");
+  const [showCongrats, setShowCongrats] = useState(false);
+  const [pagesRead, setPagesRead] = useState(0);
 
   // Cleanup timer interval on unmount
   useEffect(() => {
@@ -275,7 +278,12 @@ export default function BookNook1() {
       return;
     }
 
-    toast.success("Session logged successfully!");
+    // Calculate pages read
+    const pagesReadThisSession = endPage - startPage;
+    setPagesRead(pagesReadThisSession);
+    setShowCongrats(true);
+    
+    // Reset form
     setDailyNoteContent("");
     setNewNoteContent("");
     setCustomLabel("");
@@ -775,6 +783,11 @@ export default function BookNook1() {
           </div>
         </div>
       </dialog>
+      <CongratulationsModalSession
+        isOpen={showCongrats}
+        onClose={() => setShowCongrats(false)}
+        pagesRead={pagesRead}
+      />
     </div>
   );
 }
