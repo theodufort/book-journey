@@ -381,9 +381,9 @@ export default function BookNook1() {
         {/* Right Column: Stickies / Quick Notes */}
         <div className="w-full md:w-96 flex-shrink-0 p-2 md:border-l border-t md:border-t-0 flex flex-col h-full">
           <div className="flex-none space-y-4">
-            <h2 className="text-lg font-semibold">Stickies / Quick Notes</h2>
+            {/* <h2 className="text-lg font-semibold">Stickies / Quick Notes</h2> */}
 
-            <div className="space-y-3">
+            {/* <div className="space-y-3">
               <input
                 type="text"
                 placeholder="Search notes..."
@@ -391,7 +391,8 @@ export default function BookNook1() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-            </div>
+            </div> */}
+            {/* add translate button */}
           </div>
 
           <div className="flex-1 overflow-y-auto mt-4 pr-2">
@@ -412,6 +413,7 @@ export default function BookNook1() {
                     tabIndex={0}
                     className="collapse collapse-arrow border-base-300 border"
                   >
+                    <input type="checkbox" />
                     <div className="collapse-title text-xl font-medium">
                       {sticky.label}
                     </div>
