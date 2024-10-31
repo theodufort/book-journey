@@ -471,11 +471,11 @@ export default function BookNook1() {
           <div className="flex-1 overflow-y-auto mt-4 pr-2">
             <div className="space-y-3">
               {!selectedBook ? (
-                <div className="text-center p-4 bg-base-200 rounded-lg">
+                <div className="h-full flex items-center justify-center">
                   <p>Select a book to view notes</p>
                 </div>
               ) : bookStickys.length === 0 ? (
-                <div className="text-center p-4 bg-base-200 rounded-lg">
+                <div className="h-full flex items-center justify-center">
                   <p>No notes yet. Start by adding a quick note!</p>
                 </div>
               ) : (
