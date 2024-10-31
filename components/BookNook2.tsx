@@ -257,6 +257,8 @@ export default function BookNook1() {
           reading_list_id: readingListId.id,
           start_page: startPage,
           end_page: endPage,
+          started_at: sessionStartTime?.toISOString(),
+          ended_at: new Date().toISOString(),
         })
         .select()
         .single();
@@ -416,6 +418,7 @@ export default function BookNook1() {
                     } else {
                       if (hours === 0 && minutes === 0 && seconds === 0) return;
                       setIsTimerRunning(true);
+                      setSessionStartTime(new Date());
                       const interval = setInterval(() => {
                         setSeconds((s) => {
                           if (s === 0) {
@@ -725,6 +728,9 @@ export default function BookNook1() {
                   className="btn btn-primary"
                   onClick={() => {
                     setIsTimerRunning(true);
+                    if (!sessionStartTime) {
+                      setSessionStartTime(new Date());
+                    }
                     const interval = setInterval(() => {
                       setSeconds((s) => {
                         if (s === 0) {
