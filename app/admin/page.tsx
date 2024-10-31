@@ -25,6 +25,8 @@ export default function Admin() {
   const [topCategoriesByPurchases, setTopCategoriesByPurchases] = useState<
     { categories: string[]; purchase_count: number }[]
   >([]);
+  const [retentionData, setRetentionData] = useState<any[]>([]);
+  const [timeUnit, setTimeUnit] = useState<'days' | 'weeks'>('days');
   const supabase = createClientComponentClient();
   useEffect(() => {
     fetchUserStats();
@@ -33,8 +35,9 @@ export default function Admin() {
   useEffect(() => {
     if (userStats) {
       fetchActivityData();
+      calculateRetention();
     }
-  }, [userStats]);
+  }, [userStats, timeUnit]);
 
   async function fetchActivityData() {
     // Fetch all users with their creation dates
@@ -215,6 +218,70 @@ export default function Admin() {
     setActivityData(finalData);
   }
 
+  async function calculateRetention() {
+    // Fetch all users with their first activity
+    const { data: users, error: usersError } = await supabase
+      .from("profiles")
+      .select("id, created_at");
+
+    if (usersError) {
+      console.error("Error fetching users:", usersError);
+      return;
+    }
+
+    // Fetch all activity data
+    const { data: activities, error: activitiesError } = await supabase
+      .from("user_connection_activity")
+      .select("user_id, active_at")
+      .order("active_at", { ascending: true });
+
+    if (activitiesError) {
+      console.error("Error fetching activities:", activitiesError);
+      return;
+    }
+
+    // Group activities by user
+    const userActivities = activities.reduce((acc: any, activity) => {
+      if (!acc[activity.user_id]) {
+        acc[activity.user_id] = [];
+      }
+      acc[activity.user_id].push(new Date(activity.active_at));
+      return acc;
+    }, {});
+
+    // Calculate retention for each period
+    const retentionPeriods = timeUnit === 'weeks' ? 12 : 30; // 12 weeks or 30 days
+    const retentionData = [];
+    const msPerPeriod = timeUnit === 'weeks' ? 7 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
+
+    for (let period = 0; period <= retentionPeriods; period++) {
+      let activeUsers = 0;
+      users.forEach(user => {
+        const userFirstActivity = new Date(user.created_at);
+        const activities = userActivities[user.id] || [];
+        
+        // Check if user was active after the period
+        const hasActivityAfterPeriod = activities.some(activity => {
+          const timeDiff = activity.getTime() - userFirstActivity.getTime();
+          const periodDiff = Math.floor(timeDiff / msPerPeriod);
+          return periodDiff >= period;
+        });
+
+        if (hasActivityAfterPeriod) {
+          activeUsers++;
+        }
+      });
+
+      const retentionRate = (activeUsers / users.length) * 100;
+      retentionData.push({
+        period,
+        retention: Math.round(retentionRate * 100) / 100
+      });
+    }
+
+    setRetentionData(retentionData);
+  }
+
   async function fetchUserStats() {
     const { count: totalUsers, error: error1 } = await supabase
       .from("profiles")
@@ -339,6 +406,55 @@ export default function Admin() {
                   ))}
                 </tbody>
               </table>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex justify-between items-center">
+              <span>User Retention Curve</span>
+              <select 
+                value={timeUnit}
+                onChange={(e) => setTimeUnit(e.target.value as 'days' | 'weeks')}
+                className="select select-bordered w-full max-w-xs"
+              >
+                <option value="days">Days</option>
+                <option value="weeks">Weeks</option>
+              </select>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[400px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={retentionData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis 
+                    dataKey="period" 
+                    label={{ 
+                      value: timeUnit === 'weeks' ? 'Weeks Since First Visit' : 'Days Since First Visit',
+                      position: 'insideBottom',
+                      offset: -5 
+                    }}
+                  />
+                  <YAxis 
+                    label={{ 
+                      value: 'Retention Rate (%)', 
+                      angle: -90, 
+                      position: 'insideLeft',
+                      offset: 15
+                    }}
+                  />
+                  <Tooltip />
+                  <Line
+                    type="monotone"
+                    dataKey="retention"
+                    name="Retention Rate"
+                    stroke="#ff4d4d"
+                    strokeWidth={2}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>
