@@ -243,7 +243,7 @@ export default function BookNook1() {
                 <div className="mt-4">
                   {isEditMode ? (
                     <textarea
-                      className="textarea textarea-bordered w-full resize-none overflow-y-auto"
+                      className="textarea textarea-bordered textarea-primary w-full resize-none overflow-y-auto"
                       style={{ height: "calc(100vh - 32rem)" }}
                       value={editedContent}
                       onChange={(e) => setEditedContent(e.target.value)}

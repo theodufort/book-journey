@@ -60,10 +60,22 @@ module.exports = {
   },
   plugins: [require("daisyui"), require("@tailwindcss/typography")],
   daisyui: {
-    // Light & dark themes are added by default (it switches automatically based on OS settings)
-    // You can add another theme among the list of 30+
-    // Add "data-theme='theme_name" to any HTML tag to enable the 'theme_name' theme.
-    // https://daisyui.com/
-    themes: ["light", "dark"],
+
+     themes: [
+      {
+        light: {
+          "primary": "#cc785c",
+          "secondary": "#007eff",
+          "accent": "#2700ff",
+          "neutral": "#181818",
+          "base-100": "#FFE0B5",
+          "base-200": "#D8AE7E",
+          "info": "#00c0fd",
+          "success": "#00c781",
+          "warning": "#c67c00",
+          "error": "#ff5f65",
+          },
+        },
+      ],
   },
 };

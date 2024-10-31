@@ -602,7 +602,7 @@ export default function BookNotes() {
                           {isEditMode ? (
                             <>
                               <textarea
-                                className="w-full p-3 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical min-h-[200px]"
+                                className="textarea textarea-primary w-full p-3 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical min-h-[200px]"
                                 value={
                                   notes[selectedBook.book_id]?.content || ""
                                 }

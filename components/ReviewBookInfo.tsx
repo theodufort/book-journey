@@ -80,9 +80,7 @@ export default function ReviewBookInfo({
 
       <dialog id="review_modal" className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg mb-4">
-            {t("title")}
-          </h3>
+          <h3 className="font-bold text-lg mb-4">{t("title")}</h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="form-control">
               <label className="label">
@@ -103,7 +101,7 @@ export default function ReviewBookInfo({
                 <span className="label-text">{t("field_description")}</span>
               </label>
               <textarea
-                className="textarea textarea-bordered"
+                className="textarea textarea-bordered textarea-primary"
                 rows={3}
                 value={modification.description || ""}
                 onChange={(e) =>

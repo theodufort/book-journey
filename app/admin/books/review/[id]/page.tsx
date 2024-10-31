@@ -200,7 +200,7 @@ export default function ReviewDetail({ params }: { params: { id: string } }) {
                 value={updateFields.description}
                 onChange={handleInputChange}
                 placeholder="Enter new description"
-                className="textarea textarea-bordered h-24"
+                className="textarea textarea-bordered h-24 textarea-primary"
               />
             </div>
 

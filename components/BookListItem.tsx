@@ -560,7 +560,7 @@ export default function BookListItem({
           </label>
           <textarea
             id="review"
-            className="textarea textarea-bordered w-full h-auto mt-2"
+            className="textarea textarea-bordered textarea-primary w-full h-auto mt-2"
             placeholder="Write your review here..."
             value={review}
             onChange={(e) => {

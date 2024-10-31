@@ -32,7 +32,9 @@ export default function IndieAuthors() {
     website: "",
   });
   const [searchTerm, setSearchTerm] = useState("");
-  const [isApprovedFilter, setIsApprovedFilter] = useState<boolean | null>(null);
+  const [isApprovedFilter, setIsApprovedFilter] = useState<boolean | null>(
+    null
+  );
   const supabase = createClientComponentClient();
   const pageSize = 10;
 
@@ -89,7 +91,8 @@ export default function IndieAuthors() {
       is_approved: selectedAuthor?.is_approved || false,
       presentation: selectedAuthor?.presentation || "",
       birth_date: selectedAuthor?.birth_date || "",
-      first_book_published_year: selectedAuthor?.first_book_published_year || "",
+      first_book_published_year:
+        selectedAuthor?.first_book_published_year || "",
       personal_favorite_genres: selectedAuthor?.personal_favorite_genres || [],
       main_writing_genres: selectedAuthor?.main_writing_genres || [],
       type_of_books: selectedAuthor?.type_of_books || [],
@@ -203,9 +206,13 @@ export default function IndieAuthors() {
                 <TableCell className="text-md">
                   {author.is_approved ? "Yes" : "No"}
                 </TableCell>
-                <TableCell className="text-md">{author.website || "N/A"}</TableCell>
                 <TableCell className="text-md">
-                  {author.twitter || author.facebook || author.instagram ? "Yes" : "No"}
+                  {author.website || "N/A"}
+                </TableCell>
+                <TableCell className="text-md">
+                  {author.twitter || author.facebook || author.instagram
+                    ? "Yes"
+                    : "No"}
                 </TableCell>
               </TableRow>
             ))}
@@ -233,35 +240,82 @@ export default function IndieAuthors() {
           </button>
         </div>
       </div>
-      <dialog id="author_modal" className={`modal ${isModalOpen ? 'modal-open' : ''}`}>
+      <dialog
+        id="author_modal"
+        className={`modal ${isModalOpen ? "modal-open" : ""}`}
+      >
         <div className="modal-box">
           <form method="dialog">
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={() => setIsModalOpen(false)}>✕</button>
+            <button
+              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+              onClick={() => setIsModalOpen(false)}
+            >
+              ✕
+            </button>
           </form>
           <h3 className="font-bold text-lg">{selectedAuthor?.name}</h3>
           <div className="py-4 space-y-2">
-            <p><strong>Email:</strong> {selectedAuthor?.email}</p>
-            <p><strong>Approved:</strong> {selectedAuthor?.is_approved ? "Yes" : "No"}</p>
-            <p><strong>Presentation:</strong> {selectedAuthor?.presentation || "N/A"}</p>
-            <p><strong>Birth Date:</strong> {selectedAuthor?.birth_date || "N/A"}</p>
-            <p><strong>First Book Published Year:</strong> {selectedAuthor?.first_book_published_year || "N/A"}</p>
-            <p><strong>Personal Favorite Genres:</strong> {selectedAuthor?.personal_favorite_genres?.join(", ") || "N/A"}</p>
-            <p><strong>Main Writing Genres:</strong> {selectedAuthor?.main_writing_genres?.join(", ") || "N/A"}</p>
-            <p><strong>Type of Books:</strong> {selectedAuthor?.type_of_books?.join(", ") || "N/A"}</p>
-            <p><strong>Picture Link:</strong> {selectedAuthor?.picture_link || "N/A"}</p>
-            <p><strong>Website:</strong> {selectedAuthor?.website || "N/A"}</p>
+            <p>
+              <strong>Email:</strong> {selectedAuthor?.email}
+            </p>
+            <p>
+              <strong>Approved:</strong>{" "}
+              {selectedAuthor?.is_approved ? "Yes" : "No"}
+            </p>
+            <p>
+              <strong>Presentation:</strong>{" "}
+              {selectedAuthor?.presentation || "N/A"}
+            </p>
+            <p>
+              <strong>Birth Date:</strong> {selectedAuthor?.birth_date || "N/A"}
+            </p>
+            <p>
+              <strong>First Book Published Year:</strong>{" "}
+              {selectedAuthor?.first_book_published_year || "N/A"}
+            </p>
+            <p>
+              <strong>Personal Favorite Genres:</strong>{" "}
+              {selectedAuthor?.personal_favorite_genres?.join(", ") || "N/A"}
+            </p>
+            <p>
+              <strong>Main Writing Genres:</strong>{" "}
+              {selectedAuthor?.main_writing_genres?.join(", ") || "N/A"}
+            </p>
+            <p>
+              <strong>Type of Books:</strong>{" "}
+              {selectedAuthor?.type_of_books?.join(", ") || "N/A"}
+            </p>
+            <p>
+              <strong>Picture Link:</strong>{" "}
+              {selectedAuthor?.picture_link || "N/A"}
+            </p>
+            <p>
+              <strong>Website:</strong> {selectedAuthor?.website || "N/A"}
+            </p>
           </div>
           <div className="modal-action">
-            <button className="btn" onClick={handleEditAuthor}>Edit</button>
-            <button className="btn" onClick={() => setIsModalOpen(false)}>Close</button>
+            <button className="btn" onClick={handleEditAuthor}>
+              Edit
+            </button>
+            <button className="btn" onClick={() => setIsModalOpen(false)}>
+              Close
+            </button>
           </div>
         </div>
       </dialog>
 
-      <dialog id="edit_modal" className={`modal ${isEditModalOpen ? 'modal-open' : ''}`}>
+      <dialog
+        id="edit_modal"
+        className={`modal ${isEditModalOpen ? "modal-open" : ""}`}
+      >
         <div className="modal-box">
           <form method="dialog">
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={() => setIsEditModalOpen(false)}>✕</button>
+            <button
+              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+              onClick={() => setIsEditModalOpen(false)}
+            >
+              ✕
+            </button>
           </form>
           <h3 className="font-bold text-lg">Edit Author</h3>
           <div className="py-4 space-y-4">
@@ -274,7 +328,9 @@ export default function IndieAuthors() {
                 id="name"
                 className="input input-bordered"
                 value={editedAuthor.name}
-                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, name: e.target.value }))}
+                onChange={(e) =>
+                  setEditedAuthor((prev) => ({ ...prev, name: e.target.value }))
+                }
               />
             </div>
             <div className="form-control">
@@ -286,7 +342,12 @@ export default function IndieAuthors() {
                 id="email"
                 className="input input-bordered"
                 value={editedAuthor.email}
-                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, email: e.target.value }))}
+                onChange={(e) =>
+                  setEditedAuthor((prev) => ({
+                    ...prev,
+                    email: e.target.value,
+                  }))
+                }
               />
             </div>
             <div className="form-control">
@@ -296,7 +357,12 @@ export default function IndieAuthors() {
                   type="checkbox"
                   className="checkbox"
                   checked={editedAuthor.is_approved}
-                  onChange={(e) => setEditedAuthor((prev) => ({ ...prev, is_approved: e.target.checked }))}
+                  onChange={(e) =>
+                    setEditedAuthor((prev) => ({
+                      ...prev,
+                      is_approved: e.target.checked,
+                    }))
+                  }
                 />
               </label>
             </div>
@@ -306,9 +372,14 @@ export default function IndieAuthors() {
               </label>
               <textarea
                 id="presentation"
-                className="textarea textarea-bordered"
+                className="textarea textarea-bordered textarea-primary"
                 value={editedAuthor.presentation}
-                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, presentation: e.target.value }))}
+                onChange={(e) =>
+                  setEditedAuthor((prev) => ({
+                    ...prev,
+                    presentation: e.target.value,
+                  }))
+                }
               ></textarea>
             </div>
             <div className="form-control">
@@ -320,7 +391,12 @@ export default function IndieAuthors() {
                 id="birth_date"
                 className="input input-bordered"
                 value={editedAuthor.birth_date}
-                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, birth_date: e.target.value }))}
+                onChange={(e) =>
+                  setEditedAuthor((prev) => ({
+                    ...prev,
+                    birth_date: e.target.value,
+                  }))
+                }
               />
             </div>
             <div className="form-control">
@@ -332,7 +408,12 @@ export default function IndieAuthors() {
                 id="first_book_published_year"
                 className="input input-bordered"
                 value={editedAuthor.first_book_published_year}
-                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, first_book_published_year: e.target.value }))}
+                onChange={(e) =>
+                  setEditedAuthor((prev) => ({
+                    ...prev,
+                    first_book_published_year: e.target.value,
+                  }))
+                }
               />
             </div>
             <div className="form-control">
@@ -344,7 +425,12 @@ export default function IndieAuthors() {
                 id="personal_favorite_genres"
                 className="input input-bordered"
                 value={editedAuthor.personal_favorite_genres.join(", ")}
-                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, personal_favorite_genres: e.target.value.split(", ") }))}
+                onChange={(e) =>
+                  setEditedAuthor((prev) => ({
+                    ...prev,
+                    personal_favorite_genres: e.target.value.split(", "),
+                  }))
+                }
               />
             </div>
             <div className="form-control">
@@ -356,7 +442,12 @@ export default function IndieAuthors() {
                 id="main_writing_genres"
                 className="input input-bordered"
                 value={editedAuthor.main_writing_genres.join(", ")}
-                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, main_writing_genres: e.target.value.split(", ") }))}
+                onChange={(e) =>
+                  setEditedAuthor((prev) => ({
+                    ...prev,
+                    main_writing_genres: e.target.value.split(", "),
+                  }))
+                }
               />
             </div>
             <div className="form-control">
@@ -368,7 +459,12 @@ export default function IndieAuthors() {
                 id="type_of_books"
                 className="input input-bordered"
                 value={editedAuthor.type_of_books.join(", ")}
-                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, type_of_books: e.target.value.split(", ") }))}
+                onChange={(e) =>
+                  setEditedAuthor((prev) => ({
+                    ...prev,
+                    type_of_books: e.target.value.split(", "),
+                  }))
+                }
               />
             </div>
             <div className="form-control">
@@ -380,7 +476,12 @@ export default function IndieAuthors() {
                 id="picture_link"
                 className="input input-bordered"
                 value={editedAuthor.picture_link}
-                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, picture_link: e.target.value }))}
+                onChange={(e) =>
+                  setEditedAuthor((prev) => ({
+                    ...prev,
+                    picture_link: e.target.value,
+                  }))
+                }
               />
             </div>
             <div className="form-control">
@@ -392,13 +493,22 @@ export default function IndieAuthors() {
                 id="website"
                 className="input input-bordered"
                 value={editedAuthor.website}
-                onChange={(e) => setEditedAuthor((prev) => ({ ...prev, website: e.target.value }))}
+                onChange={(e) =>
+                  setEditedAuthor((prev) => ({
+                    ...prev,
+                    website: e.target.value,
+                  }))
+                }
               />
             </div>
           </div>
           <div className="modal-action">
-            <button className="btn btn-primary" onClick={updateAuthor}>Save</button>
-            <button className="btn" onClick={() => setIsEditModalOpen(false)}>Cancel</button>
+            <button className="btn btn-primary" onClick={updateAuthor}>
+              Save
+            </button>
+            <button className="btn" onClick={() => setIsEditModalOpen(false)}>
+              Cancel
+            </button>
           </div>
         </div>
       </dialog>
