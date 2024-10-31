@@ -420,7 +420,7 @@ export default function BookNook1() {
                   setIsTranslating(true);
                   try {
                     const response = await fetch(
-                      "https://translate.mybookquest.com:5000/translate",
+                      "https://translate.mybookquest.com/translate",
                       {
                         method: "POST",
                         headers: {
