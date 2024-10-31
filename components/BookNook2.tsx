@@ -787,6 +787,7 @@ export default function BookNook1() {
         isOpen={showCongrats}
         onClose={() => setShowCongrats(false)}
         pagesRead={pagesRead}
+        sessionStartTime={sessionStartTime}
       />
     </div>
   );
