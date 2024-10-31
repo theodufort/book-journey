@@ -330,38 +330,43 @@ export default function BookNook1() {
                 ))}
               </select>
               <div className="flex items-center gap-2">
-                <div className="join">
-                  <input 
-                    type="number" 
-                    className="join-item input input-bordered input-sm w-16 text-white"
-                    placeholder="HH"
-                    min="0"
-                    max="99"
-                    value={hours || ''}
-                    onChange={(e) => setHours(Math.min(99, Math.max(0, parseInt(e.target.value) || 0)))}
-                    disabled={isTimerRunning}
-                  />
-                  <input 
-                    type="number"
-                    className="join-item input input-bordered input-sm w-16 text-white"
-                    placeholder="MM"
-                    min="0"
-                    max="59"
-                    value={minutes || ''}
-                    onChange={(e) => setMinutes(Math.min(59, Math.max(0, parseInt(e.target.value) || 0)))}
-                    disabled={isTimerRunning}
-                  />
-                  <input 
-                    type="number"
-                    className="join-item input input-bordered input-sm w-16 text-white"
-                    placeholder="SS"
-                    min="0"
-                    max="59"
-                    value={seconds || ''}
-                    onChange={(e) => setSeconds(Math.min(59, Math.max(0, parseInt(e.target.value) || 0)))}
-                    disabled={isTimerRunning}
-                  />
-                </div>
+                {isTimerRunning ? (
+                  <div className="countdown font-mono text-2xl">
+                    <span style={{"--value": hours} as React.CSSProperties}></span>:
+                    <span style={{"--value": minutes} as React.CSSProperties}></span>:
+                    <span style={{"--value": seconds} as React.CSSProperties}></span>
+                  </div>
+                ) : (
+                  <div className="join">
+                    <input 
+                      type="number" 
+                      className="join-item input input-bordered input-sm w-16 text-white"
+                      placeholder="HH"
+                      min="0"
+                      max="99"
+                      value={hours || ''}
+                      onChange={(e) => setHours(Math.min(99, Math.max(0, parseInt(e.target.value) || 0)))}
+                    />
+                    <input 
+                      type="number"
+                      className="join-item input input-bordered input-sm w-16 text-white"
+                      placeholder="MM"
+                      min="0"
+                      max="59"
+                      value={minutes || ''}
+                      onChange={(e) => setMinutes(Math.min(59, Math.max(0, parseInt(e.target.value) || 0)))}
+                    />
+                    <input 
+                      type="number"
+                      className="join-item input input-bordered input-sm w-16 text-white"
+                      placeholder="SS"
+                      min="0"
+                      max="59"
+                      value={seconds || ''}
+                      onChange={(e) => setSeconds(Math.min(59, Math.max(0, parseInt(e.target.value) || 0)))}
+                    />
+                  </div>
+                )}
                 <button 
                   className="btn btn-sm btn-primary"
                   onClick={() => {
@@ -395,11 +400,6 @@ export default function BookNook1() {
                 >
                   {isTimerRunning ? 'Stop' : 'Start'}
                 </button>
-                <div className="countdown font-mono text-lg">
-                  <span style={{"--value": hours} as React.CSSProperties}></span>h
-                  <span style={{"--value": minutes} as React.CSSProperties}></span>m
-                  <span style={{"--value": seconds} as React.CSSProperties}></span>s
-                </div>
               </div>
             </div>
           </div>
