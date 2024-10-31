@@ -57,6 +57,7 @@ export default function BookNook1() {
     }
 
     setBookStickys(data || []);
+    console.log("Fetched bookStickys:", data);
     console.log(selectedBook);
   }, [user, selectedBook, supabase]);
 
@@ -469,6 +470,7 @@ export default function BookNook1() {
 
           <div className="flex-1 overflow-y-auto mt-4 pr-2">
             <div className="space-y-3">
+              {console.log("Rendering bookStickys:", bookStickys)}
               {!selectedBook ? (
                 <div className="text-center p-4 bg-base-200 rounded-lg">
                   <p>Select a book to view notes</p>
