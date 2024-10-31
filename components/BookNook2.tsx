@@ -688,7 +688,11 @@ export default function BookNook1() {
                 placeholder="Hours"
                 min="0"
                 max="99"
-                onChange={(e) => setHours(Math.min(99, Math.max(0, parseInt(e.target.value) || 0)))}
+                onChange={(e) =>
+                  setHours(
+                    Math.min(99, Math.max(0, parseInt(e.target.value) || 0))
+                  )
+                }
               />
               <input
                 type="number"
@@ -696,7 +700,11 @@ export default function BookNook1() {
                 placeholder="Minutes"
                 min="0"
                 max="59"
-                onChange={(e) => setMinutes(Math.min(59, Math.max(0, parseInt(e.target.value) || 0)))}
+                onChange={(e) =>
+                  setMinutes(
+                    Math.min(59, Math.max(0, parseInt(e.target.value) || 0))
+                  )
+                }
               />
               <input
                 type="number"
@@ -704,7 +712,11 @@ export default function BookNook1() {
                 placeholder="Seconds"
                 min="0"
                 max="59"
-                onChange={(e) => setSeconds(Math.min(59, Math.max(0, parseInt(e.target.value) || 0)))}
+                onChange={(e) =>
+                  setSeconds(
+                    Math.min(59, Math.max(0, parseInt(e.target.value) || 0))
+                  )
+                }
               />
             </div>
             <div className="modal-action">
@@ -714,48 +726,49 @@ export default function BookNook1() {
                   onClick={() => {
                     setIsTimerRunning(true);
                     const interval = setInterval(() => {
-                    setSeconds((s) => {
-                      if (s === 0) {
-                        if (minutes === 0 && hours === 0) {
-                          if (timerInterval) clearInterval(timerInterval);
-                          setIsTimerRunning(false);
-                          setTimerInterval(null);
-                          (
-                            document.getElementById(
-                              "timer_modal"
-                            ) as HTMLDialogElement
-                          )?.showModal();
-                          return 0;
-                        }
-                        setMinutes((m) => {
-                          if (m === 0) {
-                            if (hours > 0) {
-                              setHours((h) => h - 1);
-                              return 59;
-                            }
+                      setSeconds((s) => {
+                        if (s === 0) {
+                          if (minutes === 0 && hours === 0) {
+                            if (timerInterval) clearInterval(timerInterval);
+                            setIsTimerRunning(false);
+                            setTimerInterval(null);
+                            (
+                              document.getElementById(
+                                "timer_modal"
+                              ) as HTMLDialogElement
+                            )?.showModal();
                             return 0;
                           }
-                          return m - 1;
-                        });
-                        return 59;
-                      }
-                      return s - 1;
-                    });
-                  }, 1000);
-                  setTimerInterval(interval);
-                }}
-              >
-                Start Timer
-              </button>
-              <button
-                className="btn"
-                onClick={() => {
-                  handleLogSession();
-                }}
-              >
-                Log Session
-              </button>
-            </form>
+                          setMinutes((m) => {
+                            if (m === 0) {
+                              if (hours > 0) {
+                                setHours((h) => h - 1);
+                                return 59;
+                              }
+                              return 0;
+                            }
+                            return m - 1;
+                          });
+                          return 59;
+                        }
+                        return s - 1;
+                      });
+                    }, 1000);
+                    setTimerInterval(interval);
+                  }}
+                >
+                  Start Timer
+                </button>
+                <button
+                  className="btn"
+                  onClick={() => {
+                    handleLogSession();
+                  }}
+                >
+                  Log Session
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </dialog>
