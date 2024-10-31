@@ -34,6 +34,7 @@ export default function BookNook1() {
   const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(
     null
   );
+  const [sessionStartTime, setSessionStartTime] = useState<Date | null>(null);
   const [currentPage, setCurrentPage] = useState(123);
   const [startPage, setStartPage] = useState<number>(0);
   const [endPage, setEndPage] = useState<number>(0);
