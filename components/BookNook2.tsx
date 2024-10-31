@@ -456,6 +456,14 @@ export default function BookNook1() {
                 )}
               </button>
             </div>
+
+            <input
+              type="text"
+              className="input input-bordered w-full text-white"
+              placeholder="Search notes..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
 
           <div className="flex-1 overflow-y-auto mt-4 pr-2">
