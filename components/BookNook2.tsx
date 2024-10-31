@@ -39,6 +39,7 @@ export default function BookNook1() {
   const [textToTranslate, setTextToTranslate] = useState("");
   const [targetLang, setTargetLang] = useState("en");
   const [isTranslating, setIsTranslating] = useState(false);
+  const [customLabel, setCustomLabel] = useState("");
 
   const fetchStickys = useCallback(async () => {
     if (!user || !selectedBook) return;
@@ -246,7 +247,7 @@ export default function BookNook1() {
         })
         .select()
         .single();
-    const label = `${startPage}-${endPage}`;
+    const label = customLabel.trim() || `${startPage}-${endPage}`;
 
     const { error } = await supabase.from("sticky_notes").insert({
       user_id: user.id,
@@ -265,6 +266,7 @@ export default function BookNook1() {
     toast.success("Session logged successfully!");
     setDailyNoteContent("");
     setNewNoteContent("");
+    setCustomLabel("");
     fetchStickys();
     setStartPage(endPage);
     setEndPage(0);
@@ -489,6 +491,13 @@ export default function BookNook1() {
           {/* Bottom Action - Log Session / Bookmark - Only show on Quick Note tab */}
           {tab === "Quick Note" && (
             <div className="mt-4 space-y-2">
+              <input
+                type="text"
+                className="input input-bordered w-full text-white"
+                placeholder="Custom Label (optional)"
+                value={customLabel}
+                onChange={(e) => setCustomLabel(e.target.value)}
+              />
               <div className="join w-full">
                 <input
                   type="number"
