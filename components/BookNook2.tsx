@@ -27,8 +27,11 @@ export default function BookNook1() {
   const [searchQuery, setSearchQuery] = useState("");
   const [newNoteContent, setNewNoteContent] = useState("");
   const [tab, setTab] = useState("Quick Note");
-  const [timer, setTimer] = useState(1800); // 30 minutes in seconds
+  const [hours, setHours] = useState(0);
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(0);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(null);
   const [currentPage, setCurrentPage] = useState(123);
   const [startPage, setStartPage] = useState<number>(0);
   const [endPage, setEndPage] = useState<number>(0);
@@ -40,6 +43,15 @@ export default function BookNook1() {
   const [targetLang, setTargetLang] = useState("en");
   const [isTranslating, setIsTranslating] = useState(false);
   const [customLabel, setCustomLabel] = useState("");
+
+  // Cleanup timer interval on unmount
+  useEffect(() => {
+    return () => {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+      }
+    };
+  }, [timerInterval]);
 
   const fetchStickys = useCallback(async () => {
     if (!user || !selectedBook) return;
@@ -317,13 +329,78 @@ export default function BookNook1() {
                   </option>
                 ))}
               </select>
-              {/* <div className="flex items-center gap-2">
-                <Clock size={18} />
-                <span className="font-mono">
-                  {Math.floor(timer / 60)}:
-                  {(timer % 60).toString().padStart(2, "0")}
-                </span>
-              </div> */}
+              <div className="flex items-center gap-2">
+                <div className="join">
+                  <input 
+                    type="number" 
+                    className="join-item input input-bordered input-sm w-16 text-white"
+                    placeholder="HH"
+                    min="0"
+                    max="99"
+                    value={hours || ''}
+                    onChange={(e) => setHours(Math.min(99, Math.max(0, parseInt(e.target.value) || 0)))}
+                    disabled={isTimerRunning}
+                  />
+                  <input 
+                    type="number"
+                    className="join-item input input-bordered input-sm w-16 text-white"
+                    placeholder="MM"
+                    min="0"
+                    max="59"
+                    value={minutes || ''}
+                    onChange={(e) => setMinutes(Math.min(59, Math.max(0, parseInt(e.target.value) || 0)))}
+                    disabled={isTimerRunning}
+                  />
+                  <input 
+                    type="number"
+                    className="join-item input input-bordered input-sm w-16 text-white"
+                    placeholder="SS"
+                    min="0"
+                    max="59"
+                    value={seconds || ''}
+                    onChange={(e) => setSeconds(Math.min(59, Math.max(0, parseInt(e.target.value) || 0)))}
+                    disabled={isTimerRunning}
+                  />
+                </div>
+                <button 
+                  className="btn btn-sm btn-primary"
+                  onClick={() => {
+                    if (isTimerRunning) {
+                      if (timerInterval) clearInterval(timerInterval);
+                      setIsTimerRunning(false);
+                      setTimerInterval(null);
+                    } else {
+                      if (hours === 0 && minutes === 0 && seconds === 0) return;
+                      setIsTimerRunning(true);
+                      const interval = setInterval(() => {
+                        setSeconds(s => {
+                          if (s > 0) return s - 1;
+                          setMinutes(m => {
+                            if (m > 0) return m - 1;
+                            setHours(h => {
+                              if (h > 0) return h - 1;
+                              clearInterval(interval);
+                              setIsTimerRunning(false);
+                              setTimerInterval(null);
+                              return 0;
+                            });
+                            return 59;
+                          });
+                          return 59;
+                        });
+                      }, 1000);
+                      setTimerInterval(interval);
+                    }
+                  }}
+                >
+                  {isTimerRunning ? 'Stop' : 'Start'}
+                </button>
+                <div className="countdown font-mono text-lg">
+                  <span style={{"--value": hours} as React.CSSProperties}></span>h
+                  <span style={{"--value": minutes} as React.CSSProperties}></span>m
+                  <span style={{"--value": seconds} as React.CSSProperties}></span>s
+                </div>
+              </div>
             </div>
           </div>
 
