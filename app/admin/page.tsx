@@ -26,7 +26,7 @@ export default function Admin() {
     { categories: string[]; purchase_count: number }[]
   >([]);
   const [retentionData, setRetentionData] = useState<any[]>([]);
-  const [timeUnit, setTimeUnit] = useState<'days' | 'weeks'>('days');
+  const [timeUnit, setTimeUnit] = useState<"days" | "weeks">("days");
   const supabase = createClientComponentClient();
   useEffect(() => {
     fetchUserStats();
@@ -250,18 +250,19 @@ export default function Admin() {
     }, {});
 
     // Calculate retention for each period
-    const retentionPeriods = timeUnit === 'weeks' ? 12 : 30; // 12 weeks or 30 days
+    const retentionPeriods = timeUnit === "weeks" ? 12 : 30; // 12 weeks or 30 days
     const retentionData = [];
-    const msPerPeriod = timeUnit === 'weeks' ? 7 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
+    const msPerPeriod =
+      timeUnit === "weeks" ? 7 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
 
     for (let period = 0; period <= retentionPeriods; period++) {
       let activeUsers = 0;
-      users.forEach(user => {
+      users.forEach((user) => {
         const userFirstActivity = new Date(user.created_at);
         const activities = userActivities[user.id] || [];
-        
+
         // Check if user was active after the period
-        const hasActivityAfterPeriod = activities.some(activity => {
+        const hasActivityAfterPeriod = activities.some((activity: any) => {
           const timeDiff = activity.getTime() - userFirstActivity.getTime();
           const periodDiff = Math.floor(timeDiff / msPerPeriod);
           return periodDiff >= period;
@@ -275,7 +276,7 @@ export default function Admin() {
       const retentionRate = (activeUsers / users.length) * 100;
       retentionData.push({
         period,
-        retention: Math.round(retentionRate * 100) / 100
+        retention: Math.round(retentionRate * 100) / 100,
       });
     }
 
@@ -414,9 +415,11 @@ export default function Admin() {
           <CardHeader>
             <CardTitle className="flex justify-between items-center">
               <span>User Retention Curve</span>
-              <select 
+              <select
                 value={timeUnit}
-                onChange={(e) => setTimeUnit(e.target.value as 'days' | 'weeks')}
+                onChange={(e) =>
+                  setTimeUnit(e.target.value as "days" | "weeks")
+                }
                 className="select select-bordered w-full max-w-xs"
               >
                 <option value="days">Days</option>
@@ -429,20 +432,23 @@ export default function Admin() {
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={retentionData}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis 
-                    dataKey="period" 
-                    label={{ 
-                      value: timeUnit === 'weeks' ? 'Weeks Since First Visit' : 'Days Since First Visit',
-                      position: 'insideBottom',
-                      offset: -5 
+                  <XAxis
+                    dataKey="period"
+                    label={{
+                      value:
+                        timeUnit === "weeks"
+                          ? "Weeks Since First Visit"
+                          : "Days Since First Visit",
+                      position: "insideBottom",
+                      offset: -5,
                     }}
                   />
-                  <YAxis 
-                    label={{ 
-                      value: 'Retention Rate (%)', 
-                      angle: -90, 
-                      position: 'insideLeft',
-                      offset: 15
+                  <YAxis
+                    label={{
+                      value: "Retention Rate (%)",
+                      angle: -90,
+                      position: "insideLeft",
+                      offset: 15,
                     }}
                   />
                   <Tooltip />
