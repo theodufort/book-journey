@@ -381,8 +381,13 @@ export default function BookNook1() {
                         setSeconds(s => {
                           if (s === 0) {
                             if (minutes === 0 && hours === 0) {
-                              // Start counting negative
-                              return -1;
+                              // Timer finished
+                              if (timerInterval) clearInterval(timerInterval);
+                              setIsTimerRunning(false);
+                              setTimerInterval(null);
+                              // Show dialog
+                              (document.getElementById('timer_modal') as HTMLDialogElement)?.showModal();
+                              return 0;
                             }
                             setMinutes(m => {
                               if (m === 0) {
@@ -625,6 +630,61 @@ export default function BookNook1() {
           )}
         </div>
       </div>
+      {/* Timer finished modal */}
+      <dialog id="timer_modal" className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Timer Finished!</h3>
+          <p className="py-4">Would you like to extend the timer or log your session?</p>
+          <div className="modal-action">
+            <form method="dialog" className="flex gap-2">
+              <button 
+                className="btn btn-primary"
+                onClick={() => {
+                  // Add 15 minutes and restart
+                  setMinutes(m => m + 15);
+                  setIsTimerRunning(true);
+                  const interval = setInterval(() => {
+                    setSeconds(s => {
+                      if (s === 0) {
+                        if (minutes === 0 && hours === 0) {
+                          if (timerInterval) clearInterval(timerInterval);
+                          setIsTimerRunning(false);
+                          setTimerInterval(null);
+                          (document.getElementById('timer_modal') as HTMLDialogElement)?.showModal();
+                          return 0;
+                        }
+                        setMinutes(m => {
+                          if (m === 0) {
+                            if (hours > 0) {
+                              setHours(h => h - 1);
+                              return 59;
+                            }
+                            return 0;
+                          }
+                          return m - 1;
+                        });
+                        return 59;
+                      }
+                      return s - 1;
+                    });
+                  }, 1000);
+                  setTimerInterval(interval);
+                }}
+              >
+                Add 15 Minutes
+              </button>
+              <button 
+                className="btn"
+                onClick={() => {
+                  handleLogSession();
+                }}
+              >
+                Log Session
+              </button>
+            </form>
+          </div>
+        </div>
+      </dialog>
     </div>
   );
 }
