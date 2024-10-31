@@ -395,7 +395,7 @@ export default function BookNook1() {
                   value={textToTranslate}
                   onChange={(e) => setTextToTranslate(e.target.value)}
                 />
-                <select 
+                <select
                   className="join-item select select-bordered w-1/4 text-white"
                   value={targetLang}
                   onChange={(e) => setTargetLang(e.target.value)}
@@ -412,32 +412,35 @@ export default function BookNook1() {
                   <option value="zh">ZH</option>
                 </select>
               </div>
-              <button 
-                className="btn btn-primary w-full"
+              <button
+                className="btn btn-primary btn-sm w-full"
                 onClick={async () => {
                   if (!textToTranslate) return;
-                  
+
                   setIsTranslating(true);
                   try {
-                    const response = await fetch('http://translate.mybookquest.com:5000/translate', {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify({
-                        q: textToTranslate,
-                        source: 'auto',
-                        target: targetLang,
-                      }),
-                    });
+                    const response = await fetch(
+                      "http://translate.mybookquest.com:5000/translate",
+                      {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          q: textToTranslate,
+                          source: "auto",
+                          target: targetLang,
+                        }),
+                      }
+                    );
 
-                    if (!response.ok) throw new Error('Translation failed');
-                    
+                    if (!response.ok) throw new Error("Translation failed");
+
                     const data = await response.json();
                     setTextToTranslate(data.translatedText);
                   } catch (error) {
-                    console.error('Translation error:', error);
-                    toast.error('Translation failed');
+                    console.error("Translation error:", error);
+                    toast.error("Translation failed");
                   } finally {
                     setIsTranslating(false);
                   }
@@ -447,7 +450,7 @@ export default function BookNook1() {
                 {isTranslating ? (
                   <span className="loading loading-spinner loading-sm"></span>
                 ) : (
-                  'Translate'
+                  "Translate"
                 )}
               </button>
             </div>

@@ -81,7 +81,7 @@ const EmailForm: React.FC<EmailFormProps> = ({ onSuccess, onError }) => {
           onChange={(e) => setContent(e.target.value)}
           required
           rows={6}
-          className="mt-1 block p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+          className="mt-1 block p-2 w-full textarea-primary rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
         ></textarea>
       </div>
       <div>

@@ -79,7 +79,7 @@ const SuggestImprovementBadge = () => {
                 <textarea
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  className="textarea textarea-bordered w-full h-32"
+                  className="textarea textarea-bordered textarea-primary w-full h-32"
                   required
                 />
               </div>
