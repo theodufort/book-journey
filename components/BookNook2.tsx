@@ -769,7 +769,7 @@ export default function BookNook1() {
                 <button
                   className="btn"
                   onClick={() => {
-                    handleLogSession();
+                    // Just close the modal
                   }}
                 >
                   Log Session
