@@ -332,9 +332,9 @@ export default function BookNook1() {
               <div className="flex items-center gap-2">
                 {isTimerRunning ? (
                   <div className="countdown font-mono text-2xl">
-                    <span style={{"--value": hours} as React.CSSProperties}></span>:
-                    <span style={{"--value": minutes} as React.CSSProperties}></span>:
-                    <span style={{"--value": seconds} as React.CSSProperties}></span>
+                    <span style={{"--value": Math.abs(hours)} as React.CSSProperties}></span>:
+                    <span style={{"--value": Math.abs(minutes)} as React.CSSProperties}></span>:
+                    <span style={{"--value": Math.abs(seconds)} as React.CSSProperties}>{seconds < 0 ? '-' : ''}</span>
                   </div>
                 ) : (
                   <div className="join">
@@ -379,19 +379,24 @@ export default function BookNook1() {
                       setIsTimerRunning(true);
                       const interval = setInterval(() => {
                         setSeconds(s => {
-                          if (s > 0) return s - 1;
-                          setMinutes(m => {
-                            if (m > 0) return m - 1;
-                            setHours(h => {
-                              if (h > 0) return h - 1;
-                              clearInterval(interval);
-                              setIsTimerRunning(false);
-                              setTimerInterval(null);
-                              return 0;
+                          if (s === 0) {
+                            if (minutes === 0 && hours === 0) {
+                              // Start counting negative
+                              return -1;
+                            }
+                            setMinutes(m => {
+                              if (m === 0) {
+                                if (hours > 0) {
+                                  setHours(h => h - 1);
+                                  return 59;
+                                }
+                                return 0;
+                              }
+                              return m - 1;
                             });
                             return 59;
-                          });
-                          return 59;
+                          }
+                          return s - 1;
                         });
                       }, 1000);
                       setTimerInterval(interval);
