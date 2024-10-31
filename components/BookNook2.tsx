@@ -38,6 +38,7 @@ export default function BookNook1() {
   const [isEditMode, setIsEditMode] = useState(true);
   const [textToTranslate, setTextToTranslate] = useState("");
   const [targetLang, setTargetLang] = useState("en");
+  const [isTranslating, setIsTranslating] = useState(false);
 
   const fetchStickys = useCallback(async () => {
     if (!user || !selectedBook) return;
@@ -416,6 +417,7 @@ export default function BookNook1() {
                 onClick={async () => {
                   if (!textToTranslate) return;
                   
+                  setIsTranslating(true);
                   try {
                     const response = await fetch('http://translate.mybookquest.com:5000/translate', {
                       method: 'POST',
@@ -436,10 +438,17 @@ export default function BookNook1() {
                   } catch (error) {
                     console.error('Translation error:', error);
                     toast.error('Translation failed');
+                  } finally {
+                    setIsTranslating(false);
                   }
                 }}
+                disabled={isTranslating}
               >
-                Translate
+                {isTranslating ? (
+                  <span className="loading loading-spinner loading-sm"></span>
+                ) : (
+                  'Translate'
+                )}
               </button>
             </div>
           </div>
