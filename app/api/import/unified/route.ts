@@ -33,16 +33,21 @@ export async function POST(request: Request) {
   for (const row of parsedData.data) {
     const bookData = parseBookData(row, importType);
     // Skip records with invalid or missing status
-    if (bookData.isbn && bookData.read_status) {
+    if (bookData.isbn) {
       const { error } = await supabase
         .from("reading_list")
         .upsert({
           user_id: userId,
-          book_id: bookData.isbn, // Use book_id for upsert
-          status: bookData.read_status,
-          rating: bookData.rating ? bookData.rating : null, // Ensure rating is a number
+          book_id: bookData.isbn,
+          status: bookData.read_status
+            ? mapStatus(bookData.read_status)
+            : mapStatus("to-read"),
+          rating: bookData.rating ? bookData.rating : null,
           review: bookData.review,
-          tags: bookData.tags,
+          tags:
+            bookData.tags && bookData.tags.length > 0
+              ? bookData.tags.split(",").map((x: any) => x.trim())
+              : null, // Set to null if empty
           reading_at: bookData.date_started
             ? new Date(bookData.date_started)
             : null,
@@ -51,7 +56,8 @@ export async function POST(request: Request) {
             : null,
         })
         .eq("user_id", userId)
-        .eq("book_id", bookData.isbn); // Ensure uniqueness constraint matches
+        .eq("book_id", bookData.isbn);
+      console.log(error);
       if (error) {
         failedRecords.push(row);
       } else {
