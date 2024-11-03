@@ -139,16 +139,19 @@ export default function ReadingSessionPage({
             <div className="space-y-6">
               <h2 className="text-xl font-bold">Notes Taken</h2>
               {session.notes.map((note, index) => (
-                <div key={index} className="bg-base-200 p-4 rounded-lg">
-                  <h3 className="font-bold mb-2">{note.label}</h3>
-                  <div className="prose">
-                    <ReactMarkdown
-                      className="prose"
-                      remarkPlugins={[remarkGfm]}
-                      rehypePlugins={[rehypeRaw]}
-                    >
-                      {note.content}
-                    </ReactMarkdown>
+                <div key={index} className="card bg-base-200">
+                  <div className="card-body">
+                    <h3 className="card-title">{note.label}</h3>
+                    <div className="divider"></div>
+                    <div className="prose">
+                      <ReactMarkdown
+                        className="prose"
+                        remarkPlugins={[remarkGfm]}
+                        rehypePlugins={[rehypeRaw]}
+                      >
+                        {note.content}
+                      </ReactMarkdown>
+                    </div>
                   </div>
                 </div>
               ))}
