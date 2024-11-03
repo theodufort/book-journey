@@ -316,6 +316,7 @@ export default function ReadingList() {
                     onToggle={() => toggleSection("To Read")}
                     books={toReadBooks}
                     onUpdate={updateBookProgress}
+                    setReadingList={setReadingList}
                   />
                   <CollapsibleSection
                     status="Reading"

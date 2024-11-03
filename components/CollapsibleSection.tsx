@@ -13,6 +13,7 @@ export default function CollapsibleSection({
   onToggle,
   books,
   onUpdate,
+  setReadingList,
 }: {
   status: string;
   title: string;
@@ -20,6 +21,7 @@ export default function CollapsibleSection({
   onToggle: () => void;
   books: ReadingListItem[];
   onUpdate: (bookId: string, newStatus: string) => void;
+  setReadingList: React.Dispatch<React.SetStateAction<ReadingListItem[]>>;
 }) {
   const t = useTranslations("CollapsibleSection");
   const [bookTags, setBookTags] = useState<{ [key: string]: string[] }>({});
