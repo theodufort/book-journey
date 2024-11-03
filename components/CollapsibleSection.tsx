@@ -24,8 +24,10 @@ export default function CollapsibleSection({
   const t = useTranslations("CollapsibleSection");
   const [bookTags, setBookTags] = useState<{ [key: string]: string[] }>({});
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchType, setSearchType] = useState("title");
+  const [searchType, setSearchType] = useState("title"); 
+  const [currentPage, setCurrentPage] = useState(1);
   const [newTag, setNewTag] = useState("");
+  const ITEMS_PER_PAGE = 5;
   const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
 
@@ -117,29 +119,38 @@ export default function CollapsibleSection({
     updateTags(book, updatedTags);
   }
 
-  const filteredBooks = books.filter((item) => {
-    if (item.status !== status) {
-      return false;
-    }
-    const lowerSearchTerm = searchTerm.toLowerCase();
-    switch (searchType) {
-      case "title":
-        return item.data.volumeInfo.title
-          .toLowerCase()
-          .includes(lowerSearchTerm);
-      case "author":
-        return (
-          item.data.volumeInfo.authors?.some((author) =>
-            author.toLowerCase().includes(lowerSearchTerm)
-          ) || false
-        );
-      case "tag":
-        const tags = bookTags[item.book_id] || [];
-        return tags.some((tag) => tag.toLowerCase().includes(lowerSearchTerm));
-      default:
-        return true;
-    }
-  });
+  const filterBooks = (books: ReadingListItem[]) => {
+    return books.filter((item) => {
+      if (item.status !== status) {
+        return false;
+      }
+      const lowerSearchTerm = searchTerm.toLowerCase();
+      switch (searchType) {
+        case "title":
+          return item.data.volumeInfo.title
+            .toLowerCase()
+            .includes(lowerSearchTerm);
+        case "author":
+          return (
+            item.data.volumeInfo.authors?.some((author) =>
+              author.toLowerCase().includes(lowerSearchTerm)
+            ) || false
+          );
+        case "tag":
+          const tags = bookTags[item.book_id] || [];
+          return tags.some((tag) => tag.toLowerCase().includes(lowerSearchTerm));
+        default:
+          return true;
+      }
+    });
+  };
+
+  const filteredBooks = filterBooks(books);
+  const totalPages = Math.ceil(filteredBooks.length / ITEMS_PER_PAGE);
+  const paginatedBooks = filteredBooks.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   return (
     <div
@@ -210,8 +221,9 @@ export default function CollapsibleSection({
       </div>
       <div className="collapse-content sm:px-4">
         <div className="grid grid-cols-1 gap-4">
-          {filteredBooks.length > 0 ? (
-            filteredBooks.map((item) => (
+          {paginatedBooks.length > 0 ? (
+            <>
+              {paginatedBooks.map((item) => (
               <BookListItem
                 key={item.book_id}
                 status={status}
@@ -221,7 +233,31 @@ export default function CollapsibleSection({
                 onAddTag={(tag) => handleAddTag(item, tag)}
                 onRemoveTag={(tag) => handleRemoveTag(item, tag)}
               />
-            ))
+              ))}
+              {totalPages > 1 && (
+                <div className="flex justify-center mt-4 space-x-2">
+                  <button
+                    className="btn btn-sm"
+                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1}
+                  >
+                    {t("previous")}
+                  </button>
+                  <span className="flex items-center">
+                    {t("page")} {currentPage} {t("of")} {totalPages}
+                  </span>
+                  <button
+                    className="btn btn-sm"
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                    }
+                    disabled={currentPage === totalPages}
+                  >
+                    {t("next")}
+                  </button>
+                </div>
+              )}
+            </>
           ) : (
             <p className="col-span-full">{t("no_books_found")}</p>
           )}
