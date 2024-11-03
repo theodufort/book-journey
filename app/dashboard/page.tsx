@@ -228,7 +228,11 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-
+        <div className="w-full">
+          <button className="btn btn-primary w-full">
+            {t("start_reading")}
+          </button>
+        </div>
         {/* Habit Card and Habit Consistency Graph */}
         <div className="grid md:grid-cols-4 grid-cols-1 gap-4 items-stretch">
           {/* Habit Card (1/4 width) */}
