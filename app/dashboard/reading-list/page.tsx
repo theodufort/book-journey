@@ -325,6 +325,7 @@ export default function ReadingList() {
                     onToggle={() => toggleSection("Reading")}
                     books={readingBooks}
                     onUpdate={updateBookProgress}
+                    setReadingList={setReadingList}
                   />
                   <CollapsibleSection
                     status="Finished"
@@ -333,6 +334,7 @@ export default function ReadingList() {
                     onToggle={() => toggleSection("Finished")}
                     books={finishedBooks}
                     onUpdate={updateBookProgress}
+                    setReadingList={setReadingList}
                   />
                   <CollapsibleSection
                     status="DNF"
@@ -341,6 +343,7 @@ export default function ReadingList() {
                     onToggle={() => toggleSection("DNF")}
                     books={dnfBooks}
                     onUpdate={updateBookProgress}
+                    setReadingList={setReadingList}
                   />
                 </>
               )}
