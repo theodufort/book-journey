@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
+import { toast } from "react-hot-toast";
 
 export default function ReadingSessionPage({
   params,
@@ -59,8 +60,10 @@ export default function ReadingSessionPage({
           setError("Reading session not found");
         }
       } catch (error) {
-        setError("Error fetching note");
+        const message = "Error fetching reading session";
+        setError(message);
         console.error("Error:", error);
+        toast.error(message);
       } finally {
         setLoading(false);
       }
@@ -77,18 +80,13 @@ export default function ReadingSessionPage({
     return diffInMinutes;
   };
 
-  if (loading)
+  if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        Loading...
+        <span className="loading loading-spinner loading-lg"></span>
       </div>
     );
-  if (error)
-    return (
-      <div className="flex justify-center items-center h-screen text-red-500">
-        {error}
-      </div>
-    );
+  }
 
   const readingTime = calculateReadingTime();
   const pagesRead = session ? session.end_page - session.start_page : 0;
