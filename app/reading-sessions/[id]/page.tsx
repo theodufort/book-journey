@@ -96,7 +96,7 @@ export default function ReadingSessionPage({
       <Header />
       <main className="min-h-screen p-8 pb-24">
         <section className="max-w-6xl mx-auto space-y-8">
-          <div className="stats shadow w-full">
+          <div className="stats shadow w-full bg-base-200">
             <div className="stat">
               <div className="stat-title">Pages Read</div>
               <div className="stat-value">{pagesRead}</div>
@@ -105,7 +105,7 @@ export default function ReadingSessionPage({
               </div>
             </div>
 
-            {readingTime && (
+            {readingTime ? (
               <div className="stat">
                 <div className="stat-title">Time Read</div>
                 <div className="stat-value">{readingTime} min</div>
@@ -114,9 +114,13 @@ export default function ReadingSessionPage({
                     Start:{" "}
                     {session?.started_at && (
                       <>
-                        <span>{new Date(session.started_at).toLocaleDateString()}</span>
+                        <span>
+                          {new Date(session.started_at).toLocaleDateString()}
+                        </span>
                         {" at "}
-                        <span>{new Date(session.started_at).toLocaleTimeString()}</span>
+                        <span>
+                          {new Date(session.started_at).toLocaleTimeString()}
+                        </span>
                       </>
                     )}
                   </div>
@@ -124,15 +128,19 @@ export default function ReadingSessionPage({
                     End:{" "}
                     {session?.ended_at && (
                       <>
-                        <span>{new Date(session.ended_at).toLocaleDateString()}</span>
+                        <span>
+                          {new Date(session.ended_at).toLocaleDateString()}
+                        </span>
                         {" at "}
-                        <span>{new Date(session.ended_at).toLocaleTimeString()}</span>
+                        <span>
+                          {new Date(session.ended_at).toLocaleTimeString()}
+                        </span>
                       </>
                     )}
                   </div>
                 </div>
               </div>
-            )}
+            ) : null}
           </div>
 
           {session?.notes.length > 0 && (
