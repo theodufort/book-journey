@@ -51,7 +51,8 @@
     "stat_title3": "Temps de Lecture",
     "hour_unit": "h",
     "minute_unit": "minutes",
-    "points_catch": "Revenez quotidiennement pour gagner des points."
+    "points_catch": "Revenez quotidiennement pour gagner des points.",
+    "start_reading": "Start Reading"
   },
   "StreakRewardSystem": {
     "day": "Jour"
