@@ -93,10 +93,14 @@
     },
     "CollapsibleSection":{
       "filter_placeholder":"Search for a book...",
-      "filter_choice1":"Title",
+      "filter_choice1":"Title", 
       "filter_choice2":"Author",
       "filter_choice3":"Tag",
-      "no_books_found":"No books found matching your search."
+      "no_books_found":"No books found matching your search.",
+      "previous":"Previous",
+      "next":"Next",
+      "page":"Page",
+      "of":"of"
     },
     "BookListItem":{
       "error_loading_book":"Error loading book details",
