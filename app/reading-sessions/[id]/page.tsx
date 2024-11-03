@@ -110,11 +110,26 @@ export default function ReadingSessionPage({
                 <div className="stat-title">Time Read</div>
                 <div className="stat-value">{readingTime} min</div>
                 <div className="stat-desc">
-                  {session?.started_at &&
-                    new Date(session.started_at).toLocaleString()}{" "}
-                  -
-                  {session?.ended_at &&
-                    new Date(session.ended_at).toLocaleString()}
+                  <div>
+                    Start:{" "}
+                    {session?.started_at && (
+                      <>
+                        <span>{new Date(session.started_at).toLocaleDateString()}</span>
+                        {" at "}
+                        <span>{new Date(session.started_at).toLocaleTimeString()}</span>
+                      </>
+                    )}
+                  </div>
+                  <div>
+                    End:{" "}
+                    {session?.ended_at && (
+                      <>
+                        <span>{new Date(session.ended_at).toLocaleDateString()}</span>
+                        {" at "}
+                        <span>{new Date(session.ended_at).toLocaleTimeString()}</span>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
