@@ -33,7 +33,8 @@ export default function ReadingSessionPage({
         // Fetch reading session and related sticky notes
         const { data: sessionData, error: sessionError } = await supabase
           .from("reading_sessions")
-          .select(`
+          .select(
+            `
             start_page,
             end_page,
             started_at,
@@ -42,7 +43,8 @@ export default function ReadingSessionPage({
               content,
               label
             )
-          `)
+          `
+          )
           .eq("id", params.id)
           .single();
 
@@ -64,7 +66,7 @@ export default function ReadingSessionPage({
       }
     }
 
-    fetchNote();
+    fetchSession();
   }, [params.id, supabase]);
 
   const calculateReadingTime = () => {
@@ -75,8 +77,18 @@ export default function ReadingSessionPage({
     return diffInMinutes;
   };
 
-  if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
-  if (error) return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        Loading...
+      </div>
+    );
+  if (error)
+    return (
+      <div className="flex justify-center items-center h-screen text-red-500">
+        {error}
+      </div>
+    );
 
   const readingTime = calculateReadingTime();
   const pagesRead = session ? session.end_page - session.start_page : 0;
@@ -90,16 +102,21 @@ export default function ReadingSessionPage({
             <div className="stat">
               <div className="stat-title">Pages Read</div>
               <div className="stat-value">{pagesRead}</div>
-              <div className="stat-desc">From page {session?.start_page} to {session?.end_page}</div>
+              <div className="stat-desc">
+                From page {session?.start_page} to {session?.end_page}
+              </div>
             </div>
-            
+
             {readingTime && (
               <div className="stat">
                 <div className="stat-title">Time Read</div>
                 <div className="stat-value">{readingTime} min</div>
                 <div className="stat-desc">
-                  {session?.started_at && new Date(session.started_at).toLocaleString()} - 
-                  {session?.ended_at && new Date(session.ended_at).toLocaleString()}
+                  {session?.started_at &&
+                    new Date(session.started_at).toLocaleString()}{" "}
+                  -
+                  {session?.ended_at &&
+                    new Date(session.ended_at).toLocaleString()}
                 </div>
               </div>
             )}
