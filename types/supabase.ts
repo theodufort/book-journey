@@ -850,6 +850,50 @@ export type Database = {
           },
         ]
       }
+      books_modifications: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          is_approved: boolean | null
+          is_reviewed: boolean | null
+          isbn_13: string
+          page_count: number | null
+          title: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_approved?: boolean | null
+          is_reviewed?: boolean | null
+          isbn_13: string
+          page_count?: number | null
+          title?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_approved?: boolean | null
+          is_reviewed?: boolean | null
+          isbn_13?: string
+          page_count?: number | null
+          title?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "books_modifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       friends: {
         Row: {
           created_at: string | null

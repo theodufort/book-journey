@@ -13,6 +13,7 @@ import CongratulationsModalSession from "./CongratulationsModalSession";
 
 export default function BookNook1() {
   const t = useTranslations("BookNook2");
+  const [readingSessionID, setReadingSessionID] = useState("");
   const [selectedBook, setSelectedBook] = useState<any>(null);
   const [readingList, setReadingList] = useState<
     Array<{
@@ -281,8 +282,9 @@ export default function BookNook1() {
     // Calculate pages read
     const pagesReadThisSession = endPage - startPage;
     setPagesRead(pagesReadThisSession);
+    setReadingSessionID(readingSessionData.id);
     setShowCongrats(true);
-    
+
     // Reset form
     setDailyNoteContent("");
     setNewNoteContent("");
@@ -684,8 +686,10 @@ export default function BookNook1() {
       {/* Timer finished modal */}
       <dialog id="timer_modal" className="modal">
         <div className="modal-box" style={{ backgroundColor: "FFE0B5" }}>
-          <h3 className="font-bold text-lg">Reading Session Finished!</h3>
-          <p className="py-4">
+          <h3 className="font-bold text-lg text-white">
+            Reading Session Finished!
+          </h3>
+          <p className="py-4 text-white">
             Would you like to extend the timer or log your session?
           </p>
           <div className="space-y-4">
@@ -788,6 +792,7 @@ export default function BookNook1() {
         onClose={() => setShowCongrats(false)}
         pagesRead={pagesRead}
         sessionStartTime={sessionStartTime}
+        readingSessionId={readingSessionID}
       />
     </div>
   );
