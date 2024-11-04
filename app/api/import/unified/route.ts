@@ -57,8 +57,8 @@ export async function POST(request: Request) {
         })
         .eq("user_id", userId)
         .eq("book_id", bookData.isbn);
-      console.log(error);
       if (error) {
+        console.error('Import error:', error);
         failedRecords.push(row);
       } else {
         successCount++;
