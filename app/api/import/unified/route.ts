@@ -35,6 +35,8 @@ export async function POST(request: Request) {
     const bookData = parseBookData(row, importType);
     // Skip records with invalid or missing status
     if (bookData.isbn) {
+      console.log(`Attempting to import book: ${bookData.title} (ISBN: ${bookData.isbn})`);
+      
       const { error } = await supabase.from("reading_list").upsert(
         {
           user_id: userId,
@@ -60,10 +62,14 @@ export async function POST(request: Request) {
         }
       );
       if (error) {
-        console.error("Import error:", error);
+        console.error(`Import error for ${bookData.title}:`, error);
         failedRecords.push({
-          ...row,
-          error: error.message
+          title: bookData.title,
+          isbn: bookData.isbn,
+          author: bookData.author,
+          error: error.message,
+          details: error.details,
+          hint: error.hint
         });
       } else {
         // Verify the record was actually inserted/updated
@@ -75,12 +81,16 @@ export async function POST(request: Request) {
           .single();
 
         if (verifyError || !verifyData) {
-          console.error("Verification error:", verifyError);
+          console.error(`Verification error for ${bookData.title}:`, verifyError);
           failedRecords.push({
-            ...row,
-            error: "Failed to verify import"
+            title: bookData.title,
+            isbn: bookData.isbn,
+            author: bookData.author,
+            error: "Failed to verify import",
+            details: verifyError ? verifyError.message : "Record not found after import"
           });
         } else {
+          console.log(`Successfully imported: ${bookData.title}`);
           successCount++;
         }
       }
@@ -98,16 +108,29 @@ export async function POST(request: Request) {
     }
   }
 
-  return NextResponse.json({
+  const response = {
     message: `Successfully imported ${successCount} books.`,
     failedRecords,
     missingIsbnRecords,
     summary: {
+      total: parsedData.data.length,
       success: successCount,
       missingIsbn: missingIsbnRecords.length,
       failed: failedRecords.length,
     },
-  });
+    debug: {
+      importType,
+      userId,
+      timestamp: new Date().toISOString()
+    }
+  };
+  
+  console.log("Import summary:", response.summary);
+  if (failedRecords.length > 0) {
+    console.log("Failed records:", failedRecords);
+  }
+  
+  return NextResponse.json(response);
 }
 
 function parseBookData(row: any, importType: "goodreads" | "storygraph") {
