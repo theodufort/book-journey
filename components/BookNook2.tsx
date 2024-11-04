@@ -770,7 +770,7 @@ export default function BookNook1() {
                     setTimerInterval(interval);
                   }}
                 >
-                  Start Timer
+                  Extend Session
                 </button>
                 <button
                   className="btn"
