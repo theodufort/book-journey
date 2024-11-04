@@ -35,9 +35,8 @@ export async function POST(request: Request) {
     const bookData = parseBookData(row, importType);
     // Skip records with invalid or missing status
     if (bookData.isbn) {
-      const { error } = await supabase
-        .from("reading_list")
-        .upsert({
+      const { error } = await supabase.from("reading_list").upsert(
+        {
           user_id: userId,
           book_id: bookData.isbn,
           status: bookData.read_status
@@ -48,16 +47,18 @@ export async function POST(request: Request) {
           tags:
             bookData.tags && bookData.tags.length > 0
               ? bookData.tags.split(",").map((x: any) => x.trim())
-              : null, // Set to null if empty
+              : null,
           reading_at: bookData.date_started
             ? new Date(bookData.date_started)
             : null,
           finished_at: bookData.date_finished
             ? new Date(bookData.date_finished)
             : null,
-        })
-        .eq("user_id", userId)
-        .eq("book_id", bookData.isbn);
+        },
+        {
+          onConflict: 'user_id,book_id',
+        }
+      );
       if (error) {
         console.error("Import error:", error);
         failedRecords.push(row);
