@@ -518,7 +518,7 @@ export default function BookNotes() {
                       <button
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
-                        className="btn btn-lg btn-circle text-2xl"
+                        className="btn btn-secondary btn-lg btn-circle text-2xl"
                       >
                         ◀
                       </button>
@@ -528,7 +528,7 @@ export default function BookNotes() {
                       <button
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
-                        className="btn btn-lg btn-circle text-2xl"
+                        className="btn btn-secondary btn-lg btn-circle text-2xl"
                       >
                         ▶
                       </button>
@@ -734,7 +734,7 @@ export default function BookNotes() {
                                 )}
                               </div>
                               <textarea
-                                className="mt-1 p-2 w-full text-sm rounded resize-none overflow-y-auto"
+                                className="textarea textarea-primary mt-1 p-2 w-full text-sm rounded resize-none overflow-y-auto"
                                 style={{
                                   width: "100%",
                                   height: "calc(100vh - 16rem)",
