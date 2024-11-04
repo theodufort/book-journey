@@ -28,6 +28,7 @@ export async function POST(request: Request) {
   const supabase = createRouteHandlerClient({ cookies });
 
   const failedRecords: any[] = [];
+  const missingIsbnRecords: any[] = [];
   let successCount = 0;
 
   for (const row of parsedData.data) {
@@ -64,13 +65,28 @@ export async function POST(request: Request) {
         successCount++;
       }
     } else {
-      failedRecords.push(row);
+      // If there's no ISBN but we have a title, track it separately
+      if (row["Title"]) {
+        missingIsbnRecords.push({
+          title: row["Title"],
+          author: importType === "goodreads" ? row["Author"] : row["Authors"],
+          reason: "Missing ISBN"
+        });
+      } else {
+        failedRecords.push(row);
+      }
     }
   }
 
   return NextResponse.json({
     message: `Successfully imported ${successCount} books.`,
     failedRecords,
+    missingIsbnRecords,
+    summary: {
+      success: successCount,
+      missingIsbn: missingIsbnRecords.length,
+      failed: failedRecords.length
+    }
   });
 }
 
