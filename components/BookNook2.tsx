@@ -685,7 +685,7 @@ export default function BookNook1() {
       </div>
       {/* Timer finished modal */}
       <dialog id="timer_modal" className="modal">
-        <div className="modal-box bg-base-200">
+        <div className="modal-box bg-base-100">
           <h3 className="font-bold text-lg">Reading Session Finished!</h3>
           <p className="py-4">
             Would you like to extend the timer or log your session?
