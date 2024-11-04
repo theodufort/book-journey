@@ -29,10 +29,19 @@ export async function POST(request: Request) {
 
   const failedRecords: any[] = [];
   const missingIsbnRecords: any[] = [];
+  const processedISBNs = new Set<string>();
   let successCount = 0;
   let verifiedCount = 0;
+  let duplicateCount = 0;
+
+  // Get initial count
+  const { count: initialCount } = await supabase
+    .from("reading_list")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", userId);
 
   console.log(`Starting import of ${parsedData.data.length} records for user ${userId}`);
+  console.log(`Initial database count: ${initialCount}`);
 
   // Start a transaction
   const { data: { session }, error: sessionError } = await supabase.auth.getSession();
@@ -45,6 +54,12 @@ export async function POST(request: Request) {
     const bookData = parseBookData(row, importType);
     // Skip records with invalid or missing status
     if (bookData.isbn) {
+      if (processedISBNs.has(bookData.isbn)) {
+        console.log(`Duplicate ISBN found: ${bookData.isbn} for book: ${bookData.title}`);
+        duplicateCount++;
+        continue;
+      }
+      processedISBNs.add(bookData.isbn);
       console.log(`Attempting to import book: ${bookData.title} (ISBN: ${bookData.isbn})`);
       
       const { error } = await supabase.from("reading_list").upsert(
@@ -144,7 +159,10 @@ export async function POST(request: Request) {
       verified: verifiedCount,
       missingIsbn: missingIsbnRecords.length,
       failed: failedRecords.length,
+      duplicates: duplicateCount,
+      initialCount,
       finalDatabaseCount: finalCount,
+      uniqueISBNs: processedISBNs.size,
       countError: countError?.message
     },
     debug: {
