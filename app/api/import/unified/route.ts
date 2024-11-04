@@ -20,7 +20,7 @@ export async function POST(request: Request) {
   }
 
   const fileContent = await file.text();
-  const parsedData = Papa.parse(fileContent, {
+  const parsedData: any = Papa.parse(fileContent, {
     header: true,
     skipEmptyLines: true,
   });
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
         .eq("user_id", userId)
         .eq("book_id", bookData.isbn);
       if (error) {
-        console.error('Import error:', error);
+        console.error("Import error:", error);
         failedRecords.push(row);
       } else {
         successCount++;
@@ -70,7 +70,7 @@ export async function POST(request: Request) {
         missingIsbnRecords.push({
           title: row["Title"],
           author: importType === "goodreads" ? row["Author"] : row["Authors"],
-          reason: "Missing ISBN"
+          reason: "Missing ISBN",
         });
       } else {
         failedRecords.push(row);
@@ -85,8 +85,8 @@ export async function POST(request: Request) {
     summary: {
       success: successCount,
       missingIsbn: missingIsbnRecords.length,
-      failed: failedRecords.length
-    }
+      failed: failedRecords.length,
+    },
   });
 }
 
