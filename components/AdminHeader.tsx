@@ -52,7 +52,7 @@ const AdminHeader = () => {
         <div className="flex lg:hidden">
           {" "}
           {/* <LocaleSwitcher /> */}
-          <ButtonTheme />
+          {/*<ButtonTheme />*/}
           <button
             type="button"
             className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5"
@@ -114,7 +114,8 @@ const AdminHeader = () => {
         {/* CTA on large screens */}
         <div className="hidden lg:flex lg:justify-end lg:flex-1">
           {" "}
-          <ButtonTheme />
+          //
+          {/*<ButtonTheme />*/}
         </div>
       </nav>
 

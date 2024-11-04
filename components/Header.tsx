@@ -82,7 +82,7 @@ const Header = () => {
           <div className="flex justify-end flex-1">
             {" "}
             {/* <LocaleSwitcher /> */}
-            <ButtonTheme />
+            {/*<ButtonTheme />*/}
             <DashboardButton />
           </div>
         ) : (
@@ -91,7 +91,7 @@ const Header = () => {
             <div className="flex lg:hidden">
               {" "}
               {/* <LocaleSwitcher /> */}
-              <ButtonTheme />
+              {/*<ButtonTheme />*/}
               <button
                 type="button"
                 className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5"
@@ -133,7 +133,7 @@ const Header = () => {
             <div className="hidden lg:flex lg:justify-end lg:flex-1">
               {" "}
               <LocaleSwitcher />
-              <ButtonTheme />
+              {/*<ButtonTheme />*/}
               {cta}
             </div>
           </>

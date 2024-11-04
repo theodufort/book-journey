@@ -247,7 +247,7 @@ export default function ReadingRewards() {
           {userPoints && (
             <div
               className="bg-base-200 text-primary rounded-xl p-2 flex items-center overflow-hidden"
-              style={{ boxShadow: "0 0px 10px 0px #6366f1" }}
+              style={{ boxShadow: "0 0px 10px 0px #cc785c" }}
             >
               <Link
                 href="/dashboard/reading-rewards"
