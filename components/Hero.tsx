@@ -25,7 +25,7 @@ const Hero = () => {
       {/* Right Side */}
       <div
         className="w-full overflow-hidden md:w-1/2 lg:w-1/3 rounded-2xl m-auto"
-        style={{ boxShadow: "0 0px 50px 0px #6366f1" }}
+        style={{ boxShadow: "0 0px 50px 0px #cc785c" }}
       >
         <div className="aspect-video">
           <YouTube
