@@ -229,7 +229,10 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="w-full">
-          <button className="btn btn-primary w-full">
+          <button
+            className="btn btn-primary w-full"
+            onClick={() => router.push("dashboard/book-nook")}
+          >
             {t("start_reading")}
           </button>
         </div>
