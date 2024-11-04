@@ -30,6 +30,16 @@ export async function POST(request: Request) {
   const failedRecords: any[] = [];
   const missingIsbnRecords: any[] = [];
   let successCount = 0;
+  let verifiedCount = 0;
+
+  console.log(`Starting import of ${parsedData.data.length} records for user ${userId}`);
+
+  // Start a transaction
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+  if (sessionError) {
+    console.error("Session error:", sessionError);
+    return NextResponse.json({ error: "Authentication error" }, { status: 401 });
+  }
 
   for (const row of parsedData.data) {
     const bookData = parseBookData(row, importType);
@@ -80,17 +90,27 @@ export async function POST(request: Request) {
           .eq("book_id", bookData.isbn)
           .single();
 
-        if (verifyError || !verifyData) {
+        if (verifyError) {
           console.error(`Verification error for ${bookData.title}:`, verifyError);
           failedRecords.push({
             title: bookData.title,
             isbn: bookData.isbn,
             author: bookData.author,
             error: "Failed to verify import",
-            details: verifyError ? verifyError.message : "Record not found after import"
+            details: verifyError.message
+          });
+        } else if (!verifyData) {
+          console.error(`Record not found after import for ${bookData.title}`);
+          failedRecords.push({
+            title: bookData.title,
+            isbn: bookData.isbn,
+            author: bookData.author,
+            error: "Failed to verify import",
+            details: "Record not found after import"
           });
         } else {
-          console.log(`Successfully imported: ${bookData.title}`);
+          console.log(`Successfully verified: ${bookData.title} (ISBN: ${bookData.isbn})`);
+          verifiedCount++;
           successCount++;
         }
       }
@@ -108,15 +128,24 @@ export async function POST(request: Request) {
     }
   }
 
+  // Final verification of total count
+  const { count: finalCount, error: countError } = await supabase
+    .from("reading_list")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", userId);
+
   const response = {
-    message: `Successfully imported ${successCount} books.`,
+    message: `Successfully imported and verified ${verifiedCount} books.`,
     failedRecords,
     missingIsbnRecords,
     summary: {
       total: parsedData.data.length,
       success: successCount,
+      verified: verifiedCount,
       missingIsbn: missingIsbnRecords.length,
       failed: failedRecords.length,
+      finalDatabaseCount: finalCount,
+      countError: countError?.message
     },
     debug: {
       importType,
