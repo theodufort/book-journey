@@ -61,9 +61,28 @@ export async function POST(request: Request) {
       );
       if (error) {
         console.error("Import error:", error);
-        failedRecords.push(row);
+        failedRecords.push({
+          ...row,
+          error: error.message
+        });
       } else {
-        successCount++;
+        // Verify the record was actually inserted/updated
+        const { data: verifyData, error: verifyError } = await supabase
+          .from("reading_list")
+          .select()
+          .eq("user_id", userId)
+          .eq("book_id", bookData.isbn)
+          .single();
+
+        if (verifyError || !verifyData) {
+          console.error("Verification error:", verifyError);
+          failedRecords.push({
+            ...row,
+            error: "Failed to verify import"
+          });
+        } else {
+          successCount++;
+        }
       }
     } else {
       // If there's no ISBN but we have a title, track it separately
