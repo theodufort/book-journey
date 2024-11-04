@@ -317,7 +317,7 @@ export default function BookNook1() {
             </div>
             <div className="flex items-center gap-4 w-full md:w-auto">
               <select
-                className="select select-bordered select-sm text-white w-full md:w-auto md:max-w-[200px]"
+                className="select select-bordered select-sm w-full md:w-auto md:max-w-[200px]"
                 value={selectedBook?.id || ""}
                 onChange={(e) => {
                   const book = readingList.find(
@@ -367,7 +367,7 @@ export default function BookNook1() {
                   <div className="join">
                     <input
                       type="number"
-                      className="join-item input input-bordered input-sm w-16 text-white"
+                      className="join-item input input-bordered input-sm w-16 "
                       placeholder="HH"
                       min="0"
                       max="99"
@@ -383,7 +383,7 @@ export default function BookNook1() {
                     />
                     <input
                       type="number"
-                      className="join-item input input-bordered input-sm w-16 text-white"
+                      className="join-item input input-bordered input-sm w-16 "
                       placeholder="MM"
                       min="0"
                       max="59"
@@ -399,7 +399,7 @@ export default function BookNook1() {
                     />
                     <input
                       type="number"
-                      className="join-item input input-bordered input-sm w-16 text-white"
+                      className="join-item input input-bordered input-sm w-16 "
                       placeholder="SS"
                       min="0"
                       max="59"
@@ -532,12 +532,12 @@ export default function BookNook1() {
                 <input
                   type="text"
                   placeholder="Text to translate..."
-                  className="join-item input input-bordered w-3/4 text-white"
+                  className="join-item input input-bordered w-3/4 "
                   value={textToTranslate}
                   onChange={(e) => setTextToTranslate(e.target.value)}
                 />
                 <select
-                  className="join-item select select-bordered w-1/4 text-white"
+                  className="join-item select select-bordered w-1/4 "
                   value={targetLang}
                   onChange={(e) => setTargetLang(e.target.value)}
                 >
@@ -598,7 +598,7 @@ export default function BookNook1() {
 
             <input
               type="text"
-              className="input input-bordered w-full text-white"
+              className="input input-bordered w-full "
               placeholder="Search notes..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -652,7 +652,7 @@ export default function BookNook1() {
             <div className="mt-4 space-y-2">
               <input
                 type="text"
-                className="input input-bordered w-full text-white"
+                className="input input-bordered w-full "
                 placeholder="Custom Label (optional)"
                 value={customLabel}
                 onChange={(e) => setCustomLabel(e.target.value)}
@@ -660,14 +660,14 @@ export default function BookNook1() {
               <div className="join w-full">
                 <input
                   type="number"
-                  className="join-item input input-bordered w-1/2 text-white"
+                  className="join-item input input-bordered w-1/2 "
                   placeholder="Page Start"
                   value={startPage || ""}
                   onChange={(e) => setStartPage(Number(e.target.value))}
                 />
                 <input
                   type="number"
-                  className="join-item input input-bordered w-1/2 text-white"
+                  className="join-item input input-bordered w-1/2 "
                   placeholder="Page End"
                   value={endPage || ""}
                   onChange={(e) => setEndPage(Number(e.target.value))}
@@ -685,18 +685,16 @@ export default function BookNook1() {
       </div>
       {/* Timer finished modal */}
       <dialog id="timer_modal" className="modal">
-        <div className="modal-box" style={{ backgroundColor: "FFE0B5" }}>
-          <h3 className="font-bold text-lg text-white">
-            Reading Session Finished!
-          </h3>
-          <p className="py-4 text-white">
+        <div className="modal-box bg-base-200">
+          <h3 className="font-bold text-lg">Reading Session Finished!</h3>
+          <p className="py-4">
             Would you like to extend the timer or log your session?
           </p>
           <div className="space-y-4">
             <div className="join w-full">
               <input
                 type="number"
-                className="join-item input input-bordered w-1/3 text-white"
+                className="join-item input input-bordered w-1/3"
                 placeholder="Hours"
                 min="0"
                 max="99"
@@ -708,7 +706,7 @@ export default function BookNook1() {
               />
               <input
                 type="number"
-                className="join-item input input-bordered w-1/3 text-white"
+                className="join-item input input-bordered w-1/3"
                 placeholder="Minutes"
                 min="0"
                 max="59"
@@ -720,7 +718,7 @@ export default function BookNook1() {
               />
               <input
                 type="number"
-                className="join-item input input-bordered w-1/3 text-white"
+                className="join-item input input-bordered w-1/3"
                 placeholder="Seconds"
                 min="0"
                 max="59"
