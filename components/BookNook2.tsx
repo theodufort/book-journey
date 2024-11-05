@@ -43,9 +43,9 @@ export default function BookNook1() {
   const [dailyNoteContent, setDailyNoteContent] = useState("");
   const [reviewContent, setreviewContent] = useState("");
   const [isRecording, setIsRecording] = useState(false);
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
-  const [audioPreview, setAudioPreview] = useState<string | null>(null);
-  const [isTranscribing, setIsTranscribing] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
+    null
+  );
   const [isLoadingreview, setIsLoadingreview] = useState(false);
   const [isEditMode, setIsEditMode] = useState(true);
   const [textToTranslate, setTextToTranslate] = useState("");
@@ -507,23 +507,38 @@ export default function BookNook1() {
                       value={dailyNoteContent}
                       onChange={(e) => setDailyNoteContent(e.target.value)}
                     />
-                    <div className="absolute bottom-2 right-2 flex gap-2">
-                      {audioPreview && (
-                        <>
-                          <audio controls src={audioPreview} className="h-10" />
-                          <button
-                            className="btn btn-circle btn-primary"
-                            onClick={async () => {
-                              setIsTranscribing(true);
-                              try {
-                                const response = await fetch(audioPreview);
-                                const audioBlob = await response.blob();
-                                
-                                const formData = new FormData();
-                                formData.append("file", audioBlob);
-                                formData.append("autoFormat", "false");
+                    <button
+                      className={`absolute bottom-2 right-2 btn btn-circle ${
+                        isRecording ? "btn-error" : "btn-primary"
+                      }`}
+                      onClick={async () => {
+                        if (isRecording) {
+                          // Stop recording
+                          mediaRecorder?.stop();
+                          setIsRecording(false);
+                        } else {
+                          try {
+                            const stream =
+                              await navigator.mediaDevices.getUserMedia({
+                                audio: true,
+                              });
+                            const recorder = new MediaRecorder(stream);
+                            const chunks: BlobPart[] = [];
 
-                                const transcribeResponse = await fetch(
+                            recorder.ondataavailable = (e) =>
+                              chunks.push(e.data);
+                            recorder.onstop = async () => {
+                              const audioBlob = new Blob(chunks, {
+                                type: "audio/mp3",
+                              });
+
+                              // Create form data
+                              const formData = new FormData();
+                              formData.append("file", audioBlob);
+                              formData.append("autoFormat", "false");
+
+                              try {
+                                const response = await fetch(
                                   "/api/ai/notes/speech-to-text",
                                   {
                                     method: "POST",
@@ -531,71 +546,30 @@ export default function BookNook1() {
                                   }
                                 );
 
-                                if (!transcribeResponse.ok)
+                                if (!response.ok)
                                   throw new Error("Transcription failed");
 
-                                const data = await transcribeResponse.json();
+                                const data = await response.json();
                                 setDailyNoteContent((prev) =>
                                   prev ? `${prev}\n\n${data.text}` : data.text
                                 );
-                                
-                                // Clear the preview
-                                URL.revokeObjectURL(audioPreview);
-                                setAudioPreview(null);
                               } catch (error) {
-                                console.error("Error transcribing audio:", error);
+                                console.error(
+                                  "Error transcribing audio:",
+                                  error
+                                );
                                 toast.error("Failed to transcribe audio");
-                              } finally {
-                                setIsTranscribing(false);
                               }
-                            }}
-                            disabled={isTranscribing}
-                          >
-                            {isTranscribing ? (
-                              <span className="loading loading-spinner loading-sm"></span>
-                            ) : (
-                              "📝"
-                            )}
-                          </button>
-                        </>
-                      )}
-                      <button
-                        className={`btn btn-circle ${
-                          isRecording ? "btn-error" : "btn-primary"
-                        }`}
-                        onClick={async () => {
-                        if (isRecording) {
-                          // Stop recording
-                          mediaRecorder?.stop();
-                          setIsRecording(false);
-                        } else {
-                          try {
-                            const stream = await navigator.mediaDevices.getUserMedia({
-                              audio: true,
-                            });
-                            const recorder = new MediaRecorder(stream);
-                            const chunks: BlobPart[] = [];
 
-                            recorder.ondataavailable = (e) => chunks.push(e.data);
-                            recorder.onstop = () => {
-                              const audioBlob = new Blob(chunks, {
-                                type: "audio/mp3",
-                              });
-                              const audioUrl = URL.createObjectURL(audioBlob);
-                              setAudioPreview(audioUrl);
-                              
                               // Stop all tracks
-                              stream.getTracks().forEach((track) => track.stop());
+                              stream
+                                .getTracks()
+                                .forEach((track) => track.stop());
                             };
 
                             setMediaRecorder(recorder);
                             recorder.start();
                             setIsRecording(true);
-                            // Clear any existing preview
-                            if (audioPreview) {
-                              URL.revokeObjectURL(audioPreview);
-                              setAudioPreview(null);
-                            }
                           } catch (error) {
                             console.error("Error accessing microphone:", error);
                             toast.error("Failed to access microphone");
