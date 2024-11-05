@@ -24,7 +24,7 @@ export async function POST(request: Request) {
 
     // Convert File to Buffer
     const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    const buffer: any = Buffer.from(bytes);
 
     // Create temporary file
     const tempFilePath = `temp-${Date.now()}.mp3`;
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       if (autoFormat && transcriptionResponse) {
         // Format the transcription using ChatGPT
         const completion = await openai.chat.completions.create({
-          model: "gpt-4",
+          model: "gpt-4o-mini",
           temperature: 0,
           messages: [
             {
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
             },
             {
               role: "user",
-              content: transcriptionResponse || "",
+              content: transcriptionResponse.text || "",
             },
           ],
         });
