@@ -25,6 +25,22 @@ export async function POST(request: Request) {
     skipEmptyLines: true,
   });
 
+  // Check for scientific notation in ISBN columns
+  const hasScientificNotation = parsedData.data.some((row: any) => {
+    const isbn13 = importType === "goodreads" ? row["ISBN13"] : row["ISBN/UID"];
+    return isbn13 && isbn13.toString().includes('E+');
+  });
+
+  if (hasScientificNotation) {
+    return NextResponse.json(
+      { 
+        error: "Invalid file format", 
+        message: "The CSV file appears to have been opened and saved in a spreadsheet program, which has corrupted the ISBN numbers. Please use the original export file."
+      },
+      { status: 400 }
+    );
+  }
+
   const supabase = createRouteHandlerClient({ cookies });
 
   const failedRecords: any[] = [];
