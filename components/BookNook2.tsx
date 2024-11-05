@@ -28,7 +28,7 @@ export default function BookNook1() {
   const [bookStickys, setBookStickys] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [newNoteContent, setNewNoteContent] = useState("");
-  const [tab, setTab] = useState("Quick Note");
+  const [tab, setTab] = useState("Session Note");
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
@@ -50,7 +50,9 @@ export default function BookNook1() {
   const [customLabel, setCustomLabel] = useState("");
   const [showCongrats, setShowCongrats] = useState(false);
   const [pagesRead, setPagesRead] = useState(0);
-  const [questions, setQuestions] = useState<Array<{id: string, question: string, answer: string | null}>>([]);
+  const [questions, setQuestions] = useState<
+    Array<{ id: string; question: string; answer: string | null }>
+  >([]);
   const [newQuestion, setNewQuestion] = useState("");
 
   // Cleanup timer interval on unmount
@@ -319,14 +321,14 @@ export default function BookNook1() {
       <div className="flex flex-col md:flex-row h-full rounded shadow-lg bg-[#FFF2D7]/90 overflow-y-auto md:overflow-hidden">
         {/* Left Column: Note-taking Section */}
         <div className="flex-1 flex flex-col p-2 min-h-[50vh] md:min-h-0">
-          {/* Tabs for Quick Note and review */}
+          {/* Tabs for Session Note and review */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 md:gap-0 mb-2">
             <div className="tabs tabs-boxed">
               <button
-                onClick={() => setTab("Quick Note")}
-                className={`tab ${tab === "Quick Note" ? "tab-active" : ""}`}
+                onClick={() => setTab("Session Note")}
+                className={`tab ${tab === "Session Note" ? "tab-active" : ""}`}
               >
-                Quick Note
+                Session Note
               </button>
               <button
                 onClick={() => setTab("review")}
@@ -487,12 +489,12 @@ export default function BookNook1() {
             </div>
           </div>
 
-          {/* Quick Note or review Content */}
+          {/* Session Note or review Content */}
           <div className="flex-1 flex gap-2 h-full">
             <div className="flex-1 card card-bordered p-3 relative h-full">
-              {tab === "Quick Note" && (
+              {tab === "Session Note" && (
                 <div className="h-full flex flex-col">
-                  <h2 className="text-xl font-semibold mb-4">Quick Note</h2>
+                  <h2 className="text-xl font-semibold mb-4">Session Note</h2>
                   <textarea
                     className="flex-1 w-full textarea textarea-primary mb-4"
                     style={{ backgroundColor: "#FFF2D7" }}
@@ -500,14 +502,20 @@ export default function BookNook1() {
                     value={dailyNoteContent}
                     onChange={(e) => setDailyNoteContent(e.target.value)}
                   />
-                  
+
                   {/* Questions Section */}
                   <div className="mb-4">
                     <h3 className="text-lg font-semibold mb-2">Questions</h3>
                     <div className="flex flex-wrap gap-2">
                       {questions.map((q) => (
-                        <div key={q.id} className="badge badge-secondary gap-2 p-2 h-auto">
-                          <span className="cursor-pointer" title={q.answer || "No answer yet"}>
+                        <div
+                          key={q.id}
+                          className="badge badge-secondary gap-2 p-2 h-auto"
+                        >
+                          <span
+                            className="cursor-pointer"
+                            title={q.answer || "No answer yet"}
+                          >
                             {q.question}
                           </span>
                           <button
@@ -516,9 +524,12 @@ export default function BookNook1() {
                                 .from("questions_notes")
                                 .delete()
                                 .eq("id", q.id);
-                              
+
                               if (error) {
-                                console.error("Error deleting question:", error);
+                                console.error(
+                                  "Error deleting question:",
+                                  error
+                                );
                                 return;
                               }
                               fetchQuestions();
@@ -536,20 +547,28 @@ export default function BookNook1() {
                             value={newQuestion}
                             onChange={(e) => setNewQuestion(e.target.value)}
                             onKeyPress={async (e) => {
-                              if (e.key === "Enter" && newQuestion.trim() && user && selectedBook) {
+                              if (
+                                e.key === "Enter" &&
+                                newQuestion.trim() &&
+                                user &&
+                                selectedBook
+                              ) {
                                 const { error } = await supabase
                                   .from("questions_notes")
                                   .insert({
                                     user_id: user.id,
                                     book_id: selectedBook.id,
-                                    question: newQuestion.trim()
+                                    question: newQuestion.trim(),
                                   });
-                                
+
                                 if (error) {
-                                  console.error("Error adding question:", error);
+                                  console.error(
+                                    "Error adding question:",
+                                    error
+                                  );
                                   return;
                                 }
-                                
+
                                 setNewQuestion("");
                                 fetchQuestions();
                               }
@@ -565,14 +584,17 @@ export default function BookNook1() {
                                   .insert({
                                     user_id: user.id,
                                     book_id: selectedBook.id,
-                                    question: newQuestion.trim()
+                                    question: newQuestion.trim(),
                                   });
-                                
+
                                 if (error) {
-                                  console.error("Error adding question:", error);
+                                  console.error(
+                                    "Error adding question:",
+                                    error
+                                  );
                                   return;
                                 }
-                                
+
                                 setNewQuestion("");
                                 fetchQuestions();
                               }
@@ -627,10 +649,10 @@ export default function BookNook1() {
           </div>
         </div>
 
-        {/* Right Column: Stickies / Quick Notes */}
+        {/* Right Column: Stickies / Session Notes */}
         <div className="w-full md:w-96 flex-shrink-0 p-2 md:border-l border-t md:border-t-0 flex flex-col h-full">
           <div className="flex-none space-y-4">
-            {/* <h2 className="text-lg font-semibold">Stickies / Quick Notes</h2> */}
+            {/* <h2 className="text-lg font-semibold">Stickies / Session Notes</h2> */}
 
             <div className="space-y-3">
               <div className="join w-full">
@@ -719,7 +741,7 @@ export default function BookNook1() {
               ) : bookStickys.length === 0 ? (
                 <div className="h-full flex items-center justify-center">
                   <p className="m-auto">
-                    No notes yet. Start by adding a quick note!
+                    No notes yet. Start by adding a Session Note!
                   </p>
                 </div>
               ) : (
@@ -752,8 +774,8 @@ export default function BookNook1() {
             </div>
           </div>
 
-          {/* Bottom Action - Log Session / Bookmark - Only show on Quick Note tab */}
-          {tab === "Quick Note" && (
+          {/* Bottom Action - Log Session / Bookmark - Only show on Session Note tab */}
+          {tab === "Session Note" && (
             <div className="mt-4 space-y-2">
               <input
                 type="text"
@@ -786,91 +808,6 @@ export default function BookNook1() {
               </button>
             </div>
           )}
-
-          {/* Questions Section */}
-          <div className="mt-4">
-            <h3 className="text-lg font-semibold mb-2">Questions</h3>
-            <div className="flex flex-wrap gap-2">
-              {questions.map((q) => (
-                <div key={q.id} className="badge badge-secondary gap-2 p-2 h-auto">
-                  <span className="cursor-pointer" title={q.answer || "No answer yet"}>
-                    {q.question}
-                  </span>
-                  <button
-                    onClick={async () => {
-                      const { error } = await supabase
-                        .from("questions_notes")
-                        .delete()
-                        .eq("id", q.id);
-                      
-                      if (error) {
-                        console.error("Error deleting question:", error);
-                        return;
-                      }
-                      fetchQuestions();
-                    }}
-                    className="btn btn-xs btn-circle btn-ghost"
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
-              <div className="badge badge-outline gap-2 h-auto flex">
-                <div className="inline-flex">
-                  <input
-                    type="text"
-                    value={newQuestion}
-                    onChange={(e) => setNewQuestion(e.target.value)}
-                    onKeyPress={async (e) => {
-                      if (e.key === "Enter" && newQuestion.trim() && user && selectedBook) {
-                        const { error } = await supabase
-                          .from("questions_notes")
-                          .insert({
-                            user_id: user.id,
-                            book_id: selectedBook.id,
-                            question: newQuestion.trim()
-                          });
-                        
-                        if (error) {
-                          console.error("Error adding question:", error);
-                          return;
-                        }
-                        
-                        setNewQuestion("");
-                        fetchQuestions();
-                      }
-                    }}
-                    placeholder="Add a question..."
-                    className="bg-transparent border-none outline-none w-32"
-                  />
-                  <button
-                    onClick={async () => {
-                      if (newQuestion.trim() && user && selectedBook) {
-                        const { error } = await supabase
-                          .from("questions_notes")
-                          .insert({
-                            user_id: user.id,
-                            book_id: selectedBook.id,
-                            question: newQuestion.trim()
-                          });
-                        
-                        if (error) {
-                          console.error("Error adding question:", error);
-                          return;
-                        }
-                        
-                        setNewQuestion("");
-                        fetchQuestions();
-                      }
-                    }}
-                    className="btn btn-xs btn-circle btn-ghost"
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
       {/* Timer finished modal */}
