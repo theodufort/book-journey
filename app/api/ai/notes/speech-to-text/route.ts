@@ -32,7 +32,7 @@ export async function POST(request: Request) {
 
     try {
       // Call OpenAI's transcription API
-      const response = await openai.audio.transcriptions.create({
+      const transcriptionResponse = await openai.audio.transcriptions.create({
         file: fs.createReadStream(tempFilePath),
         model: "whisper-1",
         response_format: "text",
@@ -41,9 +41,32 @@ export async function POST(request: Request) {
       // Clean up temp file
       fs.unlinkSync(tempFilePath);
 
+      if (autoFormat) {
+        // Format the transcription using ChatGPT
+        const completion = await openai.chat.completions.create({
+          model: "gpt-4",
+          temperature: 0,
+          messages: [
+            {
+              role: "system",
+              content: "Format this transcribed text into clean markdown with proper paragraphs, punctuation, and capitalization. Preserve the original meaning and content, but make it more readable."
+            },
+            {
+              role: "user",
+              content: transcriptionResponse
+            }
+          ]
+        });
+
+        return NextResponse.json({
+          text: completion.choices[0].message.content,
+          autoFormatted: true
+        });
+      }
+
       return NextResponse.json({
-        text: response.text,
-        autoFormatted: autoFormat,
+        text: transcriptionResponse,
+        autoFormatted: false
       });
     } catch (error) {
       // Clean up temp file in case of error
