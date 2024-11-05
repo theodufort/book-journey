@@ -163,7 +163,7 @@ const ImportFromApps: React.FC = () => {
             }`}
       </button>
       {message && (
-        <div className="alert alert-info shadow-lg mt-4">
+        <div className={`alert ${message.includes("Error") || message.includes("error") ? "alert-error" : "alert-info"} shadow-lg mt-4`}>
           <div>
             <span>{message}</span>
           </div>
