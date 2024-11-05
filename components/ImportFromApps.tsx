@@ -16,6 +16,7 @@ const ImportFromApps: React.FC = () => {
   const [importing, setImporting] = useState(false);
   const [message, setMessage] = useState("");
   const [failedRecords, setFailedRecords] = useState<any[]>([]);
+  const [result, setResult] = useState<any>(null);
   const [importType, setImportType] = useState<"goodreads" | "storygraph">(
     "goodreads"
   );
@@ -53,17 +54,18 @@ const ImportFromApps: React.FC = () => {
         body: formData,
       });
 
-      const result = await response.json();
+      const data = await response.json();
+      setResult(data);
 
       if (!response.ok) {
-        setMessage(result.message || result.error || "Error importing data. Please try again.");
-        if (result.failedRecords && result.failedRecords.length > 0) {
-          setFailedRecords(result.failedRecords);
+        setMessage(data.message || data.error || "Error importing data. Please try again.");
+        if (data.failedRecords && data.failedRecords.length > 0) {
+          setFailedRecords(data.failedRecords);
         }
       } else {
-        setMessage(result.message);
-        if (result.failedRecords && result.failedRecords.length > 0) {
-          setFailedRecords(result.failedRecords);
+        setMessage(data.message);
+        if (data.failedRecords && data.failedRecords.length > 0) {
+          setFailedRecords(data.failedRecords);
         }
       }
     } catch (error) {
@@ -173,25 +175,46 @@ const ImportFromApps: React.FC = () => {
           <span>{message}</span>
         </div>
       )}
-      {failedRecords.length > 0 && (
-        <div className="alert alert-error shadow-lg mt-4">
-          <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <div>
-            <span>{t("import_error")}</span>
-            <ul className="list-disc pl-5">
-              {failedRecords.map((record, index) => (
-                <li key={index}>
-                  {record.title || record.Title} by {record.author || record.Authors || record.Author} 
-                  {record["ISBN/UID"] || record.ISBN13 ? 
-                    ` (ISBN: ${record["ISBN/UID"] || record.ISBN13})` : 
-                    ` (${record.reason || "Unknown error"})`}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+      {(failedRecords.length > 0 || result?.missingIsbnRecords?.length > 0) && (
+        <>
+          {failedRecords.length > 0 && (
+            <div className="alert alert-error shadow-lg mt-4">
+              <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <span>{t("import_error")}</span>
+                <ul className="list-disc pl-5">
+                  {failedRecords.map((record, index) => (
+                    <li key={index}>
+                      {record.title || record.Title} by {record.author || record.Authors || record.Author} 
+                      {record["ISBN/UID"] || record.ISBN13 ? 
+                        ` (ISBN: ${record["ISBN/UID"] || record.ISBN13})` : 
+                        ` (${record.reason || "Unknown error"})`}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+          {result?.missingIsbnRecords?.length > 0 && (
+            <div className="alert alert-error shadow-lg mt-4">
+              <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <span>{t("missing_isbn_error")}</span>
+                <ul className="list-disc pl-5">
+                  {result.missingIsbnRecords.map((record, index) => (
+                    <li key={index}>
+                      {record.title} by {record.author}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
