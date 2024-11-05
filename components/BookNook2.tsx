@@ -30,7 +30,7 @@ export default function BookNook1() {
   const [newNoteContent, setNewNoteContent] = useState("");
   const [tab, setTab] = useState("Session Note");
   const [hours, setHours] = useState(0);
-  const [minutes, setMinutes] = useState(0);
+  const [minutes, setMinutes] = useState(30);
   const [seconds, setSeconds] = useState(0);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(
