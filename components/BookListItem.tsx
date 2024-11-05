@@ -560,7 +560,7 @@ export default function BookListItem({
           </label>
           <textarea
             id="review"
-            className="textarea textarea-bordered textarea-primary w-full h-auto mt-2"
+            className="textarea textarea-bordered textarea-primary w-full h-auto mt-2 mb-4"
             placeholder="Write your review here..."
             value={review}
             onChange={(e) => {
@@ -568,6 +568,26 @@ export default function BookListItem({
               updateReview(e.target.value);
             }}
           ></textarea>
+
+          {/* Questions Section */}
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold mb-2">Questions</h3>
+            <div className="flex flex-wrap gap-2">
+              {questions.map((q) => (
+                <div
+                  key={q.id}
+                  className="badge badge-secondary gap-2 p-2 h-auto"
+                >
+                  <span
+                    className="cursor-pointer"
+                    title={q.answer || "No answer yet"}
+                  >
+                    {q.question}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
           <div className="mt-2">
             <label className="cursor-pointer label">
               <span className="label-text">{t("make_review_public")}</span>
