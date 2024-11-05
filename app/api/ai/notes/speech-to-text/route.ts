@@ -12,12 +12,12 @@ const openai = new OpenAI({
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
-    const file = formData.get('file') as File;
-    const autoFormat = formData.get('autoFormat') === 'true';
+    const file = formData.get("file") as File;
+    const autoFormat = formData.get("autoFormat") === "true";
 
     if (!file) {
       return NextResponse.json(
-        { error: 'Missing audio file in request.' },
+        { error: "Missing audio file in request." },
         { status: 400 }
       );
     }
@@ -35,15 +35,15 @@ export async function POST(request: Request) {
       const response = await openai.audio.transcriptions.create({
         file: fs.createReadStream(tempFilePath),
         model: "whisper-1",
-        response_format: autoFormat ? "verbose_json" : "text",
+        response_format: "text",
       });
 
       // Clean up temp file
       fs.unlinkSync(tempFilePath);
 
-      return NextResponse.json({ 
-        text: response,
-        autoFormatted: autoFormat 
+      return NextResponse.json({
+        text: response.text,
+        autoFormatted: autoFormat,
       });
     } catch (error) {
       // Clean up temp file in case of error
@@ -52,24 +52,6 @@ export async function POST(request: Request) {
       }
       throw error;
     }
-
-    // Create a ReadableStream to return to the client
-    const encoder = new TextEncoder();
-    const stream = new ReadableStream({
-      async start(controller) {
-        // Iterate over the streamed response from OpenAI
-        for await (const chunk of response) {
-          const content = chunk.choices[0]?.delta?.content || "";
-          controller.enqueue(encoder.encode(content));
-        }
-        controller.close();
-      },
-    });
-
-    // Return the streamed response to the client
-    return new Response(stream, {
-      headers: { "Content-Type": "text/plain" },
-    });
   } catch (error) {
     console.error("Error in OpenAI API route:", error);
     return NextResponse.json(
