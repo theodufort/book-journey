@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { Clock } from "lucide-react";
+import { Clock, Mic, MicOff } from "lucide-react";
 import {
   User,
   createClientComponentClient,
@@ -42,6 +42,8 @@ export default function BookNook1() {
   const [endPage, setEndPage] = useState<number>(0);
   const [dailyNoteContent, setDailyNoteContent] = useState("");
   const [reviewContent, setreviewContent] = useState("");
+  const [isRecording, setIsRecording] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const [isLoadingreview, setIsLoadingreview] = useState(false);
   const [isEditMode, setIsEditMode] = useState(true);
   const [textToTranslate, setTextToTranslate] = useState("");
@@ -495,13 +497,74 @@ export default function BookNook1() {
               {tab === "Session Note" && (
                 <div className="h-full flex flex-col">
                   <h2 className="text-xl font-semibold mb-4">Session Note</h2>
-                  <textarea
-                    className="flex-1 w-full textarea textarea-primary mb-4"
-                    style={{ backgroundColor: "#FFF2D7" }}
-                    placeholder="Write here..."
-                    value={dailyNoteContent}
-                    onChange={(e) => setDailyNoteContent(e.target.value)}
-                  />
+                  <div className="relative flex-1 w-full mb-4">
+                    <textarea
+                      className="w-full h-full textarea textarea-primary"
+                      style={{ backgroundColor: "#FFF2D7" }}
+                      placeholder="Write here..."
+                      value={dailyNoteContent}
+                      onChange={(e) => setDailyNoteContent(e.target.value)}
+                    />
+                    <button
+                      className={`absolute bottom-2 right-2 btn btn-circle ${
+                        isRecording ? "btn-error" : "btn-primary"
+                      }`}
+                      onClick={async () => {
+                        if (isRecording) {
+                          // Stop recording
+                          mediaRecorder?.stop();
+                          setIsRecording(false);
+                        } else {
+                          try {
+                            const stream = await navigator.mediaDevices.getUserMedia({
+                              audio: true,
+                            });
+                            const recorder = new MediaRecorder(stream);
+                            const chunks: BlobPart[] = [];
+
+                            recorder.ondataavailable = (e) => chunks.push(e.data);
+                            recorder.onstop = async () => {
+                              const audioBlob = new Blob(chunks, { type: "audio/mp3" });
+                          
+                              // Create form data
+                              const formData = new FormData();
+                              formData.append("file", audioBlob);
+                              formData.append("autoFormat", "true");
+
+                              try {
+                                const response = await fetch("/api/ai/notes/speech-to-text", {
+                                  method: "POST",
+                                  body: formData,
+                                });
+
+                                if (!response.ok) throw new Error("Transcription failed");
+
+                                const data = await response.json();
+                                setDailyNoteContent((prev) => 
+                                  prev ? `${prev}\n\n${data.text}` : data.text
+                                );
+                              } catch (error) {
+                                console.error("Error transcribing audio:", error);
+                                toast.error("Failed to transcribe audio");
+                              }
+
+                              // Stop all tracks
+                              stream.getTracks().forEach(track => track.stop());
+                            };
+
+                            setMediaRecorder(recorder);
+                            recorder.start();
+                            setIsRecording(true);
+                          } catch (error) {
+                            console.error("Error accessing microphone:", error);
+                            toast.error("Failed to access microphone");
+                          }
+                        }
+                      }}
+                    >
+                      {isRecording ? <MicOff /> : <Mic />}
+                    </button>
+                  </div>
 
                   {/* Questions Section */}
                   <div className="mb-4">
