@@ -43,7 +43,9 @@ export default function BookNook1() {
   const [dailyNoteContent, setDailyNoteContent] = useState("");
   const [reviewContent, setreviewContent] = useState("");
   const [isRecording, setIsRecording] = useState(false);
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
+    null
+  );
   const [isLoadingreview, setIsLoadingreview] = useState(false);
   const [isEditMode, setIsEditMode] = useState(true);
   const [textToTranslate, setTextToTranslate] = useState("");
@@ -516,40 +518,53 @@ export default function BookNook1() {
                           setIsRecording(false);
                         } else {
                           try {
-                            const stream = await navigator.mediaDevices.getUserMedia({
-                              audio: true,
-                            });
+                            const stream =
+                              await navigator.mediaDevices.getUserMedia({
+                                audio: true,
+                              });
                             const recorder = new MediaRecorder(stream);
                             const chunks: BlobPart[] = [];
 
-                            recorder.ondataavailable = (e) => chunks.push(e.data);
+                            recorder.ondataavailable = (e) =>
+                              chunks.push(e.data);
                             recorder.onstop = async () => {
-                              const audioBlob = new Blob(chunks, { type: "audio/mp3" });
-                          
+                              const audioBlob = new Blob(chunks, {
+                                type: "audio/mp3",
+                              });
+
                               // Create form data
                               const formData = new FormData();
                               formData.append("file", audioBlob);
-                              formData.append("autoFormat", "true");
+                              formData.append("autoFormat", "false");
 
                               try {
-                                const response = await fetch("/api/ai/notes/speech-to-text", {
-                                  method: "POST",
-                                  body: formData,
-                                });
+                                const response = await fetch(
+                                  "/api/ai/notes/speech-to-text",
+                                  {
+                                    method: "POST",
+                                    body: formData,
+                                  }
+                                );
 
-                                if (!response.ok) throw new Error("Transcription failed");
+                                if (!response.ok)
+                                  throw new Error("Transcription failed");
 
                                 const data = await response.json();
-                                setDailyNoteContent((prev) => 
+                                setDailyNoteContent((prev) =>
                                   prev ? `${prev}\n\n${data.text}` : data.text
                                 );
                               } catch (error) {
-                                console.error("Error transcribing audio:", error);
+                                console.error(
+                                  "Error transcribing audio:",
+                                  error
+                                );
                                 toast.error("Failed to transcribe audio");
                               }
 
                               // Stop all tracks
-                              stream.getTracks().forEach(track => track.stop());
+                              stream
+                                .getTracks()
+                                .forEach((track) => track.stop());
                             };
 
                             setMediaRecorder(recorder);
