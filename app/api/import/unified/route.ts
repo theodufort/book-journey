@@ -40,14 +40,22 @@ export async function POST(request: Request) {
     .select("*", { count: "exact", head: true })
     .eq("user_id", userId);
 
-  console.log(`Starting import of ${parsedData.data.length} records for user ${userId}`);
+  console.log(
+    `Starting import of ${parsedData.data.length} records for user ${userId}`
+  );
   console.log(`Initial database count: ${initialCount}`);
 
   // Start a transaction
-  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+  const {
+    data: { session },
+    error: sessionError,
+  } = await supabase.auth.getSession();
   if (sessionError) {
     console.error("Session error:", sessionError);
-    return NextResponse.json({ error: "Authentication error" }, { status: 401 });
+    return NextResponse.json(
+      { error: "Authentication error" },
+      { status: 401 }
+    );
   }
 
   for (const row of parsedData.data) {
@@ -55,13 +63,17 @@ export async function POST(request: Request) {
     // Skip records with invalid or missing status
     if (bookData.isbn) {
       if (processedISBNs.has(bookData.isbn)) {
-        console.log(`Duplicate ISBN found: ${bookData.isbn} for book: ${bookData.title}`);
+        console.log(
+          `Duplicate ISBN found: ${bookData.isbn} for book: ${bookData.title}`
+        );
         duplicateCount++;
         continue;
       }
       processedISBNs.add(bookData.isbn);
-      console.log(`Attempting to import book: ${bookData.title} (ISBN: ${bookData.isbn})`);
-      
+      console.log(
+        `Attempting to import book: ${bookData.title} (ISBN: ${bookData.isbn})`
+      );
+
       const { error } = await supabase.from("reading_list").upsert(
         {
           user_id: userId,
@@ -71,10 +83,7 @@ export async function POST(request: Request) {
             : mapStatus("to-read"),
           rating: bookData.rating ? bookData.rating : null,
           review: bookData.review,
-          tags:
-            bookData.tags && bookData.tags.length > 0
-              ? bookData.tags.split(",").map((x: any) => x.trim())
-              : null,
+          tags: bookData.tags ? [] : null,
           reading_at: bookData.date_started
             ? new Date(bookData.date_started)
             : null,
@@ -83,7 +92,7 @@ export async function POST(request: Request) {
             : null,
         },
         {
-          onConflict: 'user_id,book_id',
+          onConflict: "user_id,book_id",
         }
       );
       if (error) {
@@ -94,7 +103,7 @@ export async function POST(request: Request) {
           author: bookData.author,
           error: error.message,
           details: error.details,
-          hint: error.hint
+          hint: error.hint,
         });
       } else {
         // Verify the record was actually inserted/updated
@@ -106,13 +115,16 @@ export async function POST(request: Request) {
           .single();
 
         if (verifyError) {
-          console.error(`Verification error for ${bookData.title}:`, verifyError);
+          console.error(
+            `Verification error for ${bookData.title}:`,
+            verifyError
+          );
           failedRecords.push({
             title: bookData.title,
             isbn: bookData.isbn,
             author: bookData.author,
             error: "Failed to verify import",
-            details: verifyError.message
+            details: verifyError.message,
           });
         } else if (!verifyData) {
           console.error(`Record not found after import for ${bookData.title}`);
@@ -121,10 +133,12 @@ export async function POST(request: Request) {
             isbn: bookData.isbn,
             author: bookData.author,
             error: "Failed to verify import",
-            details: "Record not found after import"
+            details: "Record not found after import",
           });
         } else {
-          console.log(`Successfully verified: ${bookData.title} (ISBN: ${bookData.isbn})`);
+          console.log(
+            `Successfully verified: ${bookData.title} (ISBN: ${bookData.isbn})`
+          );
           verifiedCount++;
           successCount++;
         }
@@ -163,20 +177,20 @@ export async function POST(request: Request) {
       initialCount,
       finalDatabaseCount: finalCount,
       uniqueISBNs: processedISBNs.size,
-      countError: countError?.message
+      countError: countError?.message,
     },
     debug: {
       importType,
       userId,
-      timestamp: new Date().toISOString()
-    }
+      timestamp: new Date().toISOString(),
+    },
   };
-  
+
   console.log("Import summary:", response.summary);
   if (failedRecords.length > 0) {
     console.log("Failed records:", failedRecords);
   }
-  
+
   return NextResponse.json(response);
 }
 
@@ -217,7 +231,10 @@ function parseBookData(row: any, importType: "goodreads" | "storygraph") {
         ? roundToHalf(parseFloat(row["Star Rating"]))
         : null, // Round rating to nearest 0.5
       review: row["Review"].replace("<div>", "").replace("</div>", ""),
-      tags: row["Tags"],
+      tags:
+        row["tags"] && row["tags"].length > 0
+          ? row["tags"].split(",").map((x: any) => x.trim())
+          : null,
     };
   }
 }
