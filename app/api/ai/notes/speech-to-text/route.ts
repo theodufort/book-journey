@@ -44,29 +44,30 @@ export async function POST(request: Request) {
       if (autoFormat) {
         // Format the transcription using ChatGPT
         const completion = await openai.chat.completions.create({
-          model: "gpt-4",
+          model: "gpt-4o-mini",
           temperature: 0,
           messages: [
             {
               role: "system",
-              content: "Format this transcribed text into clean markdown with proper paragraphs, punctuation, and capitalization. Preserve the original meaning and content, but make it more readable."
+              content:
+                "Format this transcribed text into clean markdown with proper paragraphs, punctuation, and capitalization. Preserve the original meaning and content, but make it more readable.",
             },
             {
               role: "user",
-              content: transcriptionResponse
-            }
-          ]
+              content: transcriptionResponse.text,
+            },
+          ],
         });
 
         return NextResponse.json({
           text: completion.choices[0].message.content,
-          autoFormatted: true
+          autoFormatted: true,
         });
       }
 
       return NextResponse.json({
         text: transcriptionResponse,
-        autoFormatted: false
+        autoFormatted: false,
       });
     } catch (error) {
       // Clean up temp file in case of error
