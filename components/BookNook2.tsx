@@ -643,6 +643,44 @@ export default function BookNook1() {
                       <ReactMarkdown>{reviewContent}</ReactMarkdown>
                     </div>
                   )}
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold mb-2">Questions</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {questions.map((q) => (
+                        <div
+                          key={q.id}
+                          className="badge badge-secondary gap-2 p-2 h-auto"
+                        >
+                          <span
+                            className="cursor-pointer"
+                            title={q.answer || "No answer yet"}
+                          >
+                            {q.question}
+                          </span>
+                          <button
+                            onClick={async () => {
+                              const { error } = await supabase
+                                .from("questions_notes")
+                                .delete()
+                                .eq("id", q.id);
+
+                              if (error) {
+                                console.error(
+                                  "Error deleting question:",
+                                  error
+                                );
+                                return;
+                              }
+                              fetchQuestions();
+                            }}
+                            className="btn btn-xs btn-circle btn-ghost"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
