@@ -11,21 +11,47 @@ const openai = new OpenAI({
 // Define the handler for POST requests
 export async function POST(request: Request) {
   try {
-    const { inputSpeech } = await request.json();
+    const formData = await request.formData();
+    const file = formData.get('file') as File;
+    const autoFormat = formData.get('autoFormat') === 'true';
 
-    if (!inputSpeech) {
+    if (!file) {
       return NextResponse.json(
-        { error: 'Missing "message" in request body.' },
+        { error: 'Missing audio file in request.' },
         { status: 400 }
       );
     }
 
-    // Call OpenAI's ChatCompletion API
-    const response = await openai.audio.transcriptions.create({
-      file: fs.createReadStream("audio.mp3"),
-      model: "whisper-1",
-      response_format: "verbose_json",
-    });
+    // Convert File to Buffer
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    // Create temporary file
+    const tempFilePath = `temp-${Date.now()}.mp3`;
+    fs.writeFileSync(tempFilePath, buffer);
+
+    try {
+      // Call OpenAI's transcription API
+      const response = await openai.audio.transcriptions.create({
+        file: fs.createReadStream(tempFilePath),
+        model: "whisper-1",
+        response_format: autoFormat ? "verbose_json" : "text",
+      });
+
+      // Clean up temp file
+      fs.unlinkSync(tempFilePath);
+
+      return NextResponse.json({ 
+        text: response,
+        autoFormatted: autoFormat 
+      });
+    } catch (error) {
+      // Clean up temp file in case of error
+      if (fs.existsSync(tempFilePath)) {
+        fs.unlinkSync(tempFilePath);
+      }
+      throw error;
+    }
 
     // Create a ReadableStream to return to the client
     const encoder = new TextEncoder();
