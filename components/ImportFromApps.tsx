@@ -55,13 +55,16 @@ const ImportFromApps: React.FC = () => {
 
       const result = await response.json();
 
-      if (response.ok) {
-        setMessage(result.message);
+      if (!response.ok) {
+        setMessage(result.message || result.error || "Error importing data. Please try again.");
         if (result.failedRecords && result.failedRecords.length > 0) {
           setFailedRecords(result.failedRecords);
         }
       } else {
-        setMessage(result.error || "Error importing data. Please try again.");
+        setMessage(result.message);
+        if (result.failedRecords && result.failedRecords.length > 0) {
+          setFailedRecords(result.failedRecords);
+        }
       }
     } catch (error) {
       setMessage("Error importing data. Please try again.");
