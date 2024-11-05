@@ -50,6 +50,8 @@ export default function BookNook1() {
   const [customLabel, setCustomLabel] = useState("");
   const [showCongrats, setShowCongrats] = useState(false);
   const [pagesRead, setPagesRead] = useState(0);
+  const [questions, setQuestions] = useState<Array<{id: string, question: string, answer: string | null}>>([]);
+  const [newQuestion, setNewQuestion] = useState("");
 
   // Cleanup timer interval on unmount
   useEffect(() => {
@@ -90,13 +92,31 @@ export default function BookNook1() {
     getUser();
   }, [supabase]);
 
+  const fetchQuestions = useCallback(async () => {
+    if (!user || !selectedBook) return;
+
+    const { data, error } = await supabase
+      .from("questions_notes")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("book_id", selectedBook.id)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching questions:", error);
+      return;
+    }
+    setQuestions(data || []);
+  }, [user, selectedBook, supabase]);
+
   useEffect(() => {
     fetchStickys();
     fetchBaseStartPage();
     if (selectedBook && user) {
       loadreview();
+      fetchQuestions();
     }
-  }, [fetchStickys, selectedBook, user]);
+  }, [fetchStickys, fetchQuestions, selectedBook, user]);
 
   const fetchBaseStartPage = async () => {
     if (!user || !selectedBook) return;
@@ -681,6 +701,91 @@ export default function BookNook1() {
               </button>
             </div>
           )}
+
+          {/* Questions Section */}
+          <div className="mt-4">
+            <h3 className="text-lg font-semibold mb-2">Questions</h3>
+            <div className="flex flex-wrap gap-2">
+              {questions.map((q) => (
+                <div key={q.id} className="badge badge-secondary gap-2 p-2 h-auto">
+                  <span className="cursor-pointer" title={q.answer || "No answer yet"}>
+                    {q.question}
+                  </span>
+                  <button
+                    onClick={async () => {
+                      const { error } = await supabase
+                        .from("questions_notes")
+                        .delete()
+                        .eq("id", q.id);
+                      
+                      if (error) {
+                        console.error("Error deleting question:", error);
+                        return;
+                      }
+                      fetchQuestions();
+                    }}
+                    className="btn btn-xs btn-circle btn-ghost"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+              <div className="badge badge-outline gap-2 h-auto flex">
+                <div className="inline-flex">
+                  <input
+                    type="text"
+                    value={newQuestion}
+                    onChange={(e) => setNewQuestion(e.target.value)}
+                    onKeyPress={async (e) => {
+                      if (e.key === "Enter" && newQuestion.trim() && user && selectedBook) {
+                        const { error } = await supabase
+                          .from("questions_notes")
+                          .insert({
+                            user_id: user.id,
+                            book_id: selectedBook.id,
+                            question: newQuestion.trim()
+                          });
+                        
+                        if (error) {
+                          console.error("Error adding question:", error);
+                          return;
+                        }
+                        
+                        setNewQuestion("");
+                        fetchQuestions();
+                      }
+                    }}
+                    placeholder="Add a question..."
+                    className="bg-transparent border-none outline-none w-32"
+                  />
+                  <button
+                    onClick={async () => {
+                      if (newQuestion.trim() && user && selectedBook) {
+                        const { error } = await supabase
+                          .from("questions_notes")
+                          .insert({
+                            user_id: user.id,
+                            book_id: selectedBook.id,
+                            question: newQuestion.trim()
+                          });
+                        
+                        if (error) {
+                          console.error("Error adding question:", error);
+                          return;
+                        }
+                        
+                        setNewQuestion("");
+                        fetchQuestions();
+                      }
+                    }}
+                    className="btn btn-xs btn-circle btn-ghost"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       {/* Timer finished modal */}
