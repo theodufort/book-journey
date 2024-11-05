@@ -58,7 +58,11 @@ const ImportFromApps: React.FC = () => {
       setResult(data);
 
       if (!response.ok) {
-        setMessage(data.message || data.error || "Error importing data. Please try again.");
+        setMessage(
+          data.message ||
+            data.error ||
+            "Error importing data. Please try again."
+        );
         if (data.failedRecords && data.failedRecords.length > 0) {
           setFailedRecords(data.failedRecords);
         }
@@ -169,8 +173,18 @@ const ImportFromApps: React.FC = () => {
       </button>
       {message && (
         <div className="alert alert-info shadow-lg mt-4">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            className="stroke-current shrink-0 w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
           </svg>
           <span>{message}</span>
         </div>
@@ -179,18 +193,29 @@ const ImportFromApps: React.FC = () => {
         <>
           {failedRecords.length > 0 && (
             <div className="alert alert-error shadow-lg mt-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="stroke-current shrink-0 h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
               <div>
                 <span>{t("import_error")}</span>
                 <ul className="list-disc pl-5">
                   {failedRecords.map((record, index) => (
                     <li key={index}>
-                      {record.title || record.Title} by {record.author || record.Authors || record.Author} 
-                      {record["ISBN/UID"] || record.ISBN13 ? 
-                        ` (ISBN: ${record["ISBN/UID"] || record.ISBN13})` : 
-                        ` (${record.reason || "Unknown error"})`}
+                      {record.title || record.Title} by{" "}
+                      {record.author || record.Authors || record.Author}
+                      {record["ISBN/UID"] || record.ISBN13
+                        ? ` (ISBN: ${record["ISBN/UID"] || record.ISBN13})`
+                        : ` (${record.reason || "Unknown error"})`}
                     </li>
                   ))}
                 </ul>
@@ -199,13 +224,23 @@ const ImportFromApps: React.FC = () => {
           )}
           {result?.missingIsbnRecords?.length > 0 && (
             <div className="alert alert-error shadow-lg mt-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="stroke-current shrink-0 h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
               <div>
                 <span>{t("missing_isbn_error")}</span>
                 <ul className="list-disc pl-5">
-                  {result.missingIsbnRecords.map((record, index) => (
+                  {result.missingIsbnRecords.map((record: any, index: any) => (
                     <li key={index}>
                       {record.title} by {record.author}
                     </li>

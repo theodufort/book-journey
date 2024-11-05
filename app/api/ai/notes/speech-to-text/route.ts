@@ -39,9 +39,10 @@ export async function POST(request: Request) {
       });
 
       // Convert the text response to string if needed
-      const transcriptionText = typeof transcriptionResponse === 'string' 
-        ? transcriptionResponse 
-        : transcriptionResponse.text || '';
+      const transcriptionText =
+        typeof transcriptionResponse === "string"
+          ? transcriptionResponse
+          : transcriptionResponse.text || "";
 
       // Clean up temp file
       fs.unlinkSync(tempFilePath);
@@ -55,7 +56,7 @@ export async function POST(request: Request) {
             {
               role: "system",
               content:
-                "Format this transcribed text into clean markdown with proper paragraphs, punctuation, and capitalization. Preserve the original meaning and content, but make it more readable.",
+                "Format this transcribed text into clean markdown with proper paragraphs, punctuation, capitalization and standard markdown format. Preserve the original meaning and content, but make it more readable.",
             },
             {
               role: "user",
