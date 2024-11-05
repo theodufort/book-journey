@@ -38,10 +38,15 @@ export async function POST(request: Request) {
         response_format: "text",
       });
 
+      // Convert the text response to string if needed
+      const transcriptionText = typeof transcriptionResponse === 'string' 
+        ? transcriptionResponse 
+        : transcriptionResponse.text || '';
+
       // Clean up temp file
       fs.unlinkSync(tempFilePath);
 
-      if (autoFormat && transcriptionResponse) {
+      if (autoFormat && transcriptionText) {
         // Format the transcription using ChatGPT
         const completion = await openai.chat.completions.create({
           model: "gpt-4o-mini",
@@ -54,7 +59,7 @@ export async function POST(request: Request) {
             },
             {
               role: "user",
-              content: transcriptionResponse.text || "",
+              content: transcriptionText,
             },
           ],
         });
@@ -66,7 +71,7 @@ export async function POST(request: Request) {
       }
 
       return NextResponse.json({
-        text: transcriptionResponse.text,
+        text: transcriptionText,
         autoFormatted: false,
       });
     } catch (error) {
