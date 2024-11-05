@@ -522,7 +522,7 @@ export default function BookNook1() {
                         <>
                           <audio src={audioPreview} controls className="h-10" />
                           <button
-                            className="btn btn-circle btn-primary"
+                            className="btn btn-primary"
                             onClick={async () => {
                               setIsTranscribing(true);
                               try {
