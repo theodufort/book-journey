@@ -247,9 +247,7 @@ export default function Profile() {
           </div>
         ) : null}
         {user ? <CategorySelection userId={user.id} /> : null}
-        <div>
-          <ImportFromApps />
-        </div>
+        <ImportFromApps />
         {/* {user ? (
           <div>
             <h2 className="text-2xl font-bold mb-4">Share Your User ID</h2>
