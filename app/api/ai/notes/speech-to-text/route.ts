@@ -41,10 +41,10 @@ export async function POST(request: Request) {
       // Clean up temp file
       fs.unlinkSync(tempFilePath);
 
-      if (autoFormat) {
+      if (autoFormat && transcriptionResponse) {
         // Format the transcription using ChatGPT
         const completion = await openai.chat.completions.create({
-          model: "gpt-4o-mini",
+          model: "gpt-4",
           temperature: 0,
           messages: [
             {
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
             },
             {
               role: "user",
-              content: transcriptionResponse.text,
+              content: transcriptionResponse || "",
             },
           ],
         });
