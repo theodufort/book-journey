@@ -238,7 +238,8 @@
       "goodreads_li4":"Wait for the file to be ready and click on the link.",
       "import_message":"Importing...",
       "import_from":"Import data from",
-      "import_error":"The following rows couldn't be imported:"
+      "import_error":"The following rows couldn't be imported:",
+      "missing_isbn_error": "Some books are missing an ISBN13 and couldn't be imported!"
     },
     "OnboardingPopup":{
       "step1_title":"Are you coming from Goodreads or Storygraph?",

@@ -230,7 +230,8 @@
     "goodreads_li4": "Attendez que le fichier soit prêt et cliquez sur le lien.",
     "import_message": "Importation...",
     "import_from": "Importer des données depuis",
-    "import_error": "Les lignes suivantes n'ont pas pu être importées:"
+    "import_error": "Les lignes suivantes n'ont pas pu être importées:",
+    "missing_isbn_error": "Certains livres n'ont pas d'ISBN13 et no'ont pas pu être importé!"
   },
   "OnboardingPopup": {
     "step1_title": "Venez-vous de Goodreads ou Storygraph?",
