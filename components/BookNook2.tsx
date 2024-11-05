@@ -46,6 +46,7 @@ export default function BookNook1() {
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const [audioPreview, setAudioPreview] = useState<string | null>(null);
   const [isTranscribing, setIsTranscribing] = useState(false);
+  const [autoFormatEnabled, setAutoFormatEnabled] = useState(true);
   const [isLoadingreview, setIsLoadingreview] = useState(false);
   const [isEditMode, setIsEditMode] = useState(true);
   const [textToTranslate, setTextToTranslate] = useState("");
@@ -507,7 +508,16 @@ export default function BookNook1() {
                       value={dailyNoteContent}
                       onChange={(e) => setDailyNoteContent(e.target.value)}
                     />
-                    <div className="absolute bottom-2 right-2 flex gap-2">
+                    <div className="absolute bottom-2 right-2 flex gap-2 items-center">
+                      <label className="cursor-pointer label">
+                        <span className="label-text mr-2">Auto-Format</span>
+                        <input
+                          type="checkbox"
+                          className="toggle toggle-primary"
+                          checked={autoFormatEnabled}
+                          onChange={(e) => setAutoFormatEnabled(e.target.checked)}
+                        />
+                      </label>
                       {audioPreview && !isRecording && (
                         <>
                           <audio src={audioPreview} controls className="h-10" />
@@ -521,7 +531,7 @@ export default function BookNook1() {
                                 
                                 const formData = new FormData();
                                 formData.append("file", audioBlob);
-                                formData.append("autoFormat", "false");
+                                formData.append("autoFormat", autoFormatEnabled.toString());
 
                                 const transcribeResponse = await fetch(
                                   "/api/ai/notes/speech-to-text",
