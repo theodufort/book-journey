@@ -43,7 +43,9 @@ export default function BookNook1() {
   const [dailyNoteContent, setDailyNoteContent] = useState("");
   const [reviewContent, setreviewContent] = useState("");
   const [isRecording, setIsRecording] = useState(false);
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
+    null
+  );
   const [audioPreview, setAudioPreview] = useState<string | null>(null);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [autoFormatEnabled, setAutoFormatEnabled] = useState(true);
@@ -508,7 +510,7 @@ export default function BookNook1() {
                       value={dailyNoteContent}
                       onChange={(e) => setDailyNoteContent(e.target.value)}
                     />
-                    <div className="absolute bottom-2 right-2 flex gap-2 items-center">
+                    {/* <div className="absolute bottom-2 right-2 flex gap-2 items-center">
                       <label className="cursor-pointer label">
                         <span className="label-text mr-2">Auto-Format</span>
                         <input
@@ -632,7 +634,7 @@ export default function BookNook1() {
                       >
                         {isRecording ? <MicOff /> : <Mic />}
                       </button>
-                    </div>
+                    </div> */}
                   </div>
 
                   {/* Questions Section */}
@@ -763,7 +765,7 @@ export default function BookNook1() {
                   </div>
                   {isEditMode ? (
                     <textarea
-                      className="flex-1 w-full textarea textarea-primary"
+                      className="flex-1 w-full textarea textarea-primary mb-4"
                       style={{ backgroundColor: "#FFF2D7" }}
                       placeholder="Write your review here..."
                       value={reviewContent}
@@ -771,7 +773,7 @@ export default function BookNook1() {
                       disabled={isLoadingreview}
                     />
                   ) : (
-                    <div className="flex-1 overflow-y-auto prose prose-sm max-w-none">
+                    <div className="flex-1 overflow-y-auto prose prose-sm max-w-none mb-4">
                       <ReactMarkdown>{reviewContent}</ReactMarkdown>
                     </div>
                   )}
