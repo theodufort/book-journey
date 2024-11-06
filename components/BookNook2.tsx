@@ -51,6 +51,7 @@ export default function BookNook1() {
   const [autoFormatEnabled, setAutoFormatEnabled] = useState(true);
   const [isLoadingreview, setIsLoadingreview] = useState(false);
   const [isEditMode, setIsEditMode] = useState(true);
+  const [isSessionNoteEditMode, setIsSessionNoteEditMode] = useState(true);
   const [textToTranslate, setTextToTranslate] = useState("");
   const [targetLang, setTargetLang] = useState("en");
   const [isTranslating, setIsTranslating] = useState(false);
@@ -503,13 +504,35 @@ export default function BookNook1() {
                 <div className="h-full flex flex-col">
                   <h2 className="text-xl font-semibold mb-4">Session Note</h2>
                   <div className="relative flex-1 w-full mb-4">
-                    <textarea
-                      className="w-full h-full textarea textarea-primary"
-                      style={{ backgroundColor: "#FFF2D7" }}
-                      placeholder="Write here..."
-                      value={dailyNoteContent}
-                      onChange={(e) => setDailyNoteContent(e.target.value)}
-                    />
+                    {isEditMode ? (
+                      <>
+                        <textarea
+                          className="w-full h-full textarea textarea-primary"
+                          style={{ backgroundColor: "#FFF2D7" }}
+                          placeholder="Write here..."
+                          value={dailyNoteContent}
+                          onChange={(e) => setDailyNoteContent(e.target.value)}
+                        />
+                        <button
+                          className="btn btn-sm btn-ghost absolute top-2 right-2"
+                          onClick={() => setIsEditMode(false)}
+                        >
+                          Preview
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <div className="prose prose-sm max-w-none h-full overflow-y-auto p-4 bg-white/50 rounded-lg">
+                          <ReactMarkdown>{dailyNoteContent}</ReactMarkdown>
+                        </div>
+                        <button
+                          className="btn btn-sm btn-ghost absolute top-2 right-2"
+                          onClick={() => setIsEditMode(true)}
+                        >
+                          Edit
+                        </button>
+                      </>
+                    )}
                     {/* <div className="absolute bottom-2 right-2 flex gap-2 items-center">
                       <label className="cursor-pointer label">
                         <span className="label-text mr-2">Auto-Format</span>
