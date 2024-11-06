@@ -32,15 +32,16 @@ export async function POST(request: Request) {
 
     try {
       // Call OpenAI's transcription API
-      const transcriptionResponse = await openai.audio.transcriptions.create({
-        file: fs.createReadStream(tempFilePath),
-        model: "whisper-1",
-        response_format: "text",
-      });
+      const transcriptionResponse: any =
+        await openai.audio.transcriptions.create({
+          file: fs.createReadStream(tempFilePath),
+          model: "whisper-1",
+          response_format: "text",
+        });
 
       // Convert the text response to string if needed
-      const transcriptionText = transcriptionResponse
-        ? transcriptionResponse.text
+      const transcriptionText = (await transcriptionResponse)
+        ? await transcriptionResponse.text
         : "";
 
       // Clean up temp file
