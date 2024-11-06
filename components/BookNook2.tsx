@@ -508,7 +508,9 @@ export default function BookNook1() {
                       className={`btn btn-sm ${
                         isSessionNoteEditMode ? "btn-primary" : "btn-secondary"
                       }`}
-                      onClick={() => setIsSessionNoteEditMode(!isSessionNoteEditMode)}
+                      onClick={() =>
+                        setIsSessionNoteEditMode(!isSessionNoteEditMode)
+                      }
                     >
                       {isSessionNoteEditMode ? "Preview" : "Edit"}
                     </button>
@@ -517,13 +519,12 @@ export default function BookNook1() {
                     {isSessionNoteEditMode ? (
                       <textarea
                         className="w-full h-full textarea textarea-primary"
-                        style={{ backgroundColor: "#FFF2D7" }}
                         placeholder="Write here..."
                         value={dailyNoteContent}
                         onChange={(e) => setDailyNoteContent(e.target.value)}
                       />
                     ) : (
-                      <div className="prose prose-sm max-w-none h-full overflow-y-auto p-4 bg-white/50 rounded-lg">
+                      <div className="prose prose-sm max-w-none h-full overflow-y-auto p-4 rounded-lg">
                         <ReactMarkdown>{dailyNoteContent}</ReactMarkdown>
                       </div>
                     )}
