@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import PaidFeatureWrapper from "./PaidFeatureWrapper";
 import { useTranslations } from "next-intl";
 import { Clock, Mic, MicOff } from "lucide-react";
 import {
@@ -344,7 +345,8 @@ export default function BookNook1() {
               >
                 Review
               </button>
-            </div>
+              </div>
+            </PaidFeatureWrapper>
             <div className="flex items-center gap-4 w-full md:w-auto">
               <select
                 className="select select-bordered select-sm w-full md:w-auto md:max-w-[200px]"
@@ -844,15 +846,16 @@ export default function BookNook1() {
           <div className="flex-none space-y-4">
             {/* <h2 className="text-lg font-semibold">Stickies / Session Notes</h2> */}
 
-            <div className="space-y-3">
-              <div className="join w-full">
-                <input
-                  type="text"
-                  placeholder="Text to translate..."
-                  className="join-item input input-bordered w-3/4 "
-                  value={textToTranslate}
-                  onChange={(e) => setTextToTranslate(e.target.value)}
-                />
+            <PaidFeatureWrapper feature="AI Translation">
+              <div className="space-y-3">
+                <div className="join w-full">
+                  <input
+                    type="text"
+                    placeholder="Text to translate..."
+                    className="join-item input input-bordered w-3/4 "
+                    value={textToTranslate}
+                    onChange={(e) => setTextToTranslate(e.target.value)}
+                  />
                 <select
                   className="join-item select select-bordered w-1/4 "
                   value={targetLang}
