@@ -39,10 +39,9 @@ export async function POST(request: Request) {
       });
 
       // Convert the text response to string if needed
-      const transcriptionText =
-        typeof transcriptionResponse === "string"
-          ? transcriptionResponse
-          : transcriptionResponse.text || "";
+      const transcriptionText = transcriptionResponse
+        ? transcriptionResponse.text
+        : "";
 
       // Clean up temp file
       fs.unlinkSync(tempFilePath);
