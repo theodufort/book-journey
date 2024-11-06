@@ -502,36 +502,30 @@ export default function BookNook1() {
             <div className="flex-1 card card-bordered p-3 relative h-full">
               {tab === "Session Note" && (
                 <div className="h-full flex flex-col">
-                  <h2 className="text-xl font-semibold mb-4">Session Note</h2>
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-semibold">Session Note</h2>
+                    <button
+                      className={`btn btn-sm ${
+                        isSessionNoteEditMode ? "btn-primary" : "btn-secondary"
+                      }`}
+                      onClick={() => setIsSessionNoteEditMode(!isSessionNoteEditMode)}
+                    >
+                      {isSessionNoteEditMode ? "Preview" : "Edit"}
+                    </button>
+                  </div>
                   <div className="relative flex-1 w-full mb-4">
-                    {isEditMode ? (
-                      <>
-                        <textarea
-                          className="w-full h-full textarea textarea-primary"
-                          style={{ backgroundColor: "#FFF2D7" }}
-                          placeholder="Write here..."
-                          value={dailyNoteContent}
-                          onChange={(e) => setDailyNoteContent(e.target.value)}
-                        />
-                        <button
-                          className="btn btn-sm btn-ghost absolute top-2 right-2"
-                          onClick={() => setIsEditMode(false)}
-                        >
-                          Preview
-                        </button>
-                      </>
+                    {isSessionNoteEditMode ? (
+                      <textarea
+                        className="w-full h-full textarea textarea-primary"
+                        style={{ backgroundColor: "#FFF2D7" }}
+                        placeholder="Write here..."
+                        value={dailyNoteContent}
+                        onChange={(e) => setDailyNoteContent(e.target.value)}
+                      />
                     ) : (
-                      <>
-                        <div className="prose prose-sm max-w-none h-full overflow-y-auto p-4 bg-white/50 rounded-lg">
-                          <ReactMarkdown>{dailyNoteContent}</ReactMarkdown>
-                        </div>
-                        <button
-                          className="btn btn-sm btn-ghost absolute top-2 right-2"
-                          onClick={() => setIsEditMode(true)}
-                        >
-                          Edit
-                        </button>
-                      </>
+                      <div className="prose prose-sm max-w-none h-full overflow-y-auto p-4 bg-white/50 rounded-lg">
+                        <ReactMarkdown>{dailyNoteContent}</ReactMarkdown>
+                      </div>
                     )}
                     {/* <div className="absolute bottom-2 right-2 flex gap-2 items-center">
                       <label className="cursor-pointer label">
