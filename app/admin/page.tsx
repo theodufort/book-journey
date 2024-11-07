@@ -176,11 +176,13 @@ export default function Admin() {
     // Calculate monthly growth rate
     const dataWithGrowthRate = chartData.map((day, index) => {
       let monthlyGrowthRate = 0;
-      if (index >= 30) { // Only calculate if we have at least 30 days of data
+      if (index >= 30) {
+        // Only calculate if we have at least 30 days of data
         const currentUsers = day.totalUsers;
         const lastMonthUsers = chartData[index - 30].totalUsers;
         if (lastMonthUsers > 0) {
-          monthlyGrowthRate = ((currentUsers - lastMonthUsers) / lastMonthUsers) * 100;
+          monthlyGrowthRate =
+            ((currentUsers - lastMonthUsers) / lastMonthUsers) * 100;
         }
       }
 
@@ -192,7 +194,7 @@ export default function Admin() {
 
     setActiveUsers(sortedActiveUsers);
     // Merge users with books data into activity data
-    const finalData = dataWithAvgGrowth.map((day) => {
+    const finalData = userGrowthData.map((day) => {
       const dateStr = day.date;
       // Find the closest previous date that has data
       const availableDates = Object.keys(userStats?.usersByDate || {}).sort();
