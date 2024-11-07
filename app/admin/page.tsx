@@ -198,15 +198,15 @@ export default function Admin() {
       const dateStr = day.date;
       // Find the closest previous date that has data
       const availableDates = Object.keys(userStats?.usersByDate || {}).sort();
-      const closestDate = availableDates.reduce((prev, curr) => {
+      const closestDate = userStats?.usersByDate ? availableDates.reduce((prev, curr) => {
         if (curr <= dateStr && (!prev || curr > prev)) {
           return curr;
         }
         return prev;
-      }, null);
+      }, null) : null;
 
-      const usersWithBooks = closestDate
-        ? userStats?.usersByDate[closestDate]
+      const usersWithBooks = (closestDate && userStats?.usersByDate)
+        ? userStats.usersByDate[closestDate]
         : 0;
 
       return {
@@ -315,7 +315,6 @@ export default function Admin() {
       totalUsers: totalUsers || 0,
       usersByDate: usersByDate,
     });
-    console.log(userStats.usersByDate);
   }
 
   return (
