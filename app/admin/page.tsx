@@ -194,7 +194,7 @@ export default function Admin() {
 
     setActiveUsers(sortedActiveUsers);
     // Merge users with books data into activity data
-    const finalData = userGrowthData.map((day) => {
+    const finalData = dataWithGrowthRate.map((day) => {
       const dateStr = day.date;
       // Find the closest previous date that has data
       const availableDates = Object.keys(userStats?.usersByDate || {}).sort();
