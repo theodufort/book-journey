@@ -173,17 +173,31 @@ export default function Admin() {
         connections: count,
       }));
 
-    // Calculate monthly growth rate
+    // Calculate projected monthly growth rate
     const dataWithGrowthRate = chartData.map((day, index) => {
       let monthlyGrowthRate = 0;
-      if (index >= 30) {
-        // Only calculate if we have at least 30 days of data
-        const currentUsers = day.totalUsers;
-        const lastMonthUsers = chartData[index - 30].totalUsers;
-        if (lastMonthUsers > 0) {
-          monthlyGrowthRate =
-            ((currentUsers - lastMonthUsers) / lastMonthUsers) * 100;
+      
+      // We need at least 7 days of data to calculate a trend
+      if (index >= 7) {
+        // Get the last 7 days of data to calculate recent growth trend
+        const last7Days = chartData.slice(index - 7, index + 1);
+        const dailyGrowthRates = [];
+        
+        // Calculate daily growth rates
+        for (let i = 1; i < last7Days.length; i++) {
+          const todayUsers = last7Days[i].totalUsers;
+          const yesterdayUsers = last7Days[i - 1].totalUsers;
+          if (yesterdayUsers > 0) {
+            const dailyRate = (todayUsers - yesterdayUsers) / yesterdayUsers;
+            dailyGrowthRates.push(dailyRate);
+          }
         }
+        
+        // Calculate average daily growth rate
+        const avgDailyGrowthRate = dailyGrowthRates.reduce((a, b) => a + b, 0) / dailyGrowthRates.length;
+        
+        // Project this rate forward for 30 days using compound growth
+        monthlyGrowthRate = (Math.pow(1 + avgDailyGrowthRate, 30) - 1) * 100;
       }
 
       return {
