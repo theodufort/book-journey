@@ -372,13 +372,15 @@ export default function Admin() {
                     name="Weekly Active Users"
                     stroke="#ffc658"
                   />
-                  <Line
-                    type="monotone"
-                    dataKey="monthlyGrowthRate"
-                    name="Monthly Growth Rate %"
-                    stroke="#ff0000"
-                    yAxisId="right"
-                  />
+                  {activityData.length >= 30 && (
+                    <Line
+                      type="monotone"
+                      dataKey="monthlyGrowthRate"
+                      name="Monthly Growth Rate %"
+                      stroke="#ff0000"
+                      yAxisId="right"
+                    />
+                  )}
                   <Line
                     type="monotone"
                     dataKey="usersWithBooks"
