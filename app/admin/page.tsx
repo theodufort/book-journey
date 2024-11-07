@@ -197,7 +197,12 @@ export default function Admin() {
         const avgDailyGrowthRate = dailyGrowthRates.reduce((a, b) => a + b, 0) / dailyGrowthRates.length;
         
         // Project this rate forward for 30 days using compound growth
-        monthlyGrowthRate = (Math.pow(1 + avgDailyGrowthRate, 30) - 1) * 100;
+        // Cap the daily growth rate at 20% (0.2) to prevent unrealistic projections
+        const cappedDailyRate = Math.min(Math.max(avgDailyGrowthRate, -0.2), 0.2);
+        monthlyGrowthRate = (Math.pow(1 + cappedDailyRate, 30) - 1) * 100;
+        
+        // Cap the monthly growth rate between -100% and 1000%
+        monthlyGrowthRate = Math.min(Math.max(monthlyGrowthRate, -100), 1000);
       }
 
       return {
