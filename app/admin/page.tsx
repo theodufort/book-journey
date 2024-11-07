@@ -173,21 +173,20 @@ export default function Admin() {
         connections: count,
       }));
 
-    // Calculate average growth rate
-    const dataWithAvgGrowth = chartData.map((day, index) => {
-      // Calculate average of all previous growth rates up to this point
-      let avgGrowthRate = 0;
-      if (index > 0) {
-        const totalGrowth =
-          ((day.totalUsers - chartData[0].totalUsers) /
-            chartData[0].totalUsers) *
-          100;
-        avgGrowthRate = totalGrowth / index; // Divide by number of periods
+    // Calculate monthly growth rate
+    const dataWithGrowthRate = chartData.map((day, index) => {
+      let monthlyGrowthRate = 0;
+      if (index >= 30) { // Only calculate if we have at least 30 days of data
+        const currentUsers = day.totalUsers;
+        const lastMonthUsers = chartData[index - 30].totalUsers;
+        if (lastMonthUsers > 0) {
+          monthlyGrowthRate = ((currentUsers - lastMonthUsers) / lastMonthUsers) * 100;
+        }
       }
 
       return {
         ...day,
-        avgGrowthRate: Number(avgGrowthRate.toFixed(2)),
+        monthlyGrowthRate: Number(monthlyGrowthRate.toFixed(2)),
       };
     });
 
@@ -355,8 +354,8 @@ export default function Admin() {
                   />
                   <Line
                     type="monotone"
-                    dataKey="avgGrowthRate"
-                    name="Avg Growth Rate %"
+                    dataKey="monthlyGrowthRate"
+                    name="Monthly Growth Rate %"
                     stroke="#ff0000"
                     yAxisId="right"
                   />
@@ -371,7 +370,7 @@ export default function Admin() {
                     yAxisId="right"
                     orientation="right"
                     label={{
-                      value: "Average Growth Rate %",
+                      value: "Monthly Growth Rate %",
                       angle: 90,
                       position: "insideRight",
                     }}
