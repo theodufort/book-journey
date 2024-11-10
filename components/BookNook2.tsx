@@ -342,32 +342,34 @@ export default function BookNook1() {
                 Review
               </button>
             </div>
-            <div className="flex items-center gap-4 w-full md:w-auto">
-              <select
-                className="select select-bordered select-sm w-full md:w-auto md:max-w-[200px]"
-                value={selectedBook?.id || ""}
-                onChange={(e) => {
-                  const book = readingList.find(
-                    (b) => b.book_id === e.target.value
-                  );
-                  if (book) {
-                    setSelectedBook({
-                      id: book.book_id,
-                      volumeInfo: book.volumeInfo || {},
-                    });
-                  } else {
-                    setSelectedBook(null);
-                  }
-                }}
-              >
-                <option value="">{t("select_book")}</option>
-                {readingList.map((book) => (
-                  <option key={book.book_id} value={book.book_id}>
-                    {book.title || t("untitled_book")}
-                  </option>
-                ))}
-              </select>
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-4 w-full md:w-auto">
+              <div className="w-full md:w-auto">
+                <select
+                  className="select select-bordered select-sm w-full md:max-w-[200px]"
+                  value={selectedBook?.id || ""}
+                  onChange={(e) => {
+                    const book = readingList.find(
+                      (b) => b.book_id === e.target.value
+                    );
+                    if (book) {
+                      setSelectedBook({
+                        id: book.book_id,
+                        volumeInfo: book.volumeInfo || {},
+                      });
+                    } else {
+                      setSelectedBook(null);
+                    }
+                  }}
+                >
+                  <option value="">{t("select_book")}</option>
+                  {readingList.map((book) => (
+                    <option key={book.book_id} value={book.book_id}>
+                      {book.title || t("untitled_book")}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex items-center gap-2 w-full md:w-auto">
                 {isTimerRunning ? (
                   <div className="countdown font-mono text-2xl">
                     <span
