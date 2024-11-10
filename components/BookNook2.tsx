@@ -322,7 +322,7 @@ export default function BookNook1() {
 
   return (
     <div className="h-[calc(100vh-6rem)] w-full p-1 text-black">
-      <div className="flex flex-col md:flex-row h-full rounded shadow-lg bg-[#FFF2D7]/90 overflow-y-auto md:overflow-hidden">
+      <div className="flex flex-col md:flex-row h-full rounded shadow-lg bg-[#FFF2D7]/90 overflow-y-auto md:overflow-hidden relative">
         {/* Left Column: Note-taking Section */}
         <div className="flex-1 flex flex-col p-2 min-h-[50vh] md:min-h-0">
           {/* Tabs for Session Note and review */}
@@ -750,7 +750,7 @@ export default function BookNook1() {
         </div>
 
         {/* Right Column: Stickies / Session Notes */}
-        <div className="w-full md:w-96 flex-shrink-0 p-2 md:border-l border-t md:border-t-0 flex flex-col h-full">
+        <div className="w-full md:w-96 flex-shrink-0 p-2 md:border-l border-t md:border-t-0 flex flex-col md:h-full md:overflow-y-auto">
           <div className="flex-none space-y-4">
             {/* Log Session Section - Only show on mobile when on Session Note tab */}
             {tab === "Session Note" && (
