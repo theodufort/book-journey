@@ -19,6 +19,7 @@ export async function POST(request: Request) {
     const formData = await request.formData();
     const file = formData.get("file") as File;
     const autoFormat = formData.get("autoFormat") === "true";
+    const autoClean = formData.get("autoClean") === "true";
 
     if (!file) {
       return NextResponse.json(
@@ -64,7 +65,7 @@ export async function POST(request: Request) {
       if (autoFormat && transcriptionText) {
         // Format the transcription using ChatGPT
         const completion = await standardOpenAI.chat.completions.create({
-          model: "gpt-4o-mini",
+          model: autoClean ? "gpt-4" : "gpt-4o-mini",
           temperature: 0,
           messages: [
             {
