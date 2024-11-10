@@ -37,12 +37,12 @@ export async function POST(request: Request) {
       try {
         const transcriptionResponse: any = await openai.audio.transcriptions.create({
           file: fs.createReadStream(tempFilePath),
-          model: "deepdml/faster-whisper-large-v3-turbo-ct2",
+          model: "whisper-1", // Use whisper-1 for custom endpoint
           response_format: "text",
         });
         transcriptionText = transcriptionResponse.text || transcriptionResponse;
       } catch (error) {
-        console.log("Fallback to standard OpenAI endpoint");
+        console.log("Fallback to standard OpenAI endpoint", error);
         // Reinitialize OpenAI with standard endpoint
         const standardOpenAI = new OpenAI({
           apiKey: process.env.OPENAI_API_KEY,
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
         const transcriptionResponse = await standardOpenAI.audio.transcriptions.create({
           file: fs.createReadStream(tempFilePath),
           model: "whisper-1",
-          response_format: "text",
+          response_format: "json",
         });
         transcriptionText = transcriptionResponse.text;
       }
