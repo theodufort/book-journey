@@ -5,6 +5,7 @@ import fs from "fs";
 
 // Initialize OpenAI Configuration
 const openai = new OpenAI({
+  baseURL: "https://whisper.tedqc.cfd/v1/",
   apiKey: process.env.OPENAI_API_KEY,
 });
 
@@ -35,7 +36,8 @@ export async function POST(request: Request) {
       const transcriptionResponse: any =
         await openai.audio.transcriptions.create({
           file: fs.createReadStream(tempFilePath),
-          model: "whisper-1",
+          // model: "whisper-1",
+          model: "deepdml/faster-whisper-large-v3-turbo-ct2",
           response_format: "text",
         });
 
@@ -43,7 +45,7 @@ export async function POST(request: Request) {
       const transcriptionText = (await transcriptionResponse)
         ? await transcriptionResponse.text
         : "";
-
+      console.log(transcriptionResponse);
       // Clean up temp file
       fs.unlinkSync(tempFilePath);
 
@@ -72,7 +74,8 @@ export async function POST(request: Request) {
       }
 
       return NextResponse.json({
-        text: transcriptionText,
+        // text: transcriptionText,
+        text: transcriptionResponse,
         autoFormatted: false,
       });
     } catch (error) {
