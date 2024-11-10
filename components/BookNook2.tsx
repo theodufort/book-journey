@@ -513,15 +513,17 @@ export default function BookNook1() {
                       {isSessionNoteEditMode ? "Preview" : "Edit"}
                     </button>
                   </div>
-                  <div className="relative flex-1 w-full mb-4">
+                  <div className="relative flex-1 w-full mb-4 flex flex-col">
                     {isSessionNoteEditMode ? (
-                      <TextareaAutosize
-                        minRows={4}
-                        className="w-full textarea textarea-primary"
-                        placeholder="Write here..."
-                        value={dailyNoteContent}
-                        onChange={(e) => setDailyNoteContent(e.target.value)}
-                      />
+                      <div className="flex-1">
+                        <TextareaAutosize
+                          minRows={4}
+                          className="w-full h-full textarea textarea-primary"
+                          placeholder="Write here..."
+                          value={dailyNoteContent}
+                          onChange={(e) => setDailyNoteContent(e.target.value)}
+                        />
+                      </div>
                     ) : (
                       <div className="prose prose-sm max-w-none h-full overflow-y-auto p-4 rounded-lg">
                         <ReactMarkdown>{dailyNoteContent}</ReactMarkdown>
