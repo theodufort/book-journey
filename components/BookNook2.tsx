@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import PaidFeatureWrapper from "./PaidFeatureWrapper";
 import { useTranslations } from "next-intl";
 import { Clock } from "lucide-react";
+import TextareaAutosize from "react-textarea-autosize";
 import AIRecorder from "./AIRecorder";
 import TranslationWidget from "./TranslationWidget";
 import {
@@ -514,8 +515,9 @@ export default function BookNook1() {
                   </div>
                   <div className="relative flex-1 w-full mb-4">
                     {isSessionNoteEditMode ? (
-                      <textarea
-                        className="w-full h-full textarea textarea-primary"
+                      <TextareaAutosize
+                        minRows={4}
+                        className="w-full textarea textarea-primary"
                         placeholder="Write here..."
                         value={dailyNoteContent}
                         onChange={(e) => setDailyNoteContent(e.target.value)}
@@ -687,7 +689,8 @@ export default function BookNook1() {
                     </button>
                   </div>
                   {isEditMode ? (
-                    <textarea
+                    <TextareaAutosize
+                      minRows={4}
                       className="flex-1 w-full textarea textarea-primary mb-4"
                       style={{ backgroundColor: "#FFF2D7" }}
                       placeholder="Write your review here..."
