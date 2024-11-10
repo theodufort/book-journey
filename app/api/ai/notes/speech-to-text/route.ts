@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       try {
         const transcriptionResponse: any = await openai.audio.transcriptions.create({
           file: fs.createReadStream(tempFilePath),
-          model: "whisper-1", // Use whisper-1 for custom endpoint
+          model: "deepdml/faster-whisper-large-v3-turbo-ct2",
           response_format: "text",
         });
         transcriptionText = transcriptionResponse.text || transcriptionResponse;
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
         
         const transcriptionResponse = await standardOpenAI.audio.transcriptions.create({
           file: fs.createReadStream(tempFilePath),
-          model: "whisper-1",
+          model: "whisper-1", // Standard OpenAI endpoint uses whisper-1
           response_format: "json",
         });
         transcriptionText = transcriptionResponse.text;
