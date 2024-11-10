@@ -635,9 +635,8 @@ export default function BookNotes() {
                         <div className="flex flex-col gap-2">
                           <div className="flex flex-wrap gap-2">
                             {Object.entries(bookStickys).length === 0 ? (
-                              <div className="text-gray-500">
-                                No sticky notes yet. Create one using the input
-                                above!
+                              <div className="">
+                                No sticky notes yet. Create one using the input!
                               </div>
                             ) : (
                               Object.entries(bookStickys).map(
@@ -683,7 +682,7 @@ export default function BookNotes() {
                                 )
                               )
                             )}
-                            <div className="badge badge-outline gap-1 h-auto inline-flex items-center px-2 py-1">
+                            <div className="badge badge-outline gap-1 h-auto inline-flex items-center px-2 py-1 ">
                               <input
                                 type="text"
                                 value={newSticky}
@@ -694,7 +693,7 @@ export default function BookNotes() {
                                   }
                                 }}
                                 placeholder={t("add_sticky")}
-                                className="bg-transparent border-none outline-none max-w-min"
+                                className="bg-transparent border-none outline-none max-w-min text-md"
                               />
                               <button
                                 onClick={onAddSticky}

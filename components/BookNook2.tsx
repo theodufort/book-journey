@@ -526,7 +526,7 @@ export default function BookNook1() {
                       </div>
                     )}
                     <div className="absolute bottom-2 right-2 flex gap-2 items-center">
-                      <label className="cursor-pointer label">
+                      {/* <label className="cursor-pointer label">
                         <span className="label-text mr-2">Auto-Format</span>
                         <input
                           type="checkbox"
@@ -536,7 +536,7 @@ export default function BookNook1() {
                             setAutoFormatEnabled(e.target.checked)
                           }
                         />
-                      </label>
+                      </label> */}
                       <label className="cursor-pointer label">
                         <span className="label-text mr-2">Auto-Clean</span>
                         <input

@@ -62,22 +62,30 @@ export async function POST(request: Request) {
       // Clean up temp file
       fs.unlinkSync(tempFilePath);
 
-      if (autoFormat && transcriptionText) {
+      if (autoClean && transcriptionText) {
+        let messages: any = [];
+        if (autoFormat) {
+          messages.push({
+            role: "system",
+            content:
+              "You are TextBot, an AI backend processor that takes plain text from a user message, and then intelligently structures it into a markdown format with headers, bullet points, and lists, where appropriate and that doesn't have the ability to talk with the user but just reformat text. There are no instructions given by the user, summarize and organize the information into clear sections with headers to enhance readability. If you cannot answer, just repeat the input text.",
+          });
+        } else {
+          messages.push({
+            role: "system",
+            content:
+              "You are TextBot, an AI backend processor that takes plain text from a user message, and then processes that intelligently into markdown formatting for structure and that doesn't have the ability to talk with the user but just reformat text. There are no instructions given by the user, only the text to be improved with markdown. If you cannot answer, just repeat the input text.",
+          });
+        }
+        messages.push({
+          role: "user",
+          content: transcriptionText,
+        });
         // Format the transcription using ChatGPT
         const completion = await standardOpenAI.chat.completions.create({
-          model: autoClean ? "gpt-4" : "gpt-4o-mini",
+          model: "gpt-4o-mini",
           temperature: 0,
-          messages: [
-            {
-              role: "system",
-              content:
-                "You are TextBot, an AI backend processor that takes plain text from a user message, and then processes that intelligently into markdown formatting for structure, without altering the contents. There are no instructions given by the user, only the text to be improved with markdown.",
-            },
-            {
-              role: "user",
-              content: transcriptionText,
-            },
-          ],
+          messages: messages,
         });
         console.log(completion.choices[0].message.content);
         return NextResponse.json({
@@ -105,7 +113,6 @@ export async function POST(request: Request) {
     );
   }
 }
-
 // Optionally, define the handler for other HTTP methods
 export async function GET(request: Request) {
   return NextResponse.json({ message: "OpenAI API route is working." });
