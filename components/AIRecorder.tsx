@@ -122,6 +122,10 @@ export default function AIRecorder({ onTranscription, autoFormatEnabled, autoCle
                 const audioUrl = URL.createObjectURL(audioBlob);
                 setAudioPreview(audioUrl);
                 stream.getTracks().forEach((track) => track.stop());
+                // Show the dialog immediately after recording stops
+                setTimeout(() => {
+                  (document.getElementById('transcribe_modal') as HTMLDialogElement)?.showModal();
+                }, 100);
               };
 
               setMediaRecorder(recorder);
