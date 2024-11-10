@@ -84,8 +84,7 @@ export async function POST(request: Request) {
       }
 
       return NextResponse.json({
-        // text: transcriptionText,
-        text: transcriptionResponse,
+        text: transcriptionText,
         autoFormatted: false,
       });
     } catch (error) {
