@@ -50,6 +50,7 @@ export default function BookNook1() {
   const [audioPreview, setAudioPreview] = useState<string | null>(null);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [autoFormatEnabled, setAutoFormatEnabled] = useState(true);
+  const [autoCleanEnabled, setAutoCleanEnabled] = useState(true);
   const [isLoadingreview, setIsLoadingreview] = useState(false);
   const [isEditMode, setIsEditMode] = useState(true);
   const [isSessionNoteEditMode, setIsSessionNoteEditMode] = useState(true);
@@ -532,17 +533,30 @@ export default function BookNook1() {
                     {/* 
                     <PaidFeatureWrapper feature="AI Translation">*/}
                     <div className="absolute bottom-2 right-2 flex gap-2 items-center">
-                      <label className="cursor-pointer label">
-                        <span className="label-text mr-2">Auto-Format</span>
-                        <input
-                          type="checkbox"
-                          className="toggle toggle-primary"
-                          checked={autoFormatEnabled}
-                          onChange={(e) =>
-                            setAutoFormatEnabled(e.target.checked)
-                          }
-                        />
-                      </label>
+                      <div className="flex gap-2">
+                        <label className="cursor-pointer label">
+                          <span className="label-text mr-2">Auto-Format</span>
+                          <input
+                            type="checkbox"
+                            className="toggle toggle-primary"
+                            checked={autoFormatEnabled}
+                            onChange={(e) =>
+                              setAutoFormatEnabled(e.target.checked)
+                            }
+                          />
+                        </label>
+                        <label className="cursor-pointer label">
+                          <span className="label-text mr-2">Auto-Clean</span>
+                          <input
+                            type="checkbox"
+                            className="toggle toggle-primary"
+                            checked={autoCleanEnabled}
+                            onChange={(e) =>
+                              setAutoCleanEnabled(e.target.checked)
+                            }
+                          />
+                        </label>
+                      </div>
                       {audioPreview && !isRecording && (
                         <>
                           <audio src={audioPreview} controls className="h-10" />
@@ -559,6 +573,10 @@ export default function BookNook1() {
                                 formData.append(
                                   "autoFormat",
                                   autoFormatEnabled.toString()
+                                );
+                                formData.append(
+                                  "autoClean",
+                                  autoCleanEnabled.toString()
                                 );
 
                                 const transcribeResponse = await fetch(
