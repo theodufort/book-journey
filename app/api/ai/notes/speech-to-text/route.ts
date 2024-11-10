@@ -35,12 +35,12 @@ export async function POST(request: Request) {
       // Try whisper.tedqc.cfd endpoint first
       let transcriptionText = "";
       try {
-        const transcriptionResponse = await openai.audio.transcriptions.create({
+        const transcriptionResponse: any = await openai.audio.transcriptions.create({
           file: fs.createReadStream(tempFilePath),
           model: "deepdml/faster-whisper-large-v3-turbo-ct2",
           response_format: "text",
         });
-        transcriptionText = transcriptionResponse;
+        transcriptionText = transcriptionResponse.text || transcriptionResponse;
       } catch (error) {
         console.log("Fallback to standard OpenAI endpoint");
         // Reinitialize OpenAI with standard endpoint
