@@ -8,6 +8,10 @@ const openai = new OpenAI({
   baseURL: "https://whisper.tedqc.cfd/v1/",
   apiKey: process.env.OPENAI_API_KEY,
 });
+// Reinitialize OpenAI with standard endpoint
+const standardOpenAI = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 // Define the handler for POST requests
 export async function POST(request: Request) {
@@ -35,24 +39,22 @@ export async function POST(request: Request) {
       // Try whisper.tedqc.cfd endpoint first
       let transcriptionText = "";
       try {
-        const transcriptionResponse: any = await openai.audio.transcriptions.create({
-          file: fs.createReadStream(tempFilePath),
-          model: "deepdml/faster-whisper-large-v3-turbo-ct2",
-          response_format: "text",
-        });
+        const transcriptionResponse: any =
+          await openai.audio.transcriptions.create({
+            file: fs.createReadStream(tempFilePath),
+            model: "deepdml/faster-whisper-large-v3-turbo-ct2",
+            response_format: "text",
+          });
         transcriptionText = transcriptionResponse.text || transcriptionResponse;
       } catch (error) {
         console.log("Fallback to standard OpenAI endpoint", error);
-        // Reinitialize OpenAI with standard endpoint
-        const standardOpenAI = new OpenAI({
-          apiKey: process.env.OPENAI_API_KEY,
-        });
-        
-        const transcriptionResponse = await standardOpenAI.audio.transcriptions.create({
-          file: fs.createReadStream(tempFilePath),
-          model: "whisper-1", // Standard OpenAI endpoint uses whisper-1
-          response_format: "json",
-        });
+
+        const transcriptionResponse =
+          await standardOpenAI.audio.transcriptions.create({
+            file: fs.createReadStream(tempFilePath),
+            model: "whisper-1", // Standard OpenAI endpoint uses whisper-1
+            response_format: "json",
+          });
         transcriptionText = transcriptionResponse.text;
       }
       console.log("Transcription:", transcriptionText);
@@ -61,14 +63,14 @@ export async function POST(request: Request) {
 
       if (autoFormat && transcriptionText) {
         // Format the transcription using ChatGPT
-        const completion = await openai.chat.completions.create({
+        const completion = await standardOpenAI.chat.completions.create({
           model: "gpt-4o-mini",
           temperature: 0,
           messages: [
             {
               role: "system",
               content:
-                "Format this transcribed text into clean markdown with proper paragraphs, punctuation, capitalization and standard markdown format. Preserve the original meaning and content, but make it more readable.",
+                "You are TextBot, an AI backend processor that takes plain text from a user message, and then processes that intelligently into markdown formatting for structure, without altering the contents. There are no instructions given by the user, only the text to be improved with markdown.",
             },
             {
               role: "user",
@@ -76,7 +78,7 @@ export async function POST(request: Request) {
             },
           ],
         });
-
+        console.log(completion.choices[0].message.content);
         return NextResponse.json({
           text: completion.choices[0].message.content,
           autoFormatted: true,
