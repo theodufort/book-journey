@@ -8,9 +8,15 @@ interface Props {
   autoCleanEnabled: boolean;
 }
 
-export default function AIRecorder({ onTranscription, autoFormatEnabled, autoCleanEnabled }: Props) {
+export default function AIRecorder({
+  onTranscription,
+  autoFormatEnabled,
+  autoCleanEnabled,
+}: Props) {
   const [isRecording, setIsRecording] = useState(false);
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
+    null
+  );
   const [audioPreview, setAudioPreview] = useState<string | null>(null);
   const [isTranscribing, setIsTranscribing] = useState(false);
 
@@ -34,17 +40,25 @@ export default function AIRecorder({ onTranscription, autoFormatEnabled, autoCle
                   formData.append("autoFormat", autoFormatEnabled.toString());
                   formData.append("autoClean", autoCleanEnabled.toString());
 
-                  const transcribeResponse = await fetch("/api/ai/notes/speech-to-text", {
-                    method: "POST",
-                    body: formData,
-                  });
+                  const transcribeResponse = await fetch(
+                    "/api/ai/notes/speech-to-text",
+                    {
+                      method: "POST",
+                      body: formData,
+                    }
+                  );
 
-                  if (!transcribeResponse.ok) throw new Error("Transcription failed");
+                  if (!transcribeResponse.ok)
+                    throw new Error("Transcription failed");
 
                   const data = await transcribeResponse.json();
                   onTranscription(data.text);
                   setAudioPreview(null);
-                  (document.getElementById('transcribe_modal') as HTMLDialogElement)?.close();
+                  (
+                    document.getElementById(
+                      "transcribe_modal"
+                    ) as HTMLDialogElement
+                  )?.close();
                 } catch (error) {
                   console.error("Error transcribing audio:", error);
                   toast.error("Failed to transcribe audio");
@@ -69,7 +83,9 @@ export default function AIRecorder({ onTranscription, autoFormatEnabled, autoCle
         </div>
       </dialog>
       <button
-        className={`btn btn-circle ${isRecording ? "btn-error" : "btn-primary"}`}
+        className={`btn btn-circle ${
+          isRecording ? "btn-error" : "btn-primary"
+        }`}
         onClick={async () => {
           if (isRecording) {
             mediaRecorder?.stop();
@@ -92,7 +108,11 @@ export default function AIRecorder({ onTranscription, autoFormatEnabled, autoCle
                 stream.getTracks().forEach((track) => track.stop());
                 // Show the dialog immediately after recording stops
                 setTimeout(() => {
-                  (document.getElementById('transcribe_modal') as HTMLDialogElement)?.showModal();
+                  (
+                    document.getElementById(
+                      "transcribe_modal"
+                    ) as HTMLDialogElement
+                  )?.showModal();
                 }, 100);
               };
 
@@ -108,6 +128,6 @@ export default function AIRecorder({ onTranscription, autoFormatEnabled, autoCle
       >
         {isRecording ? <MicOff /> : <Mic />}
       </button>
-    </div>
+    </>
   );
 }
