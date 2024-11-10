@@ -749,7 +749,7 @@ export default function BookNook1() {
           <div className="flex-none space-y-4">
             {/* <h2 className="text-lg font-semibold">Stickies / Session Notes</h2> */}
 
-            <TranslationWidget />
+            {/* <TranslationWidget /> */}
             <input
               type="text"
               className="input input-bordered w-full "
