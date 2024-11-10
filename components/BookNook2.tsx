@@ -496,8 +496,8 @@ export default function BookNook1() {
           </div>
 
           {/* Session Note or review Content */}
-          <div className="flex-1 flex gap-2 h-full">
-            <div className="flex-1 card card-bordered p-3 relative h-full">
+          <div className="flex-1 flex gap-2 h-full min-h-0">
+            <div className="flex-1 card card-bordered p-3 relative h-full overflow-y-auto">
               {tab === "Session Note" && (
                 <div className="h-full flex flex-col">
                   <div className="flex justify-between items-center mb-4">
