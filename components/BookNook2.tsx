@@ -44,7 +44,8 @@ export default function BookNook1() {
   const [endPage, setEndPage] = useState<number>(0);
   const [dailyNoteContent, setDailyNoteContent] = useState("");
   const [reviewContent, setreviewContent] = useState("");
-  const [autoFormatEnabled, setAutoFormatEnabled] = useState(true);
+  const [autoFormatEnabled, setAutoFormatEnabled] = useState(false);
+  const [autoCleanEnabled, setAutoCleanEnabled] = useState(true);
   const [isLoadingreview, setIsLoadingreview] = useState(false);
   const [isEditMode, setIsEditMode] = useState(true);
   const [isSessionNoteEditMode, setIsSessionNoteEditMode] = useState(true);
@@ -531,11 +532,24 @@ export default function BookNook1() {
                           type="checkbox"
                           className="toggle toggle-primary"
                           checked={autoFormatEnabled}
-                          onChange={(e) => setAutoFormatEnabled(e.target.checked)}
+                          onChange={(e) =>
+                            setAutoFormatEnabled(e.target.checked)
+                          }
                         />
                       </label>
-                      <AIRecorder 
-                        onTranscription={(text) => 
+                      <label className="cursor-pointer label">
+                        <span className="label-text mr-2">Auto-Clean</span>
+                        <input
+                          type="checkbox"
+                          className="toggle toggle-primary"
+                          checked={autoCleanEnabled}
+                          onChange={(e) =>
+                            setAutoCleanEnabled(e.target.checked)
+                          }
+                        />
+                      </label>
+                      <AIRecorder
+                        onTranscription={(text) =>
                           setDailyNoteContent((prev) =>
                             prev ? `${prev}\n\n${text}` : text
                           )
