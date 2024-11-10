@@ -17,47 +17,66 @@ export default function AIRecorder({ onTranscription, autoFormatEnabled, autoCle
   return (
     <div className="flex gap-2 items-center">
       {audioPreview && !isRecording && (
-        <div className="flex flex-col md:flex-row gap-2 items-center">
-          <button
-            className="btn btn-primary w-full md:w-auto"
-            onClick={async () => {
-              setIsTranscribing(true);
-              try {
-                const response = await fetch(audioPreview);
-                const audioBlob = await response.blob();
-
-                const formData = new FormData();
-                formData.append("file", audioBlob);
-                formData.append("autoFormat", autoFormatEnabled.toString());
-                formData.append("autoClean", autoCleanEnabled.toString());
-
-                const transcribeResponse = await fetch("/api/ai/notes/speech-to-text", {
-                  method: "POST",
-                  body: formData,
-                });
-
-                if (!transcribeResponse.ok) throw new Error("Transcription failed");
-
-                const data = await transcribeResponse.json();
-                onTranscription(data.text);
-                setAudioPreview(null);
-              } catch (error) {
-                console.error("Error transcribing audio:", error);
-                toast.error("Failed to transcribe audio");
-              } finally {
-                setIsTranscribing(false);
-              }
-            }}
-            disabled={isTranscribing}
+        <>
+          <button 
+            className="btn btn-primary"
+            onClick={() => (document.getElementById('transcribe_modal') as HTMLDialogElement)?.showModal()}
           >
-            {isTranscribing ? (
-              <span className="loading loading-spinner loading-sm"></span>
-            ) : (
-              "Transcribe"
-            )}
+            Transcribe
           </button>
-          <audio src={audioPreview} controls className="h-10 w-full md:w-auto" />
-        </div>
+          <dialog id="transcribe_modal" className="modal">
+            <div className="modal-box">
+              <h3 className="font-bold text-lg mb-4">Transcribe Audio</h3>
+              <div className="flex flex-col gap-4">
+                <audio src={audioPreview} controls className="w-full" />
+                <button
+                  className="btn btn-primary w-full"
+                  onClick={async () => {
+                    setIsTranscribing(true);
+                    try {
+                      const response = await fetch(audioPreview);
+                      const audioBlob = await response.blob();
+
+                      const formData = new FormData();
+                      formData.append("file", audioBlob);
+                      formData.append("autoFormat", autoFormatEnabled.toString());
+                      formData.append("autoClean", autoCleanEnabled.toString());
+
+                      const transcribeResponse = await fetch("/api/ai/notes/speech-to-text", {
+                        method: "POST",
+                        body: formData,
+                      });
+
+                      if (!transcribeResponse.ok) throw new Error("Transcription failed");
+
+                      const data = await transcribeResponse.json();
+                      onTranscription(data.text);
+                      setAudioPreview(null);
+                      (document.getElementById('transcribe_modal') as HTMLDialogElement)?.close();
+                    } catch (error) {
+                      console.error("Error transcribing audio:", error);
+                      toast.error("Failed to transcribe audio");
+                    } finally {
+                      setIsTranscribing(false);
+                    }
+                  }}
+                  disabled={isTranscribing}
+                >
+                  {isTranscribing ? (
+                    <span className="loading loading-spinner loading-sm"></span>
+                  ) : (
+                    "Start Transcription"
+                  )}
+                </button>
+              </div>
+              <div className="modal-action">
+                <form method="dialog">
+                  <button className="btn">Close</button>
+                </form>
+              </div>
+            </div>
+          </dialog>
+        </>
       )}
       {audioPreview && !isRecording && (
         <button
