@@ -17,10 +17,9 @@ export default function AIRecorder({ onTranscription, autoFormatEnabled, autoCle
   return (
     <div className="flex gap-2 items-center">
       {audioPreview && !isRecording && (
-        <>
-          <audio src={audioPreview} controls className="h-10" />
+        <div className="flex flex-col md:flex-row gap-2 items-center">
           <button
-            className="btn btn-primary"
+            className="btn btn-primary w-full md:w-auto"
             onClick={async () => {
               setIsTranscribing(true);
               try {
@@ -57,7 +56,8 @@ export default function AIRecorder({ onTranscription, autoFormatEnabled, autoCle
               "Transcribe"
             )}
           </button>
-        </>
+          <audio src={audioPreview} controls className="h-10 w-full md:w-auto" />
+        </div>
       )}
       {audioPreview && !isRecording && (
         <button
