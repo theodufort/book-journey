@@ -2,7 +2,6 @@ import { useEffect, useState, useCallback } from "react";
 import PaidFeatureWrapper from "./PaidFeatureWrapper";
 import { useTranslations } from "next-intl";
 import { Clock } from "lucide-react";
-import AudioRecorder from "./AudioRecorder";
 import {
   User,
   createClientComponentClient,
@@ -44,8 +43,6 @@ export default function BookNook1() {
   const [endPage, setEndPage] = useState<number>(0);
   const [dailyNoteContent, setDailyNoteContent] = useState("");
   const [reviewContent, setreviewContent] = useState("");
-  const [autoFormatEnabled, setAutoFormatEnabled] = useState(true);
-  const [autoCleanEnabled, setAutoCleanEnabled] = useState(true);
   const [isLoadingreview, setIsLoadingreview] = useState(false);
   const [isEditMode, setIsEditMode] = useState(true);
   const [isSessionNoteEditMode, setIsSessionNoteEditMode] = useState(true);
@@ -525,44 +522,6 @@ export default function BookNook1() {
                         <ReactMarkdown>{dailyNoteContent}</ReactMarkdown>
                       </div>
                     )}
-                    {/* 
-                    <PaidFeatureWrapper feature="AI Translation">*/}
-                    <div className="absolute bottom-2 right-2 flex gap-2 items-center">
-                      <div className="flex gap-2">
-                        <label className="cursor-pointer label">
-                          <span className="label-text mr-2">Auto-Format</span>
-                          <input
-                            type="checkbox"
-                            className="toggle toggle-primary"
-                            checked={autoFormatEnabled}
-                            onChange={(e) =>
-                              setAutoFormatEnabled(e.target.checked)
-                            }
-                          />
-                        </label>
-                        <label className="cursor-pointer label">
-                          <span className="label-text mr-2">Auto-Clean</span>
-                          <input
-                            type="checkbox"
-                            className="toggle toggle-primary"
-                            checked={autoCleanEnabled}
-                            onChange={(e) =>
-                              setAutoCleanEnabled(e.target.checked)
-                            }
-                          />
-                        </label>
-                      </div>
-                      <AudioRecorder
-                        onTranscription={(text) => 
-                          setDailyNoteContent((prev) =>
-                            prev ? `${prev}\n\n${text}` : text
-                          )
-                        }
-                        autoFormatEnabled={autoFormatEnabled}
-                        autoCleanEnabled={autoCleanEnabled}
-                      />
-                    </div>
-                    {/*</PaidFeatureWrapper> */}
                   </div>
 
                   {/* Questions Section */}
