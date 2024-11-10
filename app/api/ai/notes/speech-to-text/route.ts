@@ -32,20 +32,30 @@ export async function POST(request: Request) {
     fs.writeFileSync(tempFilePath, buffer);
 
     try {
-      // Call OpenAI's transcription API
-      const transcriptionResponse: any =
-        await openai.audio.transcriptions.create({
+      // Try whisper.tedqc.cfd endpoint first
+      let transcriptionText = "";
+      try {
+        const transcriptionResponse = await openai.audio.transcriptions.create({
           file: fs.createReadStream(tempFilePath),
-          // model: "whisper-1",
           model: "deepdml/faster-whisper-large-v3-turbo-ct2",
           response_format: "text",
         });
-
-      // Convert the text response to string if needed
-      const transcriptionText = (await transcriptionResponse)
-        ? await transcriptionResponse.text
-        : "";
-      console.log(transcriptionResponse);
+        transcriptionText = transcriptionResponse;
+      } catch (error) {
+        console.log("Fallback to standard OpenAI endpoint");
+        // Reinitialize OpenAI with standard endpoint
+        const standardOpenAI = new OpenAI({
+          apiKey: process.env.OPENAI_API_KEY,
+        });
+        
+        const transcriptionResponse = await standardOpenAI.audio.transcriptions.create({
+          file: fs.createReadStream(tempFilePath),
+          model: "whisper-1",
+          response_format: "text",
+        });
+        transcriptionText = transcriptionResponse.text;
+      }
+      console.log("Transcription:", transcriptionText);
       // Clean up temp file
       fs.unlinkSync(tempFilePath);
 
