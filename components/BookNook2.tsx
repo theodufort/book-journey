@@ -747,12 +747,45 @@ export default function BookNook1() {
         {/* Right Column: Stickies / Session Notes */}
         <div className="w-full md:w-96 flex-shrink-0 p-2 md:border-l border-t md:border-t-0 flex flex-col h-full">
           <div className="flex-none space-y-4">
-            {/* <h2 className="text-lg font-semibold">Stickies / Session Notes</h2> */}
+            {/* Log Session Section - Only show on mobile when on Session Note tab */}
+            {tab === "Session Note" && (
+              <div className="md:hidden space-y-2">
+                <input
+                  type="text"
+                  className="input input-bordered w-full"
+                  placeholder="Custom Label (optional)"
+                  value={customLabel}
+                  onChange={(e) => setCustomLabel(e.target.value)}
+                />
+                <div className="join w-full">
+                  <input
+                    type="number"
+                    className="join-item input input-bordered w-1/2"
+                    placeholder="Page Start"
+                    value={startPage || ""}
+                    onChange={(e) => setStartPage(Number(e.target.value))}
+                  />
+                  <input
+                    type="number"
+                    className="join-item input input-bordered w-1/2"
+                    placeholder="Page End"
+                    value={endPage || ""}
+                    onChange={(e) => setEndPage(Number(e.target.value))}
+                  />
+                </div>
+                <button
+                  className="btn btn-primary w-full"
+                  onClick={handleLogSession}
+                >
+                  Log Session
+                </button>
+              </div>
+            )}
 
-            {/* <TranslationWidget /> */}
+            {/* Search Input */}
             <input
               type="text"
-              className="input input-bordered w-full "
+              className="input input-bordered w-full"
               placeholder="Search notes..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -803,10 +836,10 @@ export default function BookNook1() {
 
           {/* Bottom Action - Log Session / Bookmark - Only show on Session Note tab */}
           {tab === "Session Note" && (
-            <div className="mt-4 space-y-2">
+            <div className="mt-4 space-y-2 hidden md:block">
               <input
                 type="text"
-                className="input input-bordered w-full "
+                className="input input-bordered w-full"
                 placeholder="Custom Label (optional)"
                 value={customLabel}
                 onChange={(e) => setCustomLabel(e.target.value)}
@@ -814,14 +847,14 @@ export default function BookNook1() {
               <div className="join w-full">
                 <input
                   type="number"
-                  className="join-item input input-bordered w-1/2 "
+                  className="join-item input input-bordered w-1/2"
                   placeholder="Page Start"
                   value={startPage || ""}
                   onChange={(e) => setStartPage(Number(e.target.value))}
                 />
                 <input
                   type="number"
-                  className="join-item input input-bordered w-1/2 "
+                  className="join-item input input-bordered w-1/2"
                   placeholder="Page End"
                   value={endPage || ""}
                   onChange={(e) => setEndPage(Number(e.target.value))}
