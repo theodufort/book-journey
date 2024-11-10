@@ -15,61 +15,59 @@ export default function AIRecorder({ onTranscription, autoFormatEnabled, autoCle
   const [isTranscribing, setIsTranscribing] = useState(false);
 
   return (
-    <div>
+    <>
       <dialog id="transcribe_modal" className="modal">
-            <div className="modal-box">
-              <h3 className="font-bold text-lg mb-4">Transcribe Audio</h3>
-              <div className="flex flex-col gap-4">
-                <audio src={audioPreview} controls className="w-full" />
-                <button
-                  className="btn btn-primary w-full"
-                  onClick={async () => {
-                    setIsTranscribing(true);
-                    try {
-                      const response = await fetch(audioPreview);
-                      const audioBlob = await response.blob();
+        <div className="modal-box">
+          <h3 className="font-bold text-lg mb-4">Transcribe Audio</h3>
+          <div className="flex flex-col gap-4">
+            <audio src={audioPreview} controls className="w-full" />
+            <button
+              className="btn btn-primary w-full"
+              onClick={async () => {
+                setIsTranscribing(true);
+                try {
+                  const response = await fetch(audioPreview);
+                  const audioBlob = await response.blob();
 
-                      const formData = new FormData();
-                      formData.append("file", audioBlob);
-                      formData.append("autoFormat", autoFormatEnabled.toString());
-                      formData.append("autoClean", autoCleanEnabled.toString());
+                  const formData = new FormData();
+                  formData.append("file", audioBlob);
+                  formData.append("autoFormat", autoFormatEnabled.toString());
+                  formData.append("autoClean", autoCleanEnabled.toString());
 
-                      const transcribeResponse = await fetch("/api/ai/notes/speech-to-text", {
-                        method: "POST",
-                        body: formData,
-                      });
+                  const transcribeResponse = await fetch("/api/ai/notes/speech-to-text", {
+                    method: "POST",
+                    body: formData,
+                  });
 
-                      if (!transcribeResponse.ok) throw new Error("Transcription failed");
+                  if (!transcribeResponse.ok) throw new Error("Transcription failed");
 
-                      const data = await transcribeResponse.json();
-                      onTranscription(data.text);
-                      setAudioPreview(null);
-                      (document.getElementById('transcribe_modal') as HTMLDialogElement)?.close();
-                    } catch (error) {
-                      console.error("Error transcribing audio:", error);
-                      toast.error("Failed to transcribe audio");
-                    } finally {
-                      setIsTranscribing(false);
-                    }
-                  }}
-                  disabled={isTranscribing}
-                >
-                  {isTranscribing ? (
-                    <span className="loading loading-spinner loading-sm"></span>
-                  ) : (
-                    "Start Transcription"
-                  )}
-                </button>
-              </div>
-              <div className="modal-action">
-                <form method="dialog">
-                  <button className="btn">Close</button>
-                </form>
-              </div>
-            </div>
-          </dialog>
-        </>
-      )}
+                  const data = await transcribeResponse.json();
+                  onTranscription(data.text);
+                  setAudioPreview(null);
+                  (document.getElementById('transcribe_modal') as HTMLDialogElement)?.close();
+                } catch (error) {
+                  console.error("Error transcribing audio:", error);
+                  toast.error("Failed to transcribe audio");
+                } finally {
+                  setIsTranscribing(false);
+                }
+              }}
+              disabled={isTranscribing}
+            >
+              {isTranscribing ? (
+                <span className="loading loading-spinner loading-sm"></span>
+              ) : (
+                "Start Transcription"
+              )}
+            </button>
+          </div>
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn">Close</button>
+            </form>
+          </div>
+        </div>
+      </dialog>
       <button
         className={`btn btn-circle ${isRecording ? "btn-error" : "btn-primary"}`}
         onClick={async () => {
