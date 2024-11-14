@@ -10,9 +10,9 @@ const Pricing = () => {
     <section className="bg-base-200 overflow-hidden" id="pricing">
       <div className="py-24 px-8 max-w-5xl mx-auto">
         <div className="flex flex-col text-center w-full mb-20">
-          <p className="font-medium text-primary mb-8">Pricing</p>
+          <p className="font-medium text-primary mb-8">Premium</p>
           <h2 className="font-bold text-3xl lg:text-5xl tracking-tight">
-            Save hours of repetitive code and ship faster!
+            Bring your reading to the next level!
           </h2>
         </div>
 

@@ -17,6 +17,7 @@ import {
 } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
+import Pricing from "@/components/Pricing";
 
 export default function Page() {
   const router = useRouter();
@@ -49,6 +50,7 @@ export default function Page() {
         <Feature5 />
         <Feature6 />
         <FAQ />
+        {/* <Pricing /> */}
       </main>
       {/* <CalendlyFooter /> */}
       <Footer />
