@@ -28,7 +28,7 @@ const SupportPage: React.FC = () => {
             </div>
             <div className="h-[500px] sm:h-[600px] md:h-[700px] lg:h-[600px]">
               <InlineWidget
-                url="https://calendly.com/expoweb/15-minutes-onboarding?hide_event_type_details=1&hide_gdpr_banner=1&background_color=1a1a1a&text_color=ffffff&primary_color=737eff"
+                url="https://calendly.com/theointechs/15-minutes-onboarding?hide_event_type_details=1&hide_gdpr_banner=1&background_color=1a1a1a&text_color=ffffff&primary_color=737eff"
                 styles={{ height: "100%", width: "100%" }}
               />
             </div>
