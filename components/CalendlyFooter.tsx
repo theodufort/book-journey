@@ -23,7 +23,7 @@ export const CalendlyFooter = () => {
       <div className="flex items-center justify-center">
         <a
           className="mr-2 text-lg"
-          href="https://calendly.com/expoweb/15-minutes-onboarding"
+          href="https://calendly.com/theointechs/15-minutes-onboarding"
           target="_blank"
         >
           We are in beta! Click to book a 15 minute meeting with our founder!
