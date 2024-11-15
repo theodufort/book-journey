@@ -33,6 +33,7 @@ export default function BookNook1() {
   const [searchQuery, setSearchQuery] = useState("");
   const [newNoteContent, setNewNoteContent] = useState("");
   const [tab, setTab] = useState("Session Note");
+  const [rightColumnView, setRightColumnView] = useState<"notes" | "tools">("notes");
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(30);
   const [seconds, setSeconds] = useState(0);
@@ -792,45 +793,57 @@ export default function BookNook1() {
           </div>
 
           <div className="flex-1 overflow-y-auto mt-4 pr-2">
-            <div className="space-y-3">
-              {!selectedBook ? (
-                <div className="h-full flex items-center justify-center">
-                  <p>Select a book to view notes</p>
-                </div>
-              ) : bookStickys.length === 0 ? (
-                <div className="h-full flex items-center justify-center">
-                  <p className="m-auto">
-                    No notes yet. Start by adding a Session Note!
-                  </p>
-                </div>
-              ) : (
-                bookStickys
-                  .filter(
-                    (sticky) =>
-                      sticky.content
-                        .toLowerCase()
-                        .includes(searchQuery.toLowerCase()) ||
-                      sticky.label
-                        .toLowerCase()
-                        .includes(searchQuery.toLowerCase())
-                  )
-                  .map((sticky) => (
-                    <div
-                      key={sticky.id}
-                      tabIndex={0}
-                      className="collapse collapse-arrow border-base-300 border"
-                    >
-                      <input type="checkbox" />
-                      <div className="collapse-title text-xl font-medium">
-                        {sticky.label}
+            {rightColumnView === "notes" ? (
+              <div className="space-y-3">
+                {!selectedBook ? (
+                  <div className="h-full flex items-center justify-center">
+                    <p>Select a book to view notes</p>
+                  </div>
+                ) : bookStickys.length === 0 ? (
+                  <div className="h-full flex items-center justify-center">
+                    <p className="m-auto">
+                      No notes yet. Start by adding a Session Note!
+                    </p>
+                  </div>
+                ) : (
+                  bookStickys
+                    .filter(
+                      (sticky) =>
+                        sticky.content
+                          .toLowerCase()
+                          .includes(searchQuery.toLowerCase()) ||
+                        sticky.label
+                          .toLowerCase()
+                          .includes(searchQuery.toLowerCase())
+                    )
+                    .map((sticky) => (
+                      <div
+                        key={sticky.id}
+                        tabIndex={0}
+                        className="collapse collapse-arrow border-base-300 border"
+                      >
+                        <input type="checkbox" />
+                        <div className="collapse-title text-xl font-medium">
+                          {sticky.label}
+                        </div>
+                        <div className="collapse-content">
+                          <ReactMarkdown>{sticky.content}</ReactMarkdown>
+                        </div>
                       </div>
-                      <div className="collapse-content">
-                        <ReactMarkdown>{sticky.content}</ReactMarkdown>
-                      </div>
-                    </div>
-                  ))
-              )}
-            </div>
+                    ))
+                )}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="card bg-base-100 shadow-xl">
+                  <div className="card-body">
+                    <h2 className="card-title">Translation</h2>
+                    <TranslationWidget />
+                  </div>
+                </div>
+                {/* Add more tools here */}
+              </div>
+            )}
           </div>
 
           {/* Bottom Action - Log Session / Bookmark - Only show on Session Note tab */}
