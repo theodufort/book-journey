@@ -372,9 +372,14 @@ export default function BookNook1() {
               <div className="flex items-center gap-2 w-full md:w-auto">
                 {isTimerRunning ? (
                   <div className="w-48">
-                    <progress 
-                      className="progress progress-primary w-full" 
-                      value={100 - ((hours * 3600 + minutes * 60 + seconds) / totalSeconds * 100)}
+                    <progress
+                      className="progress progress-primary w-full"
+                      value={
+                        100 -
+                        ((hours * 3600 + minutes * 60 + seconds) /
+                          totalSeconds) *
+                          100
+                      }
                       max="100"
                     ></progress>
                   </div>
@@ -452,7 +457,11 @@ export default function BookNook1() {
                               setIsTimerRunning(false);
                               setTimerInterval(null);
                               // Show dialog
-                              (document.getElementById("timer_modal") as HTMLDialogElement)?.showModal();
+                              (
+                                document.getElementById(
+                                  "timer_modal"
+                                ) as HTMLDialogElement
+                              )?.showModal();
                               return 0;
                             }
                             setMinutes((m) => {
@@ -474,7 +483,7 @@ export default function BookNook1() {
                     }
                   }}
                 >
-                  {isTimerRunning ? "Stop" : "Start"}
+                  {isTimerRunning ? "Pause" : "Start"}
                 </button>
               </div>
             </div>
