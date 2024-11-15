@@ -41,6 +41,7 @@ export default function BookNook1() {
     null
   );
   const [sessionStartTime, setSessionStartTime] = useState<Date | null>(null);
+  const [totalSeconds, setTotalSeconds] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState(123);
   const [startPage, setStartPage] = useState<number>(0);
   const [endPage, setEndPage] = useState<number>(0);
@@ -373,8 +374,7 @@ export default function BookNook1() {
                   <div className="w-48">
                     <progress 
                       className="progress progress-primary w-full" 
-                      value={100 - ((hours * 3600 + minutes * 60 + seconds) / (sessionStartTime ? 
-                        (hours * 3600 + minutes * 60 + seconds) : 1) * 100)}
+                      value={100 - ((hours * 3600 + minutes * 60 + seconds) / totalSeconds * 100)}
                       max="100"
                     ></progress>
                   </div>
@@ -441,6 +441,7 @@ export default function BookNook1() {
                       if (hours === 0 && minutes === 0 && seconds === 0) return;
                       setIsTimerRunning(true);
                       setSessionStartTime(new Date());
+                      setTotalSeconds(hours * 3600 + minutes * 60 + seconds);
                       const interval = setInterval(() => {
                         setSeconds((s) => {
                           const newSeconds = s - 1;
