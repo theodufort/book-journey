@@ -782,14 +782,32 @@ export default function BookNook1() {
               </div>
             )}
 
-            {/* Search Input */}
-            <input
-              type="text"
-              className="input input-bordered w-full"
-              placeholder="Search notes..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+            {/* View Toggle */}
+            <div className="tabs tabs-boxed w-full mb-4">
+              <button
+                className={`tab flex-1 ${rightColumnView === "notes" ? "tab-active" : ""}`}
+                onClick={() => setRightColumnView("notes")}
+              >
+                Notes
+              </button>
+              <button
+                className={`tab flex-1 ${rightColumnView === "tools" ? "tab-active" : ""}`}
+                onClick={() => setRightColumnView("tools")}
+              >
+                Tools
+              </button>
+            </div>
+
+            {/* Search Input - Only show for Notes view */}
+            {rightColumnView === "notes" && (
+              <input
+                type="text"
+                className="input input-bordered w-full"
+                placeholder="Search notes..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            )}
           </div>
 
           <div className="flex-1 overflow-y-auto mt-4 pr-2">
