@@ -33,7 +33,7 @@ export default function TooltipHelper({ content, place }: props) {
         </svg>
       </p>
       <Tooltip
-        className="z-10"
+        className="z-10 max-w-[200px] whitespace-normal break-words"
         anchorSelect={`.anchor-${anchorId}`}
         place={place}
       >
