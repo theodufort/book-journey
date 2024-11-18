@@ -5,6 +5,7 @@ import { Clock } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
 import AIRecorder from "./AIRecorder";
 import TranslationWidget from "./TranslationWidget";
+import { Tooltip } from "react-tooltip";
 import {
   User,
   createClientComponentClient,
@@ -14,6 +15,7 @@ import ReactMarkdown from "react-markdown";
 import { Volume } from "@/interfaces/GoogleAPI";
 import { Database } from "@/types/supabase";
 import CongratulationsModalSession from "./CongratulationsModalSession";
+import TooltipHelper from "./Tooltip";
 
 export default function BookNook1() {
   const t = useTranslations("BookNook2");
@@ -33,7 +35,9 @@ export default function BookNook1() {
   const [searchQuery, setSearchQuery] = useState("");
   const [newNoteContent, setNewNoteContent] = useState("");
   const [tab, setTab] = useState("Session Note");
-  const [rightColumnView, setRightColumnView] = useState<"notes" | "tools">("notes");
+  const [rightColumnView, setRightColumnView] = useState<"notes" | "tools">(
+    "notes"
+  );
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(30);
   const [seconds, setSeconds] = useState(0);
@@ -496,7 +500,16 @@ export default function BookNook1() {
               {tab === "Session Note" && (
                 <div className="h-full flex flex-col">
                   <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-semibold">Session Note</h2>
+                    <div className="flex gap-2">
+                      <h2 className="text-xl font-semibold my-auto">
+                        Session Note
+                      </h2>
+                      <TooltipHelper
+                        content={
+                          "Session notes are short notes that you can take while reading your book."
+                        }
+                      />
+                    </div>
                     <button
                       className={`btn btn-sm ${
                         isSessionNoteEditMode ? "btn-primary" : "btn-secondary"
@@ -561,7 +574,14 @@ export default function BookNook1() {
 
                   {/* Questions Section */}
                   <div className="mb-4">
-                    <h3 className="text-lg font-semibold mb-2">Questions</h3>
+                    <div className="flex gap-2">
+                      <h3 className="text-lg font-semibold mb-2">Questions</h3>
+                      <TooltipHelper
+                        content={
+                          "Questions can't popup while you read, get answers later!"
+                        }
+                      />
+                    </div>
                     <div className="flex flex-wrap gap-2">
                       {questions.map((q) => (
                         <div
@@ -668,7 +688,14 @@ export default function BookNook1() {
               {tab === "review" && (
                 <div className="h-full flex flex-col">
                   <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-semibold">Review</h2>
+                    <div className="flex gap-2">
+                      <h2 className="text-xl font-semibold my-auto">Review</h2>
+                      <TooltipHelper
+                        content={
+                          "The Review is a summary of all your combined notes."
+                        }
+                      />
+                    </div>
                     <button
                       className={`btn btn-sm ${
                         isEditMode ? "btn-primary" : "btn-secondary"
@@ -701,7 +728,14 @@ export default function BookNook1() {
                     </div>
                   )}
                   <div className="mb-4">
-                    <h3 className="text-lg font-semibold mb-2">Questions</h3>
+                    <div className="flex gap-2">
+                      <h3 className="text-lg font-semibold mb-2">Questions</h3>
+                      <TooltipHelper
+                        content={
+                          "Questions can't popup while you read, get answers later!"
+                        }
+                      />
+                    </div>
                     <div className="flex flex-wrap gap-2">
                       {questions.map((q) => (
                         <div
@@ -785,13 +819,17 @@ export default function BookNook1() {
             {/* View Toggle */}
             <div className="tabs tabs-boxed w-full mb-4">
               <button
-                className={`tab flex-1 ${rightColumnView === "notes" ? "tab-active" : ""}`}
+                className={`tab flex-1 ${
+                  rightColumnView === "notes" ? "tab-active" : ""
+                }`}
                 onClick={() => setRightColumnView("notes")}
               >
                 Notes
               </button>
               <button
-                className={`tab flex-1 ${rightColumnView === "tools" ? "tab-active" : ""}`}
+                className={`tab flex-1 ${
+                  rightColumnView === "tools" ? "tab-active" : ""
+                }`}
                 onClick={() => setRightColumnView("tools")}
               >
                 Tools
