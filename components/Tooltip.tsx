@@ -6,8 +6,10 @@ interface props {
 }
 
 export default function TooltipHelper({ content }: props) {
-  const [anchorId, setAnchorId] = useState(null);
-  useEffect(() => setAnchorId(uuidv4()), [anchorId]);
+  const [anchorId, setAnchorId] = useState<string>('');
+  useEffect(() => {
+    setAnchorId(uuidv4());
+  }, []); // Only run once on mount
   return (
     <div>
       <p className={`anchor-${anchorId}`}>
