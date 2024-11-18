@@ -67,7 +67,10 @@ export default function DictionaryWidget() {
       </button>
 
       <dialog ref={dialogRef} className="modal">
-        <div className="modal-box">
+        <div className="modal-box relative">
+          <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+          </form>
           <h3 className="font-bold text-lg mb-4">Definition of "{word}"</h3>
           <div className="prose">
             <ReactMarkdown>{definition}</ReactMarkdown>
