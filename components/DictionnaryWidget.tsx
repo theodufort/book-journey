@@ -1,79 +1,84 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import toast from "react-hot-toast";
+import ReactMarkdown from 'react-markdown';
 
-export default function TranslationWidget() {
-  const [textToTranslate, setTextToTranslate] = useState("");
-  const [targetLang, setTargetLang] = useState("en");
-  const [isTranslating, setIsTranslating] = useState(false);
+export default function DictionaryWidget() {
+  const [word, setWord] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [definition, setDefinition] = useState("");
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
   return (
     <div className="space-y-3">
       <div className="join w-full">
         <input
           type="text"
-          placeholder="Text to translate..."
-          className="join-item input input-bordered w-3/4"
-          value={textToTranslate}
-          onChange={(e) => setTextToTranslate(e.target.value)}
+          placeholder="Enter a word..."
+          className="join-item input input-bordered w-full"
+          value={word}
+          onChange={(e) => setWord(e.target.value)}
         />
-        <select
-          className="join-item select select-bordered w-1/4"
-          value={targetLang}
-          onChange={(e) => setTargetLang(e.target.value)}
-        >
-          <option value="en">EN</option>
-          <option value="es">ES</option>
-          <option value="fr">FR</option>
-          <option value="de">DE</option>
-          <option value="it">IT</option>
-          <option value="pt">PT</option>
-          <option value="ru">RU</option>
-          <option value="ja">JA</option>
-          <option value="ko">KO</option>
-          <option value="zh">ZH</option>
-        </select>
       </div>
       <button
         className="btn btn-primary btn-sm w-full"
         onClick={async () => {
-          if (!textToTranslate) return;
+          if (!word) return;
 
-          setIsTranslating(true);
+          setIsLoading(true);
           try {
-            const response = await fetch(
-              "https://translate.mybookquest.com/translate",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  q: textToTranslate,
-                  source: "auto",
-                  target: targetLang,
-                }),
-              }
-            );
+            const response = await fetch("/api/ai/notes/dictionnary", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                message: `Define the word: ${word}`,
+              }),
+            });
 
-            if (!response.ok) throw new Error("Translation failed");
+            if (!response.ok) throw new Error("Failed to get definition");
 
-            const data = await response.json();
-            setTextToTranslate(data.translatedText);
+            const reader = response.body?.getReader();
+            if (!reader) throw new Error("No reader available");
+
+            let result = "";
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              result += new TextDecoder().decode(value);
+            }
+
+            setDefinition(result);
+            dialogRef.current?.showModal();
           } catch (error) {
-            console.error("Translation error:", error);
-            toast.error("Translation failed");
+            console.error("Dictionary error:", error);
+            toast.error("Failed to get definition");
           } finally {
-            setIsTranslating(false);
+            setIsLoading(false);
           }
         }}
-        disabled={isTranslating}
+        disabled={isLoading}
       >
-        {isTranslating ? (
+        {isLoading ? (
           <span className="loading loading-spinner loading-sm"></span>
         ) : (
-          "Translate"
+          "Look up"
         )}
       </button>
+
+      <dialog ref={dialogRef} className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg mb-4">Definition of "{word}"</h3>
+          <div className="prose">
+            <ReactMarkdown>{definition}</ReactMarkdown>
+          </div>
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn">Close</button>
+            </form>
+          </div>
+        </div>
+      </dialog>
     </div>
   );
 }
