@@ -12,12 +12,12 @@ export default function TranslationWidget() {
         <input
           type="text"
           placeholder="Text to translate..."
-          className="join-item input input-bordered w-3/4"
+          className="join-item input input-bordered w-2/3"
           value={textToTranslate}
           onChange={(e) => setTextToTranslate(e.target.value)}
         />
         <select
-          className="join-item select select-bordered w-1/4"
+          className="join-item select select-bordered w-1/3"
           value={targetLang}
           onChange={(e) => setTargetLang(e.target.value)}
         >
