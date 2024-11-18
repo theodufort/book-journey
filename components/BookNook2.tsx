@@ -780,7 +780,7 @@ export default function BookNook1() {
 
         {/* Right Column: Stickies / Session Notes */}
         <div className="w-full md:w-96 flex-shrink-0 p-2 md:border-l border-t md:border-t-0 flex flex-col md:h-full md:overflow-y-auto">
-          <div className="flex-none space-y-4">
+          <div className="flex-none">
             {/* Log Session Section - Only show on mobile when on Session Note tab */}
             {tab === "Session Note" && (
               <div className="md:hidden space-y-2">
@@ -817,7 +817,7 @@ export default function BookNook1() {
             )}
 
             {/* View Toggle */}
-            <div className="tabs tabs-boxed w-full mb-4">
+            <div className="tabs tabs-boxed w-full">
               <button
                 className={`tab flex-1 ${
                   rightColumnView === "notes" ? "tab-active" : ""
@@ -891,7 +891,7 @@ export default function BookNook1() {
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="card bg-base-100 shadow-xl">
+                <div className="card card-compact bg-base-100 shadow-xl">
                   <div className="card-body">
                     <h2 className="card-title">Translation</h2>
                     <TranslationWidget />
