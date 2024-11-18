@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
-import { Tooltip } from "react-tooltip";
+import { PlacesType, Tooltip } from "react-tooltip";
 import { v4 as uuidv4 } from "uuid";
 interface props {
   content: string;
+  place: PlacesType;
 }
 
-export default function TooltipHelper({ content }: props) {
+export default function TooltipHelper({ content, place }: props) {
   const [anchorId, setAnchorId] = useState<string>("");
   useEffect(() => {
     setAnchorId(uuidv4());
   }, []); // Only run once on mount
   return (
-    <div>
+    <div className="z-[1000]">
       <p className={`anchor-${anchorId}`}>
         <svg
           height={25}
@@ -34,7 +35,7 @@ export default function TooltipHelper({ content }: props) {
       <Tooltip
         className="z-10"
         anchorSelect={`.anchor-${anchorId}`}
-        place="top-start"
+        place={place}
       >
         {content}
       </Tooltip>
