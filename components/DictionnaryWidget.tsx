@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import toast from "react-hot-toast";
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown from "react-markdown";
 
 export default function DictionaryWidget() {
   const [word, setWord] = useState("");
@@ -67,9 +67,11 @@ export default function DictionaryWidget() {
       </button>
 
       <dialog ref={dialogRef} className="modal">
-        <div className="modal-box relative">
+        <div className="modal-box relative w-11/12 max-w-5xl">
           <form method="dialog">
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
+            </button>
           </form>
           <h3 className="font-bold text-lg mb-4">Definition of "{word}"</h3>
           <div className="prose">

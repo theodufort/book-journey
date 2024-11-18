@@ -16,6 +16,7 @@ import { Volume } from "@/interfaces/GoogleAPI";
 import { Database } from "@/types/supabase";
 import CongratulationsModalSession from "./CongratulationsModalSession";
 import TooltipHelper from "./Tooltip";
+import DictionaryWidget from "./DictionnaryWidget";
 
 export default function BookNook1() {
   const t = useTranslations("BookNook2");
@@ -505,6 +506,7 @@ export default function BookNook1() {
                         Session Note
                       </h2>
                       <TooltipHelper
+                        place={"top-start"}
                         content={
                           "Session notes are short notes that you can take while reading your book."
                         }
@@ -577,6 +579,7 @@ export default function BookNook1() {
                     <div className="flex gap-2">
                       <h3 className="text-lg font-semibold mb-2">Questions</h3>
                       <TooltipHelper
+                        place={"top-start"}
                         content={
                           "Questions can't popup while you read, get answers later!"
                         }
@@ -691,6 +694,7 @@ export default function BookNook1() {
                     <div className="flex gap-2">
                       <h2 className="text-xl font-semibold my-auto">Review</h2>
                       <TooltipHelper
+                        place={"top-start"}
                         content={
                           "The Review is a summary of all your combined notes."
                         }
@@ -734,6 +738,7 @@ export default function BookNook1() {
                         content={
                           "Questions can't popup while you read, get answers later!"
                         }
+                        place={"top-start"}
                       />
                     </div>
                     <div className="flex flex-wrap gap-2">
@@ -817,7 +822,7 @@ export default function BookNook1() {
             )}
 
             {/* View Toggle */}
-            <div className="tabs tabs-boxed w-full">
+            <div className="tabs tabs-boxed w-full mb-4 mb:mt-0 mt-2">
               <button
                 className={`tab flex-1 ${
                   rightColumnView === "notes" ? "tab-active" : ""
@@ -848,7 +853,7 @@ export default function BookNook1() {
             )}
           </div>
 
-          <div className="flex-1 overflow-y-auto mt-4 pr-2">
+          <div className="flex-1 overflow-y-auto pr-2">
             {rightColumnView === "notes" ? (
               <div className="space-y-3">
                 {!selectedBook ? (
@@ -893,8 +898,30 @@ export default function BookNook1() {
               <div className="space-y-4">
                 <div className="card card-compact bg-base-100 shadow-xl">
                   <div className="card-body">
-                    <h2 className="card-title">Translation</h2>
+                    <div className="flex gap-2">
+                      <h2 className="card-title">Translation</h2>
+                      <TooltipHelper
+                        content={
+                          "The translation widget allows you to translate any word quickly."
+                        }
+                        place="top-start"
+                      />
+                    </div>
                     <TranslationWidget />
+                  </div>
+                </div>
+                <div className="card card-compact bg-base-100 shadow-xl">
+                  <div className="card-body">
+                    <div className="flex gap-2">
+                      <h2 className="card-title">Dictionnary</h2>
+                      <TooltipHelper
+                        content={
+                          "The translation widget allows you to search any word quickly."
+                        }
+                        place="top-start"
+                      />
+                    </div>
+                    <DictionaryWidget />
                   </div>
                 </div>
                 {/* Add more tools here */}
