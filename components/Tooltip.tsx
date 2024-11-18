@@ -33,7 +33,7 @@ export default function TooltipHelper({ content }: props) {
       </p>
       <Tooltip
         className="z-10"
-        anchorSelect={`anchor-${anchorId}`}
+        anchorSelect={`.anchor-${anchorId}`}
         place="top-start"
       >
         {content}
