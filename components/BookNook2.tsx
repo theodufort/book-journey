@@ -16,7 +16,7 @@ import { Volume } from "@/interfaces/GoogleAPI";
 import { Database } from "@/types/supabase";
 import CongratulationsModalSession from "./CongratulationsModalSession";
 import TooltipHelper from "./Tooltip";
-import DictionaryWidget from "./DictionnaryWidget";
+import DictionaryWidget from "./DictionaryWidget";
 
 export default function BookNook1() {
   const t = useTranslations("BookNook2");
@@ -913,7 +913,7 @@ export default function BookNook1() {
                 <div className="card card-compact bg-base-100 shadow-xl">
                   <div className="card-body">
                     <div className="flex gap-2">
-                      <h2 className="card-title">Dictionnary</h2>
+                      <h2 className="card-title">Dictionary</h2>
                       <TooltipHelper
                         content={
                           "The translation widget allows you to search any word quickly."

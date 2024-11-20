@@ -26,7 +26,7 @@ export default function DictionaryWidget() {
 
           setIsLoading(true);
           try {
-            const response = await fetch("/api/ai/notes/dictionnary", {
+            const response = await fetch("/api/ai/notes/dictionary", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
