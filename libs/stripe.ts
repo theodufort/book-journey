@@ -11,6 +11,7 @@ interface CreateCheckoutParams {
     customerId?: string;
     email?: string;
   };
+  trialTime: number;
 }
 
 interface CreateCustomerPortalParams {
@@ -27,6 +28,7 @@ export const createCheckout = async ({
   cancelUrl,
   priceId,
   couponId,
+  trialTime,
 }: CreateCheckoutParams): Promise<string> => {
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
@@ -59,6 +61,9 @@ export const createCheckout = async ({
     }
 
     const stripeSession = await stripe.checkout.sessions.create({
+      subscription_data: {
+        trial_period_days: trialTime,
+      },
       mode,
       allow_promotion_codes: true,
       client_reference_id: clientReferenceId,

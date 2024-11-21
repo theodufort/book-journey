@@ -551,7 +551,7 @@ export default function BookNook1() {
                           }
                         />
                       </label> */}
-                      <label className="cursor-pointer label">
+                      {/* <label className="cursor-pointer label">
                         <span className="label-text mr-2">Auto-Clean</span>
                         <input
                           type="checkbox"
@@ -561,16 +561,20 @@ export default function BookNook1() {
                             setAutoCleanEnabled(e.target.checked)
                           }
                         />
-                      </label>
-                      <AIRecorder
-                        onTranscription={(text) =>
-                          setDailyNoteContent((prev) =>
-                            prev ? `${prev}\n\n${text}` : text
-                          )
-                        }
-                        autoFormatEnabled={autoFormatEnabled}
-                        autoCleanEnabled={autoCleanEnabled}
-                      />
+                      </label> */}
+                      {user ? (
+                        <PaidFeatureWrapper userId={user.id}>
+                          <AIRecorder
+                            onTranscription={(text) =>
+                              setDailyNoteContent((prev) =>
+                                prev ? `${prev}\n\n${text}` : text
+                              )
+                            }
+                            autoFormatEnabled={autoFormatEnabled}
+                            autoCleanEnabled={autoCleanEnabled}
+                          />
+                        </PaidFeatureWrapper>
+                      ) : null}
                     </div>
                   </div>
 
@@ -785,7 +789,7 @@ export default function BookNook1() {
 
         {/* Right Column: Stickies / Session Notes */}
         <div className="w-full md:w-96 flex-shrink-0 p-2 md:border-l border-t md:border-t-0 flex flex-col md:h-full md:overflow-y-auto">
-          <div className="flex-none">
+          <div className="flex-none mb-2">
             {/* Log Session Section - Only show on mobile when on Session Note tab */}
             {tab === "Session Note" && (
               <div className="md:hidden space-y-2">
@@ -895,35 +899,44 @@ export default function BookNook1() {
                 )}
               </div>
             ) : (
-              <div className="space-y-4">
-                <div className="card card-compact bg-base-100 shadow-xl">
-                  <div className="card-body">
-                    <div className="flex gap-2">
-                      <h2 className="card-title">Translation</h2>
-                      <TooltipHelper
-                        content={
-                          "The translation widget allows you to translate any word quickly."
-                        }
-                        place="top-start"
-                      />
-                    </div>
-                    <TranslationWidget />
+              <div>
+                {user ? (
+                  <div className="space-y-4">
+                    <PaidFeatureWrapper userId={user.id}>
+                      <div className="card card-compact bg-base-100 shadow-xl">
+                        <div className="card-body">
+                          <div className="flex gap-2">
+                            <h2 className="card-title">Translation</h2>
+                            <TooltipHelper
+                              content={
+                                "The translation widget allows you to translate any word quickly."
+                              }
+                              place="top-start"
+                            />
+                          </div>
+                          <TranslationWidget />
+                        </div>
+                      </div>
+                    </PaidFeatureWrapper>
+                    <PaidFeatureWrapper userId={user.id}>
+                      <div className="card card-compact bg-base-100 shadow-xl">
+                        <div className="card-body">
+                          <div className="flex gap-2">
+                            <h2 className="card-title">Dictionary</h2>
+                            <TooltipHelper
+                              content={
+                                "The translation widget allows you to search any word quickly."
+                              }
+                              place="top-start"
+                            />
+                          </div>
+                          <DictionaryWidget />
+                        </div>
+                      </div>
+                    </PaidFeatureWrapper>
                   </div>
-                </div>
-                <div className="card card-compact bg-base-100 shadow-xl">
-                  <div className="card-body">
-                    <div className="flex gap-2">
-                      <h2 className="card-title">Dictionary</h2>
-                      <TooltipHelper
-                        content={
-                          "The translation widget allows you to search any word quickly."
-                        }
-                        place="top-start"
-                      />
-                    </div>
-                    <DictionaryWidget />
-                  </div>
-                </div>
+                ) : null}
+
                 {/* Add more tools here */}
               </div>
             )}
