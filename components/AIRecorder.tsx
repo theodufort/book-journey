@@ -94,7 +94,7 @@ export default function AIRecorder({
         className={`btn ${
           isRecording
             ? "btn-base-100 btn-circle w-12 h-12 p-0"
-            : "btn-primary flex items-center gap-2"
+            : "btn-primary flex items-center gap-2 md:px-4 px-2"
         }`}
         onClick={async () => {
           if (isRecording) {
@@ -141,7 +141,7 @@ export default function AIRecorder({
         ) : (
           <>
             <Mic className="h-5 w-5" />
-            <span>Start Recording</span>
+            <span className="hidden md:inline">Start Recording</span>
           </>
         )}
       </button>
