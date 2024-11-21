@@ -84,8 +84,8 @@ export default function AIRecorder({
       </dialog>
       <button
         className={`btn ${
-          isRecording 
-            ? "btn-error btn-circle w-12 h-12 p-0" 
+          isRecording
+            ? "btn-base-100 btn-circle w-12 h-12 p-0"
             : "btn-primary flex items-center gap-2"
         }`}
         onClick={async () => {
