@@ -83,7 +83,11 @@ export default function AIRecorder({
         </div>
       </dialog>
       <button
-        className={`btn ${isRecording ? "btn-error" : "btn-primary"} flex items-center gap-2`}
+        className={`btn ${
+          isRecording 
+            ? "btn-error btn-circle w-12 h-12 p-0" 
+            : "btn-primary flex items-center gap-2"
+        }`}
         onClick={async () => {
           if (isRecording) {
             mediaRecorder?.stop();
@@ -125,13 +129,7 @@ export default function AIRecorder({
         }}
       >
         {isRecording ? (
-          <>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
-              <MicOff className="h-5 w-5" />
-              <span>Stop Recording</span>
-            </div>
-          </>
+          <div className="w-4 h-4 rounded-full bg-red-500 animate-pulse"></div>
         ) : (
           <>
             <Mic className="h-5 w-5" />
