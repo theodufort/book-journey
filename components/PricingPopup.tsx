@@ -13,7 +13,9 @@ const PricingPopup: React.FC<PricingPopupProps> = ({ isOpen, onClose }) => {
     <div className="modal modal-open z-[100000]">
       <div className="modal-box w-11/12 max-w-5xl relative">
         <button
-          onClick={onClose}
+          onClick={() => {
+            onClose();
+          }}
           className="btn btn-sm btn-circle absolute right-2 top-2"
         >
           ✕
