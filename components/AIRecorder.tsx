@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Mic, MicOff } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -19,6 +19,14 @@ export default function AIRecorder({
   );
   const [audioPreview, setAudioPreview] = useState<string | null>(null);
   const [isTranscribing, setIsTranscribing] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  const handleModalClose = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+  };
 
   return (
     <>
@@ -26,7 +34,7 @@ export default function AIRecorder({
         <div className="modal-box">
           <h3 className="font-bold text-lg mb-4">Transcribe Audio</h3>
           <div className="flex flex-col gap-4">
-            <audio src={audioPreview} controls className="w-full" />
+            <audio ref={audioRef} src={audioPreview} controls className="w-full" />
             <button
               className="btn btn-primary w-full"
               onClick={async () => {
@@ -76,7 +84,7 @@ export default function AIRecorder({
             </button>
           </div>
           <div className="modal-action">
-            <form method="dialog">
+            <form method="dialog" onSubmit={handleModalClose}>
               <button className="btn">Close</button>
             </form>
           </div>
