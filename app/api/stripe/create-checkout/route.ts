@@ -44,6 +44,7 @@ export async function POST(req: NextRequest) {
       .single();
 
     const stripeSessionURL = await createCheckout({
+      trialTime: body.trialTime,
       priceId,
       mode,
       successUrl,

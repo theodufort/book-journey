@@ -50,7 +50,7 @@ export default function Page() {
         <Feature5 />
         <Feature6 />
         <FAQ />
-        {/* <Pricing /> */}
+        <Pricing />
       </main>
       {/* <CalendlyFooter /> */}
       <Footer />

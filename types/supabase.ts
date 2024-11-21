@@ -1253,30 +1253,39 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string | null
+          customer_id: string | null
           email: string | null
+          has_access: boolean | null
           id: string
           inactivity_email_sent: boolean
           last_sign_in_at: string | null
+          price_id: string | null
           raw_app_meta_data: Json | null
           raw_user_meta_data: Json | null
           username: string | null
         }
         Insert: {
           created_at?: string | null
+          customer_id?: string | null
           email?: string | null
+          has_access?: boolean | null
           id: string
           inactivity_email_sent?: boolean
           last_sign_in_at?: string | null
+          price_id?: string | null
           raw_app_meta_data?: Json | null
           raw_user_meta_data?: Json | null
           username?: string | null
         }
         Update: {
           created_at?: string | null
+          customer_id?: string | null
           email?: string | null
+          has_access?: boolean | null
           id?: string
           inactivity_email_sent?: boolean
           last_sign_in_at?: string | null
+          price_id?: string | null
           raw_app_meta_data?: Json | null
           raw_user_meta_data?: Json | null
           username?: string | null
@@ -1295,6 +1304,7 @@ export type Database = {
         Row: {
           answer: string | null
           book_id: string
+          created_at: string
           id: string
           question: string
           user_id: string
@@ -1302,6 +1312,7 @@ export type Database = {
         Insert: {
           answer?: string | null
           book_id: string
+          created_at?: string
           id?: string
           question: string
           user_id: string
@@ -1309,6 +1320,7 @@ export type Database = {
         Update: {
           answer?: string | null
           book_id?: string
+          created_at?: string
           id?: string
           question?: string
           user_id?: string
