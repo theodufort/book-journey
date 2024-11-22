@@ -1,6 +1,5 @@
 import ButtonCheckout from "./ButtonCheckout";
 import config from "@/config";
-import Pricing from "./Pricing";
 
 interface SubscriptionManagerProps {
   isOpen: boolean;
