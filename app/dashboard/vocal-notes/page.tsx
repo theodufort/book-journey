@@ -40,6 +40,10 @@ export default function BookVocalNotes() {
   const [user, setUser] = useState<User | null>(null);
   const [vocalNotes, setVocalNotes] = useState<VocalNote[]>([]);
   const [selectedNote, setSelectedNote] = useState<VocalNote | null>(null);
+  const [playingNote, setPlayingNote] = useState<VocalNote | null>(null);
+  const [audioProgress, setAudioProgress] = useState(0);
+  const [audioDuration, setAudioDuration] = useState(0);
+  const audioRef = useRef<HTMLAudioElement>(null);
   const [selectedBook, setSelectedBook] = useState<ReadingListItem | null>(
     null
   );
@@ -372,14 +376,15 @@ export default function BookVocalNotes() {
                                   </button>
                                 </td>
                                 <td>
-                                  <audio
-                                    controls
-                                    className="w-full"
-                                    src={`https://vocalnotes.mybookquest.com/${note.endpoint_url}`}
+                                  <button
+                                    className="btn btn-sm btn-secondary"
+                                    onClick={() => {
+                                      setPlayingNote(note);
+                                      (window as any).audio_modal.showModal();
+                                    }}
                                   >
-                                    Your browser does not support the audio
-                                    element.
-                                  </audio>
+                                    Play Recording
+                                  </button>
                                 </td>
                               </tr>
                             ))}
@@ -414,6 +419,76 @@ export default function BookVocalNotes() {
             <div className="modal-action">
               <form method="dialog">
                 <button className="btn">Close</button>
+              </form>
+            </div>
+          </div>
+        </dialog>
+
+        {/* Audio Player Modal */}
+        <dialog id="audio_modal" className="modal">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">Audio Player</h3>
+            <div className="py-4">
+              <audio
+                ref={audioRef}
+                src={playingNote ? `https://vocalnotes.mybookquest.com/${playingNote.endpoint_url}` : ''}
+                onTimeUpdate={() => {
+                  if (audioRef.current) {
+                    setAudioProgress(audioRef.current.currentTime);
+                  }
+                }}
+                onLoadedMetadata={() => {
+                  if (audioRef.current) {
+                    setAudioDuration(audioRef.current.duration);
+                  }
+                }}
+              />
+              <input
+                type="range"
+                min="0"
+                max={audioDuration}
+                value={audioProgress}
+                onChange={(e) => {
+                  const time = parseFloat(e.target.value);
+                  if (audioRef.current) {
+                    audioRef.current.currentTime = time;
+                  }
+                  setAudioProgress(time);
+                }}
+                className="range range-primary w-full"
+              />
+              <div className="flex justify-between text-sm mt-1">
+                <span>{Math.floor(audioProgress)}s</span>
+                <span>{Math.floor(audioDuration)}s</span>
+              </div>
+              <div className="flex justify-center gap-4 mt-4">
+                <button
+                  className="btn btn-primary"
+                  onClick={() => {
+                    if (audioRef.current?.paused) {
+                      audioRef.current?.play();
+                    } else {
+                      audioRef.current?.pause();
+                    }
+                  }}
+                >
+                  Play/Pause
+                </button>
+              </div>
+            </div>
+            <div className="modal-action">
+              <form method="dialog">
+                <button 
+                  className="btn"
+                  onClick={() => {
+                    if (audioRef.current) {
+                      audioRef.current.pause();
+                      audioRef.current.currentTime = 0;
+                    }
+                  }}
+                >
+                  Close
+                </button>
               </form>
             </div>
           </div>
