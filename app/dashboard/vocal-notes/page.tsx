@@ -465,7 +465,16 @@ export default function BookVocalNotes() {
               )}
               <div className="flex justify-between text-sm mt-1">
                 <span>{Math.floor(audioProgress)}s</span>
-                <span>{Math.floor(audioDuration)}s</span>
+                <span>
+                  {playingNote
+                    ? Math.round(
+                        (new Date(playingNote.end_time).getTime() -
+                          new Date(playingNote.start_time).getTime()) /
+                          1000
+                      )
+                    : 0}
+                  s
+                </span>
               </div>
               <div className="flex justify-center gap-4 mt-4">
                 <button
