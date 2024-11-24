@@ -327,10 +327,8 @@ export default function BookVocalNotes() {
                         </p>
                         <p className="text-sm text-gray-500 mt-1">
                           {t("last_update_label")}:{" "}
-                          {notes[selectedBook.book_id]?.lastUpdated
-                            ? new Date(
-                                notes[selectedBook.book_id].lastUpdated
-                              ).toLocaleString()
+                          {vocalNotes.length > 0
+                            ? new Date(vocalNotes[0].start_time).toLocaleString()
                             : t("not_saved_warning")}
                         </p>
                       </div>
