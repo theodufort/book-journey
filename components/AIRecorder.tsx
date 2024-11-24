@@ -13,6 +13,7 @@ export default function AIRecorder({
   onTranscription,
   autoFormatEnabled,
   autoCleanEnabled,
+  userId,
 }: Props) {
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
@@ -37,7 +38,12 @@ export default function AIRecorder({
         <div className="modal-box">
           <h3 className="font-bold text-lg mb-4">Transcribe Audio</h3>
           <div className="flex flex-col gap-4">
-            <audio ref={audioRef} src={audioPreview} controls className="w-full" />
+            <audio
+              ref={audioRef}
+              src={audioPreview}
+              controls
+              className="w-full"
+            />
             <button
               className="btn btn-primary w-full"
               onClick={async () => {
@@ -86,7 +92,7 @@ export default function AIRecorder({
                       userId: userId,
                       startTime: startTime?.toISOString(),
                       endTime: endTime?.toISOString(),
-                      endpointUrl: `example.com/${audioId}.mp3`,
+                      endpointUrl: `${audioId}.mp3`,
                       textContent: text,
                     }),
                   });
