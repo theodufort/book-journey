@@ -323,21 +323,29 @@ export default function BookVocalNotes() {
                 {selectedBook ? (
                   <>
                     <div className="mb-4 block">
-                      <div>
-                        <h2 className="text-md md:text-2xl font-semibold">
-                          {selectedBook.data.volumeInfo.title}
-                        </h2>
-                        <p className="text-gray-600">
-                          {selectedBook.data.volumeInfo.authors?.join(", ")}
-                        </p>
-                        <p className="text-sm text-gray-500 mt-1">
-                          {t("last_update_label")}:{" "}
-                          {vocalNotes.length > 0
-                            ? new Date(
-                                vocalNotes[0].start_time
-                              ).toLocaleString()
-                            : t("not_saved_warning")}
-                        </p>
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h2 className="text-md md:text-2xl font-semibold">
+                            {selectedBook.data.volumeInfo.title}
+                          </h2>
+                          <p className="text-gray-600">
+                            {selectedBook.data.volumeInfo.authors?.join(", ")}
+                          </p>
+                          <p className="text-sm text-gray-500 mt-1">
+                            {t("last_update_label")}:{" "}
+                            {vocalNotes.length > 0
+                              ? new Date(
+                                  vocalNotes[0].start_time
+                                ).toLocaleString()
+                              : t("not_saved_warning")}
+                          </p>
+                        </div>
+                        <button 
+                          className="btn btn-primary"
+                          onClick={() => window.location.href = `/dashboard/ai-recorder/${selectedBook.book_id}`}
+                        >
+                          Record Note
+                        </button>
                       </div>
                       <div className="overflow-x-auto">
                         <table className="table">
