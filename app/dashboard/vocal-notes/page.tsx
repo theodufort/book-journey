@@ -29,9 +29,7 @@ export default function BookVocalNotes() {
   const [readingList, setReadingList] = useState<ReadingListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
-  const [notes, setNotes] = useState<{
-    [bookId: string]: { content: string; lastUpdated: string | null };
-  }>({});
+  const [vocalNotes, setVocalNotes] = useState<VocalNote[]>([]);
   const [selectedBook, setSelectedBook] = useState<ReadingListItem | null>(
     null
   );
@@ -198,21 +196,15 @@ export default function BookVocalNotes() {
   async function fetchVocalNotes(book_id: string) {
     const { data, error } = await supabase
       .from("vocal_notes")
-      .select("book_id, notes, updated_at")
+      .select("*")
       .eq("user_id", user?.id)
-      .eq("book_id", bookId)
-      .single();
+      .order('start_time', { ascending: false });
 
     if (error) {
-      console.error("Error fetching notes:", error);
+      console.error("Error fetching vocal notes:", error);
+      toast.error("Failed to load vocal notes");
     } else {
-      setNotes((prevNotes) => ({
-        ...prevNotes,
-        [bookId]: {
-          content: data?.notes || "",
-          lastUpdated: data?.updated_at || null,
-        },
-      }));
+      setVocalNotes(data);
     }
   }
   return (
@@ -346,24 +338,35 @@ export default function BookVocalNotes() {
                             </tr>
                           </thead>
                           <tbody>
-                            {/* row 1 */}
-                            <tr>
-                              <td>Cy Ganderton</td>
-                              <td>Quality Control Specialist</td>
-                              <td>Blue</td>
-                            </tr>
-                            {/* row 2 */}
-                            <tr>
-                              <td>Hart Hagerty</td>
-                              <td>Desktop Support Technician</td>
-                              <td>Purple</td>
-                            </tr>
-                            {/* row 3 */}
-                            <tr>
-                              <td>Brice Swyre</td>
-                              <td>Tax Accountant</td>
-                              <td>Red</td>
-                            </tr>
+                            {vocalNotes.map((note) => (
+                              <tr key={note.id}>
+                                <td>{note.text_content || 'Untitled Note'}</td>
+                                <td>{new Date(note.start_time).toLocaleString()}</td>
+                                <td>
+                                  {Math.round(
+                                    (new Date(note.end_time).getTime() - 
+                                     new Date(note.start_time).getTime()) / 1000
+                                  )} seconds
+                                </td>
+                                <td>{note.text_content || 'No transcription'}</td>
+                                <td>
+                                  <audio 
+                                    controls
+                                    className="w-full"
+                                    src={`https://vocalnotes.mybookquest.com/${note.endpoint_url}`}
+                                  >
+                                    Your browser does not support the audio element.
+                                  </audio>
+                                </td>
+                              </tr>
+                            ))}
+                            {vocalNotes.length === 0 && (
+                              <tr>
+                                <td colSpan={5} className="text-center py-4">
+                                  No vocal notes found for this book
+                                </td>
+                              </tr>
+                            )}
                           </tbody>
                         </table>
                       </div>
