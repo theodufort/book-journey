@@ -3,6 +3,15 @@ import HeaderDashboard from "@/components/DashboardHeader";
 import { ReadingListItem } from "@/interfaces/Dashboard";
 import { Volume } from "@/interfaces/GoogleAPI";
 import { Database } from "@/types/supabase";
+
+interface VocalNote {
+  id: string;
+  user_id: string;
+  start_time: string;
+  end_time: string;
+  endpoint_url: string;
+  text_content: string | null;
+}
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
