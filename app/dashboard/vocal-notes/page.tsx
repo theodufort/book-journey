@@ -443,20 +443,26 @@ export default function BookVocalNotes() {
                   }
                 }}
               />
-              <input
-                type="range"
-                min="0"
-                max={audioDuration}
-                value={audioProgress}
-                onChange={(e) => {
-                  const time = parseFloat(e.target.value);
-                  if (audioRef.current) {
-                    audioRef.current.currentTime = time;
-                  }
-                  setAudioProgress(time);
-                }}
-                className="range range-primary w-full"
-              />
+              {playingNote && (
+                <input
+                  type="range"
+                  min="0"
+                  max={Math.round(
+                    (new Date(playingNote.end_time).getTime() -
+                      new Date(playingNote.start_time).getTime()) /
+                      1000
+                  )}
+                  value={audioProgress}
+                  onChange={(e) => {
+                    const time = parseFloat(e.target.value);
+                    if (audioRef.current) {
+                      audioRef.current.currentTime = time;
+                    }
+                    setAudioProgress(time);
+                  }}
+                  className="range range-primary w-full"
+                />
+              )}
               <div className="flex justify-between text-sm mt-1">
                 <span>{Math.floor(audioProgress)}s</span>
                 <span>{Math.floor(audioDuration)}s</span>
