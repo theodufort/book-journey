@@ -6,6 +6,7 @@ interface Props {
   onTranscription: (text: string) => void;
   autoFormatEnabled: boolean;
   autoCleanEnabled: boolean;
+  userId: string;
 }
 
 export default function AIRecorder({
@@ -19,6 +20,8 @@ export default function AIRecorder({
   );
   const [audioPreview, setAudioPreview] = useState<string | null>(null);
   const [isTranscribing, setIsTranscribing] = useState(false);
+  const [startTime, setStartTime] = useState<Date | null>(null);
+  const [endTime, setEndTime] = useState<Date | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const handleModalClose = () => {
@@ -48,6 +51,18 @@ export default function AIRecorder({
                   formData.append("autoFormat", autoFormatEnabled.toString());
                   formData.append("autoClean", autoCleanEnabled.toString());
 
+                  // First, upload to S3
+                  const s3FormData = new FormData();
+                  s3FormData.append("file", audioBlob);
+                  const s3Response = await fetch("/api/s3/vocal-notes", {
+                    method: "POST",
+                    body: s3FormData,
+                  });
+
+                  if (!s3Response.ok) throw new Error("Failed to upload audio");
+                  const { id: audioId } = await s3Response.json();
+
+                  // Then transcribe
                   const transcribeResponse = await fetch(
                     "/api/ai/notes/speech-to-text",
                     {
@@ -59,9 +74,30 @@ export default function AIRecorder({
                   if (!transcribeResponse.ok)
                     throw new Error("Transcription failed");
 
-                  const data = await transcribeResponse.json();
-                  onTranscription(data.text);
+                  const { text } = await transcribeResponse.json();
+
+                  // Save to database
+                  const saveResponse = await fetch("/api/vocal-notes", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      userId: userId,
+                      startTime: startTime?.toISOString(),
+                      endTime: endTime?.toISOString(),
+                      endpointUrl: `example.com/${audioId}.mp3`,
+                      textContent: text,
+                    }),
+                  });
+
+                  if (!saveResponse.ok)
+                    throw new Error("Failed to save vocal note");
+
+                  onTranscription(text);
                   setAudioPreview(null);
+                  setStartTime(null);
+                  setEndTime(null);
                   (
                     document.getElementById(
                       "transcribe_modal"
@@ -112,6 +148,7 @@ export default function AIRecorder({
 
               recorder.ondataavailable = (e) => chunks.push(e.data);
               recorder.onstop = () => {
+                setEndTime(new Date());
                 const audioBlob = new Blob(chunks, { type: "audio/mp3" });
                 const audioUrl = URL.createObjectURL(audioBlob);
                 setAudioPreview(audioUrl);
@@ -127,6 +164,7 @@ export default function AIRecorder({
               };
 
               setMediaRecorder(recorder);
+              setStartTime(new Date());
               recorder.start();
               setIsRecording(true);
             } catch (error) {
