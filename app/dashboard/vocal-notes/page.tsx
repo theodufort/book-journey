@@ -399,5 +399,18 @@ export default function BookVocalNotes() {
         )}
       </section>
     </main>
+
+    {/* Modal for viewing note content */}
+    <dialog id="note_modal" className="modal">
+      <div className="modal-box">
+        <h3 className="font-bold text-lg">Note Content</h3>
+        <p className="py-4">{selectedNote?.text_content || 'No content available'}</p>
+        <div className="modal-action">
+          <form method="dialog">
+            <button className="btn">Close</button>
+          </form>
+        </div>
+      </div>
+    </dialog>
   );
 }
