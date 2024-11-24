@@ -57,18 +57,7 @@ export default function AIRecorder({
                   formData.append("autoFormat", autoFormatEnabled.toString());
                   formData.append("autoClean", autoCleanEnabled.toString());
 
-                  // First, upload to S3
-                  const s3FormData = new FormData();
-                  s3FormData.append("file", audioBlob);
-                  const s3Response = await fetch("/api/s3/vocal-notes", {
-                    method: "POST",
-                    body: s3FormData,
-                  });
-
-                  if (!s3Response.ok) throw new Error("Failed to upload audio");
-                  const { id: audioId } = await s3Response.json();
-
-                  // Then transcribe
+                  // First transcribe
                   const transcribeResponse = await fetch(
                     "/api/ai/notes/speech-to-text",
                     {
@@ -82,7 +71,7 @@ export default function AIRecorder({
 
                   const { text } = await transcribeResponse.json();
 
-                  // Save to database
+                  // Save to database and get UUID
                   const saveResponse = await fetch("/api/vocal-notes", {
                     method: "POST",
                     headers: {
@@ -92,13 +81,25 @@ export default function AIRecorder({
                       userId: userId,
                       startTime: startTime?.toISOString(),
                       endTime: endTime?.toISOString(),
-                      endpointUrl: `${audioId}.mp3`,
                       textContent: text,
                     }),
                   });
 
                   if (!saveResponse.ok)
                     throw new Error("Failed to save vocal note");
+
+                  const { id } = await saveResponse.json();
+
+                  // Then upload to R2
+                  const s3FormData = new FormData();
+                  s3FormData.append("file", audioBlob);
+                  s3FormData.append("id", id);
+                  const s3Response = await fetch("/api/s3/vocal-notes", {
+                    method: "POST",
+                    body: s3FormData,
+                  });
+
+                  if (!s3Response.ok) throw new Error("Failed to upload audio");
 
                   onTranscription(text);
                   setAudioPreview(null);
