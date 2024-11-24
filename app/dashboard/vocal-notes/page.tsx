@@ -208,7 +208,7 @@ export default function BookVocalNotes() {
       .from("vocal_notes")
       .select("*")
       .eq("user_id", user?.id)
-      .order('start_time', { ascending: false });
+      .order("start_time", { ascending: false });
 
     if (error) {
       console.error("Error fetching vocal notes:", error);
@@ -329,7 +329,9 @@ export default function BookVocalNotes() {
                         <p className="text-sm text-gray-500 mt-1">
                           {t("last_update_label")}:{" "}
                           {vocalNotes.length > 0
-                            ? new Date(vocalNotes[0].start_time).toLocaleString()
+                            ? new Date(
+                                vocalNotes[0].start_time
+                              ).toLocaleString()
                             : t("not_saved_warning")}
                         </p>
                       </div>
@@ -347,15 +349,19 @@ export default function BookVocalNotes() {
                           <tbody>
                             {vocalNotes.map((note) => (
                               <tr key={note.id}>
-                                <td>{new Date(note.start_time).toLocaleString()}</td>
                                 <td>
-                                  {Math.round(
-                                    (new Date(note.end_time).getTime() - 
-                                     new Date(note.start_time).getTime()) / 1000
-                                  )} seconds
+                                  {new Date(note.start_time).toLocaleString()}
                                 </td>
                                 <td>
-                                  <button 
+                                  {Math.round(
+                                    (new Date(note.end_time).getTime() -
+                                      new Date(note.start_time).getTime()) /
+                                      1000
+                                  )}{" "}
+                                  seconds
+                                </td>
+                                <td>
+                                  <button
                                     className="btn btn-sm btn-primary"
                                     onClick={() => {
                                       setSelectedNote(note);
@@ -366,12 +372,13 @@ export default function BookVocalNotes() {
                                   </button>
                                 </td>
                                 <td>
-                                  <audio 
+                                  <audio
                                     controls
                                     className="w-full"
                                     src={`https://vocalnotes.mybookquest.com/${note.endpoint_url}`}
                                   >
-                                    Your browser does not support the audio element.
+                                    Your browser does not support the audio
+                                    element.
                                   </audio>
                                 </td>
                               </tr>
@@ -397,20 +404,21 @@ export default function BookVocalNotes() {
             </div>
           </div>
         )}
+
+        <dialog id="note_modal" className="modal">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">Note Content</h3>
+            <p className="py-4">
+              {selectedNote?.text_content || "No content available"}
+            </p>
+            <div className="modal-action">
+              <form method="dialog">
+                <button className="btn">Close</button>
+              </form>
+            </div>
+          </div>
+        </dialog>
       </section>
     </main>
-
-    {/* Modal for viewing note content */}
-    <dialog id="note_modal" className="modal">
-      <div className="modal-box">
-        <h3 className="font-bold text-lg">Note Content</h3>
-        <p className="py-4">{selectedNote?.text_content || 'No content available'}</p>
-        <div className="modal-action">
-          <form method="dialog">
-            <button className="btn">Close</button>
-          </form>
-        </div>
-      </div>
-    </dialog>
   );
 }
