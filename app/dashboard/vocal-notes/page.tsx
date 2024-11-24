@@ -39,6 +39,7 @@ export default function BookVocalNotes() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const [vocalNotes, setVocalNotes] = useState<VocalNote[]>([]);
+  const [selectedNote, setSelectedNote] = useState<VocalNote | null>(null);
   const [selectedBook, setSelectedBook] = useState<ReadingListItem | null>(
     null
   );
@@ -337,7 +338,6 @@ export default function BookVocalNotes() {
                           {/* head */}
                           <thead>
                             <tr>
-                              <th>Session Label</th>
                               <th>Record date</th>
                               <th>Recording Length</th>
                               <th>Linked Note</th>
@@ -347,7 +347,6 @@ export default function BookVocalNotes() {
                           <tbody>
                             {vocalNotes.map((note) => (
                               <tr key={note.id}>
-                                <td>{note.text_content || 'Untitled Note'}</td>
                                 <td>{new Date(note.start_time).toLocaleString()}</td>
                                 <td>
                                   {Math.round(
@@ -355,7 +354,17 @@ export default function BookVocalNotes() {
                                      new Date(note.start_time).getTime()) / 1000
                                   )} seconds
                                 </td>
-                                <td>{note.text_content || 'No transcription'}</td>
+                                <td>
+                                  <button 
+                                    className="btn btn-sm btn-primary"
+                                    onClick={() => {
+                                      setSelectedNote(note);
+                                      (window as any).note_modal.showModal();
+                                    }}
+                                  >
+                                    View Note
+                                  </button>
+                                </td>
                                 <td>
                                   <audio 
                                     controls
