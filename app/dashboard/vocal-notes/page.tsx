@@ -377,7 +377,7 @@ export default function BookVocalNotes() {
                                 </td>
                                 <td>
                                   <button
-                                    className="btn btn-sm btn-secondary"
+                                    className="btn btn-sm btn-primary"
                                     onClick={() => {
                                       setPlayingNote(note);
                                       (window as any).audio_modal.showModal();
@@ -431,7 +431,11 @@ export default function BookVocalNotes() {
             <div className="py-4">
               <audio
                 ref={audioRef}
-                src={playingNote ? `https://vocalnotes.mybookquest.com/${playingNote.endpoint_url}` : ''}
+                src={
+                  playingNote
+                    ? `https://vocalnotes.mybookquest.com/${playingNote.endpoint_url}`
+                    : ""
+                }
                 onTimeUpdate={() => {
                   if (audioRef.current) {
                     setAudioProgress(audioRef.current.currentTime);
@@ -493,7 +497,7 @@ export default function BookVocalNotes() {
             </div>
             <div className="modal-action">
               <form method="dialog">
-                <button 
+                <button
                   className="btn"
                   onClick={() => {
                     if (audioRef.current) {
