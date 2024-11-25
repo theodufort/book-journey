@@ -5,6 +5,7 @@ import apiClient from "@/libs/api";
 import { Database } from "@/types/supabase";
 import { Popover, Transition } from "@headlessui/react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import axios from "axios";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -41,7 +42,7 @@ const ButtonAccount = () => {
     setIsLoading(true);
 
     try {
-      const { url }: { url: string } = await apiClient.post(
+      const { url }: { url: string } = await axios.post(
         "/stripe/create-portal",
         {
           returnUrl: window.location.href,
