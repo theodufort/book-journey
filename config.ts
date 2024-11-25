@@ -23,7 +23,7 @@ const config = {
         priceId:
           process.env.NODE_ENV === "development"
             ? "price_1QNfKoRsACmEYsIp0zdE21VQ"
-            : "price_456",
+            : "price_1QP3aaRsACmEYsIpkWWoJeZG",
         //  REQUIRED - Name of the plan, displayed on the pricing page
         name: "Monthly Pro Reader",
         // A friendly description of the plan, displayed on the pricing page. Tip: explain why this plan and not others
@@ -34,10 +34,10 @@ const config = {
         // priceAnchor: 149,
         features: [
           {
-            name: "Vocal notes feature",
+            name: "Book Nook Tools: Dictionary, Translate and Speech-to-Text",
           },
           { name: "Unlimited vocal notes storage" },
-          { name: "Unlimited vocal to text conversions" },
+          { name: "Unlimited speech to text conversions" },
         ],
       },
       {
@@ -45,7 +45,7 @@ const config = {
         priceId:
           process.env.NODE_ENV === "development"
             ? "price_1QNfKoRsACmEYsIp0zdE21VQ"
-            : "price_456",
+            : "price_1QP3aaRsACmEYsIpiPtSOlWE",
         //  REQUIRED - Name of the plan, displayed on the pricing page
         name: "Yearly Pro Reader",
         // A friendly description of the plan, displayed on the pricing page. Tip: explain why this plan and not others
@@ -56,10 +56,10 @@ const config = {
         priceAnchor: 144,
         features: [
           {
-            name: "Vocal notes feature",
+            name: "Book Nook Tools: Dictionary, Translate and Speech-to-Text",
           },
           { name: "Unlimited vocal notes storage" },
-          { name: "Unlimited vocal to text conversions" },
+          { name: "Unlimited speech to text conversions" },
         ],
       },
     ],
