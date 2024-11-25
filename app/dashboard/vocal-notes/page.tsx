@@ -17,13 +17,16 @@ interface VocalNote {
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
+import { routeros } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 
 export default function BookVocalNotes() {
+  const router = useRouter();
   const [bookStickys, setBookStickys] = useState<{
     [bookId: string]: {
       content: string;
@@ -116,7 +119,7 @@ export default function BookVocalNotes() {
       const checkAccess = async () => {
         const hasPremium = await checkPremium(user.id);
         if (!hasPremium) {
-          window.location.href = "/dashboard/premium";
+          router.push("/dashboard/premium");
           return;
         }
         fetchReadingList();

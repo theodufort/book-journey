@@ -572,6 +572,7 @@ export default function BookNook1() {
                             }
                             autoFormatEnabled={autoFormatEnabled}
                             autoCleanEnabled={autoCleanEnabled}
+                            userId={user.id}
                           />
                         </PaidFeatureWrapper>
                       ) : null}

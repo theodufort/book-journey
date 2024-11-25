@@ -15,6 +15,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { HowToEarnPointsPopup } from "./HowToEarnPointsPopup";
 import ReferralLinkCard from "./ReferralLinkCard";
+import PaidFeatureWrapper from "./PaidFeatureWrapper";
+import { checkPremium } from "@/libs/premium";
 
 const HeaderDashboard = () => {
   const t = useTranslations("HeaderDashboard");
@@ -187,6 +189,14 @@ const HeaderDashboard = () => {
               </li>
               <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
                 <Link
+                  href="/dashboard/vocal-notes"
+                  className="flex items-center space-x-3 p-2 align-middle text-lg"
+                >
+                  🎙️ {t("link8")}
+                </Link>
+              </li>
+              <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
+                <Link
                   href="/dashboard/recommendations"
                   className="flex items-center space-x-3 p-2 align-middle text-lg"
                 >
@@ -280,7 +290,7 @@ const HeaderDashboard = () => {
                   </svg>
                 </label>
               </div>
-              <ReferralLinkCard />
+              {/* <ReferralLinkCard /> */}
             </div>
           </ul>
         </div>

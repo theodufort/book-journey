@@ -7,10 +7,7 @@ export async function POST(req: NextRequest) {
     const supabase = createClient();
 
     const body = await req.json();
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const user = body.user;
 
     // User who are not logged in can't make a purchase
     if (!user) {

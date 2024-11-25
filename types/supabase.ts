@@ -1734,6 +1734,41 @@ export type Database = {
           },
         ]
       }
+      vocal_notes: {
+        Row: {
+          end_time: string
+          endpoint_url: string
+          id: string
+          start_time: string
+          text_content: string | null
+          user_id: string
+        }
+        Insert: {
+          end_time: string
+          endpoint_url: string
+          id?: string
+          start_time?: string
+          text_content?: string | null
+          user_id?: string
+        }
+        Update: {
+          end_time?: string
+          endpoint_url?: string
+          id?: string
+          start_time?: string
+          text_content?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vocal_notes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
