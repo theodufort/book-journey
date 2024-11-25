@@ -113,8 +113,15 @@ export default function BookVocalNotes() {
 
   useEffect(() => {
     if (user) {
-      checkPremium(user.id);
-      fetchReadingList();
+      const checkAccess = async () => {
+        const hasPremium = await checkPremium(user.id);
+        if (!hasPremium) {
+          window.location.href = "/dashboard/premium";
+          return;
+        }
+        fetchReadingList();
+      };
+      checkAccess();
     }
   }, [user, statusFilter]);
 

@@ -1,12 +1,7 @@
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { User } from "@supabase/supabase-js";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { routeros } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
-export const checkPremium = async (userId: string) => {
-  const router = useRouter();
+export const checkPremium = async (userId: string): Promise<boolean> => {
   const supabase = createClientComponentClient<Database>();
 
   const {
@@ -17,8 +12,11 @@ export const checkPremium = async (userId: string) => {
     .select("has_access")
     .eq("id", userId)
     .single();
-  console.log(has_access);
-  if (has_access) {
-    return true;
-  } else router.push("/dashboard/premium");
+
+  if (error) {
+    console.error("Error checking premium status:", error);
+    return false;
+  }
+
+  return has_access || false;
 };
