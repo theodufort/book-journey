@@ -51,6 +51,7 @@ const ButtonAccount = () => {
 
       window.location.href = url;
     } catch (e) {
+      router.push("/dashboard/premium");
       console.error(e);
     }
 
