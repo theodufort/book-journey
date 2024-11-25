@@ -1,7 +1,9 @@
 "use client";
+import AIRecorder from "@/components/AIRecorder";
 import HeaderDashboard from "@/components/DashboardHeader";
 import { ReadingListItem } from "@/interfaces/Dashboard";
 import { Volume } from "@/interfaces/GoogleAPI";
+import { checkPremium } from "@/libs/premium";
 import { Database } from "@/types/supabase";
 
 interface VocalNote {
@@ -111,6 +113,7 @@ export default function BookVocalNotes() {
 
   useEffect(() => {
     if (user) {
+      checkPremium(user.id);
       fetchReadingList();
     }
   }, [user, statusFilter]);
@@ -340,12 +343,16 @@ export default function BookVocalNotes() {
                               : t("not_saved_warning")}
                           </p>
                         </div>
-                        <button 
-                          className="btn btn-primary"
-                          onClick={() => window.location.href = `/dashboard/ai-recorder/${selectedBook.book_id}`}
-                        >
-                          Record Note
-                        </button>
+                        {user ? (
+                          <AIRecorder
+                            onTranscription={function (text: string): void {
+                              throw new Error("Function not implemented.");
+                            }}
+                            autoFormatEnabled={false}
+                            autoCleanEnabled={true}
+                            userId={user.id}
+                          />
+                        ) : null}
                       </div>
                       <div className="overflow-x-auto">
                         <table className="table">
@@ -354,7 +361,7 @@ export default function BookVocalNotes() {
                             <tr>
                               <th>Record date</th>
                               <th>Recording Length</th>
-                              <th>Linked Note</th>
+                              <th>Transcription</th>
                               <th>Recording</th>
                             </tr>
                           </thead>
@@ -420,7 +427,7 @@ export default function BookVocalNotes() {
 
         <dialog id="note_modal" className="modal">
           <div className="modal-box">
-            <h3 className="font-bold text-lg">Note Content</h3>
+            <h3 className="font-bold text-lg">Transcription</h3>
             <p className="py-4">
               {selectedNote?.text_content || "No content available"}
             </p>
