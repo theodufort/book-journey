@@ -12,7 +12,7 @@ export default function TooltipHelper({ content, place }: props) {
     setAnchorId(uuidv4());
   }, []); // Only run once on mount
   return (
-    <div className="z-[1000]">
+    <div>
       <p className={`anchor-${anchorId}`}>
         <svg
           height={25}
@@ -33,7 +33,7 @@ export default function TooltipHelper({ content, place }: props) {
         </svg>
       </p>
       <Tooltip
-        className="z-10 max-w-[200px] whitespace-normal break-words"
+        className="z-[10000] max-w-[200px] whitespace-normal break-words"
         anchorSelect={`.anchor-${anchorId}`}
         place={place}
       >

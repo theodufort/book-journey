@@ -1,14 +1,13 @@
 import { NextResponse } from "next/server";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { R2 } from "node-cloudflare-r2";
 
-const S3 = new S3Client({
-  region: "auto",
-  endpoint: process.env.CLOUDFLARE_R2_ENDPOINT,
-  credentials: {
-    accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY!,
-  },
+const r2 = new R2({
+  accountId: process.env.CLOUDFLARE_ACCOUNT,
+  accessKeyId: process.env.CLOUDFLARE_ACCESS_KEY,
+  secretAccessKey: process.env.CLOUDFLARE_ACCESS_SECRET,
 });
+// Initialize bucket instance
+const bucket = r2.bucket("vocalnotes");
 
 export async function POST(request: Request) {
   try {
@@ -24,15 +23,8 @@ export async function POST(request: Request) {
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
-    
-    await S3.send(
-      new PutObjectCommand({
-        Bucket: process.env.CLOUDFLARE_R2_BUCKET!,
-        Key: `vocal-notes/${id}.mp3`,
-        Body: buffer,
-        ContentType: "audio/mp3",
-      })
-    );
+
+    await bucket.upload(buffer, `${id}.mp3`);
 
     return NextResponse.json({ success: true });
   } catch (error) {
