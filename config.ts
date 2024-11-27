@@ -23,15 +23,15 @@ const config = {
         priceId:
           process.env.NODE_ENV === "development"
             ? "price_1QNfKoRsACmEYsIp0zdE21VQ"
-            : "price_1QP3aaRsACmEYsIpkWWoJeZG",
+            : "price_1QPn07RsACmEYsIp92JLsaEC",
         //  REQUIRED - Name of the plan, displayed on the pricing page
         name: "Monthly Pro Reader",
         // A friendly description of the plan, displayed on the pricing page. Tip: explain why this plan and not others
         description: "Get started with your second brain.",
         // The price you want to display, the one user will be charged on Stripe.
-        price: 12,
+        price: 4,
         // If you have an anchor price (i.e. $29) that you want to display crossed out, put it here. Otherwise, leave it empty
-        // priceAnchor: 149,
+        priceAnchor: 12,
         features: [
           {
             name: "Book Nook Tools: Dictionary, Translate and Speech-to-Text",
@@ -45,15 +45,15 @@ const config = {
         priceId:
           process.env.NODE_ENV === "development"
             ? "price_1QNfKoRsACmEYsIp0zdE21VQ"
-            : "price_1QP3aaRsACmEYsIpiPtSOlWE",
+            : "price_1QPn07RsACmEYsIpFo8qn1kB",
         //  REQUIRED - Name of the plan, displayed on the pricing page
         name: "Yearly Pro Reader",
         // A friendly description of the plan, displayed on the pricing page. Tip: explain why this plan and not others
         description: "Get started with your second brain.",
         // The price you want to display, the one user will be charged on Stripe.
-        price: 120,
+        price: 40,
         // If you have an anchor price (i.e. $29) that you want to display crossed out, put it here. Otherwise, leave it empty
-        priceAnchor: 144,
+        priceAnchor: 120,
         features: [
           {
             name: "Book Nook Tools: Dictionary, Translate and Speech-to-Text",
