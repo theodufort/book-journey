@@ -130,7 +130,7 @@ export default function Roadmap() {
               </div>
             </div>
 
-            <div role="tablist" className="tabs tabs-boxed">
+            <div role="tablist" className="tabs tabs-boxed mb-6">
               <input
                 type="radio"
                 name="roadmap_tabs"
