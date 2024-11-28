@@ -2,6 +2,7 @@
 import Header from "@/components/Header";
 import RoadmapCard from "@/components/RoadmapCard";
 import { useState } from "react";
+import IdeaSubmissionForm from "@/components/IdeaSubmissionForm";
 
 interface Task {
   title: string;
@@ -11,6 +12,20 @@ interface Task {
 }
 
 const mockTasks = {
+  ideas: [
+    {
+      title: "Integration with Goodreads",
+      description: "Allow users to import their Goodreads libraries",
+      tags: ["integration", "feature"],
+      votes: 25,
+    },
+    {
+      title: "Reading Challenges",
+      description: "Create and participate in reading challenges with friends",
+      tags: ["social", "feature"],
+      votes: 18,
+    },
+  ],
   planned: [
     {
       title: "Mobile App Development",
@@ -110,6 +125,25 @@ export default function Roadmap() {
                     />
                     <span>{tag}</span>
                   </label>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Ideas Section */}
+          <div className="card bg-base-200 shadow-xl mb-6">
+            <div className="card-body">
+              <h2 className="card-title text-xl mb-4">Community Ideas</h2>
+              <IdeaSubmissionForm
+                onSubmit={(idea) => {
+                  // Here you would typically make an API call to save the idea
+                  console.log("New idea submitted:", idea);
+                }}
+              />
+              <div className="divider">Submitted Ideas</div>
+              <div className="space-y-4">
+                {filterTasks(mockTasks.ideas).map((task, index) => (
+                  <RoadmapCard key={index} {...task} />
                 ))}
               </div>
             </div>
