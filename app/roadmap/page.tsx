@@ -130,26 +130,17 @@ export default function Roadmap() {
             </div>
           </div>
 
-          {/* Ideas Section */}
-          <div className="card bg-base-200 shadow-xl mb-6">
-            <div className="card-body">
-              <h2 className="card-title text-xl mb-4">Community Ideas</h2>
-              <IdeaSubmissionForm
-                onSubmit={(idea) => {
-                  // Here you would typically make an API call to save the idea
-                  console.log("New idea submitted:", idea);
-                }}
-              />
-              <div className="divider">Submitted Ideas</div>
-              <div className="space-y-4">
-                {filterTasks(mockTasks.ideas).map((task, index) => (
-                  <RoadmapCard key={index} {...task} />
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div role="tablist" className="tabs tabs-boxed mb-6">
+            <input
+              type="radio"
+              name="roadmap_tabs"
+              role="tab"
+              className="tab"
+              aria-label="Roadmap"
+              defaultChecked
+            />
+            <div role="tabpanel" className="tab-content p-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Planned Column */}
             <div className="card bg-base-200 shadow-xl">
               <div className="card-body">
@@ -182,6 +173,34 @@ export default function Roadmap() {
                   {filterTasks(mockTasks.completed).map((task, index) => (
                     <RoadmapCard key={index} {...task} />
                   ))}
+                </div>
+              </div>
+              </div>
+            </div>
+
+            <input
+              type="radio"
+              name="roadmap_tabs"
+              role="tab"
+              className="tab"
+              aria-label="Community Ideas"
+            />
+            <div role="tabpanel" className="tab-content p-4">
+              <div className="card bg-base-200 shadow-xl">
+                <div className="card-body">
+                  <h2 className="card-title text-xl mb-4">Community Ideas</h2>
+                  <IdeaSubmissionForm
+                    onSubmit={(idea) => {
+                      // Here you would typically make an API call to save the idea
+                      console.log("New idea submitted:", idea);
+                    }}
+                  />
+                  <div className="divider">Submitted Ideas</div>
+                  <div className="space-y-4">
+                    {filterTasks(mockTasks.ideas).map((task, index) => (
+                      <RoadmapCard key={index} {...task} />
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
