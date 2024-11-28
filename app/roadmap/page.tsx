@@ -60,6 +60,7 @@ const mockTasks = {
 
 export default function Roadmap() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState<'roadmap' | 'ideas'>('roadmap');
 
   const allTags = Array.from(
     new Set(
@@ -131,15 +132,24 @@ export default function Roadmap() {
           </div>
 
           <div role="tablist" className="tabs tabs-boxed mb-6">
-            <input
-              type="radio"
-              name="roadmap_tabs"
-              role="tab"
-              className="tab"
-              aria-label="Roadmap"
-              defaultChecked
-            />
-            <div role="tabpanel" className="tab-content p-4">
+            <a 
+              role="tab" 
+              className={`tab ${activeTab === 'roadmap' ? 'tab-active' : ''}`}
+              onClick={() => setActiveTab('roadmap')}
+            >
+              Roadmap
+            </a>
+            <a 
+              role="tab" 
+              className={`tab ${activeTab === 'ideas' ? 'tab-active' : ''}`}
+              onClick={() => setActiveTab('ideas')}
+            >
+              Community Ideas
+            </a>
+          </div>
+
+          <div className="tab-contents">
+            <div className={`tab-content ${activeTab === 'roadmap' ? '' : 'hidden'}`}>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Planned Column */}
                 <div className="card bg-base-200 shadow-xl">
@@ -178,14 +188,7 @@ export default function Roadmap() {
                 </div>
               </div>
 
-              <input
-                type="radio"
-                name="roadmap_tabs"
-                role="tab"
-                className="tab"
-                aria-label="Community Ideas"
-              />
-              <div role="tabpanel" className="tab-content p-4">
+              <div className={`tab-content ${activeTab === 'ideas' ? '' : 'hidden'}`}>
                 <div className="card bg-base-200 shadow-xl">
                   <div className="card-body">
                     <h2 className="card-title text-xl mb-4">Community Ideas</h2>
