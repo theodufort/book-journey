@@ -1,3 +1,4 @@
+"use client";
 import Header from "@/components/Header";
 import RoadmapCard from "@/components/RoadmapCard";
 import { useState } from "react";
@@ -15,53 +16,56 @@ const mockTasks = {
       title: "Mobile App Development",
       description: "Create native mobile apps for iOS and Android",
       tags: ["mobile", "app", "development"],
-      votes: 15
+      votes: 15,
     },
     {
       title: "Dark Mode Support",
       description: "Implement dark mode across the platform",
       tags: ["ui", "theme"],
-      votes: 8
-    }
+      votes: 8,
+    },
   ],
   inProgress: [
     {
       title: "User Authentication",
       description: "Implement OAuth and social login",
       tags: ["security", "auth"],
-      votes: 12
-    }
+      votes: 12,
+    },
   ],
   completed: [
     {
       title: "Search Functionality",
       description: "Implement advanced search features",
       tags: ["search", "feature"],
-      votes: 20
-    }
-  ]
+      votes: 20,
+    },
+  ],
 };
 
 export default function Roadmap() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  const allTags = Array.from(new Set(
-    [...mockTasks.planned, ...mockTasks.inProgress, ...mockTasks.completed]
-    .flatMap(task => task.tags)
-  ));
+  const allTags = Array.from(
+    new Set(
+      [
+        ...mockTasks.planned,
+        ...mockTasks.inProgress,
+        ...mockTasks.completed,
+      ].flatMap((task) => task.tags)
+    )
+  );
 
   const toggleTag = (tag: string) => {
-    setSelectedTags(prev => 
-      prev.includes(tag) 
-        ? prev.filter(t => t !== tag)
-        : [...prev, tag]
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
   };
 
   const filterTasks = (tasks: Task[]) => {
     if (selectedTags.length === 0) return tasks;
-    return tasks.filter(task => 
-      task.tags.some(tag => selectedTags.includes(tag))
+    return tasks.filter((task) =>
+      task.tags.some((tag) => selectedTags.includes(tag))
     );
   };
   return (
@@ -74,13 +78,30 @@ export default function Roadmap() {
             <div className="dropdown dropdown-end">
               <label tabIndex={0} className="btn btn-outline">
                 Filter by tags ({selectedTags.length})
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 ml-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </label>
-              <div tabIndex={0} className="dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+              <div
+                tabIndex={0}
+                className="dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+              >
                 {allTags.map((tag, index) => (
-                  <label key={index} className="flex items-center gap-2 p-2 hover:bg-base-200 cursor-pointer">
+                  <label
+                    key={index}
+                    className="flex items-center gap-2 p-2 hover:bg-base-200 cursor-pointer"
+                  >
                     <input
                       type="checkbox"
                       className="checkbox checkbox-sm"
@@ -93,7 +114,7 @@ export default function Roadmap() {
               </div>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Planned Column */}
             <div className="card bg-base-200 shadow-xl">
