@@ -129,28 +129,18 @@ export default function Roadmap() {
                 ))}
               </div>
             </div>
-          </div>
 
-          <div role="tablist" className="tabs tabs-boxed mb-6">
-            <a 
+          <div role="tablist" className="tabs tabs-bordered">
+            <input 
+              type="radio" 
+              name="roadmap_tabs" 
               role="tab" 
-              className={`tab ${activeTab === 'roadmap' ? 'tab-active' : ''}`}
-              onClick={() => setActiveTab('roadmap')}
-            >
-              Roadmap
-            </a>
-            <a 
-              role="tab" 
-              className={`tab ${activeTab === 'ideas' ? 'tab-active' : ''}`}
-              onClick={() => setActiveTab('ideas')}
-            >
-              Community Ideas
-            </a>
-          </div>
-
-          <div className="tab-contents">
-            {/* Roadmap Tab Content */}
-            <div className={`tab-content ${activeTab === 'roadmap' ? '' : 'hidden'}`}>
+              className="tab" 
+              aria-label="Roadmap"
+              checked={activeTab === 'roadmap'}
+              onChange={() => setActiveTab('roadmap')}
+            />
+            <div role="tabpanel" className="tab-content">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Planned Column */}
                 <div className="card bg-base-200 shadow-xl">
@@ -190,8 +180,16 @@ export default function Roadmap() {
               </div>
             </div>
 
-            {/* Ideas Tab Content */}
-            <div className={`tab-content ${activeTab === 'ideas' ? '' : 'hidden'}`}>
+            <input 
+              type="radio" 
+              name="roadmap_tabs" 
+              role="tab" 
+              className="tab" 
+              aria-label="Community Ideas"
+              checked={activeTab === 'ideas'}
+              onChange={() => setActiveTab('ideas')}
+            />
+            <div role="tabpanel" className="tab-content">
               <div className="card bg-base-200 shadow-xl">
                 <div className="card-body">
                   <h2 className="card-title text-xl mb-4">Community Ideas</h2>
