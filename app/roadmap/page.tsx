@@ -40,7 +40,27 @@ export default function Roadmap() {
       <Header />
       <main className="min-h-screen p-8 pb-24">
         <section className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold text-center mb-8">Product Roadmap</h1>
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-3xl font-bold">Product Roadmap</h1>
+            <div className="join">
+              <div className="dropdown dropdown-end">
+                <label tabIndex={0} className="btn btn-outline join-item">
+                  Filter by tag
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </label>
+                <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                  {Array.from(new Set(
+                    [...mockTasks.planned, ...mockTasks.inProgress, ...mockTasks.completed]
+                    .flatMap(task => task.tags)
+                  )).map((tag, index) => (
+                    <li key={index}><a>{tag}</a></li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Planned Column */}
