@@ -141,65 +141,66 @@ export default function Roadmap() {
             />
             <div role="tabpanel" className="tab-content p-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Planned Column */}
-            <div className="card bg-base-200 shadow-xl">
-              <div className="card-body">
-                <h2 className="card-title text-xl mb-4">Planned</h2>
-                <div className="space-y-4">
-                  {filterTasks(mockTasks.planned).map((task, index) => (
-                    <RoadmapCard key={index} {...task} />
-                  ))}
+                {/* Planned Column */}
+                <div className="card bg-base-200 shadow-xl">
+                  <div className="card-body">
+                    <h2 className="card-title text-xl mb-4">Planned</h2>
+                    <div className="space-y-4">
+                      {filterTasks(mockTasks.planned).map((task, index) => (
+                        <RoadmapCard key={index} {...task} />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* In Progress Column */}
+                <div className="card bg-base-200 shadow-xl">
+                  <div className="card-body">
+                    <h2 className="card-title text-xl mb-4">In Progress</h2>
+                    <div className="space-y-4">
+                      {filterTasks(mockTasks.inProgress).map((task, index) => (
+                        <RoadmapCard key={index} {...task} />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Completed Column */}
+                <div className="card bg-base-200 shadow-xl">
+                  <div className="card-body">
+                    <h2 className="card-title text-xl mb-4">Completed</h2>
+                    <div className="space-y-4">
+                      {filterTasks(mockTasks.completed).map((task, index) => (
+                        <RoadmapCard key={index} {...task} />
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* In Progress Column */}
-            <div className="card bg-base-200 shadow-xl">
-              <div className="card-body">
-                <h2 className="card-title text-xl mb-4">In Progress</h2>
-                <div className="space-y-4">
-                  {filterTasks(mockTasks.inProgress).map((task, index) => (
-                    <RoadmapCard key={index} {...task} />
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Completed Column */}
-            <div className="card bg-base-200 shadow-xl">
-              <div className="card-body">
-                <h2 className="card-title text-xl mb-4">Completed</h2>
-                <div className="space-y-4">
-                  {filterTasks(mockTasks.completed).map((task, index) => (
-                    <RoadmapCard key={index} {...task} />
-                  ))}
-                </div>
-              </div>
-              </div>
-            </div>
-
-            <input
-              type="radio"
-              name="roadmap_tabs"
-              role="tab"
-              className="tab"
-              aria-label="Community Ideas"
-            />
-            <div role="tabpanel" className="tab-content p-4">
-              <div className="card bg-base-200 shadow-xl">
-                <div className="card-body">
-                  <h2 className="card-title text-xl mb-4">Community Ideas</h2>
-                  <IdeaSubmissionForm
-                    onSubmit={(idea) => {
-                      // Here you would typically make an API call to save the idea
-                      console.log("New idea submitted:", idea);
-                    }}
-                  />
-                  <div className="divider">Submitted Ideas</div>
-                  <div className="space-y-4">
-                    {filterTasks(mockTasks.ideas).map((task, index) => (
-                      <RoadmapCard key={index} {...task} />
-                    ))}
+              <input
+                type="radio"
+                name="roadmap_tabs"
+                role="tab"
+                className="tab"
+                aria-label="Community Ideas"
+              />
+              <div role="tabpanel" className="tab-content p-4">
+                <div className="card bg-base-200 shadow-xl">
+                  <div className="card-body">
+                    <h2 className="card-title text-xl mb-4">Community Ideas</h2>
+                    <IdeaSubmissionForm
+                      onSubmit={(idea) => {
+                        // Here you would typically make an API call to save the idea
+                        console.log("New idea submitted:", idea);
+                      }}
+                    />
+                    <div className="divider">Submitted Ideas</div>
+                    <div className="space-y-4">
+                      {filterTasks(mockTasks.ideas).map((task, index) => (
+                        <RoadmapCard key={index} {...task} />
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
