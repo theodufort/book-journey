@@ -90,63 +90,58 @@ export default function Roadmap() {
       <main className="min-h-screen p-8 pb-24">
         <section className="max-w-7xl mx-auto">
           <div className="justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold">Product Roadmap</h1>
-            <div className="dropdown dropdown-end">
-              <label tabIndex={0} className="btn btn-outline">
-                Filter by tags ({selectedTags.length})
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 ml-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </label>
-              <div
-                tabIndex={0}
-                className="dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52"
-              >
-                {allTags.map((tag, index) => (
-                  <label
-                    key={index}
-                    className="flex items-center gap-2 p-2 hover:bg-base-200 cursor-pointer"
+            <div className="justify-between flex m-auto">
+              <h1 className="text-3xl font-bold">Product Roadmap</h1>
+              <div className="dropdown dropdown-end">
+                <label tabIndex={0} className="btn btn-outline">
+                  Filter by tags ({selectedTags.length})
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 ml-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
                   >
-                    <input
-                      type="checkbox"
-                      className="checkbox checkbox-sm"
-                      checked={selectedTags.includes(tag)}
-                      onChange={() => toggleTag(tag)}
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
                     />
-                    <span>{tag}</span>
-                  </label>
-                ))}
-            )}
-
-            <div role="tablist" className="tabs tabs-boxed mb-6">
-              <a 
-                role="tab" 
-                className={`tab ${activeTab === 'roadmap' ? 'tab-active' : ''}`}
-                onClick={() => setActiveTab('roadmap')}
-              >
-                Roadmap
-              </a>
-              <a 
-                role="tab" 
-                className={`tab ${activeTab === 'ideas' ? 'tab-active' : ''}`}
-                onClick={() => setActiveTab('ideas')}
-              >
-                Community Ideas
-              </a>
+                  </svg>
+                </label>
+                <div
+                  tabIndex={0}
+                  className="dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+                >
+                  {allTags.map((tag, index) => (
+                    <label
+                      key={index}
+                      className="flex items-center gap-2 p-2 hover:bg-base-200 cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        className="checkbox checkbox-sm"
+                        checked={selectedTags.includes(tag)}
+                        onChange={() => toggleTag(tag)}
+                      />
+                      <span>{tag}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
             </div>
-            
-            {activeTab === 'roadmap' && (
+            <div role="tablist" className="tabs tabs-bordered">
+              <input
+                type="radio"
+                name="roadmap_tabs"
+                role="tab"
+                className="tab"
+                aria-label="Roadmap"
+                checked={activeTab === "roadmap"}
+                onChange={() => setActiveTab("roadmap")}
+              />
+              <div role="tabpanel" className="tab-content">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* Planned Column */}
                   <div className="card bg-base-200 shadow-xl">
@@ -186,9 +181,18 @@ export default function Roadmap() {
                     </div>
                   </div>
                 </div>
-            )}
+              </div>
 
-            {activeTab === 'ideas' && (
+              <input
+                type="radio"
+                name="roadmap_tabs"
+                role="tab"
+                className="tab"
+                aria-label="Community Ideas"
+                checked={activeTab === "ideas"}
+                onChange={() => setActiveTab("ideas")}
+              />
+              <div role="tabpanel" className="tab-content">
                 <div className="card bg-base-200 shadow-xl">
                   <div className="card-body">
                     <h2 className="card-title text-xl mb-4">Community Ideas</h2>
