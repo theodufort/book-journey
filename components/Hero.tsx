@@ -27,7 +27,7 @@ const Hero = () => {
             className="btn btn-secondary"
             onClick={() => router.push("/roadmap")}
           >
-            View the Roadmap
+            Community Roadmap
           </button>
         </div>
       </div>
