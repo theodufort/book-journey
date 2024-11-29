@@ -3,7 +3,12 @@ import Header from "@/components/Header";
 import RoadmapCard from "@/components/RoadmapCard";
 import { useEffect, useState } from "react";
 import IdeaSubmissionForm from "@/components/IdeaSubmissionForm";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import {
+  createClientComponentClient,
+  User,
+} from "@supabase/auth-helpers-nextjs";
+import { Database } from "@/types/supabase";
+import { useRouter } from "next/navigation";
 
 export interface RoadmapItem {
   id: string;
@@ -66,18 +71,30 @@ export async function updateVotes(id: string, increment: boolean) {
 }
 
 export default function Roadmap() {
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const supabase = createClientComponentClient<Database>();
+  const [user, setUser] = useState<User | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<"roadmap" | "ideas">("roadmap");
   const [items, setItems] = useState<RoadmapItem[]>([]);
+  const loadItems = async () => {
+    const data = await fetchRoadmapItems();
+    setItems(data);
+  };
 
   useEffect(() => {
-    const loadItems = async () => {
-      const data = await fetchRoadmapItems();
-      setItems(data);
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (data.user) {
+        setUser(data.user);
+        await loadItems();
+      } else {
+        console.log("User not authenticated");
+      }
     };
-    loadItems();
-  }, []);
-
+    getUser();
+  }, [supabase]);
   const allTags = Array.from(new Set(items.flatMap((item) => item.tags)));
 
   const itemsByStatus = {
