@@ -3,7 +3,67 @@ import Header from "@/components/Header";
 import RoadmapCard from "@/components/RoadmapCard";
 import { useEffect, useState } from "react";
 import IdeaSubmissionForm from "@/components/IdeaSubmissionForm";
-import { RoadmapItem, fetchRoadmapItems, submitIdea } from "@/app/services/roadmap";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+
+export interface RoadmapItem {
+  id: string;
+  created_at: string;
+  title: string;
+  description: string;
+  is_approved: boolean;
+  tags: string[];
+  votes: number;
+  status: "ideas" | "planned" | "inProgress" | "completed";
+}
+
+async function fetchRoadmapItems() {
+  const supabase = createClientComponentClient();
+  const { data, error } = await supabase
+    .from("roadmap")
+    .select("*")
+    .order("votes", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching roadmap items:", error);
+    return [];
+  }
+
+  return data as RoadmapItem[];
+}
+
+async function submitIdea(idea: {
+  title: string;
+  description: string;
+  tags: string[];
+}) {
+  const supabase = createClientComponentClient();
+  const { error } = await supabase.from("roadmap").insert([
+    {
+      title: idea.title,
+      description: idea.description,
+      tags: idea.tags,
+      status: "ideas",
+    },
+  ]);
+
+  if (error) {
+    console.error("Error submitting idea:", error);
+    throw error;
+  }
+}
+
+async function updateVotes(id: string, increment: boolean) {
+  const supabase = createClientComponentClient();
+  const { error } = await supabase.rpc("increment_votes", {
+    row_id: id,
+    increment: increment,
+  });
+
+  if (error) {
+    console.error("Error updating votes:", error);
+    throw error;
+  }
+}
 
 export default function Roadmap() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -18,15 +78,13 @@ export default function Roadmap() {
     loadItems();
   }, []);
 
-  const allTags = Array.from(
-    new Set(items.flatMap((item) => item.tags))
-  );
+  const allTags = Array.from(new Set(items.flatMap((item) => item.tags)));
 
   const itemsByStatus = {
-    ideas: items.filter(item => item.status === 'ideas'),
-    planned: items.filter(item => item.status === 'planned'),
-    inProgress: items.filter(item => item.status === 'inProgress'),
-    completed: items.filter(item => item.status === 'completed'),
+    ideas: items.filter((item) => item.status === "ideas"),
+    planned: items.filter((item) => item.status === "planned"),
+    inProgress: items.filter((item) => item.status === "inProgress"),
+    completed: items.filter((item) => item.status === "completed"),
   };
 
   const toggleTag = (tag: string) => {
@@ -158,7 +216,7 @@ export default function Roadmap() {
                         const updatedItems = await fetchRoadmapItems();
                         setItems(updatedItems);
                       } catch (error) {
-                        console.error('Failed to submit idea:', error);
+                        console.error("Failed to submit idea:", error);
                       }
                     }}
                   />
