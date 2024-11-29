@@ -1,4 +1,4 @@
-import { RoadmapItem, updateVotes } from "@/app/roadmap/page";
+import { RoadmapItem, updateVotes, updateStatus } from "@/app/roadmap/page";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from "react";
 
@@ -8,7 +8,9 @@ export default function RoadmapCard({
   description,
   tags,
   votes,
+  status,
 }: RoadmapItem) {
+  const [isAdmin, setIsAdmin] = useState(false);
   const [voteCount, setVoteCount] = useState(votes);
   const [isVoting, setIsVoting] = useState(false);
   const [userVote, setUserVote] = useState<boolean | null>(null);
@@ -29,8 +31,25 @@ export default function RoadmapCard({
       }
     };
     
+    const checkAdminStatus = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user?.email === 'theodufort05@gmail.com') {
+        setIsAdmin(true);
+      }
+    };
+
     checkUserVote();
+    checkAdminStatus();
   }, [id, supabase]);
+
+  const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    try {
+      await updateStatus(id, e.target.value);
+      // You might want to add some visual feedback here
+    } catch (error) {
+      console.error("Failed to update status:", error);
+    }
+  };
 
   const handleVote = async (increment: boolean) => {
     if (isVoting) return;
@@ -81,6 +100,18 @@ export default function RoadmapCard({
               👎
             </button>
           </div>
+          {isAdmin && (
+            <select 
+              className="select select-bordered select-sm"
+              value={status}
+              onChange={handleStatusChange}
+            >
+              <option value="ideas">Ideas</option>
+              <option value="planned">Planned</option>
+              <option value="inProgress">In Progress</option>
+              <option value="completed">Completed</option>
+            </select>
+          )}
         </div>
       </div>
     </div>

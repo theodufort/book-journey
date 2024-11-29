@@ -57,6 +57,16 @@ export async function submitIdea(idea: {
   }
 }
 
+export async function updateStatus(id: string, newStatus: string) {
+  const supabase = createClientComponentClient();
+  const { error } = await supabase
+    .from('roadmap')
+    .update({ status: newStatus })
+    .eq('id', id);
+
+  if (error) throw error;
+}
+
 export async function updateVotes(id: string, increment: boolean) {
   const supabase = createClientComponentClient();
   
