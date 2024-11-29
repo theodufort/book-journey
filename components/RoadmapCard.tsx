@@ -52,6 +52,12 @@ export default function RoadmapCard({
   };
 
   const handleVote = async (increment: boolean) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      // You could add a toast notification here
+      console.log("Please login to vote");
+      return;
+    }
     if (isVoting) return;
     setIsVoting(true);
     try {
