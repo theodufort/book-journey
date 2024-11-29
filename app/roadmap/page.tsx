@@ -140,12 +140,8 @@ export default function Roadmap() {
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
-      if (data.user) {
-        setUser(data.user);
-        await loadItems();
-      } else {
-        console.log("User not authenticated");
-      }
+      setUser(data.user);
+      await loadItems();
     };
     getUser();
   }, [supabase]);
@@ -284,17 +280,24 @@ export default function Roadmap() {
               <div className="card bg-base-200 shadow-xl">
                 <div className="card-body">
                   <h2 className="card-title text-xl mb-4">Community Ideas</h2>
-                  <IdeaSubmissionForm
-                    onSubmit={async (idea) => {
-                      try {
-                        await submitIdea(idea);
-                        const updatedItems = await fetchRoadmapItems();
-                        setItems(updatedItems);
-                      } catch (error) {
-                        console.error("Failed to submit idea:", error);
-                      }
-                    }}
-                  />
+                  {user ? (
+                    <IdeaSubmissionForm
+                      onSubmit={async (idea) => {
+                        try {
+                          await submitIdea(idea);
+                          const updatedItems = await fetchRoadmapItems();
+                          setItems(updatedItems);
+                        } catch (error) {
+                          console.error("Failed to submit idea:", error);
+                        }
+                      }}
+                    />
+                  ) : (
+                    <div className="alert alert-info">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                      <span>Please login to submit new ideas</span>
+                    </div>
+                  )}
                   <div className="divider">Submitted Ideas</div>
                   <div className="space-y-4">
                     {filterTasks(itemsByStatus.ideas).map((task, index) => (
