@@ -2,7 +2,7 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-const Feature1 = () => {
+const RewardsFeature = () => {
   const t = useTranslations("HomePage");
   const router = useRouter();
 
@@ -53,4 +53,4 @@ const Feature1 = () => {
   );
 };
 
-export default Feature1;
+export default RewardsFeature;

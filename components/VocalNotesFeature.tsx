@@ -2,22 +2,22 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-const Feature3 = () => {
+const VocalNotesFeature = () => {
   const t = useTranslations("HomePage");
   const router = useRouter();
 
   return (
-    <section className="bg-base-200">
+    <section className="bg-base-100">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 max-w-7xl mx-auto">
         {/* Left Side */}
         <div className="flex flex-col gap-10 lg:gap-14 items-center justify-center text-center lg:text-left lg:items-start m-auto">
           <h2 className="font-bold text-4xl tracking-tight md:-mb-4">
-            {t("featureslisticle_feat3")} 📚
+            {t("featureslisticle_feat7")} 🎙️
           </h2>
           <ul className="space-y-2 text-left">
             {[
-              t("featureslisticle_feat3_sub1"),
-              t("featureslisticle_feat3_sub2"),
+              t("featureslisticle_feat7_sub1"),
+              t("featureslisticle_feat7_sub2"),
             ].map((item) => (
               <li key={item} className="flex items-center gap-3 text-left">
                 <svg
@@ -40,7 +40,7 @@ const Feature3 = () => {
         {/* Right Side */}
         <div className="overflow-hidden rounded-2xl m-auto">
           <Image
-            src={"/reading-list.svg"}
+            src={"/vocalnotes.png"}
             alt={""}
             width={0}
             height={0}
@@ -53,4 +53,4 @@ const Feature3 = () => {
   );
 };
 
-export default Feature3;
+export default VocalNotesFeature;

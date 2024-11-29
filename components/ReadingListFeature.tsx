@@ -2,7 +2,7 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-const Feature5 = () => {
+const ReadingListFeature = () => {
   const t = useTranslations("HomePage");
   const router = useRouter();
 
@@ -12,10 +12,13 @@ const Feature5 = () => {
         {/* Left Side */}
         <div className="flex flex-col gap-10 lg:gap-14 items-center justify-center text-center lg:text-left lg:items-start m-auto">
           <h2 className="font-bold text-4xl tracking-tight md:-mb-4">
-            {t("featureslisticle_feat5")} 📊
+            {t("featureslisticle_feat3")} 📚
           </h2>
           <ul className="space-y-2 text-left">
-            {[t("featureslisticle_feat5_sub1")].map((item) => (
+            {[
+              t("featureslisticle_feat3_sub1"),
+              t("featureslisticle_feat3_sub2"),
+            ].map((item) => (
               <li key={item} className="flex items-center gap-3 text-left">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -35,9 +38,9 @@ const Feature5 = () => {
           </ul>
         </div>
         {/* Right Side */}
-        <div className="overflow-hidden rounded-3xl m-auto">
+        <div className="overflow-hidden rounded-2xl m-auto">
           <Image
-            src={"/stats.svg"}
+            src={"/reading-list.svg"}
             alt={""}
             width={0}
             height={0}
@@ -50,4 +53,4 @@ const Feature5 = () => {
   );
 };
 
-export default Feature5;
+export default ReadingListFeature;

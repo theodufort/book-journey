@@ -2,12 +2,12 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-const Feature4 = () => {
+const NotesFeature = () => {
   const t = useTranslations("HomePage");
   const router = useRouter();
 
   return (
-    <section className="bg-base-100">
+    <section className="bg-base-200">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 max-w-7xl mx-auto">
         <div className="overflow-hidden rounded-2xl m-auto">
           <Image
@@ -51,4 +51,4 @@ const Feature4 = () => {
   );
 };
 
-export default Feature4;
+export default NotesFeature;

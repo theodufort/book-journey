@@ -2,33 +2,20 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-const Feature2 = () => {
+const StatsFeature = () => {
   const t = useTranslations("HomePage");
   const router = useRouter();
 
   return (
     <section className="bg-base-100">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 max-w-7xl mx-auto">
-        <div className="overflow-hidden rounded-2xl m-auto">
-          <Image
-            src={"/recommendation.svg"}
-            alt={""}
-            width={0}
-            height={0}
-            sizes="100vw"
-            style={{ width: "100%", height: "auto" }} // optional
-          />
-        </div>
+        {/* Left Side */}
         <div className="flex flex-col gap-10 lg:gap-14 items-center justify-center text-center lg:text-left lg:items-start m-auto">
           <h2 className="font-bold text-4xl tracking-tight md:-mb-4">
-            {t("featureslisticle_feat2")} ⚖️
+            {t("featureslisticle_feat5")} 📊
           </h2>
           <ul className="space-y-2 text-left">
-            {[
-              t("featureslisticle_feat2_sub1"),
-              t("featureslisticle_feat2_sub2"),
-              t("featureslisticle_feat2_sub3"),
-            ].map((item) => (
+            {[t("featureslisticle_feat5_sub1")].map((item) => (
               <li key={item} className="flex items-center gap-3 text-left">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -47,9 +34,20 @@ const Feature2 = () => {
             ))}
           </ul>
         </div>
+        {/* Right Side */}
+        <div className="overflow-hidden rounded-3xl m-auto">
+          <Image
+            src={"/stats.svg"}
+            alt={""}
+            width={0}
+            height={0}
+            sizes="100vw"
+            style={{ width: "100%", height: "auto" }} // optional
+          />
+        </div>
       </div>
     </section>
   );
 };
 
-export default Feature2;
+export default StatsFeature;
