@@ -2,10 +2,16 @@
 import { useState } from "react";
 
 interface IdeaSubmissionFormProps {
-  onSubmit: (idea: { title: string; description: string; tags: string[] }) => void;
+  onSubmit: (idea: {
+    title: string;
+    description: string;
+    tags: string[];
+  }) => void;
 }
 
-export default function IdeaSubmissionForm({ onSubmit }: IdeaSubmissionFormProps) {
+export default function IdeaSubmissionForm({
+  onSubmit,
+}: IdeaSubmissionFormProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState("");
@@ -15,7 +21,10 @@ export default function IdeaSubmissionForm({ onSubmit }: IdeaSubmissionFormProps
     onSubmit({
       title,
       description,
-      tags: tags.split(",").map((tag) => tag.trim()).filter(Boolean),
+      tags: tags
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter(Boolean),
     });
     setTitle("");
     setDescription("");

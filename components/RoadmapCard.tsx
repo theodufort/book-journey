@@ -1,4 +1,4 @@
-import { RoadmapItem, updateVotes, updateStatus } from "@/app/roadmap/page";
+import { RoadmapItem, updateStatus, updateVotes } from "@/libs/roadmap";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from "react";
 
@@ -18,22 +18,26 @@ export default function RoadmapCard({
 
   useEffect(() => {
     const checkUserVote = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (user) {
         const { data: voteData } = await supabase
-          .from('roadmap_votes')
-          .select('increment')
-          .eq('roadmap_id', id)
-          .eq('user_id', user.id)
+          .from("roadmap_votes")
+          .select("increment")
+          .eq("roadmap_id", id)
+          .eq("user_id", user.id)
           .single();
-        
+
         setUserVote(voteData?.increment ?? null);
       }
     };
-    
+
     const checkAdminStatus = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user?.email === 'theodufort05@gmail.com') {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user?.email === "theodufort05@gmail.com") {
         setIsAdmin(true);
       }
     };
@@ -42,7 +46,9 @@ export default function RoadmapCard({
     checkAdminStatus();
   }, [id, supabase]);
 
-  const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleStatusChange = async (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     try {
       await updateStatus(id, e.target.value);
       // You might want to add some visual feedback here
@@ -52,7 +58,9 @@ export default function RoadmapCard({
   };
 
   const handleVote = async (increment: boolean) => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) {
       // You could add a toast notification here
       console.log("Please login to vote");
@@ -91,7 +99,9 @@ export default function RoadmapCard({
         <div className="flex justify-between items-center mt-2">
           <div className="flex gap-2">
             <button
-              className={`btn btn-sm ${userVote === true ? 'btn-primary' : 'btn-ghost'}`}
+              className={`btn btn-sm ${
+                userVote === true ? "btn-primary" : "btn-ghost"
+              }`}
               onClick={() => handleVote(true)}
               disabled={isVoting}
             >
@@ -99,7 +109,9 @@ export default function RoadmapCard({
             </button>
             <span className="flex items-center">{voteCount}</span>
             <button
-              className={`btn btn-sm ${userVote === false ? 'btn-primary' : 'btn-ghost'}`}
+              className={`btn btn-sm ${
+                userVote === false ? "btn-primary" : "btn-ghost"
+              }`}
               onClick={() => handleVote(false)}
               disabled={isVoting}
             >
@@ -107,7 +119,7 @@ export default function RoadmapCard({
             </button>
           </div>
           {isAdmin && (
-            <select 
+            <select
               className="select select-bordered select-sm"
               value={status}
               onChange={handleStatusChange}
