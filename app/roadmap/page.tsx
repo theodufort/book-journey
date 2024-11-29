@@ -89,7 +89,7 @@ export default function Roadmap() {
       <Header />
       <main className="min-h-screen p-8 pb-24">
         <section className="max-w-7xl mx-auto">
-          <div className="justify-between items-center mb-8">
+          <div className="justify-between items-center mb-8 space-y-4">
             <div className="justify-between flex m-auto">
               <h1 className="text-3xl font-bold">Product Roadmap</h1>
               <div className="dropdown dropdown-end">
@@ -131,83 +131,80 @@ export default function Roadmap() {
                 </div>
               </div>
             </div>
-            <div role="tablist" className="tabs tabs-bordered">
-              <input
-                type="radio"
-                name="roadmap_tabs"
+            <div role="tablist" className="tabs tabs-boxed">
+              <a
                 role="tab"
-                className="tab"
-                aria-label="Roadmap"
-                checked={activeTab === "roadmap"}
-                onChange={() => setActiveTab("roadmap")}
-              />
-              <div role="tabpanel" className="tab-content">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* Planned Column */}
-                  <div className="card bg-base-200 shadow-xl">
-                    <div className="card-body">
-                      <h2 className="card-title text-xl mb-4">Planned</h2>
-                      <div className="space-y-4">
-                        {filterTasks(mockTasks.planned).map((task, index) => (
-                          <RoadmapCard key={index} {...task} />
-                        ))}
-                      </div>
+                className={`tab ${
+                  activeTab == "roadmap" ? "tab-active" : null
+                }`}
+                onClick={() => setActiveTab("roadmap")}
+              >
+                Roadmap
+              </a>
+              <a
+                role="tab"
+                className={`tab ${activeTab == "ideas" ? "tab-active" : null}`}
+                onClick={() => setActiveTab("ideas")}
+              >
+                Ideas
+              </a>
+            </div>
+
+            <div className={`${activeTab == "roadmap" ? "block" : "hidden"}`}>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Planned Column */}
+                <div className="card bg-base-200 shadow-xl">
+                  <div className="card-body">
+                    <h2 className="card-title text-xl mb-4">Planned</h2>
+                    <div className="space-y-4">
+                      {filterTasks(mockTasks.planned).map((task, index) => (
+                        <RoadmapCard key={index} {...task} />
+                      ))}
                     </div>
                   </div>
+                </div>
 
-                  {/* In Progress Column */}
-                  <div className="card bg-base-200 shadow-xl">
-                    <div className="card-body">
-                      <h2 className="card-title text-xl mb-4">In Progress</h2>
-                      <div className="space-y-4">
-                        {filterTasks(mockTasks.inProgress).map(
-                          (task, index) => (
-                            <RoadmapCard key={index} {...task} />
-                          )
-                        )}
-                      </div>
+                {/* In Progress Column */}
+                <div className="card bg-base-200 shadow-xl">
+                  <div className="card-body">
+                    <h2 className="card-title text-xl mb-4">In Progress</h2>
+                    <div className="space-y-4">
+                      {filterTasks(mockTasks.inProgress).map((task, index) => (
+                        <RoadmapCard key={index} {...task} />
+                      ))}
                     </div>
                   </div>
+                </div>
 
-                  {/* Completed Column */}
-                  <div className="card bg-base-200 shadow-xl">
-                    <div className="card-body">
-                      <h2 className="card-title text-xl mb-4">Completed</h2>
-                      <div className="space-y-4">
-                        {filterTasks(mockTasks.completed).map((task, index) => (
-                          <RoadmapCard key={index} {...task} />
-                        ))}
-                      </div>
+                {/* Completed Column */}
+                <div className="card bg-base-200 shadow-xl">
+                  <div className="card-body">
+                    <h2 className="card-title text-xl mb-4">Completed</h2>
+                    <div className="space-y-4">
+                      {filterTasks(mockTasks.completed).map((task, index) => (
+                        <RoadmapCard key={index} {...task} />
+                      ))}
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
 
-              <input
-                type="radio"
-                name="roadmap_tabs"
-                role="tab"
-                className="tab"
-                aria-label="Community Ideas"
-                checked={activeTab === "ideas"}
-                onChange={() => setActiveTab("ideas")}
-              />
-              <div role="tabpanel" className="tab-content">
-                <div className="card bg-base-200 shadow-xl">
-                  <div className="card-body">
-                    <h2 className="card-title text-xl mb-4">Community Ideas</h2>
-                    <IdeaSubmissionForm
-                      onSubmit={(idea) => {
-                        // Here you would typically make an API call to save the idea
-                        console.log("New idea submitted:", idea);
-                      }}
-                    />
-                    <div className="divider">Submitted Ideas</div>
-                    <div className="space-y-4">
-                      {filterTasks(mockTasks.ideas).map((task, index) => (
-                        <RoadmapCard key={index} {...task} />
-                      ))}
-                    </div>
+            <div className={`${activeTab == "ideas" ? "block" : "hidden"}`}>
+              <div className="card bg-base-200 shadow-xl">
+                <div className="card-body">
+                  <h2 className="card-title text-xl mb-4">Community Ideas</h2>
+                  <IdeaSubmissionForm
+                    onSubmit={(idea) => {
+                      // Here you would typically make an API call to save the idea
+                      console.log("New idea submitted:", idea);
+                    }}
+                  />
+                  <div className="divider">Submitted Ideas</div>
+                  <div className="space-y-4">
+                    {filterTasks(mockTasks.ideas).map((task, index) => (
+                      <RoadmapCard key={index} {...task} />
+                    ))}
                   </div>
                 </div>
               </div>
