@@ -172,8 +172,8 @@ export default function Roadmap() {
                   <div className="card-body">
                     <h2 className="card-title text-xl mb-4">Planned</h2>
                     <div className="space-y-4">
-                      {filterTasks(itemsByStatus.planned).map((task) => (
-                        <RoadmapCard key={index} {...task} />
+                      {filterTasks(itemsByStatus.planned).map((task, index) => (
+                        <RoadmapCard key={task.id} {...task} />
                       ))}
                     </div>
                   </div>
@@ -184,8 +184,8 @@ export default function Roadmap() {
                   <div className="card-body">
                     <h2 className="card-title text-xl mb-4">In Progress</h2>
                     <div className="space-y-4">
-                      {filterTasks(itemsByStatus.inProgress).map((task) => (
-                        <RoadmapCard key={index} {...task} />
+                      {filterTasks(itemsByStatus.inProgress).map((task, index) => (
+                        <RoadmapCard key={task.id} {...task} />
                       ))}
                     </div>
                   </div>
@@ -196,8 +196,8 @@ export default function Roadmap() {
                   <div className="card-body">
                     <h2 className="card-title text-xl mb-4">Completed</h2>
                     <div className="space-y-4">
-                      {filterTasks(itemsByStatus.completed).map((task) => (
-                        <RoadmapCard key={index} {...task} />
+                      {filterTasks(itemsByStatus.completed).map((task, index) => (
+                        <RoadmapCard key={task.id} {...task} />
                       ))}
                     </div>
                   </div>
@@ -222,8 +222,8 @@ export default function Roadmap() {
                   />
                   <div className="divider">Submitted Ideas</div>
                   <div className="space-y-4">
-                    {filterTasks(itemsByStatus.ideas).map((task) => (
-                      <RoadmapCard key={index} {...task} />
+                    {filterTasks(itemsByStatus.ideas).map((task, index) => (
+                      <RoadmapCard key={task.id} {...task} />
                     ))}
                   </div>
                 </div>
