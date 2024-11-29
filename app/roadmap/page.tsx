@@ -16,7 +16,7 @@ export interface RoadmapItem {
   status: "ideas" | "planned" | "inProgress" | "completed";
 }
 
-async function fetchRoadmapItems() {
+export async function fetchRoadmapItems() {
   const supabase = createClientComponentClient();
   const { data, error } = await supabase
     .from("roadmap")
@@ -31,7 +31,7 @@ async function fetchRoadmapItems() {
   return data as RoadmapItem[];
 }
 
-async function submitIdea(idea: {
+export async function submitIdea(idea: {
   title: string;
   description: string;
   tags: string[];
@@ -52,7 +52,7 @@ async function submitIdea(idea: {
   }
 }
 
-async function updateVotes(id: string, increment: boolean) {
+export async function updateVotes(id: string, increment: boolean) {
   const supabase = createClientComponentClient();
   const { error } = await supabase.rpc("increment_votes", {
     row_id: id,
@@ -184,9 +184,11 @@ export default function Roadmap() {
                   <div className="card-body">
                     <h2 className="card-title text-xl mb-4">In Progress</h2>
                     <div className="space-y-4">
-                      {filterTasks(itemsByStatus.inProgress).map((task, index) => (
-                        <RoadmapCard key={task.id} {...task} />
-                      ))}
+                      {filterTasks(itemsByStatus.inProgress).map(
+                        (task, index) => (
+                          <RoadmapCard key={task.id} {...task} />
+                        )
+                      )}
                     </div>
                   </div>
                 </div>
@@ -196,9 +198,11 @@ export default function Roadmap() {
                   <div className="card-body">
                     <h2 className="card-title text-xl mb-4">Completed</h2>
                     <div className="space-y-4">
-                      {filterTasks(itemsByStatus.completed).map((task, index) => (
-                        <RoadmapCard key={task.id} {...task} />
-                      ))}
+                      {filterTasks(itemsByStatus.completed).map(
+                        (task, index) => (
+                          <RoadmapCard key={task.id} {...task} />
+                        )
+                      )}
                     </div>
                   </div>
                 </div>
