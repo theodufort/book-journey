@@ -1,76 +1,33 @@
 "use client";
 import Header from "@/components/Header";
 import RoadmapCard from "@/components/RoadmapCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import IdeaSubmissionForm from "@/components/IdeaSubmissionForm";
-
-interface Task {
-  title: string;
-  description: string;
-  tags: string[];
-  votes: number;
-}
-
-const mockTasks = {
-  ideas: [
-    {
-      title: "Integration with Goodreads",
-      description: "Allow users to import their Goodreads libraries",
-      tags: ["integration", "feature"],
-      votes: 25,
-    },
-    {
-      title: "Reading Challenges",
-      description: "Create and participate in reading challenges with friends",
-      tags: ["social", "feature"],
-      votes: 18,
-    },
-  ],
-  planned: [
-    {
-      title: "Mobile App Development",
-      description: "Create native mobile apps for iOS and Android",
-      tags: ["mobile", "app", "development"],
-      votes: 15,
-    },
-    {
-      title: "Dark Mode Support",
-      description: "Implement dark mode across the platform",
-      tags: ["ui", "theme"],
-      votes: 8,
-    },
-  ],
-  inProgress: [
-    {
-      title: "User Authentication",
-      description: "Implement OAuth and social login",
-      tags: ["security", "auth"],
-      votes: 12,
-    },
-  ],
-  completed: [
-    {
-      title: "Search Functionality",
-      description: "Implement advanced search features",
-      tags: ["search", "feature"],
-      votes: 20,
-    },
-  ],
-};
+import { RoadmapItem, fetchRoadmapItems, submitIdea } from "@/app/services/roadmap";
 
 export default function Roadmap() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<"roadmap" | "ideas">("roadmap");
+  const [items, setItems] = useState<RoadmapItem[]>([]);
+
+  useEffect(() => {
+    const loadItems = async () => {
+      const data = await fetchRoadmapItems();
+      setItems(data);
+    };
+    loadItems();
+  }, []);
 
   const allTags = Array.from(
-    new Set(
-      [
-        ...mockTasks.planned,
-        ...mockTasks.inProgress,
-        ...mockTasks.completed,
-      ].flatMap((task) => task.tags)
-    )
+    new Set(items.flatMap((item) => item.tags))
   );
+
+  const itemsByStatus = {
+    ideas: items.filter(item => item.status === 'ideas'),
+    planned: items.filter(item => item.status === 'planned'),
+    inProgress: items.filter(item => item.status === 'inProgress'),
+    completed: items.filter(item => item.status === 'completed'),
+  };
 
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) =>
@@ -78,7 +35,7 @@ export default function Roadmap() {
     );
   };
 
-  const filterTasks = (tasks: Task[]) => {
+  const filterTasks = (tasks: RoadmapItem[]) => {
     if (selectedTags.length === 0) return tasks;
     return tasks.filter((task) =>
       task.tags.some((tag) => selectedTags.includes(tag))
@@ -157,7 +114,7 @@ export default function Roadmap() {
                   <div className="card-body">
                     <h2 className="card-title text-xl mb-4">Planned</h2>
                     <div className="space-y-4">
-                      {filterTasks(mockTasks.planned).map((task, index) => (
+                      {filterTasks(itemsByStatus.planned).map((task) => (
                         <RoadmapCard key={index} {...task} />
                       ))}
                     </div>
@@ -169,7 +126,7 @@ export default function Roadmap() {
                   <div className="card-body">
                     <h2 className="card-title text-xl mb-4">In Progress</h2>
                     <div className="space-y-4">
-                      {filterTasks(mockTasks.inProgress).map((task, index) => (
+                      {filterTasks(itemsByStatus.inProgress).map((task) => (
                         <RoadmapCard key={index} {...task} />
                       ))}
                     </div>
@@ -181,7 +138,7 @@ export default function Roadmap() {
                   <div className="card-body">
                     <h2 className="card-title text-xl mb-4">Completed</h2>
                     <div className="space-y-4">
-                      {filterTasks(mockTasks.completed).map((task, index) => (
+                      {filterTasks(itemsByStatus.completed).map((task) => (
                         <RoadmapCard key={index} {...task} />
                       ))}
                     </div>
@@ -195,14 +152,19 @@ export default function Roadmap() {
                 <div className="card-body">
                   <h2 className="card-title text-xl mb-4">Community Ideas</h2>
                   <IdeaSubmissionForm
-                    onSubmit={(idea) => {
-                      // Here you would typically make an API call to save the idea
-                      console.log("New idea submitted:", idea);
+                    onSubmit={async (idea) => {
+                      try {
+                        await submitIdea(idea);
+                        const updatedItems = await fetchRoadmapItems();
+                        setItems(updatedItems);
+                      } catch (error) {
+                        console.error('Failed to submit idea:', error);
+                      }
                     }}
                   />
                   <div className="divider">Submitted Ideas</div>
                   <div className="space-y-4">
-                    {filterTasks(mockTasks.ideas).map((task, index) => (
+                    {filterTasks(itemsByStatus.ideas).map((task) => (
                       <RoadmapCard key={index} {...task} />
                     ))}
                   </div>
