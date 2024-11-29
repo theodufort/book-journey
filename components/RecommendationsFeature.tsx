@@ -2,16 +2,16 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-const Feature6 = () => {
+const RecommendationsFeature = () => {
   const t = useTranslations("HomePage");
   const router = useRouter();
 
   return (
     <section className="bg-base-100">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 max-w-7xl mx-auto">
-        <div className="overflow-hidden rounded-3xl m-auto">
+        <div className="overflow-hidden rounded-2xl m-auto">
           <Image
-            src={"/import.svg"}
+            src={"/recommendation.svg"}
             alt={""}
             width={0}
             height={0}
@@ -21,10 +21,14 @@ const Feature6 = () => {
         </div>
         <div className="flex flex-col gap-10 lg:gap-14 items-center justify-center text-center lg:text-left lg:items-start m-auto">
           <h2 className="font-bold text-4xl tracking-tight md:-mb-4">
-            {t("featureslisticle_feat6")} 📥
+            {t("featureslisticle_feat2")} ⚖️
           </h2>
           <ul className="space-y-2 text-left">
-            {[t("featureslisticle_feat6_sub1")].map((item) => (
+            {[
+              t("featureslisticle_feat2_sub1"),
+              t("featureslisticle_feat2_sub2"),
+              t("featureslisticle_feat2_sub3"),
+            ].map((item) => (
               <li key={item} className="flex items-center gap-3 text-left">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -48,4 +52,4 @@ const Feature6 = () => {
   );
 };
 
-export default Feature6;
+export default RecommendationsFeature;

@@ -89,7 +89,7 @@ const FAQ = () => {
     );
   };
   return (
-    <section className="bg-base-200" id="faq">
+    <section className="bg-base-100" id="faq">
       <div className="py-24 px-8 max-w-7xl mx-auto flex flex-col md:flex-row gap-12">
         <div className="flex flex-col text-left basis-1/2">
           <p className="inline-block font-semibold text-primary mb-4">
