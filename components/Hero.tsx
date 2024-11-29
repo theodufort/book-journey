@@ -15,12 +15,21 @@ const Hero = () => {
           {t("hero_tagline")}
         </h1>
         <p className="text-lg opacity-80 leading-relaxed">{t("hero_desc")}</p>
-        <button
-          className="btn btn-primary"
-          onClick={() => router.push("/signin")}
-        >
-          {t("hero_cta")}
-        </button>
+        <div className="space-x-2">
+          {" "}
+          <button
+            className="btn btn-primary"
+            onClick={() => router.push("/signin")}
+          >
+            {t("hero_cta")}
+          </button>
+          <button
+            className="btn btn-secondary"
+            onClick={() => router.push("/roadmap")}
+          >
+            View the Roadmap
+          </button>
+        </div>
       </div>
       {/* Right Side */}
       <div
