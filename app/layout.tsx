@@ -11,6 +11,7 @@ import { Inter } from "next/font/google";
 import Script from "next/script";
 import { ReactNode } from "react";
 import "./globals.css";
+import Fathom from "@/components/Fathom";
 
 const font = Inter({ subsets: ["latin"] });
 export const viewport: Viewport = {
@@ -35,7 +36,7 @@ export default async function RootLayout({
     <html lang={locale} suppressHydrationWarning>
       {config.domainName && (
         <head>
-          {" "}
+          <Fathom />
           <GoogleAnalytics gaId="G-1LDR3284GW" />
           <GoogleTagManager gtmId="AW-10934490832" />
           <meta name="impact-site-verification" data-value="369738092" />{" "}
