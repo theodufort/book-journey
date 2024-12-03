@@ -693,7 +693,7 @@ export default function BookNotes() {
                                   }
                                 }}
                                 placeholder={t("add_sticky")}
-                                className="bg-transparent border-none outline-none max-w-min text-md"
+                                className="bg-transparent border-none outline-none max-w-min text-md text-black"
                               />
                               <button
                                 onClick={onAddSticky}
