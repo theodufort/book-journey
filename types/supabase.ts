@@ -1357,7 +1357,7 @@ export type Database = {
         Row: {
           book_id: string
           finished_at: string | null
-          id: number
+          id: string
           pages_read: number
           pointsAwardedFinished: boolean
           pointsAwardedRating: boolean
@@ -1374,7 +1374,7 @@ export type Database = {
         Insert: {
           book_id: string
           finished_at?: string | null
-          id?: number
+          id?: string
           pages_read?: number
           pointsAwardedFinished?: boolean
           pointsAwardedRating?: boolean
@@ -1391,7 +1391,7 @@ export type Database = {
         Update: {
           book_id?: string
           finished_at?: string | null
-          id?: number
+          id?: string
           pages_read?: number
           pointsAwardedFinished?: boolean
           pointsAwardedRating?: boolean
@@ -1420,7 +1420,7 @@ export type Database = {
           end_page: number
           ended_at: string | null
           id: string
-          reading_list_id: number
+          reading_list_id: string | null
           start_page: number
           started_at: string | null
         }
@@ -1428,7 +1428,7 @@ export type Database = {
           end_page: number
           ended_at?: string | null
           id?: string
-          reading_list_id: number
+          reading_list_id?: string | null
           start_page: number
           started_at?: string | null
         }
@@ -1436,7 +1436,7 @@ export type Database = {
           end_page?: number
           ended_at?: string | null
           id?: string
-          reading_list_id?: number
+          reading_list_id?: string | null
           start_page?: number
           started_at?: string | null
         }
@@ -1498,6 +1498,72 @@ export type Database = {
             columns: ["referrer_id"]
             isOneToOne: true
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      roadmap: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          is_approved: boolean
+          status: string
+          tags: string[]
+          title: string
+          votes: number
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          is_approved?: boolean
+          status?: string
+          tags?: string[]
+          title: string
+          votes?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          is_approved?: boolean
+          status?: string
+          tags?: string[]
+          title?: string
+          votes?: number
+        }
+        Relationships: []
+      }
+      roadmap_votes: {
+        Row: {
+          increment: boolean | null
+          roadmap_id: string
+          user_id: string
+        }
+        Insert: {
+          increment?: boolean | null
+          roadmap_id: string
+          user_id: string
+        }
+        Update: {
+          increment?: boolean | null
+          roadmap_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "roadmap_votes_roadmap_id_fkey"
+            columns: ["roadmap_id"]
+            isOneToOne: true
+            referencedRelation: "roadmap"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "roadmap_votes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1880,6 +1946,13 @@ export type Database = {
           _points_to_add: number
         }
         Returns: undefined
+      }
+      increment_votes: {
+        Args: {
+          row_id: string
+          increment: boolean
+        }
+        Returns: boolean
       }
       return_books_with_no_article: {
         Args: Record<PropertyKey, never>
