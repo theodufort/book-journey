@@ -22,8 +22,13 @@ export default function NextStepWrapper({
 
     const { data, error } = await supabase
       .from("onboarding")
-      .upsert({ user_id: userId, onboarded: true, tour_name: tourName })
-      .eq("user_id", userId);
+      .upsert(
+        { user_id: userId, onboarded: true, tour_name: tourName },
+        { 
+          onConflict: 'user_id',
+          update: { onboarded: true, tour_name: tourName }
+        }
+      );
   };
   const [showTour, setShowTour] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
