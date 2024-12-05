@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
 import { NextStepProvider, NextStep } from "nextstepjs";
 import OnboardingCard from "@/components/OnboardingCard";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
-export default function NextStepWrapper({ 
-  children, 
+export default function NextStepWrapper({
+  children,
   userId,
-  steps 
-}: { 
+  steps,
+}: {
   children: React.ReactNode;
   userId: string;
   steps: any[];
