@@ -149,7 +149,7 @@ const HabitCard: React.FC<HabitCardProps> = ({ onHabitChange }) => {
             .update({
               ...newHabit,
               progress_value: 0,
-              streak: [{ day: today, progress_value: 0 }]
+              streak: [{ day: today, progress_value: 0 }],
             })
             .eq("id", habit.id);
         } else {
@@ -247,6 +247,7 @@ const HabitCard: React.FC<HabitCardProps> = ({ onHabitChange }) => {
         </div>
       ) : (
         <div
+          id="add_habit"
           className="card bg-base-200 shadow-xl border-2 border-dashed h-48 border-gray-300 flex items-center justify-center cursor-pointer w-full"
           onClick={() => openModal("new")}
           role="button"

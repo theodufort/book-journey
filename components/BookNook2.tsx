@@ -158,7 +158,7 @@ export default function BookNook1() {
     setIsLoadingreview(true);
     try {
       const { data, error } = await supabase
-        .from("main_notes")
+        .from("reviews")
         .select("*")
         .eq("user_id", user.id)
         .eq("book_id", selectedBook.id)
@@ -185,7 +185,7 @@ export default function BookNook1() {
     }
 
     try {
-      const { data, error } = await supabase.from("main_notes").upsert(
+      const { data, error } = await supabase.from("reviews").upsert(
         {
           user_id: user.id,
           book_id: selectedBook.id,

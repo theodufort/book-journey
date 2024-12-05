@@ -1180,37 +1180,34 @@ export type Database = {
         }
         Relationships: []
       }
-      main_notes: {
+      onboarding: {
         Row: {
-          book_id: string
-          created_at: string | null
-          id: number
-          notes: string | null
-          updated_at: string | null
-          user_id: string | null
+          id: string
+          onboarded: boolean
+          onboarded_at: string
+          tour_name: string
+          user_id: string
         }
         Insert: {
-          book_id: string
-          created_at?: string | null
-          id?: number
-          notes?: string | null
-          updated_at?: string | null
-          user_id?: string | null
+          id?: string
+          onboarded?: boolean
+          onboarded_at?: string
+          tour_name: string
+          user_id: string
         }
         Update: {
-          book_id?: string
-          created_at?: string | null
-          id?: number
-          notes?: string | null
-          updated_at?: string | null
-          user_id?: string | null
+          id?: string
+          onboarded?: boolean
+          onboarded_at?: string
+          tour_name?: string
+          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "book_notes_user_id_fkey"
+            foreignKeyName: "onboarding_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "users"
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1357,6 +1354,7 @@ export type Database = {
         Row: {
           book_id: string
           finished_at: string | null
+          format: string | null
           id: string
           pages_read: number
           pointsAwardedFinished: boolean
@@ -1374,6 +1372,7 @@ export type Database = {
         Insert: {
           book_id: string
           finished_at?: string | null
+          format?: string | null
           id?: string
           pages_read?: number
           pointsAwardedFinished?: boolean
@@ -1391,6 +1390,7 @@ export type Database = {
         Update: {
           book_id?: string
           finished_at?: string | null
+          format?: string | null
           id?: string
           pages_read?: number
           pointsAwardedFinished?: boolean
@@ -1497,6 +1497,41 @@ export type Database = {
             foreignKeyName: "referrals_referrer_id_fkey"
             columns: ["referrer_id"]
             isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reviews: {
+        Row: {
+          book_id: string
+          created_at: string | null
+          id: number
+          notes: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          book_id: string
+          created_at?: string | null
+          id?: number
+          notes?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          book_id?: string
+          created_at?: string | null
+          id?: number
+          notes?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "book_notes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
