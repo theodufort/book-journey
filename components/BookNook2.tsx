@@ -17,6 +17,7 @@ import { Database } from "@/types/supabase";
 import CongratulationsModalSession from "./CongratulationsModalSession";
 import TooltipHelper from "./Tooltip";
 import DictionaryWidget from "./DictionaryWidget";
+import { ForwardRefEditor } from "./ForwardRefEditor";
 
 export default function BookNook1() {
   const t = useTranslations("BookNook2");
@@ -499,8 +500,8 @@ export default function BookNook1() {
           <div className="flex-1 flex gap-2 h-full min-h-0">
             <div className="flex-1 card card-bordered p-3 relative h-full overflow-y-auto">
               {tab === "Session Note" && (
-                <div className="h-full flex flex-col">
-                  <div className="flex justify-between items-center mb-4">
+                <div className="h-full flex flex-col space-y-4">
+                  <div className="flex justify-between items-center">
                     <div className="flex gap-2">
                       <h2 className="text-xl font-semibold my-auto">
                         Session Note
@@ -512,7 +513,7 @@ export default function BookNook1() {
                         }
                       />
                     </div>
-                    <button
+                    {/* <button
                       className={`btn btn-sm ${
                         isSessionNoteEditMode ? "btn-primary" : "btn-secondary"
                       }`}
@@ -521,25 +522,21 @@ export default function BookNook1() {
                       }
                     >
                       {isSessionNoteEditMode ? "Preview" : "Edit"}
-                    </button>
+                    </button> */}
                   </div>
                   <div className="relative flex-1 w-full mb-4 flex flex-col">
-                    {isSessionNoteEditMode ? (
-                      <div className="flex-1">
-                        <TextareaAutosize
-                          minRows={4}
-                          className="w-full h-full textarea textarea-primary"
-                          placeholder="Write here..."
-                          value={dailyNoteContent}
-                          onChange={(e) => setDailyNoteContent(e.target.value)}
-                        />
-                      </div>
-                    ) : (
-                      <div className="prose prose-sm max-w-none h-full overflow-y-auto p-4 rounded-lg">
-                        <ReactMarkdown>{dailyNoteContent}</ReactMarkdown>
-                      </div>
-                    )}
-                    <div className="absolute bottom-2 right-2 flex gap-2 items-center">
+                    <div className="flex-1 prose">
+                      <ForwardRefEditor
+                        className="w-full h-full"
+                        placeholder="Write here..."
+                        markdown={dailyNoteContent}
+                        onChange={(val) => {
+                          setDailyNoteContent(val);
+                          console.log(val);
+                        }}
+                      />
+                    </div>
+                    <div className="absolute bottom-4 right-4 flex gap-2 items-center">
                       {/* <label className="cursor-pointer label">
                         <span className="label-text mr-2">Auto-Format</span>
                         <input
@@ -580,9 +577,9 @@ export default function BookNook1() {
                   </div>
 
                   {/* Questions Section */}
-                  <div className="mb-4">
+                  <div>
                     <div className="flex gap-2">
-                      <h3 className="text-lg font-semibold mb-2">Questions</h3>
+                      <h3 className="text-lg font-semibold">Questions</h3>
                       <TooltipHelper
                         place={"top-start"}
                         content={
@@ -694,8 +691,8 @@ export default function BookNook1() {
                 </div>
               )}
               {tab === "review" && (
-                <div className="h-full flex flex-col">
-                  <div className="flex justify-between items-center mb-4">
+                <div className="h-full flex flex-col space-y-4">
+                  <div className="flex justify-between items-center">
                     <div className="flex gap-2">
                       <h2 className="text-xl font-semibold my-auto">Review</h2>
                       <TooltipHelper
@@ -705,7 +702,7 @@ export default function BookNook1() {
                         }
                       />
                     </div>
-                    <button
+                    {/* <button
                       className={`btn btn-sm ${
                         isEditMode ? "btn-primary" : "btn-secondary"
                       }`}
@@ -719,26 +716,22 @@ export default function BookNook1() {
                       disabled={isLoadingreview}
                     >
                       {isEditMode ? "Save & View" : "Edit"}
-                    </button>
+                    </button> */}
                   </div>
-                  {isEditMode ? (
-                    <TextareaAutosize
-                      minRows={4}
-                      className="flex-1 w-full textarea textarea-primary mb-4"
-                      style={{ backgroundColor: "#FFF2D7" }}
+                  <div className="prose">
+                    <ForwardRefEditor
+                      className="w-full md:h-full"
+                      markdown={reviewContent}
+                      onChange={(val) => {
+                        setreviewContent(val);
+                        console.log(val);
+                      }}
                       placeholder="Write your review here..."
-                      value={reviewContent}
-                      onChange={(e) => setreviewContent(e.target.value)}
-                      disabled={isLoadingreview}
                     />
-                  ) : (
-                    <div className="flex-1 overflow-y-auto prose prose-sm max-w-none mb-4">
-                      <ReactMarkdown>{reviewContent}</ReactMarkdown>
-                    </div>
-                  )}
-                  <div className="mb-4">
+                  </div>
+                  <div>
                     <div className="flex gap-2">
-                      <h3 className="text-lg font-semibold mb-2">Questions</h3>
+                      <h3 className="text-lg font-semibold">Questions</h3>
                       <TooltipHelper
                         content={
                           "Questions can't popup while you read, get answers later!"
@@ -790,7 +783,7 @@ export default function BookNook1() {
 
         {/* Right Column: Stickies / Session Notes */}
         <div className="w-full md:w-96 flex-shrink-0 p-2 md:border-l border-t md:border-t-0 flex flex-col md:h-full md:overflow-y-auto">
-          <div className="flex-none mb-2">
+          <div className="flex-none">
             {/* Log Session Section - Only show on mobile when on Session Note tab */}
             {tab === "Session Note" && (
               <div className="md:hidden space-y-2">
@@ -886,7 +879,7 @@ export default function BookNook1() {
                       <div
                         key={sticky.id}
                         tabIndex={0}
-                        className="collapse collapse-arrow border-base-300 border"
+                        className="collapse collapse-arrow border-base-300 border mt-2"
                       >
                         <input type="checkbox" />
                         <div className="collapse-title text-xl font-medium">
