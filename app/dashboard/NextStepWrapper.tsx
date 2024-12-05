@@ -19,16 +19,29 @@ export default function NextStepWrapper({
   const setTourFinished = async () => {
     // Get the tour name from the first step group
     const tourName = steps[0]?.tour || "default";
+    const now = new Date().toISOString();
 
     const { data, error } = await supabase
       .from("onboarding")
       .upsert(
-        { user_id: userId, onboarded: true, tour_name: tourName },
         { 
-          onConflict: 'user_id',
-          update: { onboarded: true, tour_name: tourName }
+          user_id: userId, 
+          tour_name: tourName,
+          onboarded: true,
+          onboarded_at: now
+        },
+        { 
+          onConflict: 'user_id,tour_name',
+          update: { 
+            onboarded: true,
+            onboarded_at: now
+          }
         }
       );
+
+    if (error) {
+      console.error("Error updating onboarding status:", error);
+    }
   };
   const [showTour, setShowTour] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
