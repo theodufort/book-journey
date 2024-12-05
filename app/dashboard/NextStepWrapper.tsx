@@ -50,13 +50,12 @@ export default function NextStepWrapper({
     checkTourStatus();
   }, []);
 
-  if (isLoading) {
-    return <>{children}</>;
-  }
 
   return (
     <NextStepProvider>
-      {showTour && (
+      {isLoading ? (
+        children
+      ) : showTour ? (
         <NextStep
           cardComponent={OnboardingCard}
           onComplete={setTourFinished}
@@ -67,8 +66,9 @@ export default function NextStepWrapper({
         >
           {children}
         </NextStep>
+      ) : (
+        children
       )}
-      {!showTour && children}
     </NextStepProvider>
   );
 }
