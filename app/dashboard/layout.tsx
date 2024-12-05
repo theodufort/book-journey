@@ -3,7 +3,7 @@ import config from "@/config";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { NextStepProvider, NextStep, Step } from "nextstepjs";
+import NextStepWrapper from "./NextStepWrapper";
 import { ReactNode } from "react";
 const steps = [
   {
@@ -80,26 +80,11 @@ export default async function LayoutPrivate({
   if (!session) {
     redirect(config.auth.loginUrl);
   }
-  const setTourFinished = async (tourName?: string | null) => {
-    const { data, error } = await supabase
-      .from("onboarding")
-      .upsert({ user_id: user.id, onboarded: true, tour_name: tourName })
-      .eq("user_id", user.id);
-  };
   return (
     <>
-      <NextStepProvider>
-        <NextStep
-          cardComponent={OnboardingCard}
-          onComplete={setTourFinished}
-          steps={steps}
-          shadowRgb="0, 0, 0"
-          shadowOpacity="0.8"
-          cardTransition={{ duration: 0.2, type: "spring" }}
-        >
-          {children}
-        </NextStep>
-      </NextStepProvider>
+      <NextStepWrapper userId={user.id} steps={steps}>
+        {children}
+      </NextStepWrapper>
     </>
   );
 }
