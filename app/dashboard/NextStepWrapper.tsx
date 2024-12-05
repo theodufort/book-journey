@@ -21,16 +21,17 @@ export default function NextStepWrapper({
     const tourName = steps[0]?.tour || "default";
     const now = new Date().toISOString();
 
-    const { data, error } = await supabase
-      .from("onboarding")
-      .upsert({
+    const { data, error } = await supabase.from("onboarding").upsert(
+      {
         user_id: userId,
         tour_name: tourName,
         onboarded: true,
         onboarded_at: now,
-      }, {
-        onConflict: 'user_id,tour_name'
-      });
+      },
+      {
+        onConflict: "user_id,tour_name",
+      }
+    );
 
     if (error) {
       console.error("Error updating onboarding status:", error);

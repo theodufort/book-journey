@@ -203,14 +203,14 @@ const HeaderDashboard = () => {
                   🔮 {t("link4")}
                 </Link>
               </li>
-              <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
+              {/* <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
                 <Link
                   href="/dashboard/reading-rewards"
                   className="flex items-center space-x-3 p-2 align-middle text-lg"
                 >
                   🏆 {t("link5")}
                 </Link>
-              </li>
+              </li> */}
               <li className="hover:bg-base-300 rounded-lg transition-colors duration-200">
                 <Link
                   href="/dashboard/book-nook"

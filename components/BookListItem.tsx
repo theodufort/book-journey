@@ -44,7 +44,9 @@ export default function BookListItem({
   const [rating, setRating] = useState(0);
   const [newTag, setNewTag] = useState("");
   const [pagesRead, setPagesRead] = useState(0);
-  const [questions, setQuestions] = useState<Array<{ id: string; question: string; answer: string | null }>>([]);
+  const [questions, setQuestions] = useState<
+    Array<{ id: string; question: string; answer: string | null }>
+  >([]);
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
@@ -253,7 +255,11 @@ export default function BookListItem({
       .from("questions_notes")
       .select("*")
       .eq("user_id", user.id)
-      .eq("book_id", item.volumeInfo.industryIdentifiers.find(id => id.type === "ISBN_13")?.identifier)
+      .eq(
+        "book_id",
+        item.volumeInfo.industryIdentifiers.find((id) => id.type === "ISBN_13")
+          ?.identifier
+      )
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -741,7 +747,7 @@ export default function BookListItem({
             {status === "Finished" && (
               <>
                 {renderRatingInput()}
-                {renderReviewInput()}
+                {/* {renderReviewInput()} */}
               </>
             )}
           </div>

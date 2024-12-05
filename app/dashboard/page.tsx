@@ -7,6 +7,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useNextStep } from "nextstepjs";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const supabase = createClientComponentClient<Database>();
@@ -24,7 +25,18 @@ export default function Dashboard() {
   const [showOnboard, setShowOnboard] = useState(false);
   const [habitRefreshTrigger, setHabitRefreshTrigger] = useState(0);
   const router = useRouter();
+  const {
+    startNextStep,
+    closeNextStep,
+    currentTour,
+    currentStep,
+    setCurrentStep,
+    isNextStepVisible,
+  } = useNextStep();
 
+  const handleStartTour = () => {
+    startNextStep("dashboardTour");
+  };
   const logUserActivity = async () => {
     if (!user) return;
 
@@ -88,6 +100,7 @@ export default function Dashboard() {
         logUserActivity();
         hasLoggedActivity.current = true;
       }
+      handleStartTour();
     } else {
       setLoading(false);
     }
@@ -192,7 +205,7 @@ export default function Dashboard() {
         <h1 className="text-3xl md:text-4xl font-extrabold">{t("title")}</h1>
 
         {/* Reading Stats */}
-        <div className="card bg-base-200 shadow-xl ">
+        <div className="card bg-base-200 shadow-xl" id="dashboard_stats">
           <div className="card-body">
             <h2 className="card-title text-xl md:text-2xl font-bold">
               {t("subtitle1")}
@@ -228,7 +241,7 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-        <div className="w-full">
+        <div className="w-full" id="dashboard_booknook">
           <button
             className="btn btn-primary w-full"
             onClick={() => router.push("dashboard/book-nook")}
@@ -237,7 +250,10 @@ export default function Dashboard() {
           </button>
         </div>
         {/* Habit Card and Habit Consistency Graph */}
-        <div className="grid md:grid-cols-4 grid-cols-1 gap-4 items-stretch">
+        <div
+          className="grid md:grid-cols-4 grid-cols-1 gap-4 items-stretch"
+          id="dashboard_habit"
+        >
           {/* Habit Card (1/4 width) */}
           <div className="md:col-span-1">
             <div className="h-full flex">

@@ -12,13 +12,85 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 
-CREATE SCHEMA IF NOT EXISTS "public";
+CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
+
+
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "pgsodium" WITH SCHEMA "pgsodium";
+
+
+
+
+
+
 
 
 ALTER SCHEMA "public" OWNER TO "postgres";
 
 
 COMMENT ON SCHEMA "public" IS 'standard public schema';
+
+
+
+CREATE EXTENSION IF NOT EXISTS "pg_graphql" WITH SCHEMA "graphql";
+
+
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "pg_stat_statements" WITH SCHEMA "extensions";
+
+
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "pgcrypto" WITH SCHEMA "extensions";
+
+
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "pgjwt" WITH SCHEMA "extensions";
+
+
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "supabase_vault" WITH SCHEMA "vault";
+
+
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
+
+
+
+
+
+
+CREATE OR REPLACE FUNCTION "public"."append_habit_streak"("habit_id" "uuid", "day" "text", "progress_value" integer) RETURNS "void"
+    LANGUAGE "plpgsql"
+    AS $$
+declare
+    new_entry jsonb;
+begin
+    new_entry := jsonb_build_object('day', day, 'progress_value', progress_value);
+
+    update habits
+    set streak = coalesce(streak, '{}') || new_entry
+    where id = habit_id;
+end;
+$$;
+
 
 
 
@@ -57,7 +129,6 @@ END;
 $$;
 
 
-ALTER FUNCTION "public"."check_inactive_users"("days" integer) OWNER TO "supabase_admin";
 
 
 CREATE OR REPLACE FUNCTION "public"."get_basic_article_info"("p_slug" character varying) RETURNS TABLE("id" integer, "slug" character varying, "title" character varying, "description" "text", "isbn13" character varying, "image_url" "text", "image_alt" "text", "published_at" timestamp with time zone)
@@ -75,6 +146,58 @@ $$;
 
 
 ALTER FUNCTION "public"."get_basic_article_info"("p_slug" character varying) OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_cumulative_books_per_users_by_day"() RETURNS TABLE("date" "date", "cumulative_users" bigint)
+    LANGUAGE "plpgsql"
+    AS $$
+BEGIN
+    RETURN QUERY
+    WITH user_first_dates AS (
+        SELECT 
+            user_id, 
+            MIN(date_trunc('day', toread_at)) AS first_date
+        FROM 
+            public.reading_list
+        WHERE 
+            user_id IS NOT NULL
+        GROUP BY 
+            user_id
+    ),
+    daily_new_users AS (
+        SELECT 
+            first_date::date AS date, 
+            COUNT(*) AS new_users
+        FROM 
+            user_first_dates
+        GROUP BY 
+            first_date
+    ),
+    date_series AS (
+        SELECT 
+            generate_series(
+                (SELECT MIN(first_date) FROM user_first_dates),
+                (SELECT MAX(first_date) FROM user_first_dates),
+                interval '1 day'
+            )::date AS date
+    )
+    SELECT
+        ds.date,
+        (SUM(COALESCE(dnu.new_users, 0)) OVER (
+            ORDER BY ds.date
+        ))::bigint AS cumulative_users
+    FROM 
+        date_series ds
+    LEFT JOIN 
+        daily_new_users dnu
+    ON 
+        ds.date = dnu.date
+    ORDER BY 
+        ds.date;
+END;
+$$;
+
+
 
 
 CREATE OR REPLACE FUNCTION "public"."get_full_article_content"("p_slug" character varying) RETURNS TABLE("id" integer, "content" "text")
@@ -130,11 +253,12 @@ ALTER FUNCTION "public"."get_user_metadata"("user_id" "uuid") OWNER TO "postgres
 
 
 CREATE OR REPLACE FUNCTION "public"."handle_new_user"() RETURNS "trigger"
-    LANGUAGE "plpgsql"
+    LANGUAGE "plpgsql" SECURITY DEFINER
     AS $$
 BEGIN
   INSERT INTO public.profiles (id, email, created_at, last_sign_in_at, raw_app_meta_data, raw_user_meta_data)
   VALUES (NEW.id, NEW.email, NEW.created_at, NEW.updated_at, NEW.raw_app_meta_data, NEW.raw_user_meta_data);
+  
   INSERT INTO public.user_preferences (user_id)
   VALUES (NEW.id);
   INSERT INTO public.user_points (user_id)
@@ -148,7 +272,17 @@ END;
 $$;
 
 
-ALTER FUNCTION "public"."handle_new_user"() OWNER TO "supabase_admin";
+
+
+CREATE OR REPLACE FUNCTION "public"."increment"("inc" double precision, "userid" "uuid") RETURNS "void"
+    LANGUAGE "sql"
+    AS $$
+  update user_points 
+  set points_earned_referrals = points_earned_referrals + inc
+  where user_id = userid
+$$;
+
+
 
 
 CREATE OR REPLACE FUNCTION "public"."increment_points_earned"("_user_id" "uuid", "_points_to_add" integer) RETURNS "void"
@@ -163,6 +297,37 @@ $$;
 
 
 ALTER FUNCTION "public"."increment_points_earned"("_user_id" "uuid", "_points_to_add" integer) OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."increment_votes"("row_id" "uuid", "increment" boolean) RETURNS boolean
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+DECLARE
+    row_exists BOOLEAN;
+BEGIN
+    -- Check if the row exists
+    SELECT EXISTS(SELECT 1 FROM roadmap WHERE id = row_id) INTO row_exists;
+
+    IF NOT row_exists THEN
+        RAISE EXCEPTION 'No row found with id %', row_id;
+    END IF;
+
+    -- Perform the update based on the increment flag
+    IF increment THEN
+        UPDATE roadmap
+        SET votes = votes + 1
+        WHERE id = row_id;
+    ELSE
+        UPDATE roadmap
+        SET votes = GREATEST(0, votes - 1)
+        WHERE id = row_id;
+    END IF;
+
+    RETURN TRUE; -- Indicate success
+END;
+$$;
+
+
 
 
 CREATE OR REPLACE FUNCTION "public"."return_books_with_no_article"() RETURNS TABLE("isbn_13" "text", "data" "jsonb")
@@ -229,7 +394,6 @@ END;
 $$;
 
 
-ALTER FUNCTION "public"."update_timestamp_based_on_status"() OWNER TO "supabase_admin";
 
 
 CREATE OR REPLACE FUNCTION "public"."update_user_points"() RETURNS "trigger"
@@ -269,7 +433,6 @@ CREATE TABLE IF NOT EXISTS "public"."ai_conversations" (
 );
 
 
-ALTER TABLE "public"."ai_conversations" OWNER TO "supabase_admin";
 
 
 CREATE TABLE IF NOT EXISTS "public"."article_categories" (
@@ -342,7 +505,7 @@ ALTER SEQUENCE "public"."blog_categories_id_seq" OWNED BY "public"."blog_categor
 
 
 
-CREATE TABLE IF NOT EXISTS "public"."book_notes" (
+CREATE TABLE IF NOT EXISTS "public"."reviews" (
     "id" integer NOT NULL,
     "user_id" "uuid",
     "book_id" character varying(20) NOT NULL,
@@ -352,7 +515,7 @@ CREATE TABLE IF NOT EXISTS "public"."book_notes" (
 );
 
 
-ALTER TABLE "public"."book_notes" OWNER TO "postgres";
+ALTER TABLE "public"."reviews" OWNER TO "postgres";
 
 
 CREATE SEQUENCE IF NOT EXISTS "public"."book_notes_id_seq"
@@ -367,7 +530,7 @@ CREATE SEQUENCE IF NOT EXISTS "public"."book_notes_id_seq"
 ALTER TABLE "public"."book_notes_id_seq" OWNER TO "postgres";
 
 
-ALTER SEQUENCE "public"."book_notes_id_seq" OWNED BY "public"."book_notes"."id";
+ALTER SEQUENCE "public"."book_notes_id_seq" OWNED BY "public"."reviews"."id";
 
 
 
@@ -392,6 +555,21 @@ CREATE TABLE IF NOT EXISTS "public"."books_like" (
 
 
 ALTER TABLE "public"."books_like" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."books_modifications" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "isbn_13" "text" NOT NULL,
+    "user_id" "uuid",
+    "is_reviewed" boolean DEFAULT false,
+    "title" "text",
+    "description" "text",
+    "page_count" integer,
+    "is_approved" boolean,
+    "created_at" timestamp with time zone DEFAULT ("now"() AT TIME ZONE 'utc'::"text")
+);
+
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."friends" (
@@ -423,6 +601,71 @@ ALTER SEQUENCE "public"."friends_id_seq" OWNED BY "public"."friends"."id";
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."habits" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "periodicity" "text" NOT NULL,
+    "metric" "text" NOT NULL,
+    "value" bigint DEFAULT '0'::bigint NOT NULL,
+    "user_id" "uuid",
+    "progress_value" bigint DEFAULT '0'::bigint NOT NULL,
+    "streak" "jsonb"[] DEFAULT '{}'::"jsonb"[]
+);
+
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."indie_authors" (
+    "author_id" "uuid" NOT NULL,
+    "name" "text",
+    "presentation" "text",
+    "birth_date" "date",
+    "first_book_published_year" timestamp without time zone,
+    "personal_favorite_genres" "text"[] NOT NULL,
+    "main_writing_genres" "text"[] NOT NULL,
+    "type_of_books" "text"[] NOT NULL,
+    "picture_link" "text" NOT NULL,
+    "website" "text",
+    "is_approved" boolean DEFAULT false NOT NULL
+);
+
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."indie_authors_books" (
+    "book_id" "uuid" NOT NULL,
+    "author_id" "uuid",
+    "release_date" timestamp without time zone,
+    "title" "text" NOT NULL,
+    "description" "text" NOT NULL,
+    "categories" "text"[] NOT NULL,
+    "cover_image_small_link" "text" NOT NULL,
+    "cover_image_large_link" "text" NOT NULL,
+    "is_approved" boolean DEFAULT false NOT NULL
+);
+
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."indie_authors_books_links" (
+    "book_id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "label" "text" NOT NULL,
+    "link" "text" NOT NULL
+);
+
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."indie_authors_social" (
+    "social_media_id" "uuid" NOT NULL,
+    "author_id" "uuid",
+    "social_media_name" "text",
+    "link" "text"
+);
+
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."libraries" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "display_name" "text" NOT NULL,
@@ -439,31 +682,14 @@ CREATE TABLE IF NOT EXISTS "public"."libraries" (
 ALTER TABLE "public"."libraries" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."messages" (
-    "id" integer NOT NULL,
-    "sender_id" "uuid",
-    "receiver_id" "uuid",
-    "content" "text" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS "public"."onboarding" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "tour_name" "text" NOT NULL,
+    "onboarded_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "onboarded" boolean DEFAULT true NOT NULL,
+    "user_id" "uuid" NOT NULL
 );
 
-
-ALTER TABLE "public"."messages" OWNER TO "postgres";
-
-
-CREATE SEQUENCE IF NOT EXISTS "public"."messages_id_seq"
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE "public"."messages_id_seq" OWNER TO "postgres";
-
-
-ALTER SEQUENCE "public"."messages_id_seq" OWNED BY "public"."messages"."id";
 
 
 
@@ -504,11 +730,26 @@ CREATE TABLE IF NOT EXISTS "public"."profiles" (
     "raw_app_meta_data" "jsonb",
     "raw_user_meta_data" "jsonb",
     "email" "text",
-    "inactivity_email_sent" boolean DEFAULT false NOT NULL
+    "inactivity_email_sent" boolean DEFAULT false NOT NULL,
+    "username" "text",
+    "customer_id" "text",
+    "price_id" "text",
+    "has_access" boolean DEFAULT false
 );
 
 
-ALTER TABLE "public"."profiles" OWNER TO "supabase_admin";
+
+
+CREATE TABLE IF NOT EXISTS "public"."questions_notes" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "book_id" "text" NOT NULL,
+    "question" "text" NOT NULL,
+    "answer" "text",
+    "created_at" timestamp with time zone DEFAULT ("now"() AT TIME ZONE 'utc'::"text") NOT NULL
+);
+
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."quotes" (
@@ -518,11 +759,9 @@ CREATE TABLE IF NOT EXISTS "public"."quotes" (
 );
 
 
-ALTER TABLE "public"."quotes" OWNER TO "supabase_admin";
 
 
 CREATE TABLE IF NOT EXISTS "public"."reading_list" (
-    "id" integer NOT NULL,
     "user_id" "uuid",
     "book_id" character varying(20) NOT NULL,
     "status" "text",
@@ -536,6 +775,9 @@ CREATE TABLE IF NOT EXISTS "public"."reading_list" (
     "reading_at" timestamp with time zone,
     "finished_at" timestamp with time zone,
     "reviewPublic" boolean DEFAULT false NOT NULL,
+    "pages_read" integer DEFAULT 0 NOT NULL,
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "format" "text" DEFAULT 'physical'::"text",
     CONSTRAINT "reading_list_status_check" CHECK (("status" = ANY (ARRAY[('To Read'::character varying)::"text", ('Reading'::character varying)::"text", ('Finished'::character varying)::"text", ('DNF'::character varying)::"text"])))
 );
 
@@ -543,19 +785,15 @@ CREATE TABLE IF NOT EXISTS "public"."reading_list" (
 ALTER TABLE "public"."reading_list" OWNER TO "postgres";
 
 
-CREATE SEQUENCE IF NOT EXISTS "public"."reading_list_id_seq"
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+CREATE TABLE IF NOT EXISTS "public"."reading_sessions" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "started_at" timestamp with time zone,
+    "ended_at" timestamp with time zone,
+    "start_page" integer NOT NULL,
+    "end_page" integer NOT NULL,
+    "reading_list_id" "uuid"
+);
 
-
-ALTER TABLE "public"."reading_list_id_seq" OWNER TO "postgres";
-
-
-ALTER SEQUENCE "public"."reading_list_id_seq" OWNED BY "public"."reading_list"."id";
 
 
 
@@ -568,6 +806,54 @@ CREATE TABLE IF NOT EXISTS "public"."reading_stats" (
 
 
 ALTER TABLE "public"."reading_stats" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."referrals" (
+    "referrer_id" "uuid" NOT NULL,
+    "referred_id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL
+);
+
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."roadmap" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "title" "text" NOT NULL,
+    "description" "text" NOT NULL,
+    "is_approved" boolean DEFAULT false NOT NULL,
+    "tags" "text"[] DEFAULT '{}'::"text"[] NOT NULL,
+    "votes" integer DEFAULT 0 NOT NULL,
+    "status" "text" DEFAULT 'ideas'::"text" NOT NULL
+);
+
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."roadmap_votes" (
+    "roadmap_id" "uuid" NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "increment" boolean
+);
+
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."sticky_notes" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "book_id" "text" NOT NULL,
+    "content" "text" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone,
+    "label" "text" NOT NULL,
+    "is_public" boolean DEFAULT false NOT NULL,
+    "start_page" integer,
+    "end_page" integer,
+    "reading_session_id" "uuid"
+);
+
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."user_activity" (
@@ -600,6 +886,15 @@ ALTER SEQUENCE "public"."user_activity_id_seq" OWNED BY "public"."user_activity"
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."user_connection_activity" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "active_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "user_id" "uuid" DEFAULT "gen_random_uuid"()
+);
+
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."user_point_streak" (
     "user_id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "day1" timestamp with time zone,
@@ -619,7 +914,8 @@ ALTER TABLE "public"."user_point_streak" OWNER TO "postgres";
 CREATE TABLE IF NOT EXISTS "public"."user_points" (
     "user_id" "uuid" NOT NULL,
     "points_earned" integer,
-    "points_redeemed" integer
+    "points_redeemed" integer,
+    "points_earned_referrals" real DEFAULT '0'::real NOT NULL
 );
 
 
@@ -641,6 +937,18 @@ CREATE TABLE IF NOT EXISTS "public"."user_preferences" (
 ALTER TABLE "public"."user_preferences" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."vocal_notes" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "user_id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "start_time" timestamp with time zone DEFAULT ("now"() AT TIME ZONE 'utc'::"text") NOT NULL,
+    "end_time" timestamp with time zone NOT NULL,
+    "endpoint_url" "text" NOT NULL,
+    "text_content" "text"
+);
+
+
+
+
 ALTER TABLE ONLY "public"."blog_articles" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."blog_articles_id_seq"'::"regclass");
 
 
@@ -649,15 +957,7 @@ ALTER TABLE ONLY "public"."blog_categories" ALTER COLUMN "id" SET DEFAULT "nextv
 
 
 
-ALTER TABLE ONLY "public"."book_notes" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."book_notes_id_seq"'::"regclass");
-
-
-
 ALTER TABLE ONLY "public"."friends" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."friends_id_seq"'::"regclass");
-
-
-
-ALTER TABLE ONLY "public"."messages" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."messages_id_seq"'::"regclass");
 
 
 
@@ -665,7 +965,7 @@ ALTER TABLE ONLY "public"."point_transactions" ALTER COLUMN "id" SET DEFAULT "ne
 
 
 
-ALTER TABLE ONLY "public"."reading_list" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."reading_list_id_seq"'::"regclass");
+ALTER TABLE ONLY "public"."reviews" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."book_notes_id_seq"'::"regclass");
 
 
 
@@ -708,12 +1008,12 @@ ALTER TABLE ONLY "public"."blog_categories"
 
 
 
-ALTER TABLE ONLY "public"."book_notes"
+ALTER TABLE ONLY "public"."reviews"
     ADD CONSTRAINT "book_notes_pkey" PRIMARY KEY ("id");
 
 
 
-ALTER TABLE ONLY "public"."book_notes"
+ALTER TABLE ONLY "public"."reviews"
     ADD CONSTRAINT "book_notes_user_id_book_id_key" UNIQUE ("user_id", "book_id");
 
 
@@ -725,6 +1025,11 @@ ALTER TABLE ONLY "public"."books"
 
 ALTER TABLE ONLY "public"."books_like"
     ADD CONSTRAINT "books_like_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."books_modifications"
+    ADD CONSTRAINT "books_modifications_pkey" PRIMARY KEY ("id");
 
 
 
@@ -743,6 +1048,31 @@ ALTER TABLE ONLY "public"."friends"
 
 
 
+ALTER TABLE ONLY "public"."habits"
+    ADD CONSTRAINT "habits_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."indie_authors_books_links"
+    ADD CONSTRAINT "indie_authors_books_links_pkey" PRIMARY KEY ("book_id");
+
+
+
+ALTER TABLE ONLY "public"."indie_authors_books"
+    ADD CONSTRAINT "indie_authors_books_pkey" PRIMARY KEY ("book_id");
+
+
+
+ALTER TABLE ONLY "public"."indie_authors"
+    ADD CONSTRAINT "indie_authors_pkey" PRIMARY KEY ("author_id");
+
+
+
+ALTER TABLE ONLY "public"."indie_authors_social"
+    ADD CONSTRAINT "indie_authors_social_pkey" PRIMARY KEY ("social_media_id");
+
+
+
 ALTER TABLE ONLY "public"."libraries"
     ADD CONSTRAINT "libraries_display_name_key" UNIQUE ("display_name");
 
@@ -753,8 +1083,8 @@ ALTER TABLE ONLY "public"."libraries"
 
 
 
-ALTER TABLE ONLY "public"."messages"
-    ADD CONSTRAINT "messages_pkey" PRIMARY KEY ("id");
+ALTER TABLE ONLY "public"."onboarding"
+    ADD CONSTRAINT "onboarding_pkey" PRIMARY KEY ("id");
 
 
 
@@ -765,6 +1095,11 @@ ALTER TABLE ONLY "public"."point_transactions"
 
 ALTER TABLE ONLY "public"."profiles"
     ADD CONSTRAINT "profiles_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."questions_notes"
+    ADD CONSTRAINT "questions_notes_pkey" PRIMARY KEY ("id");
 
 
 
@@ -788,13 +1123,43 @@ ALTER TABLE ONLY "public"."reading_list"
 
 
 
+ALTER TABLE ONLY "public"."reading_sessions"
+    ADD CONSTRAINT "reading_sessions_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."reading_stats"
     ADD CONSTRAINT "reading_stats_pkey" PRIMARY KEY ("user_id");
 
 
 
+ALTER TABLE ONLY "public"."referrals"
+    ADD CONSTRAINT "referrals_pkey" PRIMARY KEY ("referrer_id");
+
+
+
+ALTER TABLE ONLY "public"."roadmap"
+    ADD CONSTRAINT "roadmap_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."roadmap_votes"
+    ADD CONSTRAINT "roadmap_votes_pkey" PRIMARY KEY ("roadmap_id");
+
+
+
+ALTER TABLE ONLY "public"."sticky_notes"
+    ADD CONSTRAINT "sticky_notes_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."user_activity"
     ADD CONSTRAINT "user_activity_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."user_connection_activity"
+    ADD CONSTRAINT "user_connection_activity_pkey" PRIMARY KEY ("id");
 
 
 
@@ -818,6 +1183,11 @@ ALTER TABLE ONLY "public"."user_preferences"
 
 
 
+ALTER TABLE ONLY "public"."vocal_notes"
+    ADD CONSTRAINT "vocal_notes_pkey" PRIMARY KEY ("id");
+
+
+
 CREATE OR REPLACE TRIGGER "update_timestamps" BEFORE INSERT OR UPDATE ON "public"."reading_list" FOR EACH ROW EXECUTE FUNCTION "public"."update_timestamp_based_on_status"();
 
 
@@ -836,18 +1206,28 @@ ALTER TABLE ONLY "public"."article_categories"
 
 
 
-ALTER TABLE ONLY "public"."blog_articles"
-    ADD CONSTRAINT "blog_articles_isbn_13_fkey" FOREIGN KEY ("isbn_13") REFERENCES "public"."books"("isbn_13");
-
-
-
-ALTER TABLE ONLY "public"."book_notes"
-    ADD CONSTRAINT "book_notes_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id");
+ALTER TABLE ONLY "public"."reviews"
+    ADD CONSTRAINT "book_notes_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
 ALTER TABLE ONLY "public"."books_like"
     ADD CONSTRAINT "books_like_id_fkey" FOREIGN KEY ("id") REFERENCES "public"."books"("isbn_13") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."books_modifications"
+    ADD CONSTRAINT "books_modifications_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id");
+
+
+
+ALTER TABLE ONLY "public"."indie_authors_books"
+    ADD CONSTRAINT "fk_author_books" FOREIGN KEY ("author_id") REFERENCES "public"."indie_authors"("author_id");
+
+
+
+ALTER TABLE ONLY "public"."indie_authors_social"
+    ADD CONSTRAINT "fk_author_social" FOREIGN KEY ("author_id") REFERENCES "public"."indie_authors"("author_id");
 
 
 
@@ -861,13 +1241,38 @@ ALTER TABLE ONLY "public"."friends"
 
 
 
-ALTER TABLE ONLY "public"."messages"
-    ADD CONSTRAINT "messages_receiver_id_fkey" FOREIGN KEY ("receiver_id") REFERENCES "auth"."users"("id");
+ALTER TABLE ONLY "public"."habits"
+    ADD CONSTRAINT "habits_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
-ALTER TABLE ONLY "public"."messages"
-    ADD CONSTRAINT "messages_sender_id_fkey" FOREIGN KEY ("sender_id") REFERENCES "auth"."users"("id");
+ALTER TABLE ONLY "public"."indie_authors"
+    ADD CONSTRAINT "indie_authors_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "auth"."users"("id");
+
+
+
+ALTER TABLE ONLY "public"."indie_authors"
+    ADD CONSTRAINT "indie_authors_author_id_fkey1" FOREIGN KEY ("author_id") REFERENCES "public"."profiles"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."indie_authors_books"
+    ADD CONSTRAINT "indie_authors_books_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "public"."indie_authors"("author_id");
+
+
+
+ALTER TABLE ONLY "public"."indie_authors_books_links"
+    ADD CONSTRAINT "indie_authors_books_links_book_id_fkey" FOREIGN KEY ("book_id") REFERENCES "public"."indie_authors_books"("book_id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."indie_authors_social"
+    ADD CONSTRAINT "indie_authors_social_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "public"."indie_authors"("author_id");
+
+
+
+ALTER TABLE ONLY "public"."onboarding"
+    ADD CONSTRAINT "onboarding_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -881,8 +1286,18 @@ ALTER TABLE ONLY "public"."profiles"
 
 
 
+ALTER TABLE ONLY "public"."questions_notes"
+    ADD CONSTRAINT "questions_notes_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id");
+
+
+
 ALTER TABLE ONLY "public"."reading_list"
-    ADD CONSTRAINT "reading_list_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id");
+    ADD CONSTRAINT "reading_list_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."reading_sessions"
+    ADD CONSTRAINT "reading_sessions_reading_list_id_fkey" FOREIGN KEY ("reading_list_id") REFERENCES "public"."reading_list"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -891,8 +1306,38 @@ ALTER TABLE ONLY "public"."reading_stats"
 
 
 
+ALTER TABLE ONLY "public"."referrals"
+    ADD CONSTRAINT "referrals_referrer_id_fkey" FOREIGN KEY ("referrer_id") REFERENCES "auth"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."roadmap_votes"
+    ADD CONSTRAINT "roadmap_votes_roadmap_id_fkey" FOREIGN KEY ("roadmap_id") REFERENCES "public"."roadmap"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."roadmap_votes"
+    ADD CONSTRAINT "roadmap_votes_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."sticky_notes"
+    ADD CONSTRAINT "sticky_notes_reading_session_id_fkey" FOREIGN KEY ("reading_session_id") REFERENCES "public"."reading_sessions"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."sticky_notes"
+    ADD CONSTRAINT "sticky_notes_user_id_fkey1" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."user_activity"
     ADD CONSTRAINT "user_activity_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id");
+
+
+
+ALTER TABLE ONLY "public"."user_connection_activity"
+    ADD CONSTRAINT "user_connection_activity_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -911,11 +1356,144 @@ ALTER TABLE ONLY "public"."user_preferences"
 
 
 
+ALTER TABLE ONLY "public"."vocal_notes"
+    ADD CONSTRAINT "vocal_notes_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+
+CREATE POLICY "Enable delete for users based on user_id" ON "public"."habits" FOR DELETE USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+
+
+
+CREATE POLICY "Enable delete for users based on user_id" ON "public"."questions_notes" FOR DELETE USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+
+
+
+CREATE POLICY "Enable delete for users based on user_id" ON "public"."sticky_notes" FOR DELETE USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+
+
+
+CREATE POLICY "Enable delete for users based on user_id" ON "public"."vocal_notes" FOR DELETE USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+
+
+
+CREATE POLICY "Enable insert for authenticated users only" ON "public"."profiles" FOR INSERT TO "supabase_admin" WITH CHECK (true);
+
+
+
+CREATE POLICY "Enable insert for authenticated users only" ON "public"."questions_notes" FOR INSERT TO "authenticated" WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+
+
+
+CREATE POLICY "Enable insert for authenticated users only" ON "public"."reading_sessions" FOR INSERT TO "authenticated" WITH CHECK (true);
+
+
+
+CREATE POLICY "Enable insert for authenticated users only" ON "public"."referrals" FOR INSERT TO "authenticated", "anon" WITH CHECK (true);
+
+
+
+CREATE POLICY "Enable insert for authenticated users only" ON "public"."roadmap" FOR INSERT TO "authenticated" WITH CHECK (true);
+
+
+
+CREATE POLICY "Enable insert for authenticated users only" ON "public"."roadmap_votes" FOR INSERT TO "authenticated" WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+
+
+
+CREATE POLICY "Enable insert for authenticated users only" ON "public"."vocal_notes" FOR INSERT TO "authenticated" WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+
+
+
+CREATE POLICY "Enable insert for users based on user_id" ON "public"."habits" FOR INSERT WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+
+
+
+CREATE POLICY "Enable insert for users based on user_id" ON "public"."sticky_notes" FOR INSERT WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+
+
+
+CREATE POLICY "Enable insert for users based on user_id" ON "public"."user_connection_activity" FOR INSERT WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+
+
+
 CREATE POLICY "Enable read access for all users" ON "public"."ai_conversations" FOR SELECT USING (true);
 
 
 
+CREATE POLICY "Enable read access for all users" ON "public"."habits" FOR SELECT USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+
+
+
+CREATE POLICY "Enable read access for all users" ON "public"."profiles" FOR SELECT USING (true);
+
+
+
+CREATE POLICY "Enable read access for all users" ON "public"."questions_notes" FOR SELECT USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+
+
+
 CREATE POLICY "Enable read access for all users" ON "public"."quotes" FOR SELECT USING (true);
+
+
+
+CREATE POLICY "Enable read access for all users" ON "public"."reading_sessions" FOR SELECT USING (true);
+
+
+
+CREATE POLICY "Enable read access for all users" ON "public"."referrals" FOR SELECT USING (true);
+
+
+
+CREATE POLICY "Enable read access for all users" ON "public"."roadmap" FOR SELECT USING (true);
+
+
+
+CREATE POLICY "Enable read access for all users" ON "public"."roadmap_votes" FOR SELECT USING (true);
+
+
+
+CREATE POLICY "Enable read access for all users" ON "public"."sticky_notes" FOR SELECT USING (true);
+
+
+
+CREATE POLICY "Enable read access for all users" ON "public"."user_connection_activity" FOR SELECT USING (true);
+
+
+
+CREATE POLICY "Enable read access for all users" ON "public"."vocal_notes" FOR SELECT USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+
+
+
+CREATE POLICY "Enable update for users based on email" ON "public"."habits" FOR UPDATE USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+
+
+
+CREATE POLICY "Enable update for users based on email" ON "public"."profiles" FOR UPDATE USING ((( SELECT "auth"."uid"() AS "uid") = "id"));
+
+
+
+CREATE POLICY "Enable update for users based on email" ON "public"."roadmap" FOR UPDATE USING (((( SELECT "auth"."jwt"() AS "jwt") ->> 'email'::"text") = 'theodufort05@gmail.com'::"text")) WITH CHECK (((( SELECT "auth"."jwt"() AS "jwt") ->> 'email'::"text") = 'theodufort05@gmail.com'::"text"));
+
+
+
+CREATE POLICY "Enable update for users based on email" ON "public"."roadmap_votes" FOR UPDATE USING ((( SELECT "auth"."uid"() AS "uid") = "user_id")) WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+
+
+
+CREATE POLICY "Enable update for users based on email" ON "public"."sticky_notes" FOR UPDATE USING ((( SELECT "auth"."uid"() AS "uid") = "user_id")) WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+
+
+
+CREATE POLICY "Enable update for users based on email" ON "public"."vocal_notes" FOR UPDATE USING ((( SELECT "auth"."uid"() AS "uid") = "user_id")) WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+
+
+
+CREATE POLICY "Policy with table joins" ON "public"."questions_notes" FOR UPDATE USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+
+
+
+CREATE POLICY "Policy with table joins" ON "public"."reading_sessions" FOR UPDATE USING (true);
 
 
 
@@ -943,22 +1521,19 @@ ALTER TABLE "public"."blog_articles" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."blog_categories" ENABLE ROW LEVEL SECURITY;
 
 
-ALTER TABLE "public"."book_notes" ENABLE ROW LEVEL SECURITY;
-
-
-CREATE POLICY "book_notes are deletable only by their user" ON "public"."book_notes" FOR DELETE USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+CREATE POLICY "book_notes are deletable only by their user" ON "public"."reviews" FOR DELETE USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "book_notes are insertable only by their user" ON "public"."book_notes" FOR INSERT WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+CREATE POLICY "book_notes are insertable only by their user" ON "public"."reviews" FOR INSERT WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "book_notes are selectable only by their user" ON "public"."book_notes" FOR SELECT USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+CREATE POLICY "book_notes are selectable only by their user" ON "public"."reviews" FOR SELECT USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "book_notes are updatable only by their user" ON "public"."book_notes" FOR UPDATE USING ((( SELECT "auth"."uid"() AS "uid") = "user_id")) WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+CREATE POLICY "book_notes are updatable only by their user" ON "public"."reviews" FOR UPDATE USING ((( SELECT "auth"."uid"() AS "uid") = "user_id")) WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -983,14 +1558,14 @@ ALTER TABLE "public"."books_like" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."friends" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."habits" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."libraries" ENABLE ROW LEVEL SECURITY;
 
 
 CREATE POLICY "libraries are viewable" ON "public"."libraries" FOR SELECT TO "authenticated", "anon" USING (true);
 
-
-
-ALTER TABLE "public"."messages" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."point_transactions" ENABLE ROW LEVEL SECURITY;
@@ -1015,6 +1590,9 @@ CREATE POLICY "point_transactions are updatable only by their user" ON "public".
 ALTER TABLE "public"."profiles" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."questions_notes" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."quotes" ENABLE ROW LEVEL SECURITY;
 
 
@@ -1029,12 +1607,15 @@ CREATE POLICY "reading_list are insertable only by their user" ON "public"."read
 
 
 
-CREATE POLICY "reading_list are selectable only by their user" ON "public"."reading_list" FOR SELECT USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+CREATE POLICY "reading_list are selectable only by their user" ON "public"."reading_list" FOR SELECT USING (true);
 
 
 
 CREATE POLICY "reading_list are updatable only by their user" ON "public"."reading_list" FOR UPDATE USING ((( SELECT "auth"."uid"() AS "uid") = "user_id")) WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
+
+
+ALTER TABLE "public"."reading_sessions" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."reading_stats" ENABLE ROW LEVEL SECURITY;
@@ -1044,7 +1625,7 @@ CREATE POLICY "reading_stats are deletable only by their user" ON "public"."read
 
 
 
-CREATE POLICY "reading_stats are insertable only by their user" ON "public"."reading_stats" FOR INSERT WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+CREATE POLICY "reading_stats are insertable only by their user" ON "public"."reading_stats" FOR INSERT TO "supabase_admin", "authenticated" WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -1056,6 +1637,21 @@ CREATE POLICY "reading_stats are updatable only by their user" ON "public"."read
 
 
 
+ALTER TABLE "public"."referrals" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."reviews" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."roadmap" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."roadmap_votes" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."sticky_notes" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."user_activity" ENABLE ROW LEVEL SECURITY;
 
 
@@ -1063,7 +1659,7 @@ CREATE POLICY "user_activity are deletable only by their user" ON "public"."user
 
 
 
-CREATE POLICY "user_activity are insertable only by their user" ON "public"."user_activity" FOR INSERT WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+CREATE POLICY "user_activity are insertable only by their user" ON "public"."user_activity" FOR INSERT TO "supabase_admin", "authenticated" WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -1075,6 +1671,9 @@ CREATE POLICY "user_activity are updatable only by their user" ON "public"."user
 
 
 
+ALTER TABLE "public"."user_connection_activity" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."user_point_streak" ENABLE ROW LEVEL SECURITY;
 
 
@@ -1082,7 +1681,7 @@ CREATE POLICY "user_point_streak are deletable only by their user" ON "public"."
 
 
 
-CREATE POLICY "user_point_streak are insertable only by their user" ON "public"."user_point_streak" FOR INSERT WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+CREATE POLICY "user_point_streak are insertable only by their user" ON "public"."user_point_streak" FOR INSERT TO "supabase_admin", "authenticated" WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -1101,7 +1700,7 @@ CREATE POLICY "user_points are deletable only by their user" ON "public"."user_p
 
 
 
-CREATE POLICY "user_points are insertable only by their user" ON "public"."user_points" FOR INSERT WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+CREATE POLICY "user_points are insertable only by their user" ON "public"."user_points" FOR INSERT TO "supabase_admin", "authenticated" WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -1120,7 +1719,7 @@ CREATE POLICY "user_preferences are deletable only by their user" ON "public"."u
 
 
 
-CREATE POLICY "user_preferences are insertable only by their user" ON "public"."user_preferences" FOR INSERT WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+CREATE POLICY "user_preferences are insertable only by their user" ON "public"."user_preferences" FOR INSERT TO "supabase_admin", "authenticated" WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -1132,10 +1731,228 @@ CREATE POLICY "user_preferences are updatable only by their user" ON "public"."u
 
 
 
+ALTER TABLE "public"."vocal_notes" ENABLE ROW LEVEL SECURITY;
+
+
+
+
+
+
+
+
+ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
+
+
+
+
+
 REVOKE USAGE ON SCHEMA "public" FROM PUBLIC;
 GRANT ALL ON SCHEMA "public" TO "anon";
 GRANT ALL ON SCHEMA "public" TO "authenticated";
 GRANT USAGE ON SCHEMA "public" TO "service_role";
+GRANT ALL ON SCHEMA "public" TO "supabase_admin";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+GRANT ALL ON FUNCTION "public"."append_habit_streak"("habit_id" "uuid", "day" "text", "progress_value" integer) TO "postgres";
+GRANT ALL ON FUNCTION "public"."append_habit_streak"("habit_id" "uuid", "day" "text", "progress_value" integer) TO "anon";
+GRANT ALL ON FUNCTION "public"."append_habit_streak"("habit_id" "uuid", "day" "text", "progress_value" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."append_habit_streak"("habit_id" "uuid", "day" "text", "progress_value" integer) TO "service_role";
 
 
 
@@ -1158,6 +1975,13 @@ GRANT ALL ON FUNCTION "public"."get_basic_article_info"("p_slug" character varyi
 
 
 
+GRANT ALL ON FUNCTION "public"."get_cumulative_books_per_users_by_day"() TO "postgres";
+GRANT ALL ON FUNCTION "public"."get_cumulative_books_per_users_by_day"() TO "anon";
+GRANT ALL ON FUNCTION "public"."get_cumulative_books_per_users_by_day"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_cumulative_books_per_users_by_day"() TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."get_full_article_content"("p_slug" character varying) TO "anon";
 GRANT ALL ON FUNCTION "public"."get_full_article_content"("p_slug" character varying) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."get_full_article_content"("p_slug" character varying) TO "service_role";
@@ -1177,9 +2001,23 @@ GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "service_role";
 
 
 
+GRANT ALL ON FUNCTION "public"."increment"("inc" double precision, "userid" "uuid") TO "postgres";
+GRANT ALL ON FUNCTION "public"."increment"("inc" double precision, "userid" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."increment"("inc" double precision, "userid" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."increment"("inc" double precision, "userid" "uuid") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."increment_points_earned"("_user_id" "uuid", "_points_to_add" integer) TO "anon";
 GRANT ALL ON FUNCTION "public"."increment_points_earned"("_user_id" "uuid", "_points_to_add" integer) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."increment_points_earned"("_user_id" "uuid", "_points_to_add" integer) TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."increment_votes"("row_id" "uuid", "increment" boolean) TO "postgres";
+GRANT ALL ON FUNCTION "public"."increment_votes"("row_id" "uuid", "increment" boolean) TO "anon";
+GRANT ALL ON FUNCTION "public"."increment_votes"("row_id" "uuid", "increment" boolean) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."increment_votes"("row_id" "uuid", "increment" boolean) TO "service_role";
 
 
 
@@ -1214,6 +2052,24 @@ GRANT ALL ON FUNCTION "public"."update_user_points"() TO "service_role";
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 GRANT ALL ON TABLE "public"."ai_conversations" TO "postgres";
 GRANT ALL ON TABLE "public"."ai_conversations" TO "anon";
 GRANT ALL ON TABLE "public"."ai_conversations" TO "authenticated";
@@ -1224,12 +2080,14 @@ GRANT ALL ON TABLE "public"."ai_conversations" TO "service_role";
 GRANT ALL ON TABLE "public"."article_categories" TO "anon";
 GRANT ALL ON TABLE "public"."article_categories" TO "authenticated";
 GRANT ALL ON TABLE "public"."article_categories" TO "service_role";
+GRANT TRIGGER ON TABLE "public"."article_categories" TO "supabase_admin";
 
 
 
 GRANT ALL ON TABLE "public"."blog_articles" TO "anon";
 GRANT ALL ON TABLE "public"."blog_articles" TO "authenticated";
 GRANT ALL ON TABLE "public"."blog_articles" TO "service_role";
+GRANT TRIGGER ON TABLE "public"."blog_articles" TO "supabase_admin";
 
 
 
@@ -1242,6 +2100,7 @@ GRANT ALL ON SEQUENCE "public"."blog_articles_id_seq" TO "service_role";
 GRANT ALL ON TABLE "public"."blog_categories" TO "anon";
 GRANT ALL ON TABLE "public"."blog_categories" TO "authenticated";
 GRANT ALL ON TABLE "public"."blog_categories" TO "service_role";
+GRANT TRIGGER ON TABLE "public"."blog_categories" TO "supabase_admin";
 
 
 
@@ -1251,9 +2110,10 @@ GRANT ALL ON SEQUENCE "public"."blog_categories_id_seq" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."book_notes" TO "anon";
-GRANT ALL ON TABLE "public"."book_notes" TO "authenticated";
-GRANT ALL ON TABLE "public"."book_notes" TO "service_role";
+GRANT ALL ON TABLE "public"."reviews" TO "anon";
+GRANT ALL ON TABLE "public"."reviews" TO "authenticated";
+GRANT ALL ON TABLE "public"."reviews" TO "service_role";
+GRANT TRIGGER ON TABLE "public"."reviews" TO "supabase_admin";
 
 
 
@@ -1266,18 +2126,28 @@ GRANT ALL ON SEQUENCE "public"."book_notes_id_seq" TO "service_role";
 GRANT ALL ON TABLE "public"."books" TO "anon";
 GRANT ALL ON TABLE "public"."books" TO "authenticated";
 GRANT ALL ON TABLE "public"."books" TO "service_role";
+GRANT TRIGGER ON TABLE "public"."books" TO "supabase_admin";
 
 
 
 GRANT ALL ON TABLE "public"."books_like" TO "anon";
 GRANT ALL ON TABLE "public"."books_like" TO "authenticated";
 GRANT ALL ON TABLE "public"."books_like" TO "service_role";
+GRANT TRIGGER ON TABLE "public"."books_like" TO "supabase_admin";
+
+
+
+GRANT ALL ON TABLE "public"."books_modifications" TO "postgres";
+GRANT ALL ON TABLE "public"."books_modifications" TO "anon";
+GRANT ALL ON TABLE "public"."books_modifications" TO "authenticated";
+GRANT ALL ON TABLE "public"."books_modifications" TO "service_role";
 
 
 
 GRANT ALL ON TABLE "public"."friends" TO "anon";
 GRANT ALL ON TABLE "public"."friends" TO "authenticated";
 GRANT ALL ON TABLE "public"."friends" TO "service_role";
+GRANT TRIGGER ON TABLE "public"."friends" TO "supabase_admin";
 
 
 
@@ -1287,27 +2157,59 @@ GRANT ALL ON SEQUENCE "public"."friends_id_seq" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."habits" TO "postgres";
+GRANT ALL ON TABLE "public"."habits" TO "anon";
+GRANT ALL ON TABLE "public"."habits" TO "authenticated";
+GRANT ALL ON TABLE "public"."habits" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."indie_authors" TO "postgres";
+GRANT ALL ON TABLE "public"."indie_authors" TO "anon";
+GRANT ALL ON TABLE "public"."indie_authors" TO "authenticated";
+GRANT ALL ON TABLE "public"."indie_authors" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."indie_authors_books" TO "postgres";
+GRANT ALL ON TABLE "public"."indie_authors_books" TO "anon";
+GRANT ALL ON TABLE "public"."indie_authors_books" TO "authenticated";
+GRANT ALL ON TABLE "public"."indie_authors_books" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."indie_authors_books_links" TO "postgres";
+GRANT ALL ON TABLE "public"."indie_authors_books_links" TO "anon";
+GRANT ALL ON TABLE "public"."indie_authors_books_links" TO "authenticated";
+GRANT ALL ON TABLE "public"."indie_authors_books_links" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."indie_authors_social" TO "postgres";
+GRANT ALL ON TABLE "public"."indie_authors_social" TO "anon";
+GRANT ALL ON TABLE "public"."indie_authors_social" TO "authenticated";
+GRANT ALL ON TABLE "public"."indie_authors_social" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."libraries" TO "anon";
 GRANT ALL ON TABLE "public"."libraries" TO "authenticated";
 GRANT ALL ON TABLE "public"."libraries" TO "service_role";
+GRANT TRIGGER ON TABLE "public"."libraries" TO "supabase_admin";
 
 
 
-GRANT ALL ON TABLE "public"."messages" TO "anon";
-GRANT ALL ON TABLE "public"."messages" TO "authenticated";
-GRANT ALL ON TABLE "public"."messages" TO "service_role";
-
-
-
-GRANT ALL ON SEQUENCE "public"."messages_id_seq" TO "anon";
-GRANT ALL ON SEQUENCE "public"."messages_id_seq" TO "authenticated";
-GRANT ALL ON SEQUENCE "public"."messages_id_seq" TO "service_role";
+GRANT ALL ON TABLE "public"."onboarding" TO "postgres";
+GRANT ALL ON TABLE "public"."onboarding" TO "anon";
+GRANT ALL ON TABLE "public"."onboarding" TO "authenticated";
+GRANT ALL ON TABLE "public"."onboarding" TO "service_role";
 
 
 
 GRANT ALL ON TABLE "public"."point_transactions" TO "anon";
 GRANT ALL ON TABLE "public"."point_transactions" TO "authenticated";
 GRANT ALL ON TABLE "public"."point_transactions" TO "service_role";
+GRANT TRIGGER ON TABLE "public"."point_transactions" TO "supabase_admin";
 
 
 
@@ -1324,6 +2226,13 @@ GRANT ALL ON TABLE "public"."profiles" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."questions_notes" TO "postgres";
+GRANT ALL ON TABLE "public"."questions_notes" TO "anon";
+GRANT ALL ON TABLE "public"."questions_notes" TO "authenticated";
+GRANT ALL ON TABLE "public"."questions_notes" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."quotes" TO "postgres";
 GRANT ALL ON TABLE "public"."quotes" TO "anon";
 GRANT ALL ON TABLE "public"."quotes" TO "authenticated";
@@ -1334,24 +2243,56 @@ GRANT ALL ON TABLE "public"."quotes" TO "service_role";
 GRANT ALL ON TABLE "public"."reading_list" TO "anon";
 GRANT ALL ON TABLE "public"."reading_list" TO "authenticated";
 GRANT ALL ON TABLE "public"."reading_list" TO "service_role";
+GRANT TRIGGER ON TABLE "public"."reading_list" TO "supabase_admin";
 
 
 
-GRANT ALL ON SEQUENCE "public"."reading_list_id_seq" TO "anon";
-GRANT ALL ON SEQUENCE "public"."reading_list_id_seq" TO "authenticated";
-GRANT ALL ON SEQUENCE "public"."reading_list_id_seq" TO "service_role";
+GRANT ALL ON TABLE "public"."reading_sessions" TO "postgres";
+GRANT ALL ON TABLE "public"."reading_sessions" TO "anon";
+GRANT ALL ON TABLE "public"."reading_sessions" TO "authenticated";
+GRANT ALL ON TABLE "public"."reading_sessions" TO "service_role";
 
 
 
 GRANT ALL ON TABLE "public"."reading_stats" TO "anon";
 GRANT ALL ON TABLE "public"."reading_stats" TO "authenticated";
 GRANT ALL ON TABLE "public"."reading_stats" TO "service_role";
+GRANT ALL ON TABLE "public"."reading_stats" TO "supabase_admin";
+
+
+
+GRANT ALL ON TABLE "public"."referrals" TO "postgres";
+GRANT ALL ON TABLE "public"."referrals" TO "anon";
+GRANT ALL ON TABLE "public"."referrals" TO "authenticated";
+GRANT ALL ON TABLE "public"."referrals" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."roadmap" TO "postgres";
+GRANT ALL ON TABLE "public"."roadmap" TO "anon";
+GRANT ALL ON TABLE "public"."roadmap" TO "authenticated";
+GRANT ALL ON TABLE "public"."roadmap" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."roadmap_votes" TO "postgres";
+GRANT ALL ON TABLE "public"."roadmap_votes" TO "anon";
+GRANT ALL ON TABLE "public"."roadmap_votes" TO "authenticated";
+GRANT ALL ON TABLE "public"."roadmap_votes" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."sticky_notes" TO "postgres";
+GRANT ALL ON TABLE "public"."sticky_notes" TO "anon";
+GRANT ALL ON TABLE "public"."sticky_notes" TO "authenticated";
+GRANT ALL ON TABLE "public"."sticky_notes" TO "service_role";
 
 
 
 GRANT ALL ON TABLE "public"."user_activity" TO "anon";
 GRANT ALL ON TABLE "public"."user_activity" TO "authenticated";
 GRANT ALL ON TABLE "public"."user_activity" TO "service_role";
+GRANT TRIGGER ON TABLE "public"."user_activity" TO "supabase_admin";
 
 
 
@@ -1361,21 +2302,38 @@ GRANT ALL ON SEQUENCE "public"."user_activity_id_seq" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."user_connection_activity" TO "postgres";
+GRANT ALL ON TABLE "public"."user_connection_activity" TO "anon";
+GRANT ALL ON TABLE "public"."user_connection_activity" TO "authenticated";
+GRANT ALL ON TABLE "public"."user_connection_activity" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."user_point_streak" TO "anon";
 GRANT ALL ON TABLE "public"."user_point_streak" TO "authenticated";
 GRANT ALL ON TABLE "public"."user_point_streak" TO "service_role";
+GRANT ALL ON TABLE "public"."user_point_streak" TO "supabase_admin";
 
 
 
 GRANT ALL ON TABLE "public"."user_points" TO "anon";
 GRANT ALL ON TABLE "public"."user_points" TO "authenticated";
 GRANT ALL ON TABLE "public"."user_points" TO "service_role";
+GRANT ALL ON TABLE "public"."user_points" TO "supabase_admin";
 
 
 
 GRANT ALL ON TABLE "public"."user_preferences" TO "anon";
 GRANT ALL ON TABLE "public"."user_preferences" TO "authenticated";
 GRANT ALL ON TABLE "public"."user_preferences" TO "service_role";
+GRANT ALL ON TABLE "public"."user_preferences" TO "supabase_admin";
+
+
+
+GRANT ALL ON TABLE "public"."vocal_notes" TO "postgres";
+GRANT ALL ON TABLE "public"."vocal_notes" TO "anon";
+GRANT ALL ON TABLE "public"."vocal_notes" TO "authenticated";
+GRANT ALL ON TABLE "public"."vocal_notes" TO "service_role";
 
 
 
@@ -1403,6 +2361,30 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TAB
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "anon";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "authenticated";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "service_role";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
