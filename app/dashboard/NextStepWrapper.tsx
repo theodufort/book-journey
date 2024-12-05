@@ -15,7 +15,10 @@ export default function NextStepWrapper({
 }) {
   const supabase = createClientComponentClient();
 
-  const setTourFinished = async (tourName?: string | null) => {
+  const setTourFinished = async () => {
+    // Get the tour name from the first step group
+    const tourName = steps[0]?.tour || "default";
+    
     const { data, error } = await supabase
       .from("onboarding")
       .upsert({ user_id: userId, onboarded: true, tour_name: tourName })
