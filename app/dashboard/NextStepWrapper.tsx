@@ -25,7 +25,8 @@ export default function NextStepWrapper({
       .upsert({ user_id: userId, onboarded: true, tour_name: tourName })
       .eq("user_id", userId);
   };
-  const [showTour, setShowTour] = useState(true);
+  const [showTour, setShowTour] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const getTourFinished = async () => {
     const tourName = steps[0]?.tour || "default";
@@ -43,10 +44,15 @@ export default function NextStepWrapper({
     const checkTourStatus = async () => {
       const isFinished = await getTourFinished();
       setShowTour(!isFinished);
+      setIsLoading(false);
     };
     
     checkTourStatus();
   }, []);
+
+  if (isLoading) {
+    return <>{children}</>;
+  }
 
   return (
     <NextStepProvider>
