@@ -3,6 +3,7 @@
 import { NextStepProvider, NextStep } from "nextstepjs";
 import OnboardingCard from "@/components/OnboardingCard";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useEffect, useState } from "react";
 
 export default function NextStepWrapper({
   children,
@@ -24,8 +25,9 @@ export default function NextStepWrapper({
       .upsert({ user_id: userId, onboarded: true, tour_name: tourName })
       .eq("user_id", userId);
   };
+  const [showTour, setShowTour] = useState(true);
+
   const getTourFinished = async () => {
-    // Get the tour name from the first step group
     const tourName = steps[0]?.tour || "default";
 
     const { data: dataOnboarding, error } = await supabase
@@ -33,11 +35,22 @@ export default function NextStepWrapper({
       .select("onboarded, tour_name")
       .eq("user_id", userId)
       .single();
-    return dataOnboarding.onboarded;
+
+    return dataOnboarding?.onboarded || false;
   };
+
+  useEffect(() => {
+    const checkTourStatus = async () => {
+      const isFinished = await getTourFinished();
+      setShowTour(!isFinished);
+    };
+    
+    checkTourStatus();
+  }, []);
+
   return (
     <NextStepProvider>
-      {getTourFinished() ? (
+      {showTour && (
         <NextStep
           cardComponent={OnboardingCard}
           onComplete={setTourFinished}
@@ -48,7 +61,8 @@ export default function NextStepWrapper({
         >
           {children}
         </NextStep>
-      ) : null}
+      )}
+      {!showTour && children}
     </NextStepProvider>
   );
 }
