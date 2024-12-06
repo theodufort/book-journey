@@ -60,13 +60,93 @@ const steps = [
     tour: "booknookTour",
     steps: [
       {
-        icon: <>👋</>,
-        title: "Welcome to MyBookQuest!",
+        icon: <>☯️</>,
+        title: "Introducing: The Book Nook",
         showControls: true,
         content: (
           <p>
-            We are glad to have you on board! <br />
-            Let us show you your dashboard.
+            The Book Nook is your all-in-one safe space/reading optimized
+            environment for you to consolidate your thoughts in one place.{" "}
+            <br />
+            Let us break it down for you.
+          </p>
+        ),
+      },
+      {
+        icon: <>📘</>,
+        title: "1. Choose your book",
+        showControls: true,
+        side: "bottom",
+        selector: "#booknook-bookselect",
+        content: (
+          <p>
+            Everything you do in this page is separated by book.
+            <br />
+            <br />
+            Start by choosing your book!
+          </p>
+        ),
+      },
+      {
+        icon: <>✍</>,
+        title: "2. Take notes",
+        showControls: true,
+        side: "top",
+        selector: "#booknook-sessionnote",
+        content: (
+          <p>
+            Session notes are your friend.
+            <br />
+            <br />
+            Start reading and note everything that comes to mind!
+          </p>
+        ),
+      },
+      {
+        icon: <>❓</>,
+        title: "3. Save questions for later",
+        showControls: true,
+        side: "top",
+        selector: "#booknook-sessionquestion",
+        content: (
+          <p>
+            Don't stop reading
+            <br />
+            <br />
+            Write a quick question and come back to it later
+          </p>
+        ),
+      },
+      {
+        icon: <>📝</>,
+        title: "4. View your previous notes",
+        showControls: true,
+        side: "left",
+        selector: "#booknook-previousnotes",
+        content: (
+          <p>
+            Forgot what you were reading?
+            <br />
+            <br />
+            Its all here...
+          </p>
+        ),
+      },
+      {
+        icon: <>💾</>,
+        title: "5. Log your reading session",
+        showControls: true,
+        side: "top",
+        selector: "#booknook-logsession",
+        content: (
+          <p>
+            Finished reading?
+            <br />
+            Specify those:
+            <br />
+            - Starting Page
+            <br />- Ending Page
+            <br />- Label (optional)
           </p>
         ),
       },

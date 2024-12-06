@@ -19,9 +19,15 @@ import CongratulationsModalSession from "./CongratulationsModalSession";
 import TooltipHelper from "./Tooltip";
 import DictionaryWidget from "./DictionaryWidget";
 import { ForwardRefEditor } from "./ForwardRefEditor";
+import { useNextStep } from "nextstepjs";
 
-export default function BookNook1() {
-  const t = useTranslations("BookNook2");
+export default function BookNookComponent() {
+  const { startNextStep, currentTour } = useNextStep();
+  const handleStartTour = () => {
+    startNextStep("booknookTour");
+  };
+  console.log(currentTour);
+  const t = useTranslations("BookNook");
   const [readingSessionID, setReadingSessionID] = useState("");
   const [selectedBook, setSelectedBook] = useState<any>(null);
   const [readingList, setReadingList] = useState<
@@ -127,6 +133,7 @@ export default function BookNook1() {
   }, [user, selectedBook, supabase]);
 
   useEffect(() => {
+    handleStartTour();
     fetchStickys();
     fetchBaseStartPage();
     if (selectedBook && user) {
@@ -356,6 +363,7 @@ export default function BookNook1() {
               <div className="w-full md:w-auto">
                 <select
                   className="select select-bordered select-sm w-full md:max-w-[200px]"
+                  id="booknook-bookselect"
                   value={selectedBook?.id || ""}
                   onChange={(e) => {
                     const book = readingList.find(
@@ -505,7 +513,7 @@ export default function BookNook1() {
               {tab === "Session Note" && (
                 <div className="h-full flex flex-col space-y-4">
                   <div className="flex justify-between items-center">
-                    <div className="flex gap-2">
+                    <div className="flex gap-2" id="booknook-sessionnote">
                       <h2 className="text-xl font-semibold my-auto">
                         Session Note
                       </h2>
@@ -589,7 +597,7 @@ export default function BookNook1() {
                   </div>
 
                   {/* Questions Section */}
-                  <div>
+                  <div id="booknook-sessionquestion">
                     <div className="flex gap-2">
                       <h3 className="text-lg font-semibold">Questions</h3>
                       <TooltipHelper
@@ -882,7 +890,10 @@ export default function BookNook1() {
             )}
           </div>
 
-          <div className="flex-1 overflow-y-auto pr-2">
+          <div
+            className="flex-1 overflow-y-auto pr-2"
+            id="booknook-previousnotes"
+          >
             {rightColumnView === "notes" ? (
               <div className="space-y-3">
                 {!selectedBook ? (
@@ -969,7 +980,10 @@ export default function BookNook1() {
 
           {/* Bottom Action - Log Session / Bookmark - Only show on Session Note tab */}
           {tab === "Session Note" && (
-            <div className="mt-4 space-y-2 hidden md:block">
+            <div
+              className="mt-4 space-y-2 hidden md:block"
+              id="booknook-logsession"
+            >
               <input
                 type="text"
                 className="input input-bordered w-full"

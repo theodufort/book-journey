@@ -38,14 +38,12 @@ const HabitCard: React.FC<HabitCardProps> = ({ onHabitChange }) => {
         console.error("Error fetching habit:", error);
         setHabit(null);
       } else {
-        console.log(data);
         // Ensure that value and progress_value are numbers
         const habitData = {
           ...data,
           value: Number(data.value),
           progress_value: Number(data.progress_value),
         };
-        console.log(habitData);
         setHabit(habitData);
       }
     }
@@ -179,7 +177,6 @@ const HabitCard: React.FC<HabitCardProps> = ({ onHabitChange }) => {
     setModalType(type);
     setIsModalOpen(true);
   };
-  console.log(habit);
   return (
     <>
       {habit ? (
