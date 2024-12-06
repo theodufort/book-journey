@@ -53,15 +53,15 @@ export default function NextStepWrapper({
 
       console.log("Tour status response:", { dataOnboarding, error });
 
-      if (error) {
-        if (error.code === "PGRST116") {
-          console.log("No tour record found, showing tour");
-          return false;
-        }
-        throw error;
+      // If we have data and onboarded is explicitly true, then the tour is finished
+      if (dataOnboarding && dataOnboarding.onboarded === true) {
+        console.log("Tour is marked as completed");
+        return true;
       }
 
-      return dataOnboarding?.onboarded || false;
+      // In all other cases (no data, onboarded is false or null), show the tour
+      console.log("Tour is not completed, showing tour");
+      return false;
     } catch (error) {
       console.error("Error checking tour status:", error);
       return false;
