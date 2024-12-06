@@ -39,23 +39,16 @@ export default function NextStepWrapper({
   };
   const [showTour, setShowTour] = useState(true); // Start with showing the tour
   const [isLoading, setIsLoading] = useState(true);
-  const [currentTour, setCurrentTour] = useState(() => {
-    // Initialize tour type immediately
-    return typeof window !== "undefined" &&
-      window.location.pathname.includes("/book-nook")
-      ? "booknookTour"
-      : "dashboardTour";
-  });
-
-  const getTourFinished = async (tourName: string) => {
+  const getTourFinished = async () => {
     try {
+      const tourName = steps[0]?.tour;
       console.log("Checking tour status for:", { tourName, userId });
 
       const { data: dataOnboarding, error } = await supabase
         .from("onboarding")
-        .select("onboarded, tour_name")
+        .select("onboarded")
         .eq("user_id", userId)
-        .eq("tour_name", tourName)
+        .eq("tour_name", tourName) 
         .single();
 
       console.log("Tour status response:", { dataOnboarding, error });
@@ -78,8 +71,7 @@ export default function NextStepWrapper({
   useEffect(() => {
     const checkTourStatus = async () => {
       try {
-        console.log("Checking tour status with:", { currentTour, userId });
-        const isFinished = await getTourFinished(currentTour);
+        const isFinished = await getTourFinished();
         console.log("Tour finished status:", isFinished);
         setShowTour(!isFinished);
       } catch (error) {
@@ -90,31 +82,26 @@ export default function NextStepWrapper({
       }
     };
 
-    if (currentTour && userId) {
+    if (userId) {
       checkTourStatus();
     }
-  }, [currentTour, userId]);
-
-  // Find the current tour steps
-  const currentTourSteps =
-    steps.find((step) => step.tour === currentTour)?.steps || [];
+  }, [userId]);
 
   console.log("Render state:", {
     isLoading,
     showTour,
-    currentTour,
-    hasSteps: currentTourSteps.length > 0,
+    hasSteps: steps[0]?.steps?.length > 0,
   });
 
   return (
     <NextStepProvider>
       {isLoading ? (
         children
-      ) : showTour && currentTourSteps.length > 0 ? (
+      ) : showTour && steps[0]?.steps?.length > 0 ? (
         <NextStep
           cardComponent={OnboardingCard}
           onComplete={setTourFinished}
-          steps={currentTourSteps}
+          steps={steps[0]?.steps || []}
           shadowRgb="0, 0, 0"
           shadowOpacity="0.8"
           cardTransition={{ duration: 0.2, type: "spring" }}
