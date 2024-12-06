@@ -32,7 +32,7 @@ export default function PaidFeatureWrapper({
 
     setFeatureAccess(has_access);
   };
-  if (featureAccess) return <>{children}</>;
+  if (!featureAccess) return <>{children}</>;
 
   return (
     <div className="relative group rounded-xl">
