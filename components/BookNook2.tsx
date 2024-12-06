@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
+import { MDXEditorMethods } from "@mdxeditor/editor";
 import PaidFeatureWrapper from "./PaidFeatureWrapper";
 import { useTranslations } from "next-intl";
 import { Clock } from "lucide-react";
@@ -54,6 +55,8 @@ export default function BookNook1() {
   const [endPage, setEndPage] = useState<number>(0);
   const [dailyNoteContent, setDailyNoteContent] = useState("");
   const [reviewContent, setreviewContent] = useState("");
+  const dailyNoteEditorRef = useRef<MDXEditorMethods>(null);
+  const reviewEditorRef = useRef<MDXEditorMethods>(null);
   const [autoFormatEnabled, setAutoFormatEnabled] = useState(false);
   const [autoCleanEnabled, setAutoCleanEnabled] = useState(true);
   const [isLoadingreview, setIsLoadingreview] = useState(false);
@@ -527,6 +530,7 @@ export default function BookNook1() {
                   <div className="relative flex-1 w-full mb-4 flex flex-col">
                     <div className="flex-1 prose">
                       <ForwardRefEditor
+                        ref={dailyNoteEditorRef}
                         className="w-full h-full"
                         placeholder="Write here..."
                         markdown={dailyNoteContent}
@@ -563,12 +567,12 @@ export default function BookNook1() {
                         <PaidFeatureWrapper userId={user.id}>
                           <AIRecorder
                             onTranscription={(text) => {
-                              const editor = document.querySelector('[contenteditable="true"]') as HTMLElement;
-                              if (editor) {
+                              if (dailyNoteEditorRef.current) {
                                 const currentContent = dailyNoteContent;
                                 const newContent = currentContent ? `${currentContent}\n\n${text}` : text;
+                                dailyNoteEditorRef.current.setMarkdown(newContent);
                                 setDailyNoteContent(newContent);
-                                editor.focus();
+                                dailyNoteEditorRef.current.focus();
                               }
                             }}
                             autoFormatEnabled={autoFormatEnabled}
@@ -724,6 +728,7 @@ export default function BookNook1() {
                   </div>
                   <div className="prose relative">
                     <ForwardRefEditor
+                      ref={reviewEditorRef}
                       className="w-full md:h-full"
                       markdown={reviewContent}
                       onChange={(val) => {
@@ -735,12 +740,12 @@ export default function BookNook1() {
                     <div className="absolute bottom-4 right-4">
                       <AIRecorder
                         onTranscription={(text) => {
-                          const editor = document.querySelector('[contenteditable="true"]') as HTMLElement;
-                          if (editor) {
+                          if (reviewEditorRef.current) {
                             const currentContent = reviewContent;
                             const newContent = currentContent ? `${currentContent}\n\n${text}` : text;
+                            reviewEditorRef.current.setMarkdown(newContent);
                             setreviewContent(newContent);
-                            editor.focus();
+                            reviewEditorRef.current.focus();
                           }
                         }}
                         autoFormatEnabled={autoFormatEnabled}
