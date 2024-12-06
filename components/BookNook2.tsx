@@ -562,11 +562,15 @@ export default function BookNook1() {
                       {user ? (
                         <PaidFeatureWrapper userId={user.id}>
                           <AIRecorder
-                            onTranscription={(text) =>
-                              setDailyNoteContent((prev) =>
-                                prev ? `${prev}\n\n${text}` : text
-                              )
-                            }
+                            onTranscription={(text) => {
+                              const editor = document.querySelector('[contenteditable="true"]') as HTMLElement;
+                              if (editor) {
+                                const currentContent = editor.innerText;
+                                const newContent = currentContent ? `${currentContent}\n\n${text}` : text;
+                                setDailyNoteContent(newContent);
+                                editor.focus();
+                              }
+                            }}
                             autoFormatEnabled={autoFormatEnabled}
                             autoCleanEnabled={autoCleanEnabled}
                             userId={user.id}
@@ -718,7 +722,7 @@ export default function BookNook1() {
                       {isEditMode ? "Save & View" : "Edit"}
                     </button> */}
                   </div>
-                  <div className="prose">
+                  <div className="prose relative">
                     <ForwardRefEditor
                       className="w-full md:h-full"
                       markdown={reviewContent}
@@ -728,6 +732,22 @@ export default function BookNook1() {
                       }}
                       placeholder="Write your review here..."
                     />
+                    <div className="absolute bottom-4 right-4">
+                      <AIRecorder
+                        onTranscription={(text) => {
+                          const editor = document.querySelector('[contenteditable="true"]') as HTMLElement;
+                          if (editor) {
+                            const currentContent = editor.innerText;
+                            const newContent = currentContent ? `${currentContent}\n\n${text}` : text;
+                            setreviewContent(newContent);
+                            editor.focus();
+                          }
+                        }}
+                        autoFormatEnabled={autoFormatEnabled}
+                        autoCleanEnabled={autoCleanEnabled}
+                        userId={user.id}
+                      />
+                    </div>
                   </div>
                   <div>
                     <div className="flex gap-2">
