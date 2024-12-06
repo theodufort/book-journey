@@ -23,6 +23,7 @@ export default function AddBook() {
   const [searchType, setSearchType] = useState("name");
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
+  const [shouldRedirect, setShouldRedirect] = useState(true);
 
   const languages = [
     { code: "en", name: t("english") },
@@ -127,7 +128,9 @@ export default function AddBook() {
         }
       }
       toast.success("Successfully added book!");
-      router.push("/dashboard/reading-list");
+      if (shouldRedirect) {
+        router.push("/dashboard/reading-list");
+      }
     }
   };
 
@@ -137,7 +140,20 @@ export default function AddBook() {
         <div className="sticky top-0 z-50 bg-base-100">
           <HeaderDashboard />
         </div>
-        <h1 className="text-3xl md:text-4xl font-extrabold">{t("title")}</h1>
+        <div className="flex justify-between items-center">
+          <h1 className="text-3xl md:text-4xl font-extrabold">{t("title")}</h1>
+          <div className="form-control">
+            <label className="label cursor-pointer gap-2">
+              <span className="label-text">Redirect after adding</span>
+              <input
+                type="checkbox"
+                className="toggle toggle-primary"
+                checked={shouldRedirect}
+                onChange={(e) => setShouldRedirect(e.target.checked)}
+              />
+            </label>
+          </div>
+        </div>
         <div className="bg-base-200 p-8 rounded-3xl">
           <form
             onSubmit={searchBooks}
