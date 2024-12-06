@@ -14,6 +14,7 @@ export default function NextStepWrapper({
   userId: string;
   steps: any[];
 }) {
+  const [showTour, setShowTour] = useState(false);
   const supabase = createClientComponentClient();
 
   const setTourFinished = async () => {
@@ -37,69 +38,34 @@ export default function NextStepWrapper({
       console.error("Error updating onboarding status:", error);
     }
   };
-  const [showTour, setShowTour] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
   const getTourFinished = async () => {
     try {
-      const tourName = steps[0]?.tour;
-      console.log("Checking tour status for:", { tourName, userId });
-
       const { data: dataOnboarding, error } = await supabase
         .from("onboarding")
         .select("onboarded")
         .eq("user_id", userId)
-        .eq("tour_name", tourName) 
         .single();
-
-      console.log("Tour status response:", { dataOnboarding, error });
 
       // If we have data and onboarded is explicitly true, then the tour is finished
       if (dataOnboarding && dataOnboarding.onboarded === true) {
-        console.log("Tour is marked as completed");
-        return true;
+        setShowTour(false);
+      } else {
+        setShowTour(true);
       }
-
-      // In all other cases (no data, onboarded is false or null), show the tour
-      console.log("Tour is not completed, showing tour");
-      return false;
     } catch (error) {
       console.error("Error checking tour status:", error);
-      return false;
     }
   };
-
   useEffect(() => {
-    const checkTourStatus = async () => {
-      try {
-        const isFinished = await getTourFinished();
-        console.log("Tour finished status:", isFinished);
-        setShowTour(!isFinished);
-      } catch (error) {
-        console.error("Error in checkTourStatus:", error);
-        setShowTour(true); // Show tour on error
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (userId) {
-      checkTourStatus();
-    }
-  }, [userId]);
-
-  console.log("Render state:", {
-    isLoading,
-    showTour,
-    hasSteps: steps[0]?.steps?.length > 0,
+    getTourFinished();
   });
-
   return (
     <NextStepProvider>
-      {showTour && steps[0]?.steps?.length > 0 ? (
+      {showTour ? (
         <NextStep
           cardComponent={OnboardingCard}
           onComplete={setTourFinished}
-          steps={steps[0]?.steps || []}
+          steps={steps}
           shadowRgb="0, 0, 0"
           shadowOpacity="0.8"
           cardTransition={{ duration: 0.2, type: "spring" }}
