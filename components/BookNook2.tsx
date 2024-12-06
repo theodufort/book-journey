@@ -569,8 +569,12 @@ export default function BookNook1() {
                             onTranscription={(text) => {
                               if (dailyNoteEditorRef.current) {
                                 const currentContent = dailyNoteContent;
-                                const newContent = currentContent ? `${currentContent}\n\n${text}` : text;
-                                dailyNoteEditorRef.current.setMarkdown(newContent);
+                                const newContent = currentContent
+                                  ? `${currentContent}\n\n${text}`
+                                  : text;
+                                dailyNoteEditorRef.current.setMarkdown(
+                                  newContent
+                                );
                                 setDailyNoteContent(newContent);
                                 dailyNoteEditorRef.current.focus();
                               }
@@ -742,7 +746,9 @@ export default function BookNook1() {
                         onTranscription={(text) => {
                           if (reviewEditorRef.current) {
                             const currentContent = reviewContent;
-                            const newContent = currentContent ? `${currentContent}\n\n${text}` : text;
+                            const newContent = currentContent
+                              ? `${currentContent}\n\n${text}`
+                              : text;
                             reviewEditorRef.current.setMarkdown(newContent);
                             setreviewContent(newContent);
                             reviewEditorRef.current.focus();
@@ -880,11 +886,11 @@ export default function BookNook1() {
             {rightColumnView === "notes" ? (
               <div className="space-y-3">
                 {!selectedBook ? (
-                  <div className="h-full flex items-center justify-center">
+                  <div className="h-full flex items-center justify-center mt-4">
                     <p>Select a book to view notes</p>
                   </div>
                 ) : bookStickys.length === 0 ? (
-                  <div className="h-full flex items-center justify-center">
+                  <div className="h-full flex items-center justify-center mt-4">
                     <p className="m-auto">
                       No notes yet. Start by adding a Session Note!
                     </p>
