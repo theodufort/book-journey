@@ -565,7 +565,7 @@ export default function BookNook1() {
                             onTranscription={(text) => {
                               const editor = document.querySelector('[contenteditable="true"]') as HTMLElement;
                               if (editor) {
-                                const currentContent = editor.innerText;
+                                const currentContent = dailyNoteContent;
                                 const newContent = currentContent ? `${currentContent}\n\n${text}` : text;
                                 setDailyNoteContent(newContent);
                                 editor.focus();
@@ -737,7 +737,7 @@ export default function BookNook1() {
                         onTranscription={(text) => {
                           const editor = document.querySelector('[contenteditable="true"]') as HTMLElement;
                           if (editor) {
-                            const currentContent = editor.innerText;
+                            const currentContent = reviewContent;
                             const newContent = currentContent ? `${currentContent}\n\n${text}` : text;
                             setreviewContent(newContent);
                             editor.focus();
