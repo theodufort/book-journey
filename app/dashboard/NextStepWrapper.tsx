@@ -37,8 +37,8 @@ export default function NextStepWrapper({
       console.error("Error updating onboarding status:", error);
     }
   };
-  const [showTour, setShowTour] = useState(true); // Start with showing the tour
-  const [isLoading, setIsLoading] = useState(true);
+  const [showTour, setShowTour] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const getTourFinished = async () => {
     try {
       const tourName = steps[0]?.tour;
@@ -95,9 +95,7 @@ export default function NextStepWrapper({
 
   return (
     <NextStepProvider>
-      {isLoading ? (
-        children
-      ) : showTour && steps[0]?.steps?.length > 0 ? (
+      {showTour && steps[0]?.steps?.length > 0 ? (
         <NextStep
           cardComponent={OnboardingCard}
           onComplete={setTourFinished}
