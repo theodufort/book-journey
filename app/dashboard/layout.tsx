@@ -56,6 +56,22 @@ const steps = [
       },
     ],
   },
+  {
+    tour: "booknookTour",
+    steps: [
+      {
+        icon: <>👋</>,
+        title: "Welcome to MyBookQuest!",
+        showControls: true,
+        content: (
+          <p>
+            We are glad to have you on board! <br />
+            Let us show you your dashboard.
+          </p>
+        ),
+      },
+    ],
+  },
 ];
 
 // This is a server-side component to ensure the user is logged in.

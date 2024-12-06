@@ -25,14 +25,7 @@ export default function Dashboard() {
   const [showOnboard, setShowOnboard] = useState(false);
   const [habitRefreshTrigger, setHabitRefreshTrigger] = useState(0);
   const router = useRouter();
-  const {
-    startNextStep,
-    closeNextStep,
-    currentTour,
-    currentStep,
-    setCurrentStep,
-    isNextStepVisible,
-  } = useNextStep();
+  const { startNextStep } = useNextStep();
 
   const handleStartTour = () => {
     startNextStep("dashboardTour");
