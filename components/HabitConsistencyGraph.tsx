@@ -81,10 +81,6 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
         console.error("Error fetching habit:", habitError);
         setHabit(null);
       } else {
-        console.log("Fetched habit data:", habitData);
-        if (habitData?.streak) {
-          console.log("Streak data:", habitData.streak);
-        }
         setHabit(habitData);
       }
     }
@@ -92,12 +88,10 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
 
   const generateData = () => {
     if (!habit) {
-      console.log("No habit data available");
       return [];
     }
 
     if (!habit.streak || !Array.isArray(habit.streak)) {
-      console.log("Streak data missing or invalid:", habit.streak);
       return [];
     }
 
@@ -121,10 +115,6 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
 
     const data = dateRange.map((date) => {
       // Log the current date we're checking and the streak entries
-      console.log(
-        "Available streak entries:",
-        habit.streak.map((entry: { day: string }) => entry.day)
-      );
 
       // Find all entries for this day
       const entriesForDay = habit.streak.filter(
@@ -133,9 +123,6 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
           const entryDateStr = format(entry.day, "yyyy-MM-dd");
           const currentDateStr = format(date, "yyyy-MM-dd");
 
-          console.log(
-            `Comparing dates: entry=${entryDateStr} current=${currentDateStr}`
-          );
           return entryDateStr === currentDateStr;
         }
       );
@@ -145,12 +132,6 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
         entriesForDay.length > 0
           ? entriesForDay[entriesForDay.length - 1]
           : null;
-
-      console.log(
-        `Date ${format(date, "yyyy-MM-dd")} has ${
-          entriesForDay.length
-        } entries, last value: ${progressForDay?.progress_value}`
-      );
 
       let value = 0;
       if (progressForDay) {
@@ -168,7 +149,6 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
       return dataPoint;
     });
 
-    console.log("Generated graph data:", data);
     return data;
   };
 
