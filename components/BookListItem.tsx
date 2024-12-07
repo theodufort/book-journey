@@ -719,7 +719,7 @@ export default function BookListItem({
         <div className="card-body md:w-2/3">
           <div className="grid md:grid-cols-2 md:grid-rows-1">
             <h2 className="card-title">{book.title || "Untitled"}</h2>
-            <div className="my-2 md:my-0 space-x-2 md:ml-auto mr-auto md:mr-0">
+            <div className="my-2 md:my-0 md:ml-auto mr-auto md:mr-0">
               <div className="space-y-2">
                 <select
                   value={status}
@@ -743,19 +743,15 @@ export default function BookListItem({
                   <option value="audio">Audio</option>
                 </select>
               </div>
-              <div className="grid grid-cols-2 mt-5 ml-auto">
-                <div className="md:flex">
-                  <ViewSellers title={book.title} />
-                </div>
-                <div className="justify-end md:flex">
-                  <BookSharebutton
-                    isbn={
-                      book.industryIdentifiers?.find(
-                        (id) => id.type === "ISBN_13"
-                      )?.identifier
-                    }
-                  />
-                </div>
+              <div className="mt-5 space-x-2">
+                <ViewSellers title={book.title} />
+                <BookSharebutton
+                  isbn={
+                    book.industryIdentifiers?.find(
+                      (id) => id.type === "ISBN_13"
+                    )?.identifier
+                  }
+                />
               </div>
             </div>
           </div>

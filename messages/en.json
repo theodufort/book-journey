@@ -289,7 +289,7 @@
       "spanish":"Spanish"
     },
     "BookShareButton":{
-      "label":"Share",
+      "label":"Share Book",
       "message": "Copied to Clipboard!"
     },
     "ReviewBookInfo":{
