@@ -719,30 +719,7 @@ export default function BookListItem({
         <div className="card-body md:w-2/3">
           <div className="grid md:grid-cols-2 md:grid-rows-1">
             <h2 className="card-title">{book.title || "Untitled"}</h2>
-            <div className="my-2 md:my-0 md:ml-auto mr-auto md:mr-0">
-              <div className="space-y-2">
-                <select
-                  value={status}
-                  onChange={(e) =>
-                    updateBookStatus(e.target.value, book.pageCount)
-                  }
-                  className="select select-bordered w-auto max-w-xs"
-                >
-                  <option value="To Read">{t("reading_status1")}</option>
-                  <option value="Reading">{t("reading_status2")}</option>
-                  <option value="Finished">{t("reading_status3")}</option>
-                  <option value="DNF">{t("reading_status4")}</option>
-                </select>
-                <select
-                  value={format}
-                  onChange={(e) => updateBookFormat(e.target.value)}
-                  className="select select-bordered w-auto max-w-xs block"
-                >
-                  <option value="physical">Physical</option>
-                  <option value="digital">Digital</option>
-                  <option value="audio">Audio</option>
-                </select>
-              </div>
+            <div className="md:my-0 md:ml-auto mr-auto md:mr-0 space-y-2">
               <div className="mt-5 space-x-2">
                 <ViewSellers title={book.title} />
                 <BookSharebutton
@@ -752,6 +729,29 @@ export default function BookListItem({
                     )?.identifier
                   }
                 />
+              </div>
+              <div className="space-y-2">
+                <select
+                  value={status}
+                  onChange={(e) =>
+                    updateBookStatus(e.target.value, book.pageCount)
+                  }
+                  className="select select-bordered w-auto md:ml-auto flex"
+                >
+                  <option value="To Read">{t("reading_status1")}</option>
+                  <option value="Reading">{t("reading_status2")}</option>
+                  <option value="Finished">{t("reading_status3")}</option>
+                  <option value="DNF">{t("reading_status4")}</option>
+                </select>
+                <select
+                  value={format}
+                  onChange={(e) => updateBookFormat(e.target.value)}
+                  className="select select-bordered w-auto max-w-xs block md:ml-auto"
+                >
+                  <option value="physical">Physical</option>
+                  <option value="digital">Digital</option>
+                  <option value="audio">Audio</option>
+                </select>
               </div>
             </div>
           </div>
