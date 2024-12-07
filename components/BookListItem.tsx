@@ -43,6 +43,7 @@ export default function BookListItem({
   const [user, setUser] = useState<User | null>(null);
   const [rating, setRating] = useState(0);
   const [newTag, setNewTag] = useState("");
+  const [format, setFormat] = useState<string>("physical");
   const [pagesRead, setPagesRead] = useState(0);
   const [questions, setQuestions] = useState<
     Array<{ id: string; question: string; answer: string | null }>
@@ -54,6 +55,31 @@ export default function BookListItem({
     };
     getUser();
   }, [supabase]);
+
+  useEffect(() => {
+    const fetchFormat = async () => {
+      if (user) {
+        const { data, error } = await supabase
+          .from("reading_list")
+          .select("format")
+          .eq("user_id", user.id)
+          .eq(
+            "book_id",
+            item.volumeInfo.industryIdentifiers?.find(
+              (id) => id.type === "ISBN_13"
+            )?.identifier
+          )
+          .single();
+
+        if (error) {
+          console.error("Error fetching format:", error);
+        } else {
+          setFormat(data?.format || "physical");
+        }
+      }
+    };
+    fetchFormat();
+  }, [user, item.volumeInfo.industryIdentifiers, supabase]);
 
   useEffect(() => {
     const fetchPagesRead = async () => {
@@ -440,6 +466,26 @@ export default function BookListItem({
     }
   }
 
+  async function updateBookFormat(newFormat: string) {
+    if (!user) return;
+    
+    const { error } = await supabase
+      .from("reading_list")
+      .update({ format: newFormat })
+      .eq(
+        "book_id",
+        item.volumeInfo.industryIdentifiers?.find((id) => id.type === "ISBN_13")
+          ?.identifier
+      )
+      .eq("user_id", user.id);
+
+    if (error) {
+      console.error("Error updating book format:", error);
+    } else {
+      setFormat(newFormat);
+    }
+  }
+
   async function removeBook() {
     const { error } = await supabase
       .from("reading_list")
@@ -674,18 +720,29 @@ export default function BookListItem({
           <div className="grid md:grid-cols-2 md:grid-rows-1">
             <h2 className="card-title">{book.title || "Untitled"}</h2>
             <div className="my-2 md:my-0 space-x-2 md:ml-auto mr-auto md:mr-0">
-              <select
-                value={status}
-                onChange={(e) =>
-                  updateBookStatus(e.target.value, book.pageCount)
-                }
-                className="select select-bordered w-auto max-w-xs"
-              >
-                <option value="To Read">{t("reading_status1")}</option>
-                <option value="Reading">{t("reading_status2")}</option>
-                <option value="Finished">{t("reading_status3")}</option>
-                <option value="DNF">{t("reading_status4")}</option>
-              </select>
+              <div className="space-y-2">
+                <select
+                  value={status}
+                  onChange={(e) =>
+                    updateBookStatus(e.target.value, book.pageCount)
+                  }
+                  className="select select-bordered w-auto max-w-xs"
+                >
+                  <option value="To Read">{t("reading_status1")}</option>
+                  <option value="Reading">{t("reading_status2")}</option>
+                  <option value="Finished">{t("reading_status3")}</option>
+                  <option value="DNF">{t("reading_status4")}</option>
+                </select>
+                <select
+                  value={format}
+                  onChange={(e) => updateBookFormat(e.target.value)}
+                  className="select select-bordered w-auto max-w-xs block"
+                >
+                  <option value="physical">Physical</option>
+                  <option value="digital">Digital</option>
+                  <option value="audio">Audio</option>
+                </select>
+              </div>
               <div className="grid grid-cols-2 mt-5 ml-auto">
                 <div className="md:flex">
                   <BookSharebutton
