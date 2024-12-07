@@ -27,6 +27,7 @@ export default function BookNookComponent() {
     startNextStep("booknookTour");
   };
   console.log(currentTour);
+
   const t = useTranslations("BookNook");
   const [readingSessionID, setReadingSessionID] = useState("");
   const [selectedBook, setSelectedBook] = useState<any>(null);

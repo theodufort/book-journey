@@ -25,11 +25,13 @@ export default function Dashboard() {
   const [showOnboard, setShowOnboard] = useState(false);
   const [habitRefreshTrigger, setHabitRefreshTrigger] = useState(0);
   const router = useRouter();
+
   const { startNextStep, currentTour } = useNextStep();
   console.log(currentTour);
   const handleStartTour = () => {
     startNextStep("dashboardTour");
   };
+
   const logUserActivity = async () => {
     if (!user) return;
 

@@ -8,16 +8,6 @@ export const WelcomeEmail = () => (
       preferences. We’re thrilled to have you onboard!
     </p>
     <p>
-      To make sure you get the most out of your experience, I’d love to offer
-      you a <strong>15-minute call</strong> where we can walk through the
-      platform together, answer any questions you have, and explore how
-      MyBookQuest can help you on your book discovery journey.
-    </p>
-    <p>Click the link below to schedule a time that works best for you:</p>
-    <a href="https://calendly.com/theointechs/15-minutes-onboarding">
-      Schedule a 15-Minute Call
-    </a>
-    <p>
       If you have any immediate questions, feel free to reply to this email or
       reach out to me directly at{" "}
       <a href="mailto:info@mybookquest.com">info@mybookquest.com</a>.
