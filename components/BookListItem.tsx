@@ -468,7 +468,7 @@ export default function BookListItem({
 
   async function updateBookFormat(newFormat: string) {
     if (!user) return;
-    
+
     const { error } = await supabase
       .from("reading_list")
       .update({ format: newFormat })
@@ -693,7 +693,7 @@ export default function BookListItem({
   return (
     <>
       <div className="card md:card-side bg-base-100 shadow-xl">
-        <div className="p-10 md:w-1/5 relative">
+        <div className="pt-10 pl-10 pr-10 md:w-1/5 relative">
           <figure>
             <img
               src={book.imageLinks?.thumbnail || "/placeholder-book-cover.jpg"}
@@ -701,7 +701,7 @@ export default function BookListItem({
               className="rounded-lg md:w-full object-cover"
             />
           </figure>
-          <div className="mt-2">
+          <div className="mt-2 mx-auto flex">
             {user ? (
               <div className="mx-auto">
                 <ReviewBookInfo
@@ -745,6 +745,9 @@ export default function BookListItem({
               </div>
               <div className="grid grid-cols-2 mt-5 ml-auto">
                 <div className="md:flex">
+                  <ViewSellers title={book.title} />
+                </div>
+                <div className="justify-end md:flex">
                   <BookSharebutton
                     isbn={
                       book.industryIdentifiers?.find(
@@ -752,9 +755,6 @@ export default function BookListItem({
                       )?.identifier
                     }
                   />
-                </div>
-                <div className="justify-end md:flex">
-                  <ViewSellers title={book.title} />
                 </div>
               </div>
             </div>
