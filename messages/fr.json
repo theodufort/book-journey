@@ -281,7 +281,7 @@
     "spanish":"Espagnol"
   },
   "BookShareButton":{
-      "label":"Partager",
+      "label":"Partager le livre",
       "message": "Copié au presse-papiers!"
   },
   "ReadingHabits": {
