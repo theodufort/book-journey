@@ -26,7 +26,7 @@ export default function CollapsibleSection({
   const t = useTranslations("CollapsibleSection");
   const [bookTags, setBookTags] = useState<{ [key: string]: string[] }>({});
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchType, setSearchType] = useState("title"); 
+  const [searchType, setSearchType] = useState("title");
   const [currentPage, setCurrentPage] = useState(1);
   const [newTag, setNewTag] = useState("");
   const ITEMS_PER_PAGE = 5;
@@ -140,7 +140,9 @@ export default function CollapsibleSection({
           );
         case "tag":
           const tags = bookTags[item.book_id] || [];
-          return tags.some((tag) => tag.toLowerCase().includes(lowerSearchTerm));
+          return tags.some((tag) =>
+            tag.toLowerCase().includes(lowerSearchTerm)
+          );
         default:
           return true;
       }
@@ -158,11 +160,14 @@ export default function CollapsibleSection({
   useEffect(() => {
     const fetchPageDetails = async () => {
       const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
-      const pageBooks = filteredBooks.slice(startIdx, startIdx + ITEMS_PER_PAGE);
-      
+      const pageBooks = filteredBooks.slice(
+        startIdx,
+        startIdx + ITEMS_PER_PAGE
+      );
+
       // Only fetch if we have placeholder data
-      const booksToFetch = pageBooks.filter(book => 
-        book.data.volumeInfo.title === "Loading..."
+      const booksToFetch = pageBooks.filter(
+        (book) => book.data.volumeInfo.title === "Loading..."
       );
 
       if (booksToFetch.length > 0) {
@@ -171,7 +176,9 @@ export default function CollapsibleSection({
             try {
               const response = await fetch(`/api/books/${book.book_id}/v3`);
               if (!response.ok) {
-                throw new Error(`Failed to fetch book details for ${book.book_id}`);
+                throw new Error(
+                  `Failed to fetch book details for ${book.book_id}`
+                );
               }
               const bookData = await response.json();
               return {
@@ -186,10 +193,12 @@ export default function CollapsibleSection({
         );
 
         // Update the reading list with the fetched data
-        setReadingList(prevList => {
+        setReadingList((prevList) => {
           const newList = [...prevList];
-          updatedBooks.forEach(updatedBook => {
-            const idx = newList.findIndex(book => book.book_id === updatedBook.book_id);
+          updatedBooks.forEach((updatedBook) => {
+            const idx = newList.findIndex(
+              (book) => book.book_id === updatedBook.book_id
+            );
             if (idx !== -1) {
               newList[idx] = updatedBook;
             }
@@ -209,7 +218,7 @@ export default function CollapsibleSection({
       } bg-base-200 mx-0`}
     >
       <div
-        className="collapse-title text-xl font-medium flex flex-col md:flex-row items-start md:items-center cursor-pointer"
+        className="collapse-title pr-[16px] text-xl font-medium flex flex-col md:flex-row items-start md:items-center cursor-pointer"
         onClick={onToggle}
       >
         <div className="flex items-center w-full">
@@ -237,7 +246,7 @@ export default function CollapsibleSection({
           className="grid md:grid-rows-1 md:grid-cols-2 md:mt-0 mt-4 grid-rows-2 grid-cols-1 w-full gap-2"
           onClick={(e) => e.stopPropagation()}
         >
-          <label className="input input-bordered flex items-center gap-2 flex-grow ">
+          <label className="input input-bordered flex items-center gap-2 flex-grow">
             <input
               type="text"
               className="grow"
@@ -274,21 +283,23 @@ export default function CollapsibleSection({
           {paginatedBooks.length > 0 ? (
             <>
               {paginatedBooks.map((item) => (
-              <BookListItem
-                key={item.book_id}
-                status={status}
-                item={item.data}
-                onUpdate={() => onUpdate(item.book_id, status)}
-                tags={bookTags[item.book_id] || []}
-                onAddTag={(tag) => handleAddTag(item, tag)}
-                onRemoveTag={(tag) => handleRemoveTag(item, tag)}
-              />
+                <BookListItem
+                  key={item.book_id}
+                  status={status}
+                  item={item.data}
+                  onUpdate={() => onUpdate(item.book_id, status)}
+                  tags={bookTags[item.book_id] || []}
+                  onAddTag={(tag) => handleAddTag(item, tag)}
+                  onRemoveTag={(tag) => handleRemoveTag(item, tag)}
+                />
               ))}
               {totalPages > 1 && (
                 <div className="flex justify-center mt-4 space-x-2">
                   <button
                     className="btn btn-sm"
-                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(prev - 1, 1))
+                    }
                     disabled={currentPage === 1}
                   >
                     {t("previous")}
