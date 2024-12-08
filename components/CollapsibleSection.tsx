@@ -3,7 +3,7 @@ import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import BookListItem from "./BookListItem";
 
 export default function CollapsibleSection({
@@ -32,6 +32,7 @@ export default function CollapsibleSection({
   const ITEMS_PER_PAGE = 5;
   const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -156,60 +157,53 @@ export default function CollapsibleSection({
     currentPage * ITEMS_PER_PAGE
   );
 
-  // Fetch detailed data for books when page changes
-  useEffect(() => {
-    const fetchPageDetails = async () => {
-      const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
-      const pageBooks = filteredBooks.slice(
-        startIdx,
-        startIdx + ITEMS_PER_PAGE
+  const fetchPageDetails = useCallback(async () => {
+    if (!isExpanded) return;
+    
+    setIsLoading(true);
+    const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
+    const pageBooks = filteredBooks.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+    
+    try {
+      const updatedBooks = await Promise.all(
+        pageBooks.map(async (book) => {
+          try {
+            const response = await fetch(`/api/books/${book.book_id}/v3`);
+            if (!response.ok) {
+              throw new Error(`Failed to fetch book details for ${book.book_id}`);
+            }
+            const bookData = await response.json();
+            return {
+              ...book,
+              data: bookData,
+            };
+          } catch (error) {
+            console.error(error);
+            return book;
+          }
+        })
       );
 
-      // Only fetch if we have placeholder data
-      const booksToFetch = pageBooks.filter(
-        (book) => book.data.volumeInfo.title === "Loading..."
-      );
-
-      if (booksToFetch.length > 0) {
-        const updatedBooks = await Promise.all(
-          booksToFetch.map(async (book) => {
-            try {
-              const response = await fetch(`/api/books/${book.book_id}/v3`);
-              if (!response.ok) {
-                throw new Error(
-                  `Failed to fetch book details for ${book.book_id}`
-                );
-              }
-              const bookData = await response.json();
-              return {
-                ...book,
-                data: bookData,
-              };
-            } catch (error) {
-              console.error(error);
-              return book;
-            }
-          })
-        );
-
-        // Update the reading list with the fetched data
-        setReadingList((prevList) => {
-          const newList = [...prevList];
-          updatedBooks.forEach((updatedBook) => {
-            const idx = newList.findIndex(
-              (book) => book.book_id === updatedBook.book_id
-            );
-            if (idx !== -1) {
-              newList[idx] = updatedBook;
-            }
-          });
-          return newList;
+      setReadingList((prevList) => {
+        const newList = [...prevList];
+        updatedBooks.forEach((updatedBook) => {
+          const idx = newList.findIndex(
+            (book) => book.book_id === updatedBook.book_id
+          );
+          if (idx !== -1) {
+            newList[idx] = updatedBook;
+          }
         });
-      }
-    };
+        return newList;
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [currentPage, filteredBooks, isExpanded, setReadingList]);
 
+  useEffect(() => {
     fetchPageDetails();
-  }, [currentPage, filteredBooks]);
+  }, [fetchPageDetails]);
 
   return (
     <div
@@ -280,7 +274,11 @@ export default function CollapsibleSection({
       </div>
       <div className="collapse-content sm:px-4">
         <div className="grid grid-cols-1 gap-4">
-          {paginatedBooks.length > 0 ? (
+          {isLoading ? (
+            <div className="flex justify-center">
+              <span className="loading loading-spinner loading-lg"></span>
+            </div>
+          ) : paginatedBooks.length > 0 ? (
             <>
               {paginatedBooks.map((item) => (
                 <BookListItem
