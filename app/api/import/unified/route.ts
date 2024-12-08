@@ -95,9 +95,7 @@ export async function POST(request: Request) {
         {
           user_id: userId,
           book_id: bookData.isbn,
-          status: bookData.read_status
-            ? mapStatus(bookData.read_status)
-            : mapStatus("to-read"),
+          status: mapStatus(bookData.read_status || "to-read"),
           rating: bookData.rating ? bookData.rating : null,
           review: bookData.review,
           tags: bookData.tags ? [] : null,
@@ -193,9 +191,7 @@ export async function POST(request: Request) {
           .upsert({
             user_id: userId,
             book_id: customId,
-            status: bookData.read_status
-              ? mapStatus(bookData.read_status)
-              : mapStatus("to-read"),
+            status: mapStatus(bookData.read_status || "to-read"),
             rating: bookData.rating ? bookData.rating : null,
             review: bookData.review,
             tags: bookData.tags ? bookData.tags : [],
