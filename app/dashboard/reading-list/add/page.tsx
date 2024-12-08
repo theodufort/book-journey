@@ -24,6 +24,13 @@ export default function AddBook() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [shouldRedirect, setShouldRedirect] = useState(true);
+  const [showCustomForm, setShowCustomForm] = useState(false);
+  const [customBook, setCustomBook] = useState({
+    title: '',
+    description: '',
+    format: 'physical',
+    pageCount: ''
+  });
 
   const languages = [
     { code: "en", name: t("english") },
@@ -208,11 +215,109 @@ export default function AddBook() {
             </div>
           </form>
           <div className="space-y-4">
-            {searchResults.length === 0 && !loading && (
-              <div className="text-center py-8">
+            {searchResults.length === 0 && !loading && searchQuery && (
+              <div className="text-center py-8 space-y-4">
                 <p className="text-xl font-semibold text-gray-600">
                   {t("error")}
                 </p>
+                <button 
+                  className="btn btn-secondary"
+                  onClick={() => setShowCustomForm(true)}
+                >
+                  Don't see your book? Add a custom book
+                </button>
+              </div>
+            )}
+
+            {showCustomForm && (
+              <div className="card bg-base-100 shadow-xl p-6">
+                <h3 className="text-xl font-bold mb-4">Add Custom Book</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="label">
+                      <span className="label-text">Title*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="input input-bordered w-full"
+                      value={customBook.title}
+                      onChange={(e) => setCustomBook({...customBook, title: e.target.value})}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="label">
+                      <span className="label-text">Description (optional)</span>
+                    </label>
+                    <textarea
+                      className="textarea textarea-bordered w-full"
+                      value={customBook.description}
+                      onChange={(e) => setCustomBook({...customBook, description: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <label className="label">
+                      <span className="label-text">Format</span>
+                    </label>
+                    <select
+                      className="select select-bordered w-full"
+                      value={customBook.format}
+                      onChange={(e) => setCustomBook({...customBook, format: e.target.value})}
+                    >
+                      <option value="physical">Physical</option>
+                      <option value="digital">Digital</option>
+                      <option value="audio">Audio</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="label">
+                      <span className="label-text">Page Count (optional)</span>
+                    </label>
+                    <input
+                      type="number"
+                      className="input input-bordered w-full"
+                      value={customBook.pageCount}
+                      onChange={(e) => setCustomBook({...customBook, pageCount: e.target.value})}
+                    />
+                  </div>
+                  <div className="card-actions justify-end space-x-2">
+                    <button 
+                      className="btn btn-ghost"
+                      onClick={() => setShowCustomForm(false)}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className="btn btn-primary"
+                      onClick={async () => {
+                        if (!customBook.title) {
+                          toast.error("Title is required");
+                          return;
+                        }
+                        
+                        const customId = `CUSTOM-${Date.now()}`;
+                        const { error } = await supabase.from("reading_list").insert({
+                          user_id: user.id,
+                          book_id: customId,
+                          status: 'To Read',
+                          format: customBook.format,
+                          pages_read: customBook.pageCount ? parseInt(customBook.pageCount) : 0
+                        });
+
+                        if (error) {
+                          toast.error("Failed to add custom book");
+                        } else {
+                          toast.success("Custom book added successfully!");
+                          if (shouldRedirect) {
+                            router.push("/dashboard/reading-list");
+                          }
+                        }
+                      }}
+                    >
+                      Add Book
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
             {searchResults.map((book, index) => (
