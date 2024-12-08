@@ -188,14 +188,9 @@ export default function ReadingList() {
         console.error("Error fetching reading list:", booksError);
         setReadingList([]);
       } else {
-        // Only fetch details for first page of books initially
-        const ITEMS_PER_PAGE = 5;
-        const firstPageBooks = booksData.slice(0, ITEMS_PER_PAGE);
-        const otherBooks = booksData.slice(ITEMS_PER_PAGE);
-
-        // Fetch detailed data only for first page
-        const firstPageDetails = await Promise.all(
-          firstPageBooks.map(async (item: any) => {
+        // Fetch details for all books
+        const bookDetails = await Promise.all(
+          booksData.map(async (item: any) => {
             try {
               const response = await fetch(`/api/books/${item.book_id}/v3`);
               if (!response.ok) {
@@ -216,19 +211,8 @@ export default function ReadingList() {
           })
         );
 
-        // Create placeholder objects for other books
-        const otherBooksPlaceholders = otherBooks.map((item: any) => ({
-          data: {
-            volumeInfo: { title: "Loading...", authors: ["Loading..."] },
-          },
-          book_id: item.book_id,
-          status: item.status,
-        }));
-
-        // Combine first page details with placeholders and filter out nulls
-        const bookDetails = [...firstPageDetails, ...otherBooksPlaceholders];
         const validBookDetails = bookDetails.filter((book) => book != null);
-        setReadingList((await validBookDetails) as any);
+        setReadingList(validBookDetails as any);
         setLoading(false);
       }
 
