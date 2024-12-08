@@ -228,7 +228,7 @@ export default function ReadingList() {
         // Combine first page details with placeholders and filter out nulls
         const bookDetails = [...firstPageDetails, ...otherBooksPlaceholders];
         const validBookDetails = bookDetails.filter((book) => book != null);
-        setReadingList(validBookDetails as any);
+        setReadingList((await validBookDetails) as any);
         setLoading(false);
       }
 
