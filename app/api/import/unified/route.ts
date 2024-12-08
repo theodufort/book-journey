@@ -86,6 +86,49 @@ export async function POST(request: Request) {
       }
       processedISBNs.add(bookData.isbn);
 
+      // If it's a custom ID, first create the book entry
+      if (bookData.isbn.startsWith('CUSTOM-')) {
+        const { error: booksError } = await supabase
+          .from("books")
+          .upsert({
+            isbn_13: bookData.isbn,
+            data: {
+              id: bookData.isbn,
+              volumeInfo: {
+                title: bookData.title,
+                authors: [bookData.author],
+                language: "en",
+                subtitle: null,
+                pageCount: null,
+                publisher: null,
+                categories: [],
+                imageLinks: {
+                  thumbnail: null,
+                },
+                description: null,
+                publishedDate: null,
+                industryIdentifiers: [
+                  {
+                    type: "CUSTOM_ID",
+                    identifier: bookData.isbn,
+                  },
+                ],
+              },
+            },
+          });
+
+        if (booksError) {
+          console.error(`Error creating custom book entry for ${bookData.title}:`, booksError);
+          failedRecords.push({
+            title: bookData.title,
+            author: bookData.author,
+            error: "Failed to create custom book entry",
+            details: booksError.message,
+          });
+          continue;
+        }
+      }
+
       const { error } = await supabase.from("reading_list").upsert(
         {
           user_id: userId,
