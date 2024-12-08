@@ -152,15 +152,37 @@ export async function POST(request: Request) {
     } else {
       // Create custom ID and book data for books without ISBN
       if (row["Title"]) {
-        const title = row["Title"];
-        const author =
-          importType === "goodreads" ? row["Author"] : row["Authors"];
-        const { customId, bookData } = createCustomBookData(title, author);
-
+        const bookData = parseBookData(row, importType);
+        
         // First insert into books table
         const { error: booksError } = await supabase
           .from("books")
-          .upsert(bookData);
+          .upsert({
+            isbn_13: bookData.isbn,
+            data: {
+              id: bookData.isbn,
+              volumeInfo: {
+                title: bookData.title,
+                authors: [bookData.author],
+                language: "en",
+                subtitle: null,
+                pageCount: null,
+                publisher: null,
+                categories: [],
+                imageLinks: {
+                  thumbnail: null,
+                },
+                description: null,
+                publishedDate: null,
+                industryIdentifiers: [
+                  {
+                    type: "CUSTOM_ID",
+                    identifier: bookData.isbn,
+                  },
+                ],
+              },
+            },
+          });
 
         if (booksError) {
           console.error(
@@ -276,8 +298,9 @@ function mapFormat(format: string): string {
 }
 
 function parseBookData(row: any, importType: "goodreads" | "storygraph") {
+  const customId = `CUSTOM-${Date.now()}`;
   if (importType === "goodreads") {
-    const isbn13 = row["ISBN13"] ? row["ISBN13"].replace(/[="]/g, "") : null;
+    const isbn13 = row["ISBN13"] ? row["ISBN13"].replace(/[="]/g, "") : customId;
     return {
       isbn: isbn13,
       title: row["Title"],
@@ -301,7 +324,7 @@ function parseBookData(row: any, importType: "goodreads" | "storygraph") {
     };
   } else {
     return {
-      isbn: row["ISBN/UID"],
+      isbn: row["ISBN/UID"] || customId,
       title: row["Title"],
       author: row["Authors"],
       format: mapFormat(row["Format"]),
@@ -320,36 +343,6 @@ function parseBookData(row: any, importType: "goodreads" | "storygraph") {
   }
 }
 
-function createCustomBookData(title: string, author: string) {
-  const customId = `CUSTOM-${Date.now()}`;
-  const bookData: any = {
-    isbn_13: customId,
-    data: {
-      id: customId,
-      volumeInfo: {
-        title: title,
-        authors: [author],
-        language: "en",
-        subtitle: null,
-        pageCount: null,
-        publisher: null,
-        categories: [],
-        imageLinks: {
-          thumbnail: null,
-        },
-        description: null,
-        publishedDate: null,
-        industryIdentifiers: [
-          {
-            type: "CUSTOM_ID",
-            identifier: customId,
-          },
-        ],
-      },
-    },
-  };
-  return { customId, bookData };
-}
 
 function mapStatus(status: string): string | null {
   // Define valid statuses based on your schema
