@@ -275,6 +275,18 @@ export async function POST(request: Request) {
   return NextResponse.json(response);
 }
 
+function mapFormat(format: string): string {
+  const formatLower = format?.toLowerCase() || '';
+  
+  if (formatLower.includes('audio') || formatLower.includes('audiobook')) {
+    return 'audio';
+  }
+  if (formatLower.includes('ebook') || formatLower.includes('kindle') || formatLower.includes('digital')) {
+    return 'digital';
+  }
+  return 'physical';
+}
+
 function parseBookData(row: any, importType: "goodreads" | "storygraph") {
   if (importType === "goodreads") {
     const isbn13 = row["ISBN13"] ? row["ISBN13"].replace(/[="]/g, "") : null;
@@ -282,7 +294,7 @@ function parseBookData(row: any, importType: "goodreads" | "storygraph") {
       isbn: isbn13,
       title: row["Title"],
       author: row["Author"],
-      format: row["Binding"],
+      format: mapFormat(row["Binding"]),
       read_status: mapStatus(row["Exclusive Shelf"]), // Map status to match the constraint
       date_started: row["Date Started"],
       date_finished: row["Date Read"],
@@ -304,7 +316,7 @@ function parseBookData(row: any, importType: "goodreads" | "storygraph") {
       isbn: row["ISBN/UID"],
       title: row["Title"],
       author: row["Authors"],
-      format: row["Format"],
+      format: mapFormat(row["Format"]),
       read_status: mapStatus(row["Read Status"]), // Map status to match the constraint
       date_started: row["Date Started"],
       date_finished: row["Date Finished"],
