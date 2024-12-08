@@ -299,17 +299,27 @@ function parseBookData(row: any, importType: "goodreads" | "storygraph") {
 
 
 function mapStatus(status: string): string | null {
-  // Define valid statuses based on your schema
+  // Convert to lowercase for case-insensitive matching
+  const statusLower = status.toLowerCase().trim();
+
+  // Define valid statuses based on schema
   const validStatuses: any = {
+    // Goodreads statuses
     "to-read": "To Read",
     "currently-reading": "Reading",
-    read: "Finished",
-    DNF: "DNF", // Did Not Finish
+    "read": "Finished",
+    "dnf": "DNF",
+    
+    // StoryGraph statuses
+    "to read": "To Read", 
+    "reading": "Reading",
+    "finished": "Finished",
+    "did not finish": "DNF"
   };
 
-  // Map StoryGraph statuses to your valid statuses
-  const mappedStatus = validStatuses[status];
+  // Map status to our valid statuses
+  const mappedStatus = validStatuses[statusLower];
 
-  // Return valid status or null if it doesn't match
+  // Return valid status or null if no match
   return mappedStatus || null;
 }
