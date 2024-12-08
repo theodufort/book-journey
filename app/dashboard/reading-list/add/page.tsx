@@ -311,7 +311,46 @@ export default function AddBook() {
                         }
 
                         const customId = `CUSTOM-${Date.now()}`;
-                        const { error } = await supabase
+                        
+                        // First, insert into books table
+                        const bookData = {
+                          id: customId,
+                          volumeInfo: {
+                            title: customBook.title,
+                            authors: [], // Could be added as a field in the form if needed
+                            language: selectedLanguage,
+                            subtitle: null,
+                            pageCount: customBook.pageCount ? parseInt(customBook.pageCount) : 0,
+                            publisher: "",
+                            categories: [],
+                            imageLinks: {
+                              thumbnail: "" // Could be added as a field in the form if needed
+                            },
+                            description: customBook.description || "",
+                            publishedDate: new Date().getFullYear().toString(),
+                            industryIdentifiers: [
+                              {
+                                type: "ISBN_13",
+                                identifier: customId
+                              }
+                            ]
+                          }
+                        };
+
+                        const { error: booksError } = await supabase
+                          .from("books")
+                          .insert({
+                            isbn_13: customId,
+                            data: bookData
+                          });
+
+                        if (booksError) {
+                          toast.error("Failed to add custom book to books database");
+                          return;
+                        }
+
+                        // Then, insert into reading_list
+                        const { error: readingListError } = await supabase
                           .from("reading_list")
                           .insert({
                             user_id: user.id,
@@ -323,8 +362,8 @@ export default function AddBook() {
                               : 0,
                           });
 
-                        if (error) {
-                          toast.error("Failed to add custom book");
+                        if (readingListError) {
+                          toast.error("Failed to add custom book to reading list");
                         } else {
                           toast.success("Custom book added successfully!");
                           if (shouldRedirect) {
