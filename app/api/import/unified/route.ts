@@ -196,13 +196,20 @@ export async function POST(request: Request) {
               : mapStatus("to-read"),
             rating: bookData.rating ? bookData.rating : null,
             review: bookData.review,
-            tags: bookData.tags ? [] : null,
+            tags: bookData.tags ? bookData.tags : [],
             reading_at: bookData.date_started
               ? new Date(bookData.date_started)
               : null,
             finished_at: bookData.date_finished
               ? new Date(bookData.date_finished)
               : null,
+            toread_at: new Date(),
+            pointsAwardedFinished: false,
+            pointsAwardedRating: false,
+            pointsAwardedTextReview: false,
+            reviewPublic: false,
+            pages_read: 0,
+            format: 'physical'
           });
 
         if (readingListError) {
