@@ -211,7 +211,7 @@ export async function POST(request: Request) {
             pointsAwardedTextReview: false,
             reviewPublic: false,
             pages_read: 0,
-            format: "physical",
+            format: bookData.format,
           });
 
         if (readingListError) {
@@ -276,15 +276,19 @@ export async function POST(request: Request) {
 }
 
 function mapFormat(format: string): string {
-  const formatLower = format?.toLowerCase() || '';
-  
-  if (formatLower.includes('audio') || formatLower.includes('audiobook')) {
-    return 'audio';
+  const formatLower = format?.toLowerCase() || "";
+
+  if (formatLower.includes("audio") || formatLower.includes("audiobook")) {
+    return "audio";
   }
-  if (formatLower.includes('ebook') || formatLower.includes('kindle') || formatLower.includes('digital')) {
-    return 'digital';
+  if (
+    formatLower.includes("ebook") ||
+    formatLower.includes("kindle") ||
+    formatLower.includes("digital")
+  ) {
+    return "digital";
   }
-  return 'physical';
+  return "physical";
 }
 
 function parseBookData(row: any, importType: "goodreads" | "storygraph") {
@@ -334,7 +338,7 @@ function parseBookData(row: any, importType: "goodreads" | "storygraph") {
 
 function createCustomBookData(title: string, author: string) {
   const customId = `CUSTOM-${Date.now()}`;
-  const bookData = {
+  const bookData: any = {
     isbn_13: customId,
     data: {
       id: customId,
