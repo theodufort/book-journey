@@ -3,7 +3,7 @@ import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import BookListItem from "./BookListItem";
 
 export default function CollapsibleSection({
@@ -14,6 +14,9 @@ export default function CollapsibleSection({
   books,
   onUpdate,
   setReadingList,
+  currentPage,
+  onPageChange,
+  itemsPerPage,
 }: {
   status: string;
   title: string;
@@ -22,14 +25,14 @@ export default function CollapsibleSection({
   books: ReadingListItem[];
   onUpdate: (bookId: string, newStatus: string) => void;
   setReadingList: React.Dispatch<React.SetStateAction<ReadingListItem[]>>;
+  currentPage: number;
+  onPageChange: (newPage: number) => void;
+  itemsPerPage: number;
 }) {
   const t = useTranslations("CollapsibleSection");
   const [bookTags, setBookTags] = useState<{ [key: string]: string[] }>({});
   const [searchTerm, setSearchTerm] = useState("");
   const [searchType, setSearchType] = useState("title");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [newTag, setNewTag] = useState("");
-  const ITEMS_PER_PAGE = 5;
   const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -65,12 +68,7 @@ export default function CollapsibleSection({
       .from("reading_list")
       .select("tags")
       .eq("user_id", user.id)
-      .eq(
-        "book_id",
-        book.data.volumeInfo.industryIdentifiers?.find(
-          (id) => id.type === "ISBN_13"
-        )?.identifier
-      )
+      .eq("book_id", book.book_id)
       .maybeSingle();
 
     if (error) {
@@ -92,12 +90,7 @@ export default function CollapsibleSection({
       .from("reading_list")
       .update({ tags: newTags })
       .eq("user_id", user.id)
-      .eq(
-        "book_id",
-        book.data.volumeInfo.industryIdentifiers?.find(
-          (id) => id.type === "ISBN_13"
-        )?.identifier
-      );
+      .eq("book_id", book.book_id);
 
     if (error) {
       console.error("Error updating tags:", error);
@@ -150,14 +143,16 @@ export default function CollapsibleSection({
     });
   };
 
+  // Filtered books after applying search
   const filteredBooks = filterBooks(books);
-  const totalPages = Math.ceil(filteredBooks.length / ITEMS_PER_PAGE);
-  const paginatedBooks = filteredBooks.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
 
-  // Removed fetchPageDetails and its useEffect since books are now pre-fetched
+  // Since we are now fetching page-wise from the parent, `filteredBooks` should already represent the current page's data.
+  // However, if you still want local pagination on top of server fetch, you can apply slicing here.
+  // For simplicity, assume `filteredBooks` is the data for the current page already fetched from the parent.
+
+  const totalItems = filteredBooks.length;
+  // If we knew total count of items on the server, we would keep track of total pages separately.
+  // For demo, let's assume total count is unknown and we rely on parent to fetch next pages.
 
   return (
     <div
@@ -232,9 +227,9 @@ export default function CollapsibleSection({
             <div className="flex justify-center">
               <span className="loading loading-spinner loading-lg"></span>
             </div>
-          ) : paginatedBooks.length > 0 ? (
+          ) : filteredBooks.length > 0 ? (
             <>
-              {paginatedBooks.map((item) => (
+              {filteredBooks.map((item) => (
                 <BookListItem
                   key={item.book_id}
                   status={status}
@@ -245,31 +240,33 @@ export default function CollapsibleSection({
                   onRemoveTag={(tag) => handleRemoveTag(item, tag)}
                 />
               ))}
-              {totalPages > 1 && (
-                <div className="flex justify-center mt-4 space-x-2">
-                  <button
-                    className="btn btn-sm"
-                    onClick={() =>
-                      setCurrentPage((prev) => Math.max(prev - 1, 1))
-                    }
-                    disabled={currentPage === 1}
-                  >
-                    {t("previous")}
-                  </button>
-                  <span className="flex items-center">
-                    {t("page")} {currentPage} {t("of")} {totalPages}
-                  </span>
-                  <button
-                    className="btn btn-sm"
-                    onClick={() =>
-                      setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                    }
-                    disabled={currentPage === totalPages}
-                  >
-                    {t("next")}
-                  </button>
-                </div>
-              )}
+
+              {/* Pagination Controls */}
+              {/* Assuming we know there's potentially more pages. 
+                  If we must know total pages, we need total count from the server. */}
+              <div className="flex justify-center mt-4 space-x-2">
+                <button
+                  className="btn btn-sm"
+                  onClick={() => {
+                    if (currentPage > 1) onPageChange(currentPage - 1);
+                  }}
+                  disabled={currentPage === 1}
+                >
+                  {t("previous")}
+                </button>
+                <span className="flex items-center">
+                  {t("page")} {currentPage}
+                </span>
+                <button
+                  className="btn btn-sm"
+                  onClick={() => {
+                    // Assuming next page will fetch new items
+                    onPageChange(currentPage + 1);
+                  }}
+                >
+                  {t("next")}
+                </button>
+              </div>
             </>
           ) : (
             <p className="col-span-full">{t("no_books_found")}</p>

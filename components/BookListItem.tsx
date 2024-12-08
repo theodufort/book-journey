@@ -690,6 +690,9 @@ export default function BookListItem({
     description.length > MAX_LENGTH
       ? description.substring(0, MAX_LENGTH) + "..."
       : description;
+  if (item.id == null) {
+    console.log(item);
+  }
   return (
     <>
       <div className="card md:card-side bg-base-100 shadow-xl">
