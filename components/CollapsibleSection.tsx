@@ -162,11 +162,13 @@ export default function CollapsibleSection({
     
     setIsLoading(true);
     const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
+    // Only fetch up to ITEMS_PER_PAGE books
     const pageBooks = filteredBooks.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+    const booksToFetch = pageBooks.slice(0, ITEMS_PER_PAGE);
     
     try {
       const updatedBooks = await Promise.all(
-        pageBooks.map(async (book) => {
+        booksToFetch.map(async (book) => {
           try {
             const response = await fetch(`/api/books/${book.book_id}/v3`);
             if (!response.ok) {
