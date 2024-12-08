@@ -80,45 +80,49 @@ export async function POST(request: Request) {
     // Skip records with invalid or missing status
     // If this is a custom ID or we haven't processed this ISBN before
     if (bookData.isbn) {
-      if (!bookData.isbn.startsWith('CUSTOM-') && processedISBNs.has(bookData.isbn)) {
+      if (
+        !bookData.isbn.startsWith("CUSTOM-") &&
+        processedISBNs.has(bookData.isbn)
+      ) {
         duplicateCount++;
         continue;
       }
       processedISBNs.add(bookData.isbn);
 
       // If it's a custom ID, first create the book entry
-      if (bookData.isbn.startsWith('CUSTOM-')) {
-        const { error: booksError } = await supabase
-          .from("books")
-          .upsert({
-            isbn_13: bookData.isbn,
-            data: {
-              id: bookData.isbn,
-              volumeInfo: {
-                title: bookData.title,
-                authors: [bookData.author],
-                language: "en",
-                subtitle: null,
-                pageCount: null,
-                publisher: null,
-                categories: [],
-                imageLinks: {
-                  thumbnail: null,
-                },
-                description: null,
-                publishedDate: null,
-                industryIdentifiers: [
-                  {
-                    type: "CUSTOM_ID",
-                    identifier: bookData.isbn,
-                  },
-                ],
+      if (bookData.isbn.startsWith("CUSTOM-")) {
+        const { error: booksError } = await supabase.from("books").upsert({
+          isbn_13: bookData.isbn,
+          data: {
+            id: bookData.isbn,
+            volumeInfo: {
+              title: bookData.title,
+              authors: [bookData.author],
+              language: "en",
+              subtitle: null,
+              pageCount: null,
+              publisher: null,
+              categories: [],
+              imageLinks: {
+                thumbnail: null,
               },
+              description: null,
+              publishedDate: null,
+              industryIdentifiers: [
+                {
+                  type: "CUSTOM_ID",
+                  identifier: bookData.isbn,
+                },
+              ],
             },
-          });
+          },
+        });
 
         if (booksError) {
-          console.error(`Error creating custom book entry for ${bookData.title}:`, booksError);
+          console.error(
+            `Error creating custom book entry for ${bookData.title}:`,
+            booksError
+          );
           failedRecords.push({
             title: bookData.title,
             author: bookData.author,
@@ -133,6 +137,7 @@ export async function POST(request: Request) {
         {
           user_id: userId,
           book_id: bookData.isbn,
+          format: bookData.format,
           status: mapStatus(bookData.read_status || "to-read"),
           rating: bookData.rating ? bookData.rating : null,
           review: bookData.review,
@@ -254,7 +259,9 @@ function mapFormat(format: string): string {
 function parseBookData(row: any, importType: "goodreads" | "storygraph") {
   const customId = `CUSTOM-${Date.now()}`;
   if (importType === "goodreads") {
-    const isbn13 = row["ISBN13"] ? row["ISBN13"].replace(/[="]/g, "") : customId;
+    const isbn13 = row["ISBN13"]
+      ? row["ISBN13"].replace(/[="]/g, "")
+      : customId;
     return {
       isbn: isbn13,
       title: row["Title"],
@@ -297,7 +304,6 @@ function parseBookData(row: any, importType: "goodreads" | "storygraph") {
   }
 }
 
-
 function mapStatus(status: string): string | null {
   // Convert to lowercase for case-insensitive matching
   const statusLower = status.toLowerCase().trim();
@@ -307,14 +313,14 @@ function mapStatus(status: string): string | null {
     // Goodreads statuses
     "to-read": "To Read",
     "currently-reading": "Reading",
-    "read": "Finished",
-    "dnf": "DNF",
-    
+    read: "Finished",
+    dnf: "DNF",
+
     // StoryGraph statuses
-    "to read": "To Read", 
-    "reading": "Reading",
-    "finished": "Finished",
-    "did not finish": "DNF"
+    "to read": "To Read",
+    reading: "Reading",
+    finished: "Finished",
+    "did not finish": "DNF",
   };
 
   // Map status to our valid statuses
