@@ -152,6 +152,31 @@ const steps = [
       },
     ],
   },
+  {
+    tour: "readinglistTour",
+    steps: [
+      {
+        icon: <>📚</>,
+        title: "Your Reading List",
+        showControls: true,
+        content: (
+          <p>
+            Your reading list allows you to track your books by status.
+            <br />
+            Those are either: To Read, Currently Reading or Finished!
+          </p>
+        ),
+      },
+      {
+        icon: <>📘</>,
+        title: "Add a new book!",
+        side: "bottom",
+        selector: "#readinglist-addbook",
+        showControls: true,
+        content: <p>Start by adding your first book.</p>,
+      },
+    ],
+  },
 ];
 
 // This is a server-side component to ensure the user is logged in.

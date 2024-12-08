@@ -8,9 +8,15 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useNextStep } from "nextstepjs";
 import { useEffect, useState } from "react";
 
 export default function ReadingList() {
+  const { startNextStep, currentTour } = useNextStep();
+  console.log(currentTour);
+  const handleStartTour = () => {
+    startNextStep("readinglistTour");
+  };
   const t = useTranslations("ReadingList");
   const supabase = createClientComponentClient<Database>();
   const [readingList, setReadingList] = useState<ReadingListItem[]>([]);
@@ -156,6 +162,7 @@ export default function ReadingList() {
       const { data } = await supabase.auth.getUser();
       if (data.user) {
         setUser(data.user);
+        handleStartTour();
         await fetchReadingList(data.user.id);
       } else {
         console.log("User not authenticated");
@@ -192,7 +199,9 @@ export default function ReadingList() {
             try {
               const response = await fetch(`/api/books/${item.book_id}/v3`);
               if (!response.ok) {
-                throw new Error(`Failed to fetch book details for ${item.book_id}`);
+                throw new Error(
+                  `Failed to fetch book details for ${item.book_id}`
+                );
               }
               const bookData: Volume = await response.json();
               return {
@@ -209,7 +218,9 @@ export default function ReadingList() {
 
         // Create placeholder objects for other books
         const otherBooksPlaceholders = otherBooks.map((item: any) => ({
-          data: { volumeInfo: { title: "Loading...", authors: ["Loading..."] } },
+          data: {
+            volumeInfo: { title: "Loading...", authors: ["Loading..."] },
+          },
           book_id: item.book_id,
           status: item.status,
         }));
@@ -276,6 +287,7 @@ export default function ReadingList() {
             {t("title")}
           </h1>
           <button
+            id="readinglist-addbook"
             className="btn btn-primary float-end ml-auto mr-0 my-auto"
             onClick={() => router.push("/dashboard/reading-list/add")}
           >
