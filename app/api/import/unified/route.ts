@@ -28,14 +28,15 @@ export async function POST(request: Request) {
   // Check for scientific notation in ISBN columns
   const hasScientificNotation = parsedData.data.some((row: any) => {
     const isbn13 = importType === "goodreads" ? row["ISBN13"] : row["ISBN/UID"];
-    return isbn13 && isbn13.toString().includes('E+');
+    return isbn13 && isbn13.toString().includes("E+");
   });
 
   if (hasScientificNotation) {
     return NextResponse.json(
-      { 
-        error: "Invalid file format", 
-        message: "The CSV file appears to have been opened and saved in a spreadsheet program, which has corrupted the ISBN numbers. Please use the original export file."
+      {
+        error: "Invalid file format",
+        message:
+          "The CSV file appears to have been opened and saved in a spreadsheet program, which has corrupted the ISBN numbers. Please use the original export file.",
       },
       { status: 400 }
     );
@@ -163,21 +164,25 @@ export async function POST(request: Request) {
       // Create custom ID and book data for books without ISBN
       if (row["Title"]) {
         const title = row["Title"];
-        const author = importType === "goodreads" ? row["Author"] : row["Authors"];
+        const author =
+          importType === "goodreads" ? row["Author"] : row["Authors"];
         const { customId, bookData } = createCustomBookData(title, author);
-        
+
         // First insert into books table
         const { error: booksError } = await supabase
           .from("books")
           .upsert(bookData);
 
         if (booksError) {
-          console.error(`Error creating custom book entry for ${title}:`, booksError);
+          console.error(
+            `Error creating custom book entry for ${title}:`,
+            booksError
+          );
           failedRecords.push({
             title: title,
             author: author,
             error: "Failed to create custom book entry",
-            details: booksError.message
+            details: booksError.message,
           });
           continue;
         }
@@ -206,19 +211,24 @@ export async function POST(request: Request) {
             pointsAwardedTextReview: false,
             reviewPublic: false,
             pages_read: 0,
-            format: 'physical'
+            format: "physical",
           });
 
         if (readingListError) {
-          console.error(`Error adding custom book to reading list ${title}:`, readingListError);
+          console.error(
+            `Error adding custom book to reading list ${title}:`,
+            readingListError
+          );
           failedRecords.push({
             title: title,
             author: author,
             error: "Failed to add to reading list",
-            details: readingListError.message
+            details: readingListError.message,
           });
         } else {
-          console.log(`Successfully imported book with custom ID: ${title} (${customId})`);
+          console.log(
+            `Successfully imported book with custom ID: ${title} (${customId})`
+          );
           successCount++;
           verifiedCount++;
         }
@@ -325,18 +335,18 @@ function createCustomBookData(title: string, author: string) {
         publisher: null,
         categories: [],
         imageLinks: {
-          thumbnail: null
+          thumbnail: null,
         },
         description: null,
         publishedDate: null,
         industryIdentifiers: [
           {
             type: "CUSTOM_ID",
-            identifier: customId
-          }
-        ]
-      }
-    }
+            identifier: customId,
+          },
+        ],
+      },
+    },
   };
   return { customId, bookData };
 }
