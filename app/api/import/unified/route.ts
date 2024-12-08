@@ -160,13 +160,64 @@ export async function POST(request: Request) {
         }
       }
     } else {
-      // If there's no ISBN but we have a title, track it separately
+      // Create custom ID and book data for books without ISBN
       if (row["Title"]) {
-        missingIsbnRecords.push({
-          title: row["Title"],
-          author: importType === "goodreads" ? row["Author"] : row["Authors"],
-          reason: "Missing ISBN",
-        });
+        const title = row["Title"];
+        const author = importType === "goodreads" ? row["Author"] : row["Authors"];
+        const { customId, bookData } = createCustomBookData(title, author);
+        
+        // First insert into books table
+        const { error: booksError } = await supabase
+          .from("books")
+          .upsert({
+            isbn_13: customId,
+            data: bookData
+          });
+
+        if (booksError) {
+          console.error(`Error creating custom book entry for ${title}:`, booksError);
+          failedRecords.push({
+            title: title,
+            author: author,
+            error: "Failed to create custom book entry",
+            details: booksError.message
+          });
+          continue;
+        }
+
+        // Then insert into reading_list
+        const { error: readingListError } = await supabase
+          .from("reading_list")
+          .upsert({
+            user_id: userId,
+            book_id: customId,
+            status: bookData.read_status
+              ? mapStatus(bookData.read_status)
+              : mapStatus("to-read"),
+            rating: bookData.rating ? bookData.rating : null,
+            review: bookData.review,
+            tags: bookData.tags ? [] : null,
+            reading_at: bookData.date_started
+              ? new Date(bookData.date_started)
+              : null,
+            finished_at: bookData.date_finished
+              ? new Date(bookData.date_finished)
+              : null,
+          });
+
+        if (readingListError) {
+          console.error(`Error adding custom book to reading list ${title}:`, readingListError);
+          failedRecords.push({
+            title: title,
+            author: author,
+            error: "Failed to add to reading list",
+            details: readingListError.message
+          });
+        } else {
+          console.log(`Successfully imported book with custom ID: ${title} (${customId})`);
+          successCount++;
+          verifiedCount++;
+        }
       } else {
         failedRecords.push(row);
       }
@@ -253,6 +304,34 @@ function parseBookData(row: any, importType: "goodreads" | "storygraph") {
           : null,
     };
   }
+}
+
+function createCustomBookData(title: string, author: string) {
+  const customId = `CUSTOM-${Date.now()}`;
+  const bookData = {
+    id: customId,
+    volumeInfo: {
+      title: title,
+      authors: [author],
+      language: "en",
+      subtitle: null,
+      pageCount: null,
+      publisher: null,
+      categories: [],
+      imageLinks: {
+        thumbnail: null
+      },
+      description: null,
+      publishedDate: null,
+      industryIdentifiers: [
+        {
+          type: "CUSTOM_ID",
+          identifier: customId
+        }
+      ]
+    }
+  };
+  return { customId, bookData };
 }
 
 function mapStatus(status: string): string | null {
