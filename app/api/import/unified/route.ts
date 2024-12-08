@@ -80,16 +80,10 @@ export async function POST(request: Request) {
     // Skip records with invalid or missing status
     if (bookData.isbn) {
       if (processedISBNs.has(bookData.isbn)) {
-        console.log(
-          `Duplicate ISBN found: ${bookData.isbn} for book: ${bookData.title}`
-        );
         duplicateCount++;
         continue;
       }
       processedISBNs.add(bookData.isbn);
-      console.log(
-        `Attempting to import book: ${bookData.title} (ISBN: ${bookData.isbn})`
-      );
 
       const { error } = await supabase.from("reading_list").upsert(
         {
@@ -151,9 +145,6 @@ export async function POST(request: Request) {
             details: "Record not found after import",
           });
         } else {
-          console.log(
-            `Successfully verified: ${bookData.title} (ISBN: ${bookData.isbn})`
-          );
           verifiedCount++;
           successCount++;
         }
@@ -184,7 +175,7 @@ export async function POST(request: Request) {
           });
           continue;
         }
-
+        console.log(bookData.read_status);
         // Then insert into reading_list
         const { error: readingListError } = await supabase
           .from("reading_list")
@@ -222,9 +213,6 @@ export async function POST(request: Request) {
             details: readingListError.message,
           });
         } else {
-          console.log(
-            `Successfully imported book with custom ID: ${title} (${customId})`
-          );
           successCount++;
           verifiedCount++;
         }
