@@ -22,8 +22,7 @@ const BookCard: FC<BookCardProps> = ({ book }) => {
   const authors =
     book.data?.volumeInfo?.authors?.join(", ") || "Unknown Author";
   const thumbnailUrl =
-    book.data?.volumeInfo?.imageLinks?.thumbnail ||
-    "/placeholder-book-cover.jpg";
+    book.data?.volumeInfo?.imageLinks?.thumbnail || "/default-book-cover.png";
 
   return (
     <div className="card bg-base-100 shadow-xl">
