@@ -696,7 +696,7 @@ export default function BookListItem({
         <div className="pt-10 pl-10 pr-10 md:w-1/5 relative">
           <figure>
             <img
-              src={book.imageLinks?.thumbnail || "/placeholder-book-cover.jpg"}
+              src={book.imageLinks?.thumbnail || "/default-book-cover.png"}
               alt={book.title || "Book cover"}
               className="rounded-lg md:w-full object-cover"
             />
@@ -721,7 +721,9 @@ export default function BookListItem({
             <h2 className="card-title">{book.title || "Untitled"}</h2>
             <div className="md:my-0 md:ml-auto mr-auto md:mr-0 space-y-2">
               <div className="mt-5 space-x-2">
-                <ViewSellers title={book.title} />
+                {!item.id.includes("CUSTOM") ? (
+                  <ViewSellers title={book.title} />
+                ) : null}
                 <BookSharebutton
                   isbn={
                     book.industryIdentifiers?.find(

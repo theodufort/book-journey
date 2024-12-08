@@ -325,41 +325,47 @@ export default function AddBook() {
                         }
 
                         const customId = `CUSTOM-${Date.now()}`;
-                        
+
                         // First, insert into books table
-                        const bookData = {
+                        const bookData: any = {
                           id: customId,
                           volumeInfo: {
                             title: customBook.title,
-                            authors: customBook.author ? [customBook.author] : [],
+                            authors: customBook.author
+                              ? [customBook.author]
+                              : [],
                             language: selectedLanguage,
                             subtitle: null,
-                            pageCount: customBook.pageCount ? parseInt(customBook.pageCount) : 0,
+                            pageCount: customBook.pageCount
+                              ? parseInt(customBook.pageCount)
+                              : 0,
                             publisher: "",
                             categories: [],
                             imageLinks: {
-                              thumbnail: "" // Could be added as a field in the form if needed
+                              thumbnail: "", // Could be added as a field in the form if needed
                             },
                             description: customBook.description || "",
                             publishedDate: new Date().getFullYear().toString(),
                             industryIdentifiers: [
                               {
                                 type: "ISBN_13",
-                                identifier: customId
-                              }
-                            ]
-                          }
+                                identifier: customId,
+                              },
+                            ],
+                          },
                         };
 
                         const { error: booksError } = await supabase
                           .from("books")
                           .insert({
                             isbn_13: customId,
-                            data: bookData
+                            data: bookData,
                           });
 
                         if (booksError) {
-                          toast.error("Failed to add custom book to books database");
+                          toast.error(
+                            "Failed to add custom book to books database"
+                          );
                           return;
                         }
 
@@ -377,7 +383,9 @@ export default function AddBook() {
                           });
 
                         if (readingListError) {
-                          toast.error("Failed to add custom book to reading list");
+                          toast.error(
+                            "Failed to add custom book to reading list"
+                          );
                         } else {
                           toast.success("Custom book added successfully!");
                           if (shouldRedirect) {
