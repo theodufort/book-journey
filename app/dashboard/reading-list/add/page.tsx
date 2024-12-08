@@ -31,6 +31,7 @@ export default function AddBook() {
     description: "",
     format: "physical",
     pageCount: "",
+    author: "",
   });
 
   const languages = [
@@ -250,6 +251,19 @@ export default function AddBook() {
                   </div>
                   <div>
                     <label className="label">
+                      <span className="label-text">Author (optional)</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="input input-bordered w-full"
+                      value={customBook.author}
+                      onChange={(e) =>
+                        setCustomBook({ ...customBook, author: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="label">
                       <span className="label-text">Description (optional)</span>
                     </label>
                     <textarea
@@ -317,7 +331,7 @@ export default function AddBook() {
                           id: customId,
                           volumeInfo: {
                             title: customBook.title,
-                            authors: [], // Could be added as a field in the form if needed
+                            authors: customBook.author ? [customBook.author] : [],
                             language: selectedLanguage,
                             subtitle: null,
                             pageCount: customBook.pageCount ? parseInt(customBook.pageCount) : 0,
