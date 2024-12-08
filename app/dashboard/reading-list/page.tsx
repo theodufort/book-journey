@@ -176,42 +176,47 @@ export default function ReadingList() {
     try {
       const { data: booksData, error: booksError } = await supabase
         .from("reading_list")
-        .select(
-          `
-          book_id::text, 
-          status
-        `
-        )
+        .select(`book_id::text, status`)
         .eq("user_id", userId);
 
       if (booksError) {
         console.error("Error fetching reading list:", booksError);
         setReadingList([]);
       } else {
-        // Fetch details for all books
-        const bookDetails = await Promise.all(
-          booksData.map(async (item: any) => {
-            try {
-              const response = await fetch(`/api/books/${item.book_id}/v3`);
-              if (!response.ok) {
-                throw new Error(
-                  `Failed to fetch book details for ${item.book_id}`
-                );
-              }
-              const bookData: Volume = await response.json();
-              return {
-                data: bookData,
-                book_id: item.book_id,
-                status: item.status,
-              };
-            } catch (error) {
-              console.error(error);
-              return null;
-            }
-          })
-        );
+        // Group books by status
+        const booksByStatus = booksData.reduce((acc: any, item: any) => {
+          if (!acc[item.status]) acc[item.status] = [];
+          acc[item.status].push(item);
+          return acc;
+        }, {});
 
-        const validBookDetails = bookDetails.filter((book) => book != null);
+        // For each status, fetch only first 6 books
+        const initialBookDetails = [];
+        for (const status in booksByStatus) {
+          const booksToFetch = booksByStatus[status].slice(0, 6);
+          const statusBooks = await Promise.all(
+            booksToFetch.map(async (item: any) => {
+              try {
+                const response = await fetch(`/api/books/${item.book_id}/v3`);
+                if (!response.ok) {
+                  throw new Error(`Failed to fetch book details for ${item.book_id}`);
+                }
+                const bookData: Volume = await response.json();
+                return {
+                  data: bookData,
+                  book_id: item.book_id,
+                  status: item.status,
+                };
+              } catch (error) {
+                console.error(error);
+                return null;
+              }
+            })
+          );
+          initialBookDetails.push(...statusBooks);
+        }
+
+        const validBookDetails = initialBookDetails.filter((book) => book != null);
         setReadingList(validBookDetails as any);
         setLoading(false);
       }
