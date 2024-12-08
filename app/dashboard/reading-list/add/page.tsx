@@ -215,11 +215,8 @@ export default function AddBook() {
             </div>
           </form>
           <div className="space-y-4">
-            {searchResults.length === 0 && !loading && searchQuery && (
-              <div className="text-center py-8 space-y-4">
-                <p className="text-xl font-semibold text-gray-600">
-                  {t("error")}
-                </p>
+            {searchQuery && (
+              <div className="text-center py-4">
                 <button 
                   className="btn btn-secondary"
                   onClick={() => setShowCustomForm(true)}
