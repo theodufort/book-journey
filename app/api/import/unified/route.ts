@@ -169,10 +169,7 @@ export async function POST(request: Request) {
         // First insert into books table
         const { error: booksError } = await supabase
           .from("books")
-          .upsert({
-            isbn_13: customId,
-            data: bookData
-          });
+          .upsert(bookData);
 
         if (booksError) {
           console.error(`Error creating custom book entry for ${title}:`, booksError);
@@ -316,26 +313,29 @@ function parseBookData(row: any, importType: "goodreads" | "storygraph") {
 function createCustomBookData(title: string, author: string) {
   const customId = `CUSTOM-${Date.now()}`;
   const bookData = {
-    id: customId,
-    volumeInfo: {
-      title: title,
-      authors: [author],
-      language: "en",
-      subtitle: null,
-      pageCount: null,
-      publisher: null,
-      categories: [],
-      imageLinks: {
-        thumbnail: null
-      },
-      description: null,
-      publishedDate: null,
-      industryIdentifiers: [
-        {
-          type: "CUSTOM_ID",
-          identifier: customId
-        }
-      ]
+    isbn_13: customId,
+    data: {
+      id: customId,
+      volumeInfo: {
+        title: title,
+        authors: [author],
+        language: "en",
+        subtitle: null,
+        pageCount: null,
+        publisher: null,
+        categories: [],
+        imageLinks: {
+          thumbnail: null
+        },
+        description: null,
+        publishedDate: null,
+        industryIdentifiers: [
+          {
+            type: "CUSTOM_ID",
+            identifier: customId
+          }
+        ]
+      }
     }
   };
   return { customId, bookData };
