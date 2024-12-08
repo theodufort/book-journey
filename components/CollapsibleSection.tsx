@@ -159,20 +159,20 @@ export default function CollapsibleSection({
 
   const fetchPageDetails = useCallback(async () => {
     if (!isExpanded) return;
-    
+
     setIsLoading(true);
     const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
-    // Only fetch up to ITEMS_PER_PAGE books
     const pageBooks = filteredBooks.slice(startIdx, startIdx + ITEMS_PER_PAGE);
-    const booksToFetch = pageBooks.slice(0, ITEMS_PER_PAGE);
-    
+
     try {
       const updatedBooks = await Promise.all(
-        booksToFetch.map(async (book) => {
+        pageBooks.map(async (book) => {
           try {
             const response = await fetch(`/api/books/${book.book_id}/v3`);
             if (!response.ok) {
-              throw new Error(`Failed to fetch book details for ${book.book_id}`);
+              throw new Error(
+                `Failed to fetch book details for ${book.book_id}`
+              );
             }
             const bookData = await response.json();
             return {
