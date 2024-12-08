@@ -80,15 +80,22 @@ export default function ReviewDetail({ params }: { params: { id: string } }) {
         data: newData,
       };
 
-      const { error } = await supabase
+      // Update the book data
+      const { error: bookError } = await supabase
         .from("books")
         .update(updateData)
         .eq("isbn_13", modification.isbn_13);
-      console.log(error);
-      if (error) throw error;
+      if (bookError) throw bookError;
+
+      // Mark the modification as reviewed
+      const { error: modError } = await supabase
+        .from("books_modifications")
+        .update({ is_reviewed: true })
+        .eq("id", modification.id);
+      if (modError) throw modError;
 
       // Refresh the page data
-      router.refresh();
+      router.push("/admin/books/review");
     } catch (error) {
       console.error("Error updating modification:", error);
     } finally {
