@@ -133,7 +133,7 @@ export default function ReadingList() {
       return { items: [], totalCount: 0 };
     }
 
-    const fetchedItems: (ReadingListItem | null)[] = await Promise.all(
+    const fetchedItems: any = await Promise.all(
       (booksData || []).map(async (item) => {
         try {
           const response = await fetch(`/api/books/${item.book_id}/v3`);
@@ -154,7 +154,9 @@ export default function ReadingList() {
     );
 
     return {
-      items: fetchedItems.filter((book) => book !== null) as ReadingListItem[],
+      items: fetchedItems.filter(
+        (book: any) => book !== null
+      ) as ReadingListItem[],
       totalCount: count || 0,
     };
   }
