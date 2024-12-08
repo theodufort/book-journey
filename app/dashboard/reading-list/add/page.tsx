@@ -17,6 +17,7 @@ export default function AddBook() {
   const supabase = createClientComponentClient<Database>();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<BookSearchResult[]>([]);
+  const [searchSent, setSearchSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedLanguage, setSelectedLanguage] = useState("");
@@ -26,10 +27,10 @@ export default function AddBook() {
   const [shouldRedirect, setShouldRedirect] = useState(true);
   const [showCustomForm, setShowCustomForm] = useState(false);
   const [customBook, setCustomBook] = useState({
-    title: '',
-    description: '',
-    format: 'physical',
-    pageCount: ''
+    title: "",
+    description: "",
+    format: "physical",
+    pageCount: "",
   });
 
   const languages = [
@@ -208,6 +209,9 @@ export default function AddBook() {
               <button
                 type="submit"
                 className="btn btn-primary w-full"
+                onClick={() => {
+                  setSearchSent(true);
+                }}
                 disabled={loading}
               >
                 {loading ? t("searching") : t("search")}
@@ -215,9 +219,9 @@ export default function AddBook() {
             </div>
           </form>
           <div className="space-y-4">
-            {searchResults.length > 0 && (
+            {searchSent && (
               <div className="text-center py-4">
-                <button 
+                <button
                   className="btn btn-secondary"
                   onClick={() => setShowCustomForm(true)}
                 >
@@ -238,7 +242,9 @@ export default function AddBook() {
                       type="text"
                       className="input input-bordered w-full"
                       value={customBook.title}
-                      onChange={(e) => setCustomBook({...customBook, title: e.target.value})}
+                      onChange={(e) =>
+                        setCustomBook({ ...customBook, title: e.target.value })
+                      }
                       required
                     />
                   </div>
@@ -249,7 +255,12 @@ export default function AddBook() {
                     <textarea
                       className="textarea textarea-bordered w-full"
                       value={customBook.description}
-                      onChange={(e) => setCustomBook({...customBook, description: e.target.value})}
+                      onChange={(e) =>
+                        setCustomBook({
+                          ...customBook,
+                          description: e.target.value,
+                        })
+                      }
                     />
                   </div>
                   <div>
@@ -259,7 +270,9 @@ export default function AddBook() {
                     <select
                       className="select select-bordered w-full"
                       value={customBook.format}
-                      onChange={(e) => setCustomBook({...customBook, format: e.target.value})}
+                      onChange={(e) =>
+                        setCustomBook({ ...customBook, format: e.target.value })
+                      }
                     >
                       <option value="physical">Physical</option>
                       <option value="digital">Digital</option>
@@ -274,11 +287,16 @@ export default function AddBook() {
                       type="number"
                       className="input input-bordered w-full"
                       value={customBook.pageCount}
-                      onChange={(e) => setCustomBook({...customBook, pageCount: e.target.value})}
+                      onChange={(e) =>
+                        setCustomBook({
+                          ...customBook,
+                          pageCount: e.target.value,
+                        })
+                      }
                     />
                   </div>
                   <div className="card-actions justify-end space-x-2">
-                    <button 
+                    <button
                       className="btn btn-ghost"
                       onClick={() => setShowCustomForm(false)}
                     >
@@ -291,15 +309,19 @@ export default function AddBook() {
                           toast.error("Title is required");
                           return;
                         }
-                        
+
                         const customId = `CUSTOM-${Date.now()}`;
-                        const { error } = await supabase.from("reading_list").insert({
-                          user_id: user.id,
-                          book_id: customId,
-                          status: 'To Read',
-                          format: customBook.format,
-                          pages_read: customBook.pageCount ? parseInt(customBook.pageCount) : 0
-                        });
+                        const { error } = await supabase
+                          .from("reading_list")
+                          .insert({
+                            user_id: user.id,
+                            book_id: customId,
+                            status: "To Read",
+                            format: customBook.format,
+                            pages_read: customBook.pageCount
+                              ? parseInt(customBook.pageCount)
+                              : 0,
+                          });
 
                         if (error) {
                           toast.error("Failed to add custom book");
