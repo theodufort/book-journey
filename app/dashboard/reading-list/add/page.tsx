@@ -215,7 +215,7 @@ export default function AddBook() {
             </div>
           </form>
           <div className="space-y-4">
-            {searchQuery && (
+            {searchResults.length > 0 && (
               <div className="text-center py-4">
                 <button 
                   className="btn btn-secondary"
