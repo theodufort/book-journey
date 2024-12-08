@@ -78,8 +78,9 @@ export async function POST(request: Request) {
   for (const row of parsedData.data) {
     const bookData = parseBookData(row, importType);
     // Skip records with invalid or missing status
+    // If this is a custom ID or we haven't processed this ISBN before
     if (bookData.isbn) {
-      if (processedISBNs.has(bookData.isbn)) {
+      if (!bookData.isbn.startsWith('CUSTOM-') && processedISBNs.has(bookData.isbn)) {
         duplicateCount++;
         continue;
       }
@@ -150,97 +151,7 @@ export async function POST(request: Request) {
         }
       }
     } else {
-      // Create custom ID and book data for books without ISBN
-      if (row["Title"]) {
-        const bookData = parseBookData(row, importType);
-        
-        // First insert into books table
-        const { error: booksError } = await supabase
-          .from("books")
-          .upsert({
-            isbn_13: bookData.isbn,
-            data: {
-              id: bookData.isbn,
-              volumeInfo: {
-                title: bookData.title,
-                authors: [bookData.author],
-                language: "en",
-                subtitle: null,
-                pageCount: null,
-                publisher: null,
-                categories: [],
-                imageLinks: {
-                  thumbnail: null,
-                },
-                description: null,
-                publishedDate: null,
-                industryIdentifiers: [
-                  {
-                    type: "CUSTOM_ID",
-                    identifier: bookData.isbn,
-                  },
-                ],
-              },
-            },
-          });
-
-        if (booksError) {
-          console.error(
-            `Error creating custom book entry for ${title}:`,
-            booksError
-          );
-          failedRecords.push({
-            title: title,
-            author: author,
-            error: "Failed to create custom book entry",
-            details: booksError.message,
-          });
-          continue;
-        }
-        console.log(bookData.read_status);
-        // Then insert into reading_list
-        const { error: readingListError } = await supabase
-          .from("reading_list")
-          .upsert({
-            user_id: userId,
-            book_id: customId,
-            status: mapStatus(bookData.read_status || "to-read"),
-            rating: bookData.rating ? bookData.rating : null,
-            review: bookData.review,
-            tags: bookData.tags ? bookData.tags : [],
-            reading_at: bookData.date_started
-              ? new Date(bookData.date_started)
-              : null,
-            finished_at: bookData.date_finished
-              ? new Date(bookData.date_finished)
-              : null,
-            toread_at: new Date(),
-            pointsAwardedFinished: false,
-            pointsAwardedRating: false,
-            pointsAwardedTextReview: false,
-            reviewPublic: false,
-            pages_read: 0,
-            format: bookData.format,
-          });
-
-        if (readingListError) {
-          console.error(
-            `Error adding custom book to reading list ${title}:`,
-            readingListError
-          );
-          failedRecords.push({
-            title: title,
-            author: author,
-            error: "Failed to add to reading list",
-            details: readingListError.message,
-          });
-        } else {
-          successCount++;
-          verifiedCount++;
-        }
-      } else {
-        failedRecords.push(row);
-      }
+      failedRecords.push(row);
     }
   }
 
