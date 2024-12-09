@@ -177,6 +177,23 @@ const steps = [
       },
     ],
   },
+  {
+    tour: "recommendationsTour",
+    steps: [
+      {
+        icon: <>🔮</>,
+        title: "Your Recommendations",
+        showControls: true,
+        content: (
+          <p>
+            Get personalized book recommendations based on your previous books.
+            <br />
+            This feature is still in beta!
+          </p>
+        ),
+      },
+    ],
+  },
 ];
 
 // This is a server-side component to ensure the user is logged in.

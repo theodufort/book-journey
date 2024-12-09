@@ -24,7 +24,7 @@ const CongratulationsModal: React.FC<CongratulationsModalProps> = ({
       <Confetti />
       <div
         className="bg-base-200 p-8 rounded-lg max-w-md w-full mx-10"
-        style={{ boxShadow: "0 0px 50px 0px #6366f1" }}
+        style={{ boxShadow: "0 0px 50px 0px #cc785c" }}
       >
         <h2 className="text-2xl font-bold mb-4">{t("title")}</h2>
         {messageType == "begin" ? (
