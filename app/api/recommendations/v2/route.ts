@@ -132,16 +132,9 @@ async function getRecommendations(
             const response = await fetch(url.toString());
             if (!response.ok) {
               if (response.status === 404) {
-                return {
-                  author: "Unknown",
-                  subjects: [],
-                };
+                return null;
               }
-              console.log("Failed to fetch books");
-              return {
-                author: "Unknown",
-                subjects: [],
-              };
+              return null;
             }
             const data: BookSearchResult = await response.json();
             return {
