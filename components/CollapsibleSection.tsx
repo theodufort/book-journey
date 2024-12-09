@@ -246,7 +246,7 @@ export default function CollapsibleSection({
                   If we must know total pages, we need total count from the server. */}
               <div className="flex justify-center mt-4 space-x-2">
                 <button
-                  className="btn btn-sm"
+                  className="btn btn-sm btn-primary"
                   onClick={() => {
                     if (currentPage > 1) onPageChange(currentPage - 1);
                   }}
@@ -258,7 +258,7 @@ export default function CollapsibleSection({
                   {t("page")} {currentPage}
                 </span>
                 <button
-                  className="btn btn-sm"
+                  className="btn btn-sm btn-primary"
                   onClick={() => {
                     // Assuming next page will fetch new items
                     onPageChange(currentPage + 1);
