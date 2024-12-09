@@ -64,9 +64,9 @@ export default function ReadingList() {
       const { data } = await supabase.auth.getUser();
       if (data.user) {
         setUser(data.user);
-        startNextStep("readinglistTour");
         // Fetch first page of each status on load
         await fetchAllStatuses(data.user.id);
+        startNextStep("readinglistTour");
       } else {
         console.log("User not authenticated");
       }

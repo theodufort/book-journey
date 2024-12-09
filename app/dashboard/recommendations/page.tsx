@@ -6,9 +6,11 @@ import { Volume } from "@/interfaces/GoogleAPI";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useTranslations } from "next-intl";
+import { useNextStep } from "nextstepjs";
 import { useEffect, useState } from "react";
 
 export default function Recommendations() {
+  const { startNextStep } = useNextStep();
   const t = useTranslations("BookRecommendations");
   const [isLoading, setIsLoading] = useState(true);
   const [booksLoaded, setBooksLoaded] = useState(false);
@@ -44,6 +46,7 @@ export default function Recommendations() {
         (item: any) => item.volumeInfo.imageLinks
       );
       setBookSuggestions(volumesWithImages);
+      startNextStep("recommendationsTour");
       setBooksLoaded(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
