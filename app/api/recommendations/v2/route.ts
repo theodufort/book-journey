@@ -131,7 +131,7 @@ async function getRecommendations(
             );
             const response = await fetch(url.toString());
             if (!response.ok) {
-              throw new Error("Failed to fetch books");
+              console.log("Failed to fetch books");
             }
             const data: BookSearchResult = await response.json();
             return {
