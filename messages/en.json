@@ -172,6 +172,7 @@
       "reading_status4":"Did Not Finish",
       "author_label":"Author",
       "page_label":"Page Count",
+      "release_label":"Date",
       "unknown_label":"Unknown",
       "categories_label":"Categories",
       "description_label":"Description",

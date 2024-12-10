@@ -13,6 +13,7 @@ import { useTranslations } from "next-intl";
 import toast from "react-hot-toast";
 
 export default function AddBook() {
+  const t_book = useTranslations("BookAvatar");
   const t = useTranslations("AddToReadingList");
   const supabase = createClientComponentClient<Database>();
   const [searchQuery, setSearchQuery] = useState("");
@@ -420,8 +421,20 @@ export default function AddBook() {
                 </figure>
                 <div className="card-body">
                   <h2 className="card-title">{book.volumeInfo.title}</h2>
-                  <p>{book.volumeInfo.authors?.join(", ")}</p>
-                  <p>{book.volumeInfo.publishedDate}</p>
+                  <p>
+                    <b>{t_book("author_label")}: </b>
+                    {book.volumeInfo.authors?.join(", ")}
+                  </p>
+                  <p>
+                    <b>{t_book("page_label")}: </b>
+                    {book.volumeInfo.pageCount != 0
+                      ? book.volumeInfo.pageCount
+                      : "Unknown"}
+                  </p>
+                  <p>
+                    <b>{t_book("release_label")}: </b>
+                    {book.volumeInfo.publishedDate}
+                  </p>
                   <p>
                     {typeof book.volumeInfo.description === "string"
                       ? book.volumeInfo.description
