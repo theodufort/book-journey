@@ -276,7 +276,19 @@ export default function BookNookComponent() {
     toast.success("Sticky note added!");
     setNewNoteContent("");
   };
+  async function updateHabitPages() {
+    const { data, error } = await supabase.rpc("update_habit_progress", {
+      _metric: "pages_read",
+      _user_id: user.id,
+      _progress_value: pagesRead,
+    });
 
+    if (error) {
+      console.error("Error updating habit progress:", error);
+    } else {
+      console.log("Habit progress updated successfully:", data);
+    }
+  }
   async function handleLogSession() {
     if (!user || !selectedBook) {
       toast.error("No book selected");
@@ -323,7 +335,7 @@ export default function BookNookComponent() {
       console.error(error);
       return;
     }
-
+    updateHabitPages();
     // Calculate pages read
     const pagesReadThisSession = endPage - startPage;
     setPagesRead(pagesReadThisSession);

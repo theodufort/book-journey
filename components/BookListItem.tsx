@@ -126,6 +126,26 @@ export default function BookListItem({
       }
     }
   };
+  async function updateHabitBook() {
+    const { data, error } = await supabase.rpc("update_habit_progress", {
+      _metric: "books_read",
+      _user_id: user.id,
+      _progress_value: 1,
+    });
+    if (book.pageCount) {
+      await supabase.rpc("update_habit_progress", {
+        _metric: "pages_read",
+        _user_id: user.id,
+        _progress_value: book.pageCount,
+      });
+    }
+
+    if (error) {
+      console.error("Error updating habit progress:", error);
+    } else {
+      console.log("Habit progress updated successfully:", data);
+    }
+  }
   async function awardPoints(points: number, type: string) {
     if (!user) {
       console.error("User not authenticated");
@@ -390,6 +410,7 @@ export default function BookListItem({
       )
       .eq("user_id", user?.id);
     if (status === "Finished") {
+      updateHabitBook();
       awardPoints(100, "pointsAwardedFinished");
     }
 
