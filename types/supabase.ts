@@ -1202,15 +1202,7 @@ export type Database = {
           tour_name?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "onboarding_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       point_transactions: {
         Row: {
@@ -1995,6 +1987,14 @@ export type Database = {
           isbn_13: string
           data: Json
         }[]
+      }
+      update_habit_progress: {
+        Args: {
+          _metric: string
+          _user_id: string
+          _progress_value: number
+        }
+        Returns: undefined
       }
       update_reading_stats: {
         Args: {
