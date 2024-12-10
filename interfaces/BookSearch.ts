@@ -55,6 +55,7 @@ export interface BookSearchResult {
     description?: string;
     categories?: string[];
     reviews?: string[];
+    pageCount: number;
     imageLinks?: {
       thumbnail: string;
     };

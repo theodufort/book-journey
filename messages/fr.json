@@ -168,6 +168,7 @@
     "reading_status4": "Non Terminé",
     "author_label": "Auteur",
     "page_label": "Nombre de Pages",
+    "release_label":"Date",
     "unknown_label": "Inconnu",
     "categories_label": "Catégories",
     "description_label": "Description",
