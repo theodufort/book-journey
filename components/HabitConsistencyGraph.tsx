@@ -104,9 +104,11 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
       new Date(0)
     );
 
-    const endDate = latestStreakDate;
+    // Calculate the middle point to show equal days before and after
+    const middleDate = latestStreakDate;
+    const endDate = addDays(middleDate, Math.floor(selectedDays / 2));
     endDate.setHours(23, 59, 59, 999); // Set to end of day
-    const startDate = addDays(endDate, -(selectedDays - 1));
+    const startDate = addDays(middleDate, -Math.floor(selectedDays / 2));
     startDate.setHours(0, 0, 0, 0); // Set to start of first day
     const dateRange = eachDayOfInterval({ start: startDate, end: endDate });
 
@@ -134,11 +136,17 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
           : null;
 
       let value = 0;
-      if (progressForDay) {
-        value = Number(progressForDay.progress_value);
-        lastKnownValue = value; // Update last known value when we have an entry
+      // For past and present days
+      if (date <= new Date()) {
+        if (progressForDay) {
+          value = Number(progressForDay.progress_value);
+          lastKnownValue = value; // Update last known value when we have an entry
+        } else {
+          value = lastKnownValue; // Use the last known value for days without entries
+        }
       } else {
-        value = lastKnownValue; // Use the last known value for days without entries
+        // For future days, we'll show null to create a break in the line
+        value = null;
       }
 
       const dataPoint = {
