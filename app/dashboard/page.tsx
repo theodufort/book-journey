@@ -181,7 +181,6 @@ export default function Dashboard() {
       setLoading(false);
     }
   }
-
   if (loading) {
     return (
       <main className="min-h-screen p-8 pb-24 flex items-center justify-center">

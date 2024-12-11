@@ -90,7 +90,7 @@ export default function BookNookComponent() {
     if (!user || !selectedBook) return;
 
     const { data, error } = await supabase
-      .from("sticky_notes")
+      .from("session_notes")
       .select("*")
       .eq("user_id", user.id)
       .eq("book_id", selectedBook.id)
@@ -322,7 +322,7 @@ export default function BookNookComponent() {
         .single();
     const label = customLabel.trim() || `${startPage}-${endPage}`;
 
-    const { error } = await supabase.from("sticky_notes").insert({
+    const { error } = await supabase.from("session_notes").insert({
       user_id: user.id,
       book_id: selectedBook.id,
       content: dailyNoteContent,

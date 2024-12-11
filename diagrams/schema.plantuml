@@ -245,7 +245,7 @@ entity "referrals" {
   referred_id : uuid
 }
 
-entity "sticky_notes" {
+entity "session_notes" {
   * id : uuid
   --
   user_id : uuid [FK]
@@ -331,7 +331,7 @@ auth_users ||--o{ point_transactions : "user_id"
 auth_users ||--o{ reading_list : "user_id"
 auth_users ||--o{ user_activity : "user_id"
 auth_users ||--o{ habits : "user_id"
-auth_users ||--o{ sticky_notes : "user_id"
+auth_users ||--o{ session_notes : "user_id"
 auth_users ||--o{ user_connection_activity : "user_id"
 auth_users ||--o{ referrals : "referrer_id"
 

@@ -21,7 +21,7 @@ export default function StickyNotePage({ params }: { params: { id: string } }) {
     async function fetchNote() {
       try {
         const { data, error } = await supabase
-          .from("sticky_notes")
+          .from("session_notes")
           .select("content, label")
           .eq("id", params.id)
           .single();

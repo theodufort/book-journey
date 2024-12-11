@@ -26,7 +26,6 @@ export async function GET(req: NextRequest) {
   const requestUrl = new URL(req.url);
   const code = requestUrl.searchParams.get("code");
   const ref = requestUrl.searchParams.get("ref");
-  console.log(ref);
   if (code) {
     const supabase = createRouteHandlerClient({ cookies });
     const {
