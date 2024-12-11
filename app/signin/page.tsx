@@ -4,6 +4,7 @@ import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Provider } from "@supabase/supabase-js";
 import axios from "axios";
+import { trackEvent } from "fathom-client";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -43,7 +44,7 @@ export default function Login() {
     e?.preventDefault();
 
     setIsLoading(true);
-
+    trackEvent("user signup");
     try {
       const { type, provider } = options;
       const redirectURL =

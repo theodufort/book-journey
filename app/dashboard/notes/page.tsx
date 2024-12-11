@@ -113,7 +113,7 @@ export default function BookNotes() {
   const fetchStickyNotes = async (book_id: string) => {
     try {
       const { data: stickyNotesData, error: stickyNotesError } = await supabase
-        .from("sticky_notes")
+        .from("session_notes")
         .select("id, content, created_at, updated_at, label, is_public")
         .eq("book_id", book_id)
         .eq("user_id", user?.id);
@@ -159,7 +159,7 @@ export default function BookNotes() {
       }
 
       const { error } = await supabase
-        .from("sticky_notes")
+        .from("session_notes")
         .update(updateData)
         .eq("id", id)
         .eq("user_id", user?.id)
@@ -208,7 +208,7 @@ export default function BookNotes() {
 
     try {
       const { error } = await supabase
-        .from("sticky_notes")
+        .from("session_notes")
         .delete()
         .eq("id", id)
         .eq("user_id", user?.id)
@@ -233,7 +233,7 @@ export default function BookNotes() {
 
     try {
       const { data, error } = await supabase
-        .from("sticky_notes")
+        .from("session_notes")
         .insert({
           user_id: user?.id,
           book_id: selectedBook.book_id,
@@ -812,7 +812,7 @@ export default function BookNotes() {
 
       try {
         const { error } = await supabase
-          .from("sticky_notes")
+          .from("session_notes")
           .update({ label: tempLabel })
           .eq("id", deleteConfirmId)
           .eq("user_id", user?.id);

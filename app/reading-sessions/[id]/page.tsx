@@ -40,7 +40,7 @@ export default function ReadingSessionPage({
             end_page,
             started_at,
             ended_at,
-            sticky_notes (
+            session_notes (
               content,
               label
             )
@@ -54,7 +54,7 @@ export default function ReadingSessionPage({
         if (sessionData) {
           setSession({
             ...sessionData,
-            notes: sessionData.sticky_notes || [],
+            notes: sessionData.session_notes || [],
           });
         } else {
           setError("Reading session not found");

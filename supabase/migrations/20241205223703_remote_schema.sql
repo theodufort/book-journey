@@ -839,7 +839,7 @@ CREATE TABLE IF NOT EXISTS "public"."roadmap_votes" (
 
 
 
-CREATE TABLE IF NOT EXISTS "public"."sticky_notes" (
+CREATE TABLE IF NOT EXISTS "public"."session_notes" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
     "book_id" "text" NOT NULL,
@@ -1148,8 +1148,8 @@ ALTER TABLE ONLY "public"."roadmap_votes"
 
 
 
-ALTER TABLE ONLY "public"."sticky_notes"
-    ADD CONSTRAINT "sticky_notes_pkey" PRIMARY KEY ("id");
+ALTER TABLE ONLY "public"."session_notes"
+    ADD CONSTRAINT "session_notes_pkey" PRIMARY KEY ("id");
 
 
 
@@ -1321,13 +1321,13 @@ ALTER TABLE ONLY "public"."roadmap_votes"
 
 
 
-ALTER TABLE ONLY "public"."sticky_notes"
-    ADD CONSTRAINT "sticky_notes_reading_session_id_fkey" FOREIGN KEY ("reading_session_id") REFERENCES "public"."reading_sessions"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY "public"."session_notes"
+    ADD CONSTRAINT "session_notes_reading_session_id_fkey" FOREIGN KEY ("reading_session_id") REFERENCES "public"."reading_sessions"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
-ALTER TABLE ONLY "public"."sticky_notes"
-    ADD CONSTRAINT "sticky_notes_user_id_fkey1" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY "public"."session_notes"
+    ADD CONSTRAINT "session_notes_user_id_fkey1" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -1369,7 +1369,7 @@ CREATE POLICY "Enable delete for users based on user_id" ON "public"."questions_
 
 
 
-CREATE POLICY "Enable delete for users based on user_id" ON "public"."sticky_notes" FOR DELETE USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+CREATE POLICY "Enable delete for users based on user_id" ON "public"."session_notes" FOR DELETE USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -1409,7 +1409,7 @@ CREATE POLICY "Enable insert for users based on user_id" ON "public"."habits" FO
 
 
 
-CREATE POLICY "Enable insert for users based on user_id" ON "public"."sticky_notes" FOR INSERT WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+CREATE POLICY "Enable insert for users based on user_id" ON "public"."session_notes" FOR INSERT WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -1453,7 +1453,7 @@ CREATE POLICY "Enable read access for all users" ON "public"."roadmap_votes" FOR
 
 
 
-CREATE POLICY "Enable read access for all users" ON "public"."sticky_notes" FOR SELECT USING (true);
+CREATE POLICY "Enable read access for all users" ON "public"."session_notes" FOR SELECT USING (true);
 
 
 
@@ -1481,7 +1481,7 @@ CREATE POLICY "Enable update for users based on email" ON "public"."roadmap_vote
 
 
 
-CREATE POLICY "Enable update for users based on email" ON "public"."sticky_notes" FOR UPDATE USING ((( SELECT "auth"."uid"() AS "uid") = "user_id")) WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
+CREATE POLICY "Enable update for users based on email" ON "public"."session_notes" FOR UPDATE USING ((( SELECT "auth"."uid"() AS "uid") = "user_id")) WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -1649,7 +1649,7 @@ ALTER TABLE "public"."roadmap" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."roadmap_votes" ENABLE ROW LEVEL SECURITY;
 
 
-ALTER TABLE "public"."sticky_notes" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "public"."session_notes" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."user_activity" ENABLE ROW LEVEL SECURITY;
@@ -2282,10 +2282,10 @@ GRANT ALL ON TABLE "public"."roadmap_votes" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."sticky_notes" TO "postgres";
-GRANT ALL ON TABLE "public"."sticky_notes" TO "anon";
-GRANT ALL ON TABLE "public"."sticky_notes" TO "authenticated";
-GRANT ALL ON TABLE "public"."sticky_notes" TO "service_role";
+GRANT ALL ON TABLE "public"."session_notes" TO "postgres";
+GRANT ALL ON TABLE "public"."session_notes" TO "anon";
+GRANT ALL ON TABLE "public"."session_notes" TO "authenticated";
+GRANT ALL ON TABLE "public"."session_notes" TO "service_role";
 
 
 

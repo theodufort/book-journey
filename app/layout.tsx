@@ -40,10 +40,10 @@ export default async function RootLayout({
           <GoogleAnalytics gaId="G-1LDR3284GW" />
           <GoogleTagManager gtmId="AW-10934490832" />
           <meta name="impact-site-verification" data-value="369738092" />{" "}
-          <Script
+          {/* <Script
             strategy="lazyOnload"
             src="https://embed.tawk.to/6701c7a037379df10df23fe2/1i9ff7ip6"
-          />
+          /> */}
           <PlausibleProvider domain={config.domainName} />
         </head>
       )}
