@@ -6,7 +6,6 @@ import { useTranslations } from "next-intl";
 import AIRecorder from "./AIRecorder";
 import TranslationWidget from "./TranslationWidget";
 import {
-  SupabaseClient,
   User,
   createClientComponentClient,
 } from "@supabase/auth-helpers-nextjs";
@@ -20,10 +19,10 @@ import { ForwardRefEditor } from "./ForwardRefEditor";
 import { useNextStep } from "nextstepjs";
 
 interface props {
-  supabase: SupabaseClient;
   user: User;
 }
-export default function BookNookComponent({ supabase, user }: props) {
+export default function BookNookComponent({ user }: props) {
+  const supabase = createClientComponentClient<Database>();
   const { startNextStep, currentTour } = useNextStep();
   const handleStartTour = () => {
     startNextStep("booknookTour");
