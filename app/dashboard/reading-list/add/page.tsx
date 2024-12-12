@@ -43,14 +43,13 @@ export default function AddBook() {
 
   useEffect(() => {
     const getUser = async () => {
-      const { data: userData } = await supabase.auth.getUser();
-      setUser(userData.user);
-
-      if (userData.user) {
+      const { data } = await supabase.auth.getUser();
+      if (data.user) {
+        setUser(data.user);
         const { data: preferenceData, error } = await supabase
           .from("user_preferences")
           .select("preferred_book_language")
-          .eq("user_id", userData.user.id)
+          .eq("user_id", user.id)
           .single();
 
         if (error) {
@@ -61,9 +60,10 @@ export default function AddBook() {
         } else {
           setSelectedLanguage("en"); // Default to English if no preference is set
         }
+      } else {
+        console.log("User not authenticated");
       }
     };
-
     getUser();
   }, [supabase]);
 

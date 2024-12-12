@@ -1,5 +1,6 @@
 // components/ImportFromApps.tsx
 
+import { getUser } from "@/libs/supabase/queries";
 import { Database } from "@/types/supabase";
 import {
   createClientComponentClient,
@@ -22,12 +23,15 @@ const ImportFromApps: React.FC = () => {
   );
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user);
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
+      if (user) {
+        setUser(user);
+      } else {
+        console.log("User not authenticated");
+      }
     };
-
-    getUser();
+    getUserCall();
   }, [supabase]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {

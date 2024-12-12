@@ -10,6 +10,7 @@ import {
 import { Database } from "@/types/supabase";
 import { useRouter } from "next/navigation";
 import { RoadmapItem, fetchRoadmapItems, submitIdea } from "@/libs/roadmap";
+import { getUser } from "@/libs/supabase/queries";
 
 export default function Roadmap() {
   const [loading, setLoading] = useState(true);
@@ -25,12 +26,16 @@ export default function Roadmap() {
   };
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user);
-      await loadItems();
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
+      if (user) {
+        setUser(user);
+        await loadItems();
+      } else {
+        console.log("User not authenticated");
+      }
     };
-    getUser();
+    getUserCall();
   }, [supabase]);
   const allTags = Array.from(new Set(items.flatMap((item) => item.tags)));
 

@@ -2,6 +2,7 @@
 "use client";
 
 import apiClient from "@/libs/api";
+import { getUser } from "@/libs/supabase/queries";
 import { Database } from "@/types/supabase";
 import { Popover, Transition } from "@headlessui/react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -24,13 +25,15 @@ const ButtonAccount = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-
-      setUser(data.user);
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
+      if (user) {
+        setUser(user);
+      } else {
+        console.log("User not authenticated");
+      }
     };
-
-    getUser();
+    getUserCall();
   }, [supabase]);
 
   const handleSignOut = async () => {

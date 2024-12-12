@@ -1,3 +1,4 @@
+import { getUser } from "@/libs/supabase/queries";
 import { Database } from "@/types/supabase";
 import {
   createClientComponentClient,
@@ -313,14 +314,16 @@ const StreakRewardSystem = ({ onUpdate }: { onUpdate: () => void }) => {
   }
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user);
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
+      if (user) {
+        setUser(user);
+      } else {
+        console.log("User not authenticated");
+      }
     };
-
-    getUser();
+    getUserCall();
   }, [supabase]);
-
   useEffect(() => {
     if (user) {
       checkStreak();

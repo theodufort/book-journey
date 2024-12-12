@@ -1,6 +1,10 @@
 // HabitConsistencyGraph.tsx
+import { getUser } from "@/libs/supabase/queries";
 import { Database } from "@/types/supabase";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import {
+  createClientComponentClient,
+  User,
+} from "@supabase/auth-helpers-nextjs";
 import { addDays, eachDayOfInterval, format, isSameDay } from "date-fns";
 import { useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
@@ -42,6 +46,7 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
 }) => {
   const [habit, setHabit] = useState<any>(null);
   const [progressData, setProgressData] = useState<any[]>([]);
+  const [user, setUser] = useState<User | null>(null);
   const supabase = createClientComponentClient<Database>();
   const t = useTranslations("ReadingHabits");
 
@@ -61,13 +66,18 @@ const HabitConsistencyGraph: React.FC<HabitConsistencyGraphProps> = ({
   }, [isMd, initialDays]);
 
   useEffect(() => {
-    fetchHabitAndProgress();
-  }, []);
-
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
+      if (user) {
+        setUser(user);
+        fetchHabitAndProgress();
+      } else {
+        console.log("User not authenticated");
+      }
+    };
+    getUserCall();
+  }, [supabase]);
   const fetchHabitAndProgress = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
     if (user) {
       // Fetch habit data
       const { data: habitData, error: habitError } = await supabase

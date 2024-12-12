@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import ButtonSignin from "./ButtonSignin";
 import { ButtonTheme } from "./ButtonTheme";
 import LocaleSwitcher from "./LocaleSwitcher";
+import { getUser } from "@/libs/supabase/queries";
 
 const links: {
   href: string;
@@ -37,15 +38,15 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      if (data.user) {
-        setUser(data.user);
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
+      if (user) {
+        setUser(user);
       } else {
         console.log("User not authenticated");
       }
     };
-    getUser();
+    getUserCall();
   }, [supabase]);
   // setIsOpen(false) when the route changes (i.e: when the user clicks on a link on mobile)
   useEffect(() => {

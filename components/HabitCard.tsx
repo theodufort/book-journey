@@ -1,10 +1,14 @@
 import { Database } from "@/types/supabase";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import {
+  createClientComponentClient,
+  User,
+} from "@supabase/auth-helpers-nextjs";
 import { addDays, addMonths, addWeeks, addYears } from "date-fns";
 import { useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Countdown from "./Countdown";
+import { getUser } from "@/libs/supabase/queries";
 
 interface HabitCardProps {
   onHabitChange?: () => void;
@@ -12,21 +16,27 @@ interface HabitCardProps {
 
 const HabitCard: React.FC<HabitCardProps> = ({ onHabitChange }) => {
   const t = useTranslations("ReadingHabits");
+  const [user, setUser] = useState<User | null>(null);
   const supabase = createClientComponentClient<Database>();
   const [habit, setHabit] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<"new" | "update" | "modify">(
     "new"
   );
-
   useEffect(() => {
-    fetchHabit();
-  }, []);
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
+      if (user) {
+        setUser(user);
+        fetchHabit();
+      } else {
+        console.log("User not authenticated");
+      }
+    };
+    getUserCall();
+  }, [supabase]);
 
   const fetchHabit = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
     if (user) {
       const { data, error } = await supabase
         .from("habits")

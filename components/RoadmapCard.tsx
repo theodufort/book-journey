@@ -1,5 +1,9 @@
 import { RoadmapItem, updateStatus, updateVotes } from "@/libs/roadmap";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { getUser } from "@/libs/supabase/queries";
+import {
+  createClientComponentClient,
+  User,
+} from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from "react";
 
 export default function RoadmapCard({
@@ -15,36 +19,40 @@ export default function RoadmapCard({
   const [isVoting, setIsVoting] = useState(false);
   const [userVote, setUserVote] = useState<boolean | null>(null);
   const supabase = createClientComponentClient();
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const checkUserVote = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
       if (user) {
-        const { data: voteData } = await supabase
-          .from("roadmap_votes")
-          .select("increment")
-          .eq("roadmap_id", id)
-          .eq("user_id", user.id)
-          .single();
-
-        setUserVote(voteData?.increment ?? null);
+        setUser(user);
+        checkUserVote();
+        checkAdminStatus();
+      } else {
+        console.log("User not authenticated");
       }
     };
+    getUserCall();
+  }, [supabase]);
 
-    const checkAdminStatus = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user?.email === "theodufort05@gmail.com") {
-        setIsAdmin(true);
-      }
-    };
+  const checkUserVote = async () => {
+    if (user) {
+      const { data: voteData } = await supabase
+        .from("roadmap_votes")
+        .select("increment")
+        .eq("roadmap_id", id)
+        .eq("user_id", user.id)
+        .single();
 
-    checkUserVote();
-    checkAdminStatus();
-  }, [id, supabase]);
+      setUserVote(voteData?.increment ?? null);
+    }
+  };
+
+  const checkAdminStatus = async () => {
+    if (user?.email === "theodufort05@gmail.com") {
+      setIsAdmin(true);
+    }
+  };
 
   const handleStatusChange = async (
     e: React.ChangeEvent<HTMLSelectElement>

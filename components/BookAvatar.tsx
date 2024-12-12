@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import ViewSellers from "./ViewSellers";
+import { getUser } from "@/libs/supabase/queries";
 
 interface Props {
   vol: Volume;
@@ -29,13 +30,15 @@ const BookAvatar = ({ vol, isBlurred, allowAdd }: Props) => {
   };
   const [user, setUser] = useState<User | null>(null);
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-
-      setUser(data.user);
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
+      if (user) {
+        setUser(user);
+      } else {
+        console.log("User not authenticated");
+      }
     };
-
-    getUser();
+    getUserCall();
   }, [supabase]);
   const addToReadingList = async (book_isbn: string, status: string) => {
     const { error } = await supabase.from("reading_list").insert({

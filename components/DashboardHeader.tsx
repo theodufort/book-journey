@@ -1,5 +1,4 @@
-// components/HeaderDashboard.tsx
-
+"use client";
 import ButtonAccount from "@/components/ButtonAccount";
 import config from "@/config";
 import SuggestImprovementBadge from "@/components/SuggestImprovementBadge";
@@ -17,6 +16,7 @@ import { HowToEarnPointsPopup } from "./HowToEarnPointsPopup";
 import ReferralLinkCard from "./ReferralLinkCard";
 import PaidFeatureWrapper from "./PaidFeatureWrapper";
 import { checkPremium } from "@/libs/premium";
+import { getUser } from "@/libs/supabase/queries";
 
 const HeaderDashboard = () => {
   const t = useTranslations("HeaderDashboard");
@@ -39,13 +39,17 @@ const HeaderDashboard = () => {
       htmlElement.setAttribute("data-theme", theme || "light");
     }
   }, [theme]);
-  useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user);
-    };
 
-    getUser();
+  useEffect(() => {
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
+      if (user) {
+        setUser(user);
+      } else {
+        console.log("User not authenticated");
+      }
+    };
+    getUserCall();
   }, [supabase]);
   useEffect(() => {
     const fetchPoints = async () => {

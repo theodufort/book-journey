@@ -9,6 +9,7 @@ import BookSharebutton from "./BookShareButton";
 import CongratulationsModal from "./CongratulationsModal";
 import ViewSellers from "./ViewSellers";
 import ReviewBookInfo from "./ReviewBookInfo";
+import { getUser } from "@/libs/supabase/queries";
 export default function BookListItem({
   status,
   item,
@@ -49,11 +50,15 @@ export default function BookListItem({
     Array<{ id: string; question: string; answer: string | null }>
   >([]);
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user);
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
+      if (user) {
+        setUser(user);
+      } else {
+        console.log("User not authenticated");
+      }
     };
-    getUser();
+    getUserCall();
   }, [supabase]);
 
   useEffect(() => {
