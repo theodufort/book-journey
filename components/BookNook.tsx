@@ -1,16 +1,19 @@
-"use client";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { MDXEditorMethods } from "@mdxeditor/editor";
 import PaidFeatureWrapper from "./PaidFeatureWrapper";
 import { useTranslations } from "next-intl";
+import { Clock } from "lucide-react";
+import TextareaAutosize from "react-textarea-autosize";
 import AIRecorder from "./AIRecorder";
 import TranslationWidget from "./TranslationWidget";
+import { Tooltip } from "react-tooltip";
 import {
   User,
   createClientComponentClient,
 } from "@supabase/auth-helpers-nextjs";
 import toast from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
+import { Volume } from "@/interfaces/GoogleAPI";
 import { Database } from "@/types/supabase";
 import CongratulationsModalSession from "./CongratulationsModalSession";
 import TooltipHelper from "./Tooltip";
@@ -18,15 +21,12 @@ import DictionaryWidget from "./DictionaryWidget";
 import { ForwardRefEditor } from "./ForwardRefEditor";
 import { useNextStep } from "nextstepjs";
 
-interface props {
-  user: User;
-}
-export default function BookNookComponent({ user }: props) {
-  const supabase = createClientComponentClient<Database>();
+export default function BookNookComponent() {
   const { startNextStep, currentTour } = useNextStep();
   const handleStartTour = () => {
     startNextStep("booknookTour");
   };
+  console.log(currentTour);
 
   const t = useTranslations("BookNook");
   const [readingSessionID, setReadingSessionID] = useState("");
@@ -39,7 +39,8 @@ export default function BookNookComponent({ user }: props) {
     }>
   >([]);
   const [loading, setLoading] = useState(true);
-
+  const supabase = createClientComponentClient<Database>();
+  const [user, setUser] = useState<User | null>(null);
   const [bookStickys, setBookStickys] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [newNoteContent, setNewNoteContent] = useState("");
@@ -102,9 +103,18 @@ export default function BookNookComponent({ user }: props) {
     setBookStickys(data || []);
   }, [user, selectedBook, supabase]);
 
-  if (user) {
-    fetchReadingList(user.id);
-  }
+  useEffect(() => {
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (data.user) {
+        setUser(data.user);
+        fetchReadingList(data.user.id);
+      } else {
+        console.log("User not authenticated");
+      }
+    };
+    getUser();
+  }, [supabase]);
 
   const fetchQuestions = useCallback(async () => {
     if (!user || !selectedBook) return;
