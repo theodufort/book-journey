@@ -12,7 +12,11 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 
-export default function BookNotes() {
+interface BookNotesProps {
+  user: User;
+}
+export default function BookNotes({ user }: BookNotesProps) {
+  console.log(user);
   const [bookStickys, setBookStickys] = useState<{
     [bookId: string]: {
       content: string;
@@ -28,7 +32,6 @@ export default function BookNotes() {
   const supabase = createClientComponentClient<Database>();
   const [readingList, setReadingList] = useState<ReadingListItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<User | null>(null);
   const [notes, setNotes] = useState<{
     [bookId: string]: { content: string; lastUpdated: string | null };
   }>({});
@@ -86,16 +89,6 @@ export default function BookNotes() {
   const displayedPages = useMemo(() => {
     return Math.max(1, totalPages);
   }, [totalPages]);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-    };
-    fetchUser();
-  }, [supabase]);
 
   useEffect(() => {
     if (user) {
