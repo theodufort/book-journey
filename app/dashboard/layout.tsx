@@ -4,7 +4,7 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import NextStepWrapper from "./NextStepWrapper";
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 const steps = [
   {
     tour: "dashboardTour",
@@ -221,7 +221,7 @@ export default async function LayoutPrivate({
   return (
     <>
       <NextStepWrapper userId={user.id} steps={steps}>
-        {children}
+        {React.cloneElement(children as React.ReactElement, { user })}
       </NextStepWrapper>
     </>
   );

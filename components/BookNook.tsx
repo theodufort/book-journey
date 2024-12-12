@@ -21,7 +21,11 @@ import DictionaryWidget from "./DictionaryWidget";
 import { ForwardRefEditor } from "./ForwardRefEditor";
 import { useNextStep } from "nextstepjs";
 
-export default function BookNookComponent() {
+interface BookNookProps {
+  user: User;
+}
+
+export default function BookNookComponent({ user }: BookNookProps) {
   const { startNextStep, currentTour } = useNextStep();
   const handleStartTour = () => {
     startNextStep("booknookTour");
@@ -40,7 +44,6 @@ export default function BookNookComponent() {
   >([]);
   const [loading, setLoading] = useState(true);
   const supabase = createClientComponentClient<Database>();
-  const [user, setUser] = useState<User | null>(null);
   const [bookStickys, setBookStickys] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [newNoteContent, setNewNoteContent] = useState("");
@@ -104,17 +107,10 @@ export default function BookNookComponent() {
   }, [user, selectedBook, supabase]);
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      if (data.user) {
-        setUser(data.user);
-        fetchReadingList(data.user.id);
-      } else {
-        console.log("User not authenticated");
-      }
-    };
-    getUser();
-  }, [supabase]);
+    if (user) {
+      fetchReadingList(user.id);
+    }
+  }, [user]);
 
   const fetchQuestions = useCallback(async () => {
     if (!user || !selectedBook) return;
