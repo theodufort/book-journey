@@ -12,6 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { getUser } from "@/libs/supabase/queries";
 
 export default function ReadingRewards() {
   const t = useTranslations("ReadingRewards");
@@ -25,12 +26,15 @@ export default function ReadingRewards() {
   const [filterCategory, setFilterCategory] = useState<string>("");
   const router = useRouter();
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user);
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
+      if (user) {
+        setUser(user);
+      } else {
+        console.log("User not authenticated");
+      }
     };
-
-    getUser();
+    getUserCall();
   }, [supabase]);
 
   useEffect(() => {

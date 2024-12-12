@@ -3,6 +3,7 @@ import CollapsibleSection from "@/components/CollapsibleSection";
 import HeaderDashboard from "@/components/DashboardHeader";
 import { Volume } from "@/interfaces/GoogleAPI";
 import { ReadingListItem } from "@/interfaces/ReadingList";
+import { getUser } from "@/libs/supabase/queries";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
@@ -60,18 +61,18 @@ export default function ReadingList() {
   }
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      if (data.user) {
-        setUser(data.user);
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
+      if (user) {
+        setUser(user);
         // Fetch first page of each status on load
-        await fetchAllStatuses(data.user.id);
+        await fetchAllStatuses(user.id);
         startNextStep("readinglistTour");
       } else {
         console.log("User not authenticated");
       }
     };
-    getUser();
+    getUserCall();
   }, [supabase]);
 
   async function fetchAllStatuses(userId: string) {

@@ -65,7 +65,6 @@ export default function ReviewDetail({ params }: { params: { id: string } }) {
         .select("data")
         .eq("isbn_13", modification.isbn_13)
         .single();
-      console.log(currentBook);
       if (fetchError) throw fetchError;
 
       // Create new data object with updates

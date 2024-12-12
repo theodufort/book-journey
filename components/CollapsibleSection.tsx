@@ -5,6 +5,7 @@ import { User } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import BookListItem from "./BookListItem";
+import { getUser } from "@/libs/supabase/queries";
 
 export default function CollapsibleSection({
   status,
@@ -38,11 +39,15 @@ export default function CollapsibleSection({
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user);
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
+      if (user) {
+        setUser(user);
+      } else {
+        console.log("User not authenticated");
+      }
     };
-    getUser();
+    getUserCall();
   }, [supabase]);
 
   useEffect(() => {

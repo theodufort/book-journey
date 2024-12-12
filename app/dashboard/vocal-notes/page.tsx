@@ -4,6 +4,7 @@ import HeaderDashboard from "@/components/DashboardHeader";
 import { ReadingListItem } from "@/interfaces/Dashboard";
 import { Volume } from "@/interfaces/GoogleAPI";
 import { checkPremium } from "@/libs/premium";
+import { getUser } from "@/libs/supabase/queries";
 import { Database } from "@/types/supabase";
 
 interface VocalNote {
@@ -105,13 +106,15 @@ export default function BookVocalNotes() {
   }, [totalPages]);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
+      if (user) {
+        setUser(user);
+      } else {
+        console.log("User not authenticated");
+      }
     };
-    fetchUser();
+    getUserCall();
   }, [supabase]);
 
   useEffect(() => {
@@ -135,6 +138,7 @@ export default function BookVocalNotes() {
   }, [selectedBook, user]);
 
   const fetchReadingList = async (newStatus?: string) => {
+    if (!user) return;
     setLoading(true);
     try {
       const filterStatus = newStatus || statusFilter;
@@ -216,9 +220,8 @@ export default function BookVocalNotes() {
       }
     } catch (error) {
       console.error("Unexpected error:", error);
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
   async function fetchVocalNotes(book_id: string) {
     const { data, error } = await supabase

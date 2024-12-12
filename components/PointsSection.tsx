@@ -1,4 +1,5 @@
 // components/PointsSection.tsx
+import { getUser } from "@/libs/supabase/queries";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
@@ -9,12 +10,15 @@ const PointsSection = () => {
   const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user);
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
+      if (user) {
+        setUser(user);
+      } else {
+        console.log("User not authenticated");
+      }
     };
-
-    getUser();
+    getUserCall();
   }, [supabase]);
 
   useEffect(() => {

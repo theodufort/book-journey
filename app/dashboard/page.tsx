@@ -2,6 +2,7 @@
 import HeaderDashboard from "@/components/DashboardHeader";
 import HabitCard from "@/components/HabitCard";
 import HabitConsistencyGraph from "@/components/HabitConsistencyGraph";
+import { getUser } from "@/libs/supabase/queries";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
@@ -27,7 +28,6 @@ export default function Dashboard() {
   const router = useRouter();
 
   const { startNextStep, currentTour } = useNextStep();
-  console.log(currentTour);
   const handleStartTour = () => {
     startNextStep("dashboardTour");
   };
@@ -76,14 +76,17 @@ export default function Dashboard() {
     setHabitRefreshTrigger((prev) => prev + 1);
   }, []);
 
-  const getUser = async () => {
-    const { data } = await supabase.auth.getUser();
-    setUser(data.user);
-  };
-
   useEffect(() => {
-    getUser();
-  }, []); // Empty dependency array ensures this runs once
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
+      if (user) {
+        setUser(user);
+      } else {
+        console.log("User not authenticated");
+      }
+    };
+    getUserCall();
+  }, [supabase]);
 
   const hasLoggedActivity = useRef(false);
 

@@ -1,9 +1,10 @@
 import OnboardingCard from "@/components/OnboardingCard";
 import config from "@/config";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import NextStepWrapper from "./NextStepWrapper";
 import React, { ReactNode } from "react";
-import { getUser } from "@/utils/cache";
 const steps = [
   {
     tour: "dashboardTour",
@@ -205,14 +206,22 @@ export default async function LayoutPrivate({
 }: {
   children: ReactNode;
 }) {
-  const { session, user } = await getUser();
+  const supabase = createServerComponentClient({ cookies });
+
+  const {
+    data: { session },
+    error,
+  } = await supabase.auth.getSession();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!session || !user?.id) {
     redirect(config.auth.loginUrl);
   }
   return (
     <>
       <NextStepWrapper userId={user.id} steps={steps}>
-        {React.cloneElement(children as React.ReactElement, { user })}
+        {children}
       </NextStepWrapper>
     </>
   );

@@ -3,6 +3,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
 import { User } from "@supabase/auth-helpers-nextjs";
 import { toast } from "react-hot-toast";
+import { getUser } from "@/libs/supabase/queries";
 
 const SuggestImprovementBadge = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,13 +13,15 @@ const SuggestImprovementBadge = () => {
   const supabase = createClientComponentClient<Database>();
 
   useEffect(() => {
-    const getUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
+      if (user) {
+        setUser(user);
+      } else {
+        console.log("User not authenticated");
+      }
     };
-    getUser();
+    getUserCall();
   }, [supabase]);
 
   const handleSubmit = async (e: React.FormEvent) => {

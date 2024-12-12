@@ -5,6 +5,7 @@ import ImportFromApps from "@/components/ImportFromApps";
 import { LanguagePreferences } from "@/components/LanguagePreferences";
 import { Locale } from "@/i18n/config";
 import { setUserLocale } from "@/libs/locale";
+import { getUser } from "@/libs/supabase/queries";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
@@ -35,25 +36,25 @@ export default function Profile() {
   const router = useRouter();
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user);
-      if (data.user) {
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
+      setUser(user);
+      if (user) {
         const { data: preferences, error } = await supabase
           .from("user_preferences")
           .select("preferred_ui_language")
-          .eq("user_id", data.user.id)
+          .eq("user_id", user.id)
           .single();
 
         if (!error && preferences?.preferred_ui_language) {
           await setUserLocale(preferences.preferred_ui_language as Locale);
         }
+      } else {
+        console.log("User not authenticated");
       }
     };
-
-    getUser();
+    getUserCall();
   }, [supabase]);
-
   useEffect(() => {
     if (user) {
       fetchProfile();

@@ -2,6 +2,7 @@
 import HeaderDashboard from "@/components/DashboardHeader";
 import Pricing from "@/components/Pricing";
 import { checkPremium } from "@/libs/premium";
+import { getUser } from "@/libs/supabase/queries";
 import { Database } from "@/types/supabase";
 import {
   createClientComponentClient,
@@ -14,23 +15,25 @@ export default function Premium() {
   const [isPremium, setIsPremium] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   useEffect(() => {
-    const fetchUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
+      if (user) {
+        setUser(user);
+      } else {
+        console.log("User not authenticated");
+      }
     };
-    fetchUser();
+    getUserCall();
   }, [supabase]);
-  //   useEffect(() => {
-  //     if (user) {
-  //       const checkAccess = async () => {
-  //         const hasPremium = await checkPremium(user.id);
-  //         setIsPremium(hasPremium)
-  //       };
-  //       checkAccess();
-  //     }
-  //   }, [user]);
+  useEffect(() => {
+    if (user) {
+      const checkAccess = async () => {
+        const hasPremium = await checkPremium(user.id);
+        setIsPremium(hasPremium);
+      };
+      checkAccess();
+    }
+  }, [user]);
 
   return (
     <main className="min-h-screen p-4 sm:p-8 pb-16">

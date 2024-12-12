@@ -2,6 +2,7 @@
 import HeaderDashboard from "@/components/DashboardHeader";
 import { ReadingListItem } from "@/interfaces/Dashboard";
 import { Volume } from "@/interfaces/GoogleAPI";
+import { getUser } from "@/libs/supabase/queries";
 import { Database } from "@/types/supabase";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
@@ -12,11 +13,7 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 
-interface BookNotesProps {
-  user: User;
-}
-export default function BookNotes({ user }: BookNotesProps) {
-  console.log(user);
+export default function BookNotes() {
   const [bookStickys, setBookStickys] = useState<{
     [bookId: string]: {
       content: string;
@@ -32,6 +29,7 @@ export default function BookNotes({ user }: BookNotesProps) {
   const supabase = createClientComponentClient<Database>();
   const [readingList, setReadingList] = useState<ReadingListItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
   const [notes, setNotes] = useState<{
     [bookId: string]: { content: string; lastUpdated: string | null };
   }>({});
@@ -89,6 +87,19 @@ export default function BookNotes({ user }: BookNotesProps) {
   const displayedPages = useMemo(() => {
     return Math.max(1, totalPages);
   }, [totalPages]);
+
+  useEffect(() => {
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
+      if (user) {
+        setUser(user);
+        fetchReadingList(user.id);
+      } else {
+        console.log("User not authenticated");
+      }
+    };
+    getUserCall();
+  }, [supabase]);
 
   useEffect(() => {
     if (user) {

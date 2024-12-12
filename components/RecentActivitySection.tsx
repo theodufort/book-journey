@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@supabase/supabase-js";
 import { Database } from "@/types/supabase";
+import { getUser } from "@/libs/supabase/queries";
 interface ActivityItem {
   id: number;
   activity_type: string;
@@ -13,12 +14,15 @@ const RecentActivitySection = () => {
   const supabase = createClientComponentClient<Database>();
   const [user, setUser] = useState<User | null>(null);
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user);
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
+      if (user) {
+        setUser(user);
+      } else {
+        console.log("User not authenticated");
+      }
     };
-
-    getUser();
+    getUserCall();
   }, [supabase]);
   useEffect(() => {
     const fetchActivities = async () => {

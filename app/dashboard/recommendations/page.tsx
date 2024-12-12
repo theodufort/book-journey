@@ -3,8 +3,12 @@
 import BookAvatar from "@/components/BookAvatar";
 import HeaderDashboard from "@/components/DashboardHeader";
 import { Volume } from "@/interfaces/GoogleAPI";
+import { getUser } from "@/libs/supabase/queries";
 import { Database } from "@/types/supabase";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import {
+  createClientComponentClient,
+  User,
+} from "@supabase/auth-helpers-nextjs";
 import { useTranslations } from "next-intl";
 import { useNextStep } from "nextstepjs";
 import { useEffect, useState } from "react";
@@ -17,7 +21,19 @@ export default function Recommendations() {
   const [bookSuggestions, setBookSuggestions] = useState([]);
   const [error, setError] = useState<string | null>(null);
   const supabase = createClientComponentClient<Database>();
+  const [user, setUser] = useState<User | null>(null);
 
+  useEffect(() => {
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
+      if (user) {
+        setUser(user);
+      } else {
+        console.log("User not authenticated");
+      }
+    };
+    getUserCall();
+  }, [supabase]);
   useEffect(() => {
     fetchRecommendations();
   }, []);
@@ -57,9 +73,6 @@ export default function Recommendations() {
   }
 
   async function addToReadingList(book: Volume) {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
     if (user) {
       const { error } = await supabase.from("reading_list").upsert({
         user_id: user.id,

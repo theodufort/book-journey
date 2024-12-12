@@ -1,23 +1,28 @@
+import { getUser } from "@/libs/supabase/queries";
 import { Database } from "@/types/supabase";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import {
+  createClientComponentClient,
+  User,
+} from "@supabase/auth-helpers-nextjs";
 import React, { useEffect, useState } from "react";
 
 const ReferralLinkCard: React.FC = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const supabase = createClientComponentClient<Database>();
+  const [user, setUser] = useState<User | null>(null);
+
   useEffect(() => {
-    const fetchUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+    const getUserCall = async () => {
+      const user = await getUser(supabase);
       if (user) {
-        setUserId(user.id);
+        setUser(user);
+      } else {
+        console.log("User not authenticated");
       }
     };
-
-    fetchUser();
-  }, [supabase.auth]);
+    getUserCall();
+  }, [supabase]);
 
   const referralLink = userId
     ? `${process.env.NEXT_PUBLIC_BASE_URL}/signin?ref=${userId}`

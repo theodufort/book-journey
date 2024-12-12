@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 import { PlacesType, Tooltip } from "react-tooltip";
 import { v4 as uuidv4 } from "uuid";
