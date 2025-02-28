@@ -26,16 +26,14 @@ export default function Roadmap() {
   };
 
   useEffect(() => {
-    const getUserCall = async () => {
+    const initialize = async () => {
+      await loadItems();
       const user = await getUser(supabase);
       if (user) {
         setUser(user);
-        await loadItems();
-      } else {
-        console.log("User not authenticated");
       }
     };
-    getUserCall();
+    initialize();
   }, [supabase]);
   const allTags = Array.from(new Set(items.flatMap((item) => item.tags)));
 
