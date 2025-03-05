@@ -79,6 +79,21 @@ const Footer = () => {
                 </Link>
               </div>
             </div>
+            <div className="lg:w-1/3 md:w-1/2 w-full px-4">
+              <div className="footer-title font-semibold text-base-content tracking-widest text-sm md:text-left mb-3">
+                OTHER APPS
+              </div>
+
+              <div className="flex flex-col justify-center items-center md:items-start gap-2 mb-10 text-sm">
+                <Link
+                  href="https://massive-seo.com/"
+                  rel="dofollow"
+                  className="link link-hover"
+                >
+                  Programmatic SEO Tool
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </div>
