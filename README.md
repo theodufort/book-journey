@@ -2,6 +2,9 @@ MyBookQuest is a modern platform that helps readers build their virtual library,
 
 🌐 Website: https://mybookquest.com
 
+## Development Logs
+YouTube Playlist: https://www.youtube.com/playlist?list=PLbpz2nfzyjINvgC0GZWt4zn4VRlAHJnHy
+
 ## Features
 
 📖 Import Your Library
