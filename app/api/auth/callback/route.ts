@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
     } = await supabase.auth.exchangeCodeForSession(code);
 
     if (user) {
-      await addToConvertKit(user.email, user.user_metadata.first_name);
+      // await addToConvertKit(user.email, user.user_metadata.first_name);
 
       if (ref) {
         // Handle the referral
